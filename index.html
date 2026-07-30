@@ -1910,9 +1910,9 @@ function repartirEnPartesIguales(){
   customPortfolio.forEach((it, i)=>{ it.pct = partes[i]; });
 }
 
-// La cartera no es valida si los % se pasan de 100: en ese caso no se calcula
-function carteraExcede(){
-  return isCustom() && customPctTotal() > 100;
+// La cartera personalizada solo es valida si los % suman exactamente 100
+function carteraSuma100(){
+  return !isCustom() || customPctTotal() === 100;
 }
 
 function addCustomFondo(nombre){
@@ -1974,7 +1974,7 @@ function buildCarteraRows(){
 }
 
 function carteraRowHtml(r, i, custom){
-  const excede = custom && carteraExcede();
+  const excede = custom && !carteraSuma100();
   const pctCell = custom
     ? `<div class="pct-cell"><input type="text" inputmode="numeric" maxlength="3" class="pct-input${excede ? ' pct-exceso' : ''}" data-idx="${i}" value="${r.pct}" aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
     : `${r.pct}%`;
@@ -2024,7 +2024,7 @@ function renderCartera(){
 
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
-    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. Si la suma supera el 100% la cartera no se calcula. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
+    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
     : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom)).join('');
@@ -2043,13 +2043,14 @@ function renderCarteraTotals(rows, custom){
   const totalCosto = rows.reduce((acc, r)=> acc + r.costo, 0);
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
 
-  const excede = custom && totalPct > 100;
+  const excede = totalPct > 100;
+  const invalida = custom && totalPct !== 100;
 
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
-       <td class="num${excede ? ' pct-exceso' : ''}">${totalPct}%</td>
+       <td class="num${invalida ? ' pct-exceso' : ''}">${totalPct}%</td>
        <td colspan="2"></td>
-       <td class="num" id="carteraTotalCosto">${excede ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
+       <td class="num" id="carteraTotalCosto">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
     : `<td colspan="4"></td>
        <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`;
 
@@ -2060,15 +2061,15 @@ function renderCarteraTotals(rows, custom){
   }
 
   warn.style.display = 'block';
-  if(excede){
-    warn.className = 'pct-warning err';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%, más de lo disponible. Bajalos hasta 100% o menos para que se calcule la cartera.`;
-  } else if(totalPct === 100){
+  if(totalPct === 100){
     warn.className = 'pct-warning ok';
     warn.textContent = '✓ Los porcentajes suman 100% del monto a invertir.';
+  } else if(excede){
+    warn.className = 'pct-warning err';
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: hay que bajar ${totalPct - 100}%. La cartera se calcula solo cuando suman exactamente 100%.`;
   } else {
-    warn.className = 'pct-warning warn';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: queda ${100 - totalPct}% del monto sin asignar.`;
+    warn.className = 'pct-warning err';
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: falta asignar ${100 - totalPct}%. La cartera se calcula solo cuando suman exactamente 100%.`;
   }
 }
 
@@ -2076,8 +2077,10 @@ function renderCarteraTotals(rows, custom){
 // Si la cartera esta vacia se ocultan esas secciones.
 function renderCarteraDerived(rows, custom){
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
-  // Si los % se pasan de 100 la cartera no se genera
-  const valida = !custom || totalPct <= 100;
+  // La cartera personalizada solo se calcula si los % suman exactamente 100.
+  // Con cualquier otra suma se ocultan las secciones de abajo, igual que
+  // cuando todavia no se eligio ningun fondo.
+  const valida = !custom || totalPct === 100;
   const hasRows = valida && rows.some(r => r.found && (Number(r.pct) || 0) > 0);
 
   ['composicionSection', 'histSection', 'carteraFondosSection'].forEach(id=>{
@@ -2110,7 +2113,7 @@ let pctRecalcTimer = null;
 // perderia el foco mientras se escribe). No toca los % de los otros fondos.
 function sincronizarFilasCartera(){
   const rows = buildCarteraRows();
-  const excede = carteraExcede();
+  const excede = !carteraSuma100();
   const trs = document.getElementById('carteraTableBody').querySelectorAll('tr:not(.add-fondo-row)');
   rows.forEach((r, i)=>{
     const tr = trs[i];
