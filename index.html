@@ -406,13 +406,24 @@
     cursor:default;
     background:#F3F5FA;
   }
-  #carteraTableBody input.pct-input:disabled{
-    background:#F1F3FA;
-    color:var(--muted);
-    border-style:dashed;
-    cursor:default;
-  }
   .cartera-empty-msg{ font-size:13px; color:var(--muted); text-align:center; }
+  .pct-warning{
+    margin-top:12px;
+    font-size:12.5px;
+    font-weight:600;
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .pct-warning.ok{ background:var(--pos-bg); color:var(--pos); border:1px solid #C9E9D8; }
+  .pct-warning.warn{ background:#FFF6E5; color:#8A5A0F; border:1px solid #F3E1BD; }
+  .pct-warning.err{ background:var(--neg-bg); color:var(--neg); border:1px solid #EFC9C9; }
+  /* % en rojo cuando la suma se pasa de 100 */
+  #carteraTable tfoot .cartera-total-row td.pct-exceso{ color:var(--neg); }
+  #carteraTableBody input.pct-input.pct-exceso{
+    border-color:var(--neg);
+    background:var(--neg-bg);
+    color:var(--neg);
+  }
 
   label#montoLabel{ margin-bottom:8px; }
   #montoInput{
@@ -787,8 +798,8 @@
   <main class="container">
 
     <div class="tabs-nav">
-      <button class="tab-btn active" data-tab="calculadora">Calculadora de cartera</button>
-      <button class="tab-btn" data-tab="fondos">Fondos disponibles</button>
+      <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
+      <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
@@ -873,6 +884,7 @@
           </tfoot>
         </table>
       </div>
+      <div id="pctWarning" class="pct-warning" style="display:none;"></div>
       <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.</p>
     </section>
 
@@ -1898,33 +1910,9 @@ function repartirEnPartesIguales(){
   customPortfolio.forEach((it, i)=>{ it.pct = partes[i]; });
 }
 
-// Reescala los % actuales para que vuelvan a sumar 100 (respeta las proporciones)
-function reescalarA100(){
-  if(!customPortfolio.length) return;
-  const pesos = customPortfolio.map(it => Number(it.pct) || 0);
-  const partes = repartirEntero(100, pesos);
-  customPortfolio.forEach((it, i)=>{ it.pct = partes[i]; });
-}
-
-// Fija el % del fondo `idx` y reparte lo que queda entre los demas,
-// manteniendo la proporcion que tenian entre si.
-function fijarPctYRedistribuir(idx, valor){
-  const n = customPortfolio.length;
-  if(!n || !customPortfolio[idx]) return;
-
-  let v = Math.round(Number(valor));
-  if(!isFinite(v) || v < 0) v = 0;
-  if(v > 100) v = 100;
-
-  // Con un solo fondo la unica asignacion posible es 100%
-  if(n === 1){ customPortfolio[0].pct = 100; return; }
-
-  customPortfolio[idx].pct = v;
-
-  const otros = customPortfolio.map((it, i) => i).filter(i => i !== idx);
-  const pesos = otros.map(i => Number(customPortfolio[i].pct) || 0);
-  const partes = repartirEntero(100 - v, pesos);
-  otros.forEach((i, k)=>{ customPortfolio[i].pct = partes[k]; });
+// La cartera no es valida si los % se pasan de 100: en ese caso no se calcula
+function carteraExcede(){
+  return isCustom() && customPctTotal() > 100;
 }
 
 function addCustomFondo(nombre){
@@ -1938,9 +1926,8 @@ function addCustomFondo(nombre){
 
 function removeCustomFondo(idx){
   if(idx < 0 || idx >= customPortfolio.length) return;
+  // Se quita el fondo y los demas conservan el % que tenian
   customPortfolio.splice(idx, 1);
-  // Los que quedan se reescalan para seguir sumando 100%
-  reescalarA100();
   renderCartera();
 }
 
@@ -1951,7 +1938,6 @@ function sanitizeCustomPortfolio(){
     const f = fundByName(it.nombre);
     return f && f.moneda === selection.moneda;
   });
-  if(customPortfolio.length !== antes) reescalarA100();
 }
 
 function updateVisibility(){
@@ -1988,10 +1974,9 @@ function buildCarteraRows(){
 }
 
 function carteraRowHtml(r, i, custom){
-  // Con un solo fondo el % queda fijo en 100 y no se puede editar
-  const unicoFondo = custom && customPortfolio.length === 1;
+  const excede = custom && carteraExcede();
   const pctCell = custom
-    ? `<div class="pct-cell"><input type="text" inputmode="numeric" maxlength="3" class="pct-input" data-idx="${i}" value="${r.pct}"${unicoFondo ? ' disabled title="Con un solo fondo la asignación es 100%"' : ''} aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
+    ? `<div class="pct-cell"><input type="text" inputmode="numeric" maxlength="3" class="pct-input${excede ? ' pct-exceso' : ''}" data-idx="${i}" value="${r.pct}" aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
     : `${r.pct}%`;
 
   const removeBtn = custom
@@ -2007,7 +1992,7 @@ function carteraRowHtml(r, i, custom){
       <td class="num">${pctCell}</td>
       <td>${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
       <td>${r.horizonte || '—'}</td>
-      <td class="num vcp-value">${fmtMoney(r.costo, selection.moneda)}</td>
+      <td class="num vcp-value">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
 }
 
@@ -2039,7 +2024,7 @@ function renderCartera(){
 
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
-    ? 'Al agregar un fondo la cartera se reparte en partes iguales. Si editás el % de un fondo, el resto se redistribuye automáticamente para seguir sumando 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
+    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. Si la suma supera el 100% la cartera no se calcula. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
     : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom)).join('');
@@ -2058,19 +2043,42 @@ function renderCarteraTotals(rows, custom){
   const totalCosto = rows.reduce((acc, r)=> acc + r.costo, 0);
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
 
+  const excede = custom && totalPct > 100;
+
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
-       <td class="num">${totalPct}%</td>
+       <td class="num${excede ? ' pct-exceso' : ''}">${totalPct}%</td>
        <td colspan="2"></td>
-       <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`
+       <td class="num" id="carteraTotalCosto">${excede ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
     : `<td colspan="4"></td>
        <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`;
+
+  const warn = document.getElementById('pctWarning');
+  if(!custom || !rows.length){
+    warn.style.display = 'none';
+    return;
+  }
+
+  warn.style.display = 'block';
+  if(excede){
+    warn.className = 'pct-warning err';
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%, más de lo disponible. Bajalos hasta 100% o menos para que se calcule la cartera.`;
+  } else if(totalPct === 100){
+    warn.className = 'pct-warning ok';
+    warn.textContent = '✓ Los porcentajes suman 100% del monto a invertir.';
+  } else {
+    warn.className = 'pct-warning warn';
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: queda ${100 - totalPct}% del monto sin asignar.`;
+  }
 }
 
 // Graficos, rendimiento historico y tabla de fondos de la cartera.
 // Si la cartera esta vacia se ocultan esas secciones.
 function renderCarteraDerived(rows, custom){
-  const hasRows = rows.some(r => r.found && (Number(r.pct) || 0) > 0);
+  const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
+  // Si los % se pasan de 100 la cartera no se genera
+  const valida = !custom || totalPct <= 100;
+  const hasRows = valida && rows.some(r => r.found && (Number(r.pct) || 0) > 0);
 
   ['composicionSection', 'histSection', 'carteraFondosSection'].forEach(id=>{
     const el = document.getElementById(id);
@@ -2098,26 +2106,28 @@ function renderCarteraDerived(rows, custom){
 --------------------------------------------------------------------- */
 let pctRecalcTimer = null;
 
-// Refresca en pantalla los % de las otras filas y los montos de todas, sin
-// re-armar la tabla (si se re-armara se perderia el foco mientras se escribe).
-function sincronizarFilasCartera(idxEditando){
+// Refresca los montos y el total sin re-armar la tabla (si se re-armara se
+// perderia el foco mientras se escribe). No toca los % de los otros fondos.
+function sincronizarFilasCartera(){
   const rows = buildCarteraRows();
+  const excede = carteraExcede();
   const trs = document.getElementById('carteraTableBody').querySelectorAll('tr:not(.add-fondo-row)');
   rows.forEach((r, i)=>{
     const tr = trs[i];
     if(!tr) return;
     const inp = tr.querySelector('.pct-input');
-    if(inp && i !== idxEditando) inp.value = r.pct;
+    if(inp) inp.classList.toggle('pct-exceso', excede);
     const cell = tr.querySelector('td:last-child');
-    if(cell) cell.textContent = fmtMoney(r.costo, selection.moneda);
+    if(cell) cell.textContent = excede ? '—' : fmtMoney(r.costo, selection.moneda);
   });
   renderCarteraTotals(rows, true);
 }
 
-// Al editar el % de un fondo se redistribuye automaticamente el resto
-// entre los demas fondos, de modo que la cartera siga sumando 100%.
+// Cada fondo se ajusta libremente: cambiar uno no modifica a los demas.
+// Si la suma supera el 100% la cartera no se calcula y se muestra la alerta.
 function onPctInput(idx, inputEl){
-  if(!customPortfolio[idx]) return;
+  const item = customPortfolio[idx];
+  if(!item) return;
 
   // Solo se aceptan enteros de 0 a 100
   let limpio = inputEl.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
@@ -2127,8 +2137,8 @@ function onPctInput(idx, inputEl){
     try{ inputEl.setSelectionRange(limpio.length, limpio.length); }catch(e){}
   }
 
-  fijarPctYRedistribuir(idx, limpio === '' ? 0 : parseInt(limpio, 10));
-  sincronizarFilasCartera(idx);
+  item.pct = limpio === '' ? 0 : parseInt(limpio, 10);
+  sincronizarFilasCartera();
 
   clearTimeout(pctRecalcTimer);
   pctRecalcTimer = setTimeout(()=> renderCarteraDerived(buildCarteraRows(), true), 260);
