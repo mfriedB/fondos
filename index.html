@@ -76,7 +76,12 @@
     text-transform:uppercase;
     margin-top:3px;
   }
-  .brand-titles{ display:flex; flex-direction:column; }
+  .brand-titles{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    text-align:left;
+  }
   .topbar-actions{ display:flex; align-items:center; gap:10px; }
   .pill{
     background:rgba(255,255,255,0.1);
@@ -683,9 +688,6 @@
   .print-perf-grid{ display:flex; gap:6px; margin-bottom:10px; }
   .print-perf-grid .perf-item{ flex:1; background:#F5F8FE; border:1px solid var(--line); border-radius:6px; padding:6px 4px; text-align:center; }
   .print-hist-img{ width:100%; height:auto; border:1px solid var(--line); border-radius:6px; display:block; }
-  .print-footer{ margin-top:12px; padding-top:8px; border-top:1px solid var(--line); }
-  .print-footer p{ font-size:8.5px; color:var(--muted); line-height:1.4; margin:0; }
-
   /* Hoja final del PDF: disclaimer legal (se captura aparte para que caiga
      siempre en una pagina propia) */
   #printDisclaimer{
@@ -700,14 +702,6 @@
     margin-bottom:18px;
   }
   #printDisclaimer .disc-logo{ display:block; height:34px; width:auto; border-radius:4px; }
-  #printDisclaimer h3{
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-    color:var(--navy);
-    margin:0 0 10px;
-    font-weight:700;
-  }
   #printDisclaimer p{
     font-size:9.5px;
     line-height:1.65;
@@ -1097,7 +1091,6 @@
     <div class="disc-head">
       <img class="disc-logo" id="printDiscLogo" alt="Balanz" />
     </div>
-    <h3>Disclaimer</h3>
     <p>Este reporte (en adelante el “Reporte”) ha sido preparado por Balanz Capital Valores S.A.U. y/o Balanz Sociedad Gerente de Fondos Comunes de Inversión S.A.U. (en adelante "Balanz") para las personas a las que fue dirigido y no debe ser de modo alguno divulgado, distribuido ni reproducido públicamente (ya sea en todo y/o en parte), sin el consentimiento de Balanz. Fue realizado con información accesible al público en general, sin ninguna verificación independiente de Balanz, y Balanz no asume la obligación de actualizarlo. Nada de lo contenido en el Reporte constituye una oferta ni debe ser considerado como asesoramiento de inversión, ni como un compromiso, en cuanto al pasado, presente y/o futuro, ni como una recomendación legal, impositiva, y/o de inversión. Balanz no será responsable de las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Reporte. Quien reciba este Reporte deberá consultar a sus asesores legales y/o financieros para realizar sus estimaciones y sus propias conclusiones de lo referido en este documento.</p>
     <p class="disc-legal">BALANZ SOCIEDAD GERENTE DE FONDOS COMUNES DE INVERSIÓN S.A.U. Agente de Administración de Productos de Inversión Colectiva de Fondos Comunes de Inversión N°32 ante la CNV. Av. Corrientes 330, piso 1, CABA, Argentina. INSCRIPTO ANTE IGJ BAJO EL N° 12.486 DEL LIBRO 18 TOMO - DE SOCIEDADES POR ACCIONES. CUIT: 33-70812346-9.</p>
   </div>
@@ -1136,10 +1129,6 @@
       <h3>Rendimiento histórico de la cartera</h3>
       <div class="print-perf-grid" id="printPerfGrid"></div>
       <img id="printHistChart" class="print-hist-img" alt="Rendimiento histórico de la cartera" />
-    </div>
-
-    <div class="print-footer">
-      <p>Documento generado automáticamente en base al VCP más reciente disponible. Los rendimientos pasados no garantizan resultados futuros. Este material es informativo y no constituye asesoramiento financiero individualizado ni una recomendación de inversión vinculante.</p>
     </div>
   </div>
 
@@ -1769,9 +1758,10 @@ document.querySelectorAll('#histFilters .range-btn').forEach(btn=>{
    Comparacion de rendimiento historico entre varios fondos
    (pestaña Fondos disponibles)
 --------------------------------------------------------------------- */
-// Paleta de azules para las lineas del comparador: del navy mas oscuro al
-// celeste, con suficiente separacion entre tonos para distinguirlas sobre blanco.
-const FUND_LINE_COLORS = ['#0A1638', '#1B3F8C', '#2559B8', '#3B79D6', '#5795DF', '#79ADE8'];
+// Paleta de azules para las lineas del comparador. Los tonos se eligieron
+// maximizando la distancia perceptual (CIELAB) entre todos los pares, para que
+// las 6 lineas se distingan entre si sin salirse de la familia de azules.
+const FUND_LINE_COLORS = ['#04152F', '#062593', '#0D5096', '#1E61F6', '#0A7DF5', '#5694F0'];
 const MAX_COMPARE_FUNDS = 6;
 
 function fundColor(index){
