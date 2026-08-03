@@ -1,4 +1,189 @@
 ﻿Fecha,VCP,Fondo,Moneda,Categoria,Riesgo,Horizonte,Liquidacion
+2026-07-31 00:00:00,"167,93348",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"241,19570",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
+2026-07-31 00:00:00,"72,89236",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,38291",Balanz Crecimiento,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,43526",Balanz Crédito Privado,Pesos,Renta Fija Pesos,Moderado,Corto plazo,t+1
+2026-07-31 00:00:00,"2,38240",Balanz Desarrollo FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,17748",Balanz Estrategia II USD,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,05513",Balanz Estrategia IV USD,Dólar,Dedicados,Conservador,Corto plazo,t+1
+2026-07-31 00:00:00,"168,68822",Balanz Excalibur Regisseur,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"20,64146",Balanz Infraestructura FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"2,20500",Balanz Long Pesos,Pesos,Renta Fija Pesos,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"1,02593",Balanz Money Market USD,Dólar,Money Market,Conservador,Corto plazo,t+0
+2026-07-31 00:00:00,"14,45023",Balanz Performance I,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"5,75435",Balanz Performance V,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"6,46401",Balanz Performance XI,Pesos,Dedicados,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"1,02546",Balanz Performance XII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,56975",Balanz Performance XIII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,00790",Balanz Renta Fija Global,Dólar,Renta Fija Pesos,Conservador,Mediano plazo,t+2
+2026-07-31 00:00:00,"55,11602",Balanz Rta Fija Estrategica,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,43105",Corporativo,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,16713",Dolar Corto Plazo,Dólar,Renta Fija USD,Conservador,Corto plazo,t+1
+2026-07-31 00:00:00,"235,76767",Dolar Linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"17,84347",Equity Selection,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"1,08507",Estrategia V,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"0,99465",Estrategia VI,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,09539",GLOBAL,Dólar,Renta Variable,Audaz,Largo plazo,t+2
+2026-07-31 00:00:00,"119,43873",Inflation linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,07603",Latam,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"1,19622",Latam (SIN Arg),Dólar,Renta Fija USD,Moderado,Mediano plazo,t+2
+2026-07-31 00:00:00,"2,06916",Lecaps,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+0
+2026-07-31 00:00:00,"1,07399",Mercado libre FCICC,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"12,75376",Money Market,Pesos,Money Market,Conservador,Corto plazo,t+0
+2026-07-31 00:00:00,"9,91857",ONs,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"41,41244",Opportunity,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-31 00:00:00,"746,67391",Renta Mixta,Pesos,Renta Mixta,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"1,51966",Soberano,Dólar,Renta Fija USD,Audaz,Largo plazo,t+1
+2026-07-31 00:00:00,"1,75758",Soja,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"168,53094",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"240,71169",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
+2026-07-30 00:00:00,"72,74391",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,37547",Balanz Crecimiento,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,43374",Balanz Crédito Privado,Pesos,Renta Fija Pesos,Moderado,Corto plazo,t+1
+2026-07-30 00:00:00,"2,36972",Balanz Desarrollo FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,17707",Balanz Estrategia II USD,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,05506",Balanz Estrategia IV USD,Dólar,Dedicados,Conservador,Corto plazo,t+1
+2026-07-30 00:00:00,"168,53988",Balanz Excalibur Regisseur,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"20,61817",Balanz Infraestructura FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"2,20392",Balanz Long Pesos,Pesos,Renta Fija Pesos,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"1,02590",Balanz Money Market USD,Dólar,Money Market,Conservador,Corto plazo,t+0
+2026-07-30 00:00:00,"14,42935",Balanz Performance I,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"5,74017",Balanz Performance V,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"6,47487",Balanz Performance XI,Pesos,Dedicados,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"1,02442",Balanz Performance XII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,56614",Balanz Performance XIII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,00943",Balanz Renta Fija Global,Dólar,Renta Fija Pesos,Conservador,Mediano plazo,t+2
+2026-07-30 00:00:00,"54,94440",Balanz Rta Fija Estrategica,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,43057",Corporativo,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,16669",Dolar Corto Plazo,Dólar,Renta Fija USD,Conservador,Corto plazo,t+1
+2026-07-30 00:00:00,"235,62648",Dolar Linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"17,82787",Equity Selection,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"1,08458",Estrategia V,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"0,99479",Estrategia VI,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,08668",GLOBAL,Dólar,Renta Variable,Audaz,Largo plazo,t+2
+2026-07-30 00:00:00,"119,47297",Inflation linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,07618",Latam,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"1,19606",Latam (SIN Arg),Dólar,Renta Fija USD,Moderado,Mediano plazo,t+2
+2026-07-30 00:00:00,"2,06886",Lecaps,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+0
+2026-07-30 00:00:00,"1,07321",Mercado libre FCICC,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"12,74722",Money Market,Pesos,Money Market,Conservador,Corto plazo,t+0
+2026-07-30 00:00:00,"9,91304",ONs,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"41,30662",Opportunity,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-30 00:00:00,"744,54104",Renta Mixta,Pesos,Renta Mixta,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"1,51087",Soberano,Dólar,Renta Fija USD,Audaz,Largo plazo,t+1
+2026-07-30 00:00:00,"1,75730",Soja,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"164,82190",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"240,86318",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
+2026-07-29 00:00:00,"72,72378",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,39536",Balanz Crecimiento,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,43296",Balanz Crédito Privado,Pesos,Renta Fija Pesos,Moderado,Corto plazo,t+1
+2026-07-29 00:00:00,"2,39652",Balanz Desarrollo FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,17838",Balanz Estrategia II USD,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,05504",Balanz Estrategia IV USD,Dólar,Dedicados,Conservador,Corto plazo,t+1
+2026-07-29 00:00:00,"169,01265",Balanz Excalibur Regisseur,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"20,71303",Balanz Infraestructura FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"2,21270",Balanz Long Pesos,Pesos,Renta Fija Pesos,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"1,02588",Balanz Money Market USD,Dólar,Money Market,Conservador,Corto plazo,t+0
+2026-07-29 00:00:00,"14,49106",Balanz Performance I,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"5,77512",Balanz Performance V,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"6,48261",Balanz Performance XI,Pesos,Dedicados,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"1,02457",Balanz Performance XII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,57023",Balanz Performance XIII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,00793",Balanz Renta Fija Global,Dólar,Renta Fija Pesos,Conservador,Mediano plazo,t+2
+2026-07-29 00:00:00,"55,24228",Balanz Rta Fija Estrategica,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,43244",Corporativo,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,16727",Dolar Corto Plazo,Dólar,Renta Fija USD,Conservador,Corto plazo,t+1
+2026-07-29 00:00:00,"236,65477",Dolar Linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"17,38057",Equity Selection,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"1,08620",Estrategia V,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"0,99403",Estrategia VI,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,07031",GLOBAL,Dólar,Renta Variable,Audaz,Largo plazo,t+2
+2026-07-29 00:00:00,"119,81687",Inflation linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,07794",Latam,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"1,19584",Latam (SIN Arg),Dólar,Renta Fija USD,Moderado,Mediano plazo,t+2
+2026-07-29 00:00:00,"2,06951",Lecaps,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+0
+2026-07-29 00:00:00,"1,07244",Mercado libre FCICC,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"12,74102",Money Market,Pesos,Money Market,Conservador,Corto plazo,t+0
+2026-07-29 00:00:00,"9,92803",ONs,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"41,45747",Opportunity,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-29 00:00:00,"745,28694",Renta Mixta,Pesos,Renta Mixta,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"1,51779",Soberano,Dólar,Renta Fija USD,Audaz,Largo plazo,t+1
+2026-07-29 00:00:00,"1,75032",Soja,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"166,17732",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"240,75759",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
+2026-07-28 00:00:00,"72,69839",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,40057",Balanz Crecimiento,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,43185",Balanz Crédito Privado,Pesos,Renta Fija Pesos,Moderado,Corto plazo,t+1
+2026-07-28 00:00:00,"2,40751",Balanz Desarrollo FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,17903",Balanz Estrategia II USD,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,05485",Balanz Estrategia IV USD,Dólar,Dedicados,Conservador,Corto plazo,t+1
+2026-07-28 00:00:00,"168,87257",Balanz Excalibur Regisseur,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"20,73643",Balanz Infraestructura FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"2,21403",Balanz Long Pesos,Pesos,Renta Fija Pesos,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"1,02586",Balanz Money Market USD,Dólar,Money Market,Conservador,Corto plazo,t+0
+2026-07-28 00:00:00,"14,51682",Balanz Performance I,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"5,77860",Balanz Performance V,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"6,47686",Balanz Performance XI,Pesos,Dedicados,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"1,02409",Balanz Performance XII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,57197",Balanz Performance XIII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,00862",Balanz Renta Fija Global,Dólar,Renta Fija Pesos,Conservador,Mediano plazo,t+2
+2026-07-28 00:00:00,"55,33459",Balanz Rta Fija Estrategica,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,43296",Corporativo,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,16729",Dolar Corto Plazo,Dólar,Renta Fija USD,Conservador,Corto plazo,t+1
+2026-07-28 00:00:00,"237,13831",Dolar Linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"17,50401",Equity Selection,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"1,08700",Estrategia V,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"0,99520",Estrategia VI,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,08554",GLOBAL,Dólar,Renta Variable,Audaz,Largo plazo,t+2
+2026-07-28 00:00:00,"119,78506",Inflation linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,07843",Latam,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"1,19577",Latam (SIN Arg),Dólar,Renta Fija USD,Moderado,Mediano plazo,t+2
+2026-07-28 00:00:00,"2,06849",Lecaps,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+0
+2026-07-28 00:00:00,"1,07166",Mercado libre FCICC,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"12,73483",Money Market,Pesos,Money Market,Conservador,Corto plazo,t+0
+2026-07-28 00:00:00,"9,92421",ONs,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"41,51250",Opportunity,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-28 00:00:00,"747,49540",Renta Mixta,Pesos,Renta Mixta,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"1,52384",Soberano,Dólar,Renta Fija USD,Audaz,Largo plazo,t+1
+2026-07-28 00:00:00,"1,76331",Soja,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"168,57713",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"240,77823",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
+2026-07-27 00:00:00,"72,69841",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,40321",Balanz Crecimiento,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,43055",Balanz Crédito Privado,Pesos,Renta Fija Pesos,Moderado,Corto plazo,t+1
+2026-07-27 00:00:00,"2,41018",Balanz Desarrollo FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,17870",Balanz Estrategia II USD,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,05471",Balanz Estrategia IV USD,Dólar,Dedicados,Conservador,Corto plazo,t+1
+2026-07-27 00:00:00,"168,83533",Balanz Excalibur Regisseur,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"20,73347",Balanz Infraestructura FCI,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"2,22071",Balanz Long Pesos,Pesos,Renta Fija Pesos,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"1,02584",Balanz Money Market USD,Dólar,Money Market,Conservador,Corto plazo,t+0
+2026-07-27 00:00:00,"14,49833",Balanz Performance I,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"5,78905",Balanz Performance V,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"6,50108",Balanz Performance XI,Pesos,Dedicados,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"1,02405",Balanz Performance XII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,57208",Balanz Performance XIII,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,00757",Balanz Renta Fija Global,Dólar,Renta Fija Pesos,Conservador,Mediano plazo,t+2
+2026-07-27 00:00:00,"55,39043",Balanz Rta Fija Estrategica,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,43300",Corporativo,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,16719",Dolar Corto Plazo,Dólar,Renta Fija USD,Conservador,Corto plazo,t+1
+2026-07-27 00:00:00,"237,27378",Dolar Linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"17,80408",Equity Selection,Pesos,Renta Variable,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"1,08715",Estrategia V,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"0,99459",Estrategia VI,Dólar,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,08202",GLOBAL,Dólar,Renta Variable,Audaz,Largo plazo,t+2
+2026-07-27 00:00:00,"119,74092",Inflation linked,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,07818",Latam,Dólar,Renta Fija USD,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"1,19553",Latam (SIN Arg),Dólar,Renta Fija USD,Moderado,Mediano plazo,t+2
+2026-07-27 00:00:00,"2,06794",Lecaps,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+0
+2026-07-27 00:00:00,"1,07089",Mercado libre FCICC,Pesos,Dedicados,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"12,72865",Money Market,Pesos,Money Market,Conservador,Corto plazo,t+0
+2026-07-27 00:00:00,"9,91268",ONs,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"41,58602",Opportunity,Pesos,Renta Fija Pesos,Moderado,Mediano plazo,t+1
+2026-07-27 00:00:00,"750,50499",Renta Mixta,Pesos,Renta Mixta,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"1,52517",Soberano,Dólar,Renta Fija USD,Audaz,Largo plazo,t+1
+2026-07-27 00:00:00,"1,76522",Soja,Pesos,Renta Variable,Audaz,Largo plazo,t+1
 2026-07-24 00:00:00,"167,58287",Acciones,Pesos,Renta Variable,Audaz,Largo plazo,t+1
 2026-07-24 00:00:00,"240,59121",Ahorro corto plazo,Pesos,Renta Fija Pesos,Conservador,Corto plazo,t+1
 2026-07-24 00:00:00,"72,57327",Balanz Capital Pymes,Pesos,Objeto Específico,Moderado,Mediano plazo,t+1
