@@ -741,10 +741,18 @@
     outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(52,87,213,0.16);
   }
   .pf-hint{ font-size:11px; color:var(--muted); margin-top:4px; }
+  /* Bloque destacado: el resultado y la tasa que lo genera, uno al lado del otro */
   .pf-result{
-    margin-top:18px; padding:18px 20px;
+    margin-top:18px;
+    display:grid; grid-template-columns:1.35fr 1fr;
     background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
-    border-radius:12px; color:#fff;
+    border-radius:12px; color:#fff; overflow:hidden;
+  }
+  .pf-result-main{ padding:18px 20px; }
+  .pf-result-tir{
+    padding:18px 20px;
+    border-left:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.04);
   }
   .pf-result-label{
     font-size:11px; text-transform:uppercase; letter-spacing:.05em;
@@ -752,20 +760,33 @@
   }
   .pf-result-value{ font-size:31px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
   .pf-result-sub{ font-size:12px; color:rgba(255,255,255,0.78); margin-top:6px; }
+  .pf-tir-value{
+    font-size:31px; font-weight:800; font-family:'JetBrains Mono',monospace;
+    letter-spacing:-0.02em; color:#8DBCEF;
+  }
+  .pf-tir-funds{ margin-top:11px; display:flex; flex-direction:column; gap:5px; }
+  .pf-tir-funds div{
+    display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    font-size:11.5px; color:rgba(255,255,255,0.72);
+  }
+  .pf-tir-funds .pf-fund-name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pf-tir-funds .pf-fund-name b{ color:#fff; font-weight:600; }
+  .pf-tir-funds .pf-fund-tir{
+    font-family:'JetBrains Mono',monospace; font-weight:700; color:#fff; flex:none;
+  }
+  @media (max-width:720px){
+    .pf-result{ grid-template-columns:1fr; }
+    .pf-result-tir{ border-left:none; border-top:1px solid rgba(255,255,255,0.16); }
+  }
   .pf-breakdown{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
-  .pf-breakdown div{
+  .pf-breakdown > div{
     flex:1; min-width:130px;
     background:#F5F8FE; border:1px solid var(--line);
     border-radius:8px; padding:10px 12px;
   }
   .pf-breakdown .bd-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
   .pf-breakdown .bd-value{ font-size:16px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--navy); margin-top:3px; }
-  .pf-tir-note{
-    margin-top:14px; padding:10px 12px;
-    background:#F5F8FE; border:1px solid var(--line); border-radius:8px;
-    font-size:12px; color:var(--muted);
-  }
-  .pf-tir-note strong{ color:var(--navy); font-family:'JetBrains Mono',monospace; }
+
   .pf-warning{
     margin-top:12px; padding:10px 12px; border-radius:8px;
     font-size:12.5px; font-weight:600;
@@ -1107,14 +1128,19 @@
       <div id="pfWarning" class="pf-warning" style="display:none;"></div>
 
       <div class="pf-result" id="pfResult">
-        <div class="pf-result-label" id="pfResultLabel">Patrimonio futuro estimado</div>
-        <div class="pf-result-value" id="pfResultValue">—</div>
-        <div class="pf-result-sub" id="pfResultSub"></div>
+        <div class="pf-result-main">
+          <div class="pf-result-label" id="pfResultLabel">Patrimonio futuro estimado</div>
+          <div class="pf-result-value" id="pfResultValue">—</div>
+          <div class="pf-result-sub" id="pfResultSub"></div>
+        </div>
+        <div class="pf-result-tir">
+          <div class="pf-result-label">TIR ponderada de la cartera</div>
+          <div class="pf-tir-value" id="pfTirValue">—</div>
+          <div class="pf-tir-funds" id="pfTirFunds"></div>
+        </div>
       </div>
 
       <div class="pf-breakdown" id="pfBreakdown"></div>
-
-      <div class="pf-tir-note" id="pfTirNote"></div>
 
       <p class="foot-note">
         Cálculo de interés compuesto sobre la TIR ponderada de la cartera, con los aportes al inicio de cada período.
@@ -2376,7 +2402,8 @@ function renderPatrimonioFuturo(rows){
     document.getElementById('pfResultValue').textContent = '—';
     document.getElementById('pfResultSub').textContent = '';
     document.getElementById('pfBreakdown').innerHTML = '';
-    document.getElementById('pfTirNote').textContent = '';
+    document.getElementById('pfTirValue').textContent = '—';
+    document.getElementById('pfTirFunds').innerHTML = '';
     return;
   }
 
@@ -2397,6 +2424,16 @@ function renderPatrimonioFuturo(rows){
   const value = document.getElementById('pfResultValue');
   const sub   = document.getElementById('pfResultSub');
   const bd    = document.getElementById('pfBreakdown');
+
+  // La tasa que alimenta el calculo se muestra junto al resultado, con el
+  // detalle de cuanto pesa cada fondo y que TIR aporta.
+  document.getElementById('pfTirValue').textContent = `${(tir * 100).toFixed(2)}%`;
+  document.getElementById('pfTirFunds').innerHTML = rows
+    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .map(r => `<div>
+      <span class="pf-fund-name" title="${r.nombre}"><b>${r.nombre}</b> · ${r.pct}%</span>
+      <span class="pf-fund-tir">${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%</span>
+    </div>`).join('');
 
   const plural = anios === 1 ? 'año' : 'años';
   const freqTxt = { 12:'mensuales', 4:'trimestrales', 2:'semestrales', 1:'anuales' }[c] || `x${c} por año`;
@@ -2435,12 +2472,6 @@ function renderPatrimonioFuturo(rows){
     }
   }
 
-  const detalle = rows
-    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
-    .map(r => `${r.nombre} ${r.pct}% (TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)`)
-    .join(' · ');
-  document.getElementById('pfTirNote').innerHTML =
-    `TIR ponderada de la cartera: <strong>${(tir * 100).toFixed(2)}%</strong> anual en dólares.<br>${detalle}`;
 }
 
 function setPfModo(modo){
