@@ -711,6 +711,67 @@
   }
   #printDisclaimer p.disc-legal{ font-size:8.5px; color:var(--muted); }
 
+  /* Calculadora de patrimonio futuro */
+  .pf-modes{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+  .pf-mode-btn{
+    flex:1; min-width:210px;
+    padding:11px 14px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:#fff;
+    font-family:inherit; font-size:13px; font-weight:700;
+    color:var(--navy); cursor:pointer; text-align:left;
+  }
+  .pf-mode-btn span{ display:block; font-size:11.5px; font-weight:500; color:var(--muted); margin-top:2px; }
+  .pf-mode-btn.selected{ border-color:var(--accent); background:#EEF1FC; box-shadow:inset 0 0 0 1px var(--accent); }
+  .pf-inputs{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:6px; }
+  .pf-field{ flex:1; min-width:150px; }
+  .pf-field label{
+    display:block; font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.03em; color:var(--muted); margin-bottom:5px;
+  }
+  .pf-field input, .pf-field select{
+    width:100%; padding:10px 12px;
+    border:1.5px solid var(--line); border-radius:8px;
+    font-family:'JetBrains Mono',monospace; font-size:14.5px; font-weight:700;
+    color:var(--navy); background:#fff;
+  }
+  .pf-field select{ font-family:inherit; font-size:13.5px; }
+  .pf-field input:focus, .pf-field select:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(52,87,213,0.16);
+  }
+  .pf-hint{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .pf-result{
+    margin-top:18px; padding:18px 20px;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    border-radius:12px; color:#fff;
+  }
+  .pf-result-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    color:rgba(255,255,255,0.72); font-weight:700; margin-bottom:6px;
+  }
+  .pf-result-value{ font-size:31px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
+  .pf-result-sub{ font-size:12px; color:rgba(255,255,255,0.78); margin-top:6px; }
+  .pf-breakdown{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .pf-breakdown div{
+    flex:1; min-width:130px;
+    background:#F5F8FE; border:1px solid var(--line);
+    border-radius:8px; padding:10px 12px;
+  }
+  .pf-breakdown .bd-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .pf-breakdown .bd-value{ font-size:16px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--navy); margin-top:3px; }
+  .pf-tir-note{
+    margin-top:14px; padding:10px 12px;
+    background:#F5F8FE; border:1px solid var(--line); border-radius:8px;
+    font-size:12px; color:var(--muted);
+  }
+  .pf-tir-note strong{ color:var(--navy); font-family:'JetBrains Mono',monospace; }
+  .pf-warning{
+    margin-top:12px; padding:10px 12px; border-radius:8px;
+    font-size:12.5px; font-weight:600;
+    background:var(--neg-bg); color:var(--neg); border:1px solid #EFC9C9;
+  }
+
   /* Disclaimer al pie de las dos solapas */
   .page-disclaimer{
     margin:26px 0 8px;
@@ -998,6 +1059,68 @@
           <tbody id="carteraFondosTableBody"></tbody>
         </table>
       </div>
+    </section>
+
+    <section class="card" id="patrimonioSection" style="display:none;">
+      <h2>Calculadora de Patrimonio Futuro</h2>
+      <p class="sub">Proyección de un plan de aportes periódicos invertido en esta cartera, usando la TIR ponderada de los fondos que la componen.</p>
+
+      <div class="pf-modes" id="pfModes">
+        <button class="pf-mode-btn selected" data-pfmode="futuro">
+          Calcular patrimonio futuro
+          <span>A partir del monto de cada cuota</span>
+        </button>
+        <button class="pf-mode-btn" data-pfmode="cuota">
+          Calcular la cuota necesaria
+          <span>A partir de un patrimonio objetivo</span>
+        </button>
+      </div>
+
+      <div class="pf-inputs">
+        <div class="pf-field" id="pfCuotaField">
+          <label for="pfCuota">Monto de cada cuota (USD)</label>
+          <input type="text" id="pfCuota" inputmode="numeric" value="500" />
+        </div>
+        <div class="pf-field" id="pfObjetivoField" style="display:none;">
+          <label for="pfObjetivo">Patrimonio objetivo (USD)</label>
+          <input type="text" id="pfObjetivo" inputmode="numeric" value="100.000" />
+        </div>
+        <div class="pf-field">
+          <label for="pfFrecuencia">Cuotas por año</label>
+          <select id="pfFrecuencia">
+            <option value="12" selected>12 — mensual</option>
+            <option value="4">4 — trimestral</option>
+            <option value="2">2 — semestral</option>
+            <option value="1">1 — anual</option>
+          </select>
+        </div>
+        <div class="pf-field">
+          <label for="pfAnios">Años de inversión</label>
+          <input type="text" id="pfAnios" inputmode="numeric" value="10" />
+        </div>
+        <div class="pf-field">
+          <label for="pfInicial">Capital inicial (opcional)</label>
+          <input type="text" id="pfInicial" inputmode="numeric" value="" placeholder="0" />
+        </div>
+      </div>
+
+      <div id="pfWarning" class="pf-warning" style="display:none;"></div>
+
+      <div class="pf-result" id="pfResult">
+        <div class="pf-result-label" id="pfResultLabel">Patrimonio futuro estimado</div>
+        <div class="pf-result-value" id="pfResultValue">—</div>
+        <div class="pf-result-sub" id="pfResultSub"></div>
+      </div>
+
+      <div class="pf-breakdown" id="pfBreakdown"></div>
+
+      <div class="pf-tir-note" id="pfTirNote"></div>
+
+      <p class="foot-note">
+        Cálculo de interés compuesto sobre la TIR ponderada de la cartera, con los aportes al inicio de cada período.
+        La TIR es el rendimiento esperado de los fondos a la fecha indicada y no es un rendimiento asegurado: varía con las
+        condiciones de mercado, por lo que el patrimonio efectivamente alcanzado puede diferir del proyectado.
+      </p>
     </section>
 
     <div class="page-disclaimer">
@@ -1306,7 +1429,8 @@ function rebuildHistFilled(){
 
 // Parser CSV simple que respeta comillas (el VCP viene entre comillas porque usa
 // coma como separador decimal, ej: "167,58287").
-function parseCsvText(text){
+function parseCsvText(text, sep){
+  const SEP = sep || ',';
   const rows = [];
   let row = [];
   let field = '';
@@ -1322,7 +1446,7 @@ function parseCsvText(text){
       }
     } else {
       if(c === '"'){ inQuotes = true; }
-      else if(c === ','){ row.push(field); field = ''; }
+      else if(c === SEP){ row.push(field); field = ''; }
       else if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
       else if(c === '\r'){ /* ignorar */ }
       else { field += c; }
@@ -2155,7 +2279,7 @@ function renderCarteraDerived(rows, custom){
   const valida = !custom || totalPct === 100;
   const hasRows = valida && rows.some(r => r.found && (Number(r.pct) || 0) > 0);
 
-  ['composicionSection', 'histSection', 'carteraFondosSection'].forEach(id=>{
+  ['composicionSection', 'histSection', 'carteraFondosSection', 'patrimonioSection'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display = hasRows ? '' : 'none';
   });
@@ -2167,6 +2291,7 @@ function renderCarteraDerived(rows, custom){
   renderPerfGrid(rows);
   renderHistChart(rows);
   renderCarteraFondosTable(rows);
+  renderPatrimonioFuturo(rows);
 
   // Si las secciones venian ocultas, los canvas se crearon sin ancho
   requestAnimationFrame(()=>{
@@ -2175,6 +2300,174 @@ function renderCarteraDerived(rows, custom){
     if(histChartInstance) histChartInstance.resize();
   });
 }
+
+/* ---------------------------------------------------------------------
+   Calculadora de patrimonio futuro
+
+   Solo se habilita para carteras en Dolar MEP: los fondos de renta fija en
+   dolares tienen todos TIR informada y expresada en la misma unidad (USD),
+   de modo que la TIR ponderada de la cartera es consistente. En pesos
+   convivirian tasas nominales, tasas sobre CER y fondos de renta variable
+   sin TIR, que no son promediables entre si.
+--------------------------------------------------------------------- */
+let pfModo = 'futuro';   // 'futuro' = calcula el patrimonio | 'cuota' = calcula el aporte
+
+// TIR de la cartera: promedio de las TIR de cada fondo ponderado por su peso.
+// Devuelve null si algun fondo de la cartera no tiene TIR informada.
+function tirCartera(rows){
+  let suma = 0, peso = 0;
+  const faltantes = [];
+  for(const r of rows){
+    const pct = Number(r.pct) || 0;
+    if(pct <= 0) continue;
+    const info = TIR_DATA[r.nombre];
+    if(!info){ faltantes.push(r.nombre); continue; }
+    suma += info.tir * pct;
+    peso += pct;
+  }
+  if(faltantes.length) return { tir:null, faltantes };
+  if(peso <= 0) return { tir:null, faltantes:[] };
+  return { tir: suma / peso, faltantes: [] };
+}
+
+function pfNum(id){
+  const v = parseMonto(document.getElementById(id).value);
+  return isFinite(v) ? v : 0;
+}
+
+// Factor de una anualidad adelantada: los aportes se hacen al inicio de cada
+// periodo (el 1 de cada mes, si la frecuencia es mensual), de modo que cada
+// cuota devenga intereses por un periodo mas que en una anualidad vencida.
+function factorAnualidad(i, n){
+  if(n <= 0) return 0;
+  if(i === 0) return n;
+  return ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+}
+
+// Valor futuro del plan: capital inicial capitalizado + aportes adelantados
+function valorFuturo(inicial, cuota, i, n){
+  return inicial * Math.pow(1 + i, n) + cuota * factorAnualidad(i, n);
+}
+
+// Inversa: cuota necesaria para alcanzar un objetivo
+function cuotaNecesaria(objetivo, inicial, i, n){
+  const anualidad = factorAnualidad(i, n);
+  if(anualidad <= 0) return null;
+  return (objetivo - inicial * Math.pow(1 + i, n)) / anualidad;
+}
+
+function renderPatrimonioFuturo(rows){
+  const sec = document.getElementById('patrimonioSection');
+  // Solo Dolar MEP y solo si ya se cargaron las TIR
+  if(selection.moneda !== 'Dólar' || !Object.keys(TIR_DATA).length){
+    sec.style.display = 'none';
+    return;
+  }
+
+  const { tir, faltantes } = tirCartera(rows);
+  const warn = document.getElementById('pfWarning');
+
+  if(tir === null){
+    sec.style.display = '';
+    warn.style.display = 'block';
+    warn.textContent = faltantes.length
+      ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
+      : '⚠ No se puede calcular la TIR de la cartera.';
+    document.getElementById('pfResultValue').textContent = '—';
+    document.getElementById('pfResultSub').textContent = '';
+    document.getElementById('pfBreakdown').innerHTML = '';
+    document.getElementById('pfTirNote').textContent = '';
+    return;
+  }
+
+  sec.style.display = '';
+  warn.style.display = 'none';
+
+  const c = parseInt(document.getElementById('pfFrecuencia').value, 10) || 12;
+  const anios = Math.max(0, Math.min(60, Math.round(pfNum('pfAnios'))));
+  const inicial = Math.max(0, pfNum('pfInicial'));
+  const n = c * anios;
+
+  // Tasa efectiva del periodo a partir de la TIR (efectiva anual).
+  // Se usa la raiz c-esima para que el rendimiento anual siga siendo la TIR
+  // cualquiera sea la cantidad de cuotas por anio.
+  const i = Math.pow(1 + tir, 1 / c) - 1;
+
+  const label = document.getElementById('pfResultLabel');
+  const value = document.getElementById('pfResultValue');
+  const sub   = document.getElementById('pfResultSub');
+  const bd    = document.getElementById('pfBreakdown');
+
+  const plural = anios === 1 ? 'año' : 'años';
+  const freqTxt = { 12:'mensuales', 4:'trimestrales', 2:'semestrales', 1:'anuales' }[c] || `x${c} por año`;
+
+  if(n <= 0){
+    value.textContent = '—';
+    sub.textContent = 'Ingresá una cantidad de años mayor a cero.';
+    bd.innerHTML = '';
+  } else if(pfModo === 'futuro'){
+    const cuota = Math.max(0, pfNum('pfCuota'));
+    const fv = valorFuturo(inicial, cuota, i, n);
+    const aportado = inicial + cuota * n;
+    label.textContent = 'Patrimonio futuro estimado';
+    value.textContent = fmtMoney(fv, 'Dólar');
+    sub.textContent = `${n} cuotas ${freqTxt} de ${fmtMoney(cuota, 'Dólar')} durante ${anios} ${plural}`;
+    bd.innerHTML = `
+      <div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(aportado, 'Dólar')}</div></div>
+      <div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(fv - aportado, 'Dólar')}</div></div>
+      <div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${n}</div></div>`;
+  } else {
+    const objetivo = Math.max(0, pfNum('pfObjetivo'));
+    const cuota = cuotaNecesaria(objetivo, inicial, i, n);
+    label.textContent = 'Cuota necesaria';
+    if(cuota === null || cuota <= 0){
+      value.textContent = fmtMoney(0, 'Dólar');
+      sub.textContent = 'El capital inicial ya alcanza el objetivo en ese plazo, sin necesidad de aportes.';
+      bd.innerHTML = '';
+    } else {
+      const aportado = inicial + cuota * n;
+      value.textContent = fmtMoney(cuota, 'Dólar');
+      sub.textContent = `${n} cuotas ${freqTxt} durante ${anios} ${plural} para llegar a ${fmtMoney(objetivo, 'Dólar')}`;
+      bd.innerHTML = `
+        <div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(aportado, 'Dólar')}</div></div>
+        <div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(objetivo - aportado, 'Dólar')}</div></div>
+        <div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${n}</div></div>`;
+    }
+  }
+
+  const detalle = rows
+    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .map(r => `${r.nombre} ${r.pct}% (TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)`)
+    .join(' · ');
+  document.getElementById('pfTirNote').innerHTML =
+    `TIR ponderada de la cartera: <strong>${(tir * 100).toFixed(2)}%</strong> anual en dólares.<br>${detalle}`;
+}
+
+function setPfModo(modo){
+  pfModo = modo;
+  document.querySelectorAll('#pfModes .pf-mode-btn').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.pfmode === modo);
+  });
+  document.getElementById('pfCuotaField').style.display    = modo === 'futuro' ? '' : 'none';
+  document.getElementById('pfObjetivoField').style.display = modo === 'cuota'  ? '' : 'none';
+  renderPatrimonioFuturo(lastRows || []);
+}
+
+document.querySelectorAll('#pfModes .pf-mode-btn').forEach(b=>{
+  b.addEventListener('click', ()=> setPfModo(b.dataset.pfmode));
+});
+
+['pfCuota', 'pfObjetivo', 'pfInicial'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', (e)=>{
+    formatMontoInput(e.target);
+    renderPatrimonioFuturo(lastRows || []);
+  });
+});
+document.getElementById('pfAnios').addEventListener('input', (e)=>{
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+  renderPatrimonioFuturo(lastRows || []);
+});
+document.getElementById('pfFrecuencia').addEventListener('change', ()=> renderPatrimonioFuturo(lastRows || []));
 
 /* ---------------------------------------------------------------------
    Interaccion dentro de la tabla de la cartera personalizada
@@ -2456,6 +2749,99 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 });
 
 // Carga inicial: trae data.csv (mismo directorio que este archivo) y arma el tablero.
+/* ---------------------------------------------------------------------
+   TIR / TNA / Duration por fondo (tir_fondos.csv, junto al HTML).
+   Se usa para la calculadora de patrimonio futuro. La carga es opcional:
+   si el archivo no está o falla, la seccion simplemente no se muestra.
+--------------------------------------------------------------------- */
+let TIR_DATA = {};
+
+// Separador del CSV: se deduce del encabezado, porque Excel en configuracion
+// regional argentina exporta con punto y coma en lugar de coma.
+function detectarSeparador(text){
+  const head = text.split(/\r?\n/)[0] || '';
+  const cands = [';', ',', '\t'];
+  let mejor = ',', max = 0;
+  cands.forEach(sep=>{
+    const n = head.split(sep).length - 1;
+    if(n > max){ max = n; mejor = sep; }
+  });
+  return mejor;
+}
+
+// Numero decimal tolerante: acepta "6.2000%", "6,20%", "0.062" y "1.234,56".
+function parseNumeroLocal(v){
+  let t = String(v == null ? '' : v).trim();
+  if(!t) return NaN;
+  const esPct = t.includes('%');
+  t = t.replace(/%/g, '').replace(/\s/g, '');
+  if(t.includes(',') && t.includes('.')){
+    // el ultimo separador que aparece es el decimal
+    t = t.lastIndexOf(',') > t.lastIndexOf('.')
+      ? t.replace(/\./g, '').replace(',', '.')
+      : t.replace(/,/g, '');
+  } else if(t.includes(',')){
+    t = t.replace(',', '.');
+  }
+  const n = parseFloat(t);
+  if(!isFinite(n)) return NaN;
+  // Con signo % el valor viene en porcentaje; sin el, se asume fraccion decimal.
+  return esPct ? n / 100 : n;
+}
+
+function parseTirCsv(text){
+  const rows = parseCsvText(text, detectarSeparador(text));
+  if(!rows.length) return {};
+  const head = rows[0].map(h => h.trim().toLowerCase().replace(/^﻿/, ''));
+  const iFondo = head.indexOf('fondo');
+  const iTir   = head.indexOf('tir');
+  const iTna   = head.indexOf('tna');
+  const iBase  = head.indexOf('base');
+  const iDur   = head.indexOf('duration');
+  if(iFondo === -1 || iTir === -1){
+    console.warn('tir_fondos.csv: faltan las columnas "fondo" y/o "tir". Encabezado leído:', head);
+    return {};
+  }
+
+  const out = {};
+  rows.slice(1).forEach(r=>{
+    const nombre = (r[iFondo] || '').trim();
+    if(!nombre) return;
+    const tir = parseNumeroLocal(r[iTir]);
+    if(!isFinite(tir)) return;                 // fondos sin TIR (renta variable)
+    out[nombre] = {
+      tir,
+      tna: parseNumeroLocal(r[iTna]),
+      base: iBase === -1 ? '' : (r[iBase] || '').trim(),
+      // la duration esta en anios, no es un porcentaje
+      duration: iDur === -1 ? NaN : parseNumeroLocal(r[iDur]),
+    };
+  });
+  return out;
+}
+
+// El archivo puede venir guardado en UTF-8 o en ANSI/Latin-1 (Excel en Windows
+// guarda asi por defecto). Se prueba UTF-8 estricto y, si falla, se reintenta
+// como Windows-1252, para que los acentos de los nombres de fondo no se rompan
+// y sigan coincidiendo con los de data.csv.
+function decodificarCsv(buffer){
+  try{
+    return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+  } catch(e){
+    return new TextDecoder('windows-1252').decode(buffer);
+  }
+}
+
+fetch('tir_fondos.csv')
+  .then(r=> r.ok ? r.arrayBuffer() : Promise.reject(new Error('HTTP ' + r.status)))
+  .then(buf=>{
+    TIR_DATA = parseTirCsv(decodificarCsv(buf));
+    renderCartera();
+  })
+  .catch(err=>{
+    console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
+  });
+
 fetch('data.csv')
   .then(r=>{
     if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
