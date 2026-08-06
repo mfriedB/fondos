@@ -508,30 +508,6 @@
   .range-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
   .hist-chart-wrap{ position:relative; height:320px; }
 
-  /* Tabs */
-  .tabs-nav{
-    display:flex;
-    gap:6px;
-    margin-bottom:22px;
-    border-bottom:2px solid var(--line);
-  }
-  /* Link de vuelta a la calculadora de carteras (index.html) */
-  .tab-link{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:12px 20px;
-    font-size:14px;
-    font-weight:700;
-    font-family:inherit;
-    color:var(--accent);
-    text-decoration:none;
-    border-bottom:3px solid transparent;
-    margin-bottom:-2px;
-    transition:color .12s ease, border-color .12s ease;
-  }
-  .tab-link:hover{ color:var(--navy); border-bottom-color:#B9C4E8; }
-
   /* Aclaracion de moneda fija (esta pagina es solo Dolar MEP) */
   .moneda-fija{
     display:flex;
@@ -765,18 +741,11 @@
 
   <main class="container">
 
-    <div class="tabs-nav">
-      <a class="tab-link" href="index.html">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        Volver a la Calculadora de Carteras
-      </a>
-    </div>
-
     <div class="moneda-fija">
       <span class="mf-dot"></span>
       <div>
         <strong>Moneda: D&oacute;lar MEP (USD)</strong>
-        <span class="mf-text">Esta calculadora trabaja &uacute;nicamente con fondos en d&oacute;lar MEP. Se proyecta sobre la TIR ponderada de la cartera, y las TIR de los fondos en USD son comparables entre s&iacute;; en pesos conviven tasas nominales, tasas sobre CER y fondos sin TIR, que no son promediables.</span>
+        <span class="mf-text">Esta calculadora trabaja &uacute;nicamente con fondos en d&oacute;lar MEP. Se proyecta sobre la TIR ponderada de la cartera.</span>
       </div>
     </div>
 
