@@ -1,0 +1,15 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "calculadora-patrimonio.*\\.vercel\\.app"
+        }
+      ],
+      "destination": "/patrimonio.html"
+    }
+  ]
+}
