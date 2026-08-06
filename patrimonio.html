@@ -556,6 +556,49 @@
     outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(52,87,213,0.16);
   }
   .pf-hint{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+  /* Aportes extraordinarios (solo modo "patrimonio futuro") */
+  .pf-extras{
+    margin-top:16px; padding:14px 16px;
+    background:#FAFBFE; border:1px solid var(--line); border-radius:9px;
+  }
+  .pf-extras-head{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; flex-wrap:wrap;
+  }
+  .pf-extras-head strong{ display:block; font-size:13px; color:var(--navy); }
+  .pf-extras-head .pe-sub{ display:block; font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .pf-extra-add{
+    flex:none;
+    padding:9px 14px;
+    border:1.5px solid var(--accent); border-radius:8px;
+    background:#fff; color:var(--accent);
+    font-family:inherit; font-size:12.5px; font-weight:700;
+    cursor:pointer; transition:background .12s ease, color .12s ease;
+  }
+  .pf-extra-add:hover{ background:var(--accent); color:#fff; }
+  .pf-extras-list{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+  .pf-extras-list:empty{ display:none; }
+  .pf-extra-row{
+    display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;
+    padding:12px; background:#fff;
+    border:1px solid var(--line); border-radius:8px;
+  }
+  .pf-extra-row .pf-field{ min-width:120px; }
+  .pf-extra-row .pf-field.pe-tipo{ flex:1.4; min-width:150px; }
+  .pf-extra-remove{
+    flex:none; width:32px; height:38px;
+    border:1.5px solid var(--line); border-radius:8px;
+    background:#fff; color:var(--muted);
+    font-size:17px; line-height:1; cursor:pointer;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .pf-extra-remove:hover{ background:var(--neg-bg); color:var(--neg); border-color:#EFC9C9; }
+  .pf-extra-row input.pe-invalid{ border-color:var(--neg); }
+  .pf-extras-note{
+    margin-top:10px; font-size:11.5px; font-weight:600; color:var(--neg);
+  }
+  .pf-extras-note:empty{ display:none; }
   .pf-result{
     margin-top:18px; padding:18px 20px;
     background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
@@ -855,6 +898,18 @@
         </div>
       </div>
 
+      <div class="pf-extras" id="pfExtrasBlock">
+        <div class="pf-extras-head">
+          <div>
+            <strong>Aportes extraordinarios</strong>
+            <span class="pe-sub">Opcional. Sum&aacute; aportes por encima de la cuota regular: peri&oacute;dicos (cada X meses) o &uacute;nicos (en un a&ntilde;o puntual).</span>
+          </div>
+          <button type="button" class="pf-extra-add" id="pfExtraAdd">+ Agregar aporte extraordinario</button>
+        </div>
+        <div class="pf-extras-list" id="pfExtrasList"></div>
+        <div class="pf-extras-note" id="pfExtrasNote"></div>
+      </div>
+
       <div id="pfWarning" class="pf-warning" style="display:none;"></div>
 
       <div class="pf-result" id="pfResult">
@@ -867,6 +922,8 @@
 
       <p class="foot-note">
         C&aacute;lculo de inter&eacute;s compuesto sobre la TIR ponderada de la cartera, con los aportes al inicio de cada per&iacute;odo.
+        Los aportes extraordinarios peri&oacute;dicos se computan al inicio del mes que corresponde a cada vencimiento (mes 6, 12, 18&hellip; si son
+        cada 6 meses) y los &uacute;nicos al inicio del a&ntilde;o indicado.
         La TIR es el rendimiento esperado de los fondos a la fecha indicada y no es un rendimiento asegurado: var&iacute;a con las
         condiciones de mercado, por lo que el patrimonio efectivamente alcanzado puede diferir del proyectado.
       </p>
@@ -1741,16 +1798,71 @@ function factorAnualidad(i, n){
   return ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
 }
 
-// Valor futuro del plan: capital inicial capitalizado + aportes adelantados
-function valorFuturo(inicial, cuota, i, n){
-  return inicial * Math.pow(1 + i, n) + cuota * factorAnualidad(i, n);
-}
-
 // Inversa: cuota necesaria para alcanzar un objetivo
 function cuotaNecesaria(objetivo, inicial, i, n){
   const anualidad = factorAnualidad(i, n);
   if(anualidad <= 0) return null;
   return (objetivo - inicial * Math.pow(1 + i, n)) / anualidad;
+}
+
+/* ---------------------------------------------------------------------
+   Aportes extraordinarios (solo en el modo "patrimonio futuro")
+
+   tipo 'periodico' -> `monto` cada `cada` meses (mes 6, 12, 18... si cada=6)
+   tipo 'unico'     -> `monto` una sola vez, al inicio del anio `anio`
+--------------------------------------------------------------------- */
+let pfExtras = [];
+
+function pfExtraNuevo(){
+  return { tipo: 'periodico', monto: 0, cada: 6, anio: 1 };
+}
+
+// Simulacion mes a mes del plan de aportes.
+//
+// Reemplaza a la formula cerrada de anualidad en el modo "futuro": apenas hay
+// un aporte que no es igual a todos los demas, la formula deja de aplicar.
+// Con extras = [] devuelve exactamente el mismo resultado que la anualidad
+// adelantada que se usaba antes (factorAnualidad),
+// porque la tasa mensual capitalizada `pasoCuota` veces equivale a la tasa del
+// periodo. El modo "cuota necesaria" sigue usando la formula cerrada.
+function simularPlan(inicial, cuota, tir, c, anios, extras){
+  const meses = anios * 12;
+  const im = Math.pow(1 + tir, 1 / 12) - 1;
+  const pasoCuota = 12 / c;   // cada cuantos meses cae una cuota regular
+
+  let saldo = inicial;
+  let totalRegular = 0, totalExtra = 0, nCuotas = 0;
+  const porFila = extras.map(()=> 0);   // cuantas veces se aplico cada fila
+
+  for(let m = 1; m <= meses; m++){
+    // Todos los aportes se hacen al inicio del mes y capitalizan desde ahi
+    if((m - 1) % pasoCuota === 0){
+      saldo += cuota;
+      totalRegular += cuota;
+      nCuotas++;
+    }
+
+    extras.forEach((ex, idx)=>{
+      const monto = Math.max(0, Number(ex.monto) || 0);
+      if(monto <= 0) return;
+      const aplica = ex.tipo === 'periodico'
+        ? (ex.cada > 0 && m % ex.cada === 0)
+        : (m === (Math.max(1, Number(ex.anio) || 1) - 1) * 12 + 1);
+      if(aplica){
+        saldo += monto;
+        totalExtra += monto;
+        porFila[idx]++;
+      }
+    });
+
+    saldo *= (1 + im);
+  }
+
+  return {
+    fv: saldo,
+    aportado: inicial + totalRegular + totalExtra,
+    totalRegular, totalExtra, nCuotas, porFila,
+  };
 }
 
 // Unico lugar donde se decide si la seccion se ve o no: se oculta si todavia
@@ -1815,17 +1927,63 @@ function renderPatrimonioFuturo(rows){
     value.textContent = '—';
     sub.textContent = 'Ingresá una cantidad de años mayor a cero.';
     bd.innerHTML = '';
+    document.getElementById('pfExtrasNote').textContent = '';
   } else if(pfModo === 'futuro'){
     const cuota = Math.max(0, pfNum('pfCuota'));
-    const fv = valorFuturo(inicial, cuota, i, n);
-    const aportado = inicial + cuota * n;
+    const sim = simularPlan(inicial, cuota, tir, c, anios, pfExtras);
+
     label.textContent = 'Patrimonio futuro estimado';
-    value.textContent = fmtMoney(fv, 'Dólar');
-    sub.textContent = `${n} cuotas ${freqTxt} de ${fmtMoney(cuota, 'Dólar')} durante ${anios} ${plural}`;
-    bd.innerHTML = `
-      <div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(aportado, 'Dólar')}</div></div>
-      <div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(fv - aportado, 'Dólar')}</div></div>
-      <div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${n}</div></div>`;
+    value.textContent = fmtMoney(sim.fv, 'Dólar');
+
+    // Detalle de todo lo que compone el plan: capital inicial, cuotas
+    // regulares y cada aporte extraordinario con su cantidad de ocurrencias.
+    const partes = [];
+    if(inicial > 0) partes.push(`capital inicial de ${fmtMoney(inicial, 'Dólar')}`);
+    if(cuota > 0 && sim.nCuotas > 0){
+      partes.push(`${sim.nCuotas} ${sim.nCuotas === 1 ? 'cuota' : 'cuotas'} ${freqTxt} de ${fmtMoney(cuota, 'Dólar')}`);
+    }
+    pfExtras.forEach((ex, idx)=>{
+      const veces = sim.porFila[idx];
+      if(!veces) return;
+      const monto = fmtMoney(Math.max(0, Number(ex.monto) || 0), 'Dólar');
+      partes.push(ex.tipo === 'periodico'
+        ? `${veces} ${veces === 1 ? 'aporte extra' : 'aportes extra'} de ${monto} cada ${ex.cada === 1 ? 'mes' : ex.cada + ' meses'}`
+        : `un aporte extra de ${monto} en el año ${ex.anio}`);
+    });
+
+    if(!partes.length){
+      sub.textContent = 'Cargá un capital inicial, una cuota o un aporte extraordinario para proyectar.';
+    } else {
+      const texto = partes.join(' + ');
+      sub.textContent = texto.charAt(0).toUpperCase() + texto.slice(1) + `, durante ${anios} ${plural}.`;
+    }
+
+    const tarjetas = [
+      `<div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(sim.aportado, 'Dólar')}</div></div>`,
+    ];
+    if(sim.totalExtra > 0){
+      tarjetas.push(`<div><div class="bd-label">De los cuales extraordinarios</div><div class="bd-value">${fmtMoney(sim.totalExtra, 'Dólar')}</div></div>`);
+    }
+    tarjetas.push(
+      `<div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(sim.fv - sim.aportado, 'Dólar')}</div></div>`,
+      `<div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${sim.nCuotas}</div></div>`
+    );
+    bd.innerHTML = tarjetas.join('');
+
+    // Aportes unicos cargados fuera del plazo: no se computan, hay que avisarlo
+    const fueraDePlazo = [];
+    pfExtras.forEach((ex, idx)=>{
+      const monto = Math.max(0, Number(ex.monto) || 0);
+      if(ex.tipo === 'unico' && monto > 0 && sim.porFila[idx] === 0) fueraDePlazo.push(ex.anio);
+    });
+    document.getElementById('pfExtrasNote').textContent = fueraDePlazo.length
+      ? `⚠ ${fueraDePlazo.length === 1 ? 'El aporte único del año' : 'Los aportes únicos de los años'} ${fueraDePlazo.join(', ')} ${fueraDePlazo.length === 1 ? 'queda' : 'quedan'} fuera del plazo de ${anios} ${plural} y no se ${fueraDePlazo.length === 1 ? 'computa' : 'computan'}.`
+      : '';
+    document.querySelectorAll('#pfExtrasList .pe-input-anio').forEach(inp=>{
+      const idx = Number(inp.closest('.pf-extra-row').dataset.idx);
+      const monto = Math.max(0, Number(pfExtras[idx].monto) || 0);
+      inp.classList.toggle('pe-invalid', monto > 0 && sim.porFila[idx] === 0);
+    });
   } else {
     const objetivo = Math.max(0, pfNum('pfObjetivo'));
     const cuota = cuotaNecesaria(objetivo, inicial, i, n);
@@ -1854,8 +2012,103 @@ function setPfModo(modo){
   });
   document.getElementById('pfCuotaField').style.display    = modo === 'futuro' ? '' : 'none';
   document.getElementById('pfObjetivoField').style.display = modo === 'cuota'  ? '' : 'none';
+  // Los extraordinarios solo aplican a la proyeccion, no al calculo inverso
+  document.getElementById('pfExtrasBlock').style.display   = modo === 'futuro' ? '' : 'none';
   renderPatrimonioFuturo(lastRows);
 }
+
+/* ---------------------------------------------------------------------
+   Filas de aportes extraordinarios
+
+   Las filas NO se vuelven a dibujar mientras se tipea (se perderia el foco):
+   el input actualiza el estado y recalcula, y solo se re-renderiza al agregar,
+   quitar o cambiar el tipo de una fila.
+--------------------------------------------------------------------- */
+function pfExtraRowHtml(ex, i){
+  const periodico = ex.tipo === 'periodico';
+  const montoTxt = ex.monto ? ex.monto.toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
+  const opcionesCada = [1, 2, 3, 6, 12, 24]
+    .map(v => `<option value="${v}"${v === ex.cada ? ' selected' : ''}>${v === 1 ? '1 mes' : v + ' meses'}</option>`)
+    .join('');
+
+  return `
+    <div class="pf-extra-row" data-idx="${i}">
+      <div class="pf-field pe-tipo">
+        <label>Tipo de aporte</label>
+        <select class="pe-input-tipo" aria-label="Tipo del aporte extraordinario ${i + 1}">
+          <option value="periodico"${periodico ? ' selected' : ''}>Periódico — cada X meses</option>
+          <option value="unico"${!periodico ? ' selected' : ''}>Único — en un año puntual</option>
+        </select>
+      </div>
+      <div class="pf-field">
+        <label>Monto (USD)</label>
+        <input type="text" class="pe-input-monto" inputmode="numeric" value="${montoTxt}" placeholder="0" aria-label="Monto del aporte extraordinario ${i + 1}" />
+      </div>
+      ${periodico
+        ? `<div class="pf-field">
+             <label>Cada</label>
+             <select class="pe-input-cada" aria-label="Frecuencia del aporte extraordinario ${i + 1}">${opcionesCada}</select>
+           </div>`
+        : `<div class="pf-field">
+             <label>En el año</label>
+             <input type="text" class="pe-input-anio" inputmode="numeric" value="${ex.anio}" aria-label="Año del aporte extraordinario ${i + 1}" />
+           </div>`}
+      <button type="button" class="pf-extra-remove" title="Quitar este aporte">×</button>
+    </div>`;
+}
+
+function renderPfExtras(){
+  document.getElementById('pfExtrasList').innerHTML = pfExtras.map(pfExtraRowHtml).join('');
+}
+
+document.getElementById('pfExtraAdd').addEventListener('click', ()=>{
+  pfExtras.push(pfExtraNuevo());
+  renderPfExtras();
+  renderPatrimonioFuturo(lastRows);
+});
+
+const extrasList = document.getElementById('pfExtrasList');
+
+extrasList.addEventListener('input', (e)=>{
+  const row = e.target.closest('.pf-extra-row');
+  if(!row) return;
+  const ex = pfExtras[Number(row.dataset.idx)];
+  if(!ex) return;
+
+  if(e.target.classList.contains('pe-input-monto')){
+    ex.monto = formatMontoInput(e.target);
+  } else if(e.target.classList.contains('pe-input-anio')){
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    ex.anio = parseInt(e.target.value, 10) || 0;
+  } else return;
+
+  renderPatrimonioFuturo(lastRows);
+});
+
+extrasList.addEventListener('change', (e)=>{
+  const row = e.target.closest('.pf-extra-row');
+  if(!row) return;
+  const idx = Number(row.dataset.idx);
+  const ex = pfExtras[idx];
+  if(!ex) return;
+
+  if(e.target.classList.contains('pe-input-tipo')){
+    ex.tipo = e.target.value;
+    renderPfExtras();          // cambian los campos de la fila
+  } else if(e.target.classList.contains('pe-input-cada')){
+    ex.cada = parseInt(e.target.value, 10) || 1;
+  } else return;
+
+  renderPatrimonioFuturo(lastRows);
+});
+
+extrasList.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.pf-extra-remove');
+  if(!btn) return;
+  pfExtras.splice(Number(btn.closest('.pf-extra-row').dataset.idx), 1);
+  renderPfExtras();
+  renderPatrimonioFuturo(lastRows);
+});
 
 document.querySelectorAll('#pfModes .pf-mode-btn').forEach(b=>{
   b.addEventListener('click', ()=> setPfModo(b.dataset.pfmode));
