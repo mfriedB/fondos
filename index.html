@@ -575,23 +575,6 @@
   .tab-btn.active{ color:var(--navy); border-bottom-color:var(--accent); }
   .tab-panel{ display:none; }
   .tab-panel.active{ display:block; }
-  /* Link a la otra pagina del sitio (patrimonio.html) */
-  .tab-link{
-    margin-left:auto;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:12px 20px;
-    font-size:14px;
-    font-weight:700;
-    font-family:inherit;
-    color:var(--accent);
-    text-decoration:none;
-    border-bottom:3px solid transparent;
-    margin-bottom:-2px;
-    transition:color .12s ease, border-color .12s ease;
-  }
-  .tab-link:hover{ color:var(--navy); border-bottom-color:#B9C4E8; }
 
   #fondosTable tbody tr{ cursor:pointer; }
   #fondosTable tbody tr.row-selected{ background:#EEF1FC; }
@@ -873,9 +856,6 @@
     <div class="tabs-nav">
       <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
       <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
-      <a class="tab-link" href="patrimonio.html">Calculadora de Patrimonio Futuro
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
-      </a>
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
@@ -2465,8 +2445,8 @@ function sesionYaValidada(){
   try{ return sessionStorage.getItem(AUTH_KEY) === 'ok'; }catch(e){ return false; }
 }
 
-// Si ya se valido en esta sesion (en esta pagina o en la otra del sitio) no se
-// vuelve a pedir el login al navegar entre index.html y patrimonio.html.
+// Si ya se valido en esta sesion no se vuelve a pedir el login al recargar
+// la pagina o volver a ella dentro del mismo dominio.
 if(sesionYaValidada()){
   document.getElementById('loginOverlay').style.display = 'none';
 }
