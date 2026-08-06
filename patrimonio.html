@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Calculadora de Cartera de Fondos</title>
+<title>Calculadora de Patrimonio Futuro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   // Fallback por si cdnjs esta bloqueado en la red del usuario
   if (typeof Chart === 'undefined') {
@@ -17,12 +15,6 @@
   }
   if (typeof ChartDataLabels === 'undefined') {
     document.write('<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"><\/script>');
-  }
-  if (typeof html2canvas === 'undefined') {
-    document.write('<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"><\/script>');
-  }
-  if (typeof window.jspdf === 'undefined') {
-    document.write('<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>');
   }
 </script>
 <style>
@@ -330,10 +322,6 @@
     border-top:1px solid #DCE4F5;
     font-size:12.5px;
   }
-  #carteraTable tfoot #carteraTotalCosto{
-    font-family:'JetBrains Mono',monospace;
-    font-size:15px;
-  }
   #carteraTable tbody .vcp-value{
     font-size:15px;
   }
@@ -440,14 +428,6 @@
     color:var(--neg);
   }
 
-  label#montoLabel{ margin-bottom:8px; }
-  #montoInput{
-    padding:12px 14px;
-    font-size:18px;
-    font-weight:700;
-    font-family:'JetBrains Mono',monospace;
-  }
-
   .summary-grid{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
@@ -469,29 +449,6 @@
     font-size:18px; font-weight:800; color:var(--navy);
     font-family:'JetBrains Mono',monospace;
   }
-
-  /* Composition donut charts */
-  .composicion-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-  }
-  @media (max-width:720px){ .composicion-grid{ grid-template-columns:1fr; } }
-  .chart-box{
-    background:#FAFBFE;
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:18px 18px 8px;
-  }
-  .mini-title{
-    font-size:12.5px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-    color:var(--muted);
-    margin-bottom:10px;
-  }
-  .chart-box .chart-wrap{ position:relative; height:230px; }
 
   /* Performance indicator cards */
   .perf-grid{
@@ -558,26 +515,8 @@
     margin-bottom:22px;
     border-bottom:2px solid var(--line);
   }
-  .tab-btn{
-    background:none;
-    border:none;
-    padding:12px 20px;
-    font-size:14px;
-    font-weight:700;
-    font-family:inherit;
-    color:var(--muted);
-    cursor:pointer;
-    border-bottom:3px solid transparent;
-    margin-bottom:-2px;
-    transition:color .12s ease, border-color .12s ease;
-  }
-  .tab-btn:hover{ color:var(--navy); }
-  .tab-btn.active{ color:var(--navy); border-bottom-color:var(--accent); }
-  .tab-panel{ display:none; }
-  .tab-panel.active{ display:block; }
-  /* Link a la otra pagina del sitio (patrimonio.html) */
+  /* Link de vuelta a la calculadora de carteras (index.html) */
   .tab-link{
-    margin-left:auto;
     display:inline-flex;
     align-items:center;
     gap:6px;
@@ -593,140 +532,100 @@
   }
   .tab-link:hover{ color:var(--navy); border-bottom-color:#B9C4E8; }
 
-  #fondosTable tbody tr{ cursor:pointer; }
-  #fondosTable tbody tr.row-selected{ background:#EEF1FC; }
-  #fondosTable tbody tr.row-selected:hover{ background:#EEF1FC; }
-
-  /* Chips de fondos seleccionados para comparar rendimiento */
-  .fund-chips{
+  /* Aclaracion de moneda fija (esta pagina es solo Dolar MEP) */
+  .moneda-fija{
     display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:18px;
-    min-height:38px;
-  }
-  .fund-chip{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:#FAFBFE;
-    border:1px solid var(--line);
-    border-radius:999px;
-    padding:6px 8px 6px 12px;
-    font-size:12.5px;
-    font-weight:700;
-    color:var(--text);
-  }
-  .fund-chip .chip-dot{
-    width:9px; height:9px; border-radius:50%; flex-shrink:0;
-  }
-  .fund-chip .chip-ret{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-  }
-  .fund-chip .chip-ret.pos{ color:var(--pos); }
-  .fund-chip .chip-ret.neg{ color:var(--neg); }
-  .fund-chip .chip-ret.na{ color:var(--muted); }
-  .fund-chip .chip-remove{
-    width:18px; height:18px;
-    border-radius:50%;
-    border:none;
-    background:#E4E8F1;
-    color:var(--muted);
-    font-size:11px;
-    line-height:1;
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    padding:0;
-  }
-  .fund-chip .chip-remove:hover{ background:#D5DBEE; color:var(--text); }
-  .fund-chip-empty{
-    color:var(--muted);
-    font-size:13px;
-    padding:9px 2px;
-  }
-  .fund-hist-empty{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:22px 20px;
-    color:var(--muted);
-    text-align:center;
-  }
-  .fund-hist-empty svg{ color:#C7CEE3; }
-  .fund-hist-empty p{ margin:0; font-size:13.5px; max-width:380px; }
-
-  /* Reporte imprimible / PDF para el cliente (se captura con html2canvas, por eso
-     estos estilos NO van dentro de @media print: html2canvas renderiza en contexto
-     de pantalla normal e ignora las reglas de @media print). El contenedor sigue
-     oculto por default (display:none) y solo se muestra momentaneamente via JS
-     mientras se genera el PDF. */
-  #printReport{
-    display:none;
-    font-family:'Inter',system-ui,sans-serif;
-    color:var(--text);
-    background:#fff;
-  }
-  .print-header{
-    display:flex;
-    justify-content:space-between;
     align-items:flex-start;
-    border-bottom:3px solid var(--navy);
-    padding-bottom:10px;
-    margin-bottom:14px;
+    gap:10px;
+    padding:12px 16px;
+    background:#EAF6F0;
+    border:1px solid #C9E9D8;
+    border-radius:9px;
+    margin-bottom:22px;
   }
-  .print-logo{ display:block; height:34px; width:auto; margin-bottom:6px; border-radius:4px; }
-  .print-brand span{ font-size:12px; color:var(--muted); }
-  .print-meta{ font-size:10.5px; color:var(--muted); text-align:right; line-height:1.5; }
-  .print-section{ margin-bottom:14px; }
-  .print-section h3{
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-    color:var(--navy);
-    margin:0 0 8px;
-    border-bottom:1px solid var(--line);
-    padding-bottom:5px;
-    font-weight:700;
+  .moneda-fija .mf-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--pos); margin-top:5px; flex:none;
   }
-  .print-params{ display:flex; gap:24px; flex-wrap:wrap; }
-  .print-params .param-label{ font-size:9px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; margin-bottom:2px; }
-  .print-params .param-value{ font-size:13px; font-weight:800; color:var(--navy); font-family:'JetBrains Mono',monospace; }
-  .print-table{ width:100%; border-collapse:collapse; font-size:11px; }
-  .print-table th{ text-align:left; background:#EEF1FC; color:var(--navy); padding:5px 8px; font-size:9px; text-transform:uppercase; letter-spacing:.03em; }
-  .print-table td{ padding:5px 8px; border-bottom:1px solid #EBEFF9; }
-  .print-table tfoot td{ background:#E4EAF9; font-weight:800; border:none; font-family:'JetBrains Mono',monospace; }
-  .print-charts{ display:flex; gap:20px; }
-  .print-charts > div{ flex:1; text-align:center; }
-  .print-charts img{ max-width:100%; height:auto; display:block; margin:0 auto; }
-  .print-charts h4{ font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); margin:0 0 6px; font-weight:700; }
-  .print-perf-grid{ display:flex; gap:6px; margin-bottom:10px; }
-  .print-perf-grid .perf-item{ flex:1; background:#F5F8FE; border:1px solid var(--line); border-radius:6px; padding:6px 4px; text-align:center; }
-  .print-hist-img{ width:100%; height:auto; border:1px solid var(--line); border-radius:6px; display:block; }
-  /* Hoja final del PDF: disclaimer legal (se captura aparte para que caiga
-     siempre en una pagina propia) */
-  #printDisclaimer{
-    display:none;
-    font-family:'Inter',system-ui,sans-serif;
+  .moneda-fija strong{ display:block; font-size:13.5px; color:#0B6B4A; }
+  .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3D6A59; margin-top:2px; }
+
+  /* Calculadora de patrimonio futuro */
+  .pf-modes{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+  .pf-mode-btn{
+    flex:1; min-width:210px;
+    padding:11px 14px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
     background:#fff;
-    color:var(--text);
+    font-family:inherit; font-size:13px; font-weight:700;
+    color:var(--navy); cursor:pointer; text-align:left;
   }
-  #printDisclaimer .disc-head{
-    border-bottom:3px solid var(--navy);
-    padding-bottom:10px;
-    margin-bottom:18px;
+  .pf-mode-btn span{ display:block; font-size:11.5px; font-weight:500; color:var(--muted); margin-top:2px; }
+  .pf-mode-btn.selected{ border-color:var(--accent); background:#EEF1FC; box-shadow:inset 0 0 0 1px var(--accent); }
+  .pf-inputs{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:6px; }
+  .pf-field{ flex:1; min-width:150px; }
+  .pf-field label{
+    display:block; font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.03em; color:var(--muted); margin-bottom:5px;
   }
-  #printDisclaimer .disc-logo{ display:block; height:34px; width:auto; border-radius:4px; }
-  #printDisclaimer p{
-    font-size:9.5px;
-    line-height:1.65;
-    color:#4A5168;
-    margin:0 0 12px;
-    text-align:justify;
+  .pf-field input, .pf-field select{
+    width:100%; padding:10px 12px;
+    border:1.5px solid var(--line); border-radius:8px;
+    font-family:'JetBrains Mono',monospace; font-size:14.5px; font-weight:700;
+    color:var(--navy); background:#fff;
   }
-  #printDisclaimer p.disc-legal{ font-size:8.5px; color:var(--muted); }
+  .pf-field select{ font-family:inherit; font-size:13.5px; }
+  .pf-field input:focus, .pf-field select:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(52,87,213,0.16);
+  }
+  .pf-hint{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .pf-result{
+    margin-top:18px; padding:18px 20px;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    border-radius:12px; color:#fff;
+  }
+  .pf-result-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    color:rgba(255,255,255,0.72); font-weight:700; margin-bottom:6px;
+  }
+  .pf-result-value{ font-size:31px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
+  .pf-result-sub{ font-size:12px; color:rgba(255,255,255,0.78); margin-top:6px; }
+  .pf-breakdown{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .pf-breakdown div{
+    flex:1; min-width:130px;
+    background:#F5F8FE; border:1px solid var(--line);
+    border-radius:8px; padding:10px 12px;
+  }
+  .pf-breakdown .bd-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
+  .pf-breakdown .bd-value{ font-size:16px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--navy); margin-top:3px; }
+  /* Tasa que alimenta el calculo, entre los modos y los parametros del plan */
+  .pf-tir-bar{
+    display:flex; align-items:baseline; flex-wrap:wrap; gap:8px 14px;
+    margin-bottom:18px; padding:12px 16px;
+    background:#F5F8FE; border:1px solid var(--line); border-radius:9px;
+  }
+  .pf-tir-bar .tb-label{
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--navy);
+  }
+  .pf-tir-bar .tb-value{
+    font-size:15px; font-weight:800; font-family:'JetBrains Mono',monospace;
+    color:var(--navy); letter-spacing:0;
+  }
+  .pf-tir-bar .tb-sep{
+    width:1px; height:17px; align-self:center;
+    background:var(--line); margin:0 2px;
+  }
+  .pf-tir-bar .tb-funds{ font-size:12.5px; color:var(--muted); line-height:1.6; }
+  .pf-tir-bar .tb-funds b{ color:var(--text); font-weight:600; }
+  .pf-tir-bar .tb-funds .tb-pct{ font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy); }
+  .pf-tir-bar .tb-funds .tb-tir{ font-family:'JetBrains Mono',monospace; }
+  .pf-warning{
+    margin-top:12px; padding:10px 12px; border-radius:8px;
+    font-size:12.5px; font-weight:600;
+    background:var(--neg-bg); color:var(--neg); border:1px solid #EFC9C9;
+  }
 
   /* Disclaimer al pie de las dos solapas */
   .page-disclaimer{
@@ -853,17 +752,13 @@
           <img src="data:image/png;base64,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" alt="Balanz" class="brand-logo" />
           <span class="brand-divider"></span>
           <span class="brand-titles">
-            <span class="brand-title">Calculadora de Cartera de Fondos</span>
+            <span class="brand-title">Calculadora de Patrimonio Futuro</span>
             <span class="brand-subtitle">Exclusivo uso interno</span>
           </span>
         </div>
       </div>
       <div class="topbar-actions">
         <span class="pill">VCP al <strong id="asOfDateLabel">—</strong></span>
-        <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
-          Descargar PDF
-        </button>
       </div>
     </div>
   </header>
@@ -871,33 +766,23 @@
   <main class="container">
 
     <div class="tabs-nav">
-      <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
-      <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
-      <a class="tab-link" href="patrimonio.html">Calculadora de Patrimonio Futuro
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>
+      <a class="tab-link" href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Volver a la Calculadora de Carteras
       </a>
     </div>
 
-    <div id="tab-calculadora" class="tab-panel active">
-
-    <section class="card">
-      <h2>1 · Moneda</h2>
-      <p class="sub">Elegí la moneda de la inversión. Solo se van a usar fondos en esa moneda.</p>
-      <div class="option-row" id="monedaOptions">
-        <button class="option-btn selected" data-moneda="Pesos">
-          <strong>Pesos</strong>
-          <span>Fondos en ARS</span>
-        </button>
-        <button class="option-btn" data-moneda="Dólar">
-          <strong>Dólar MEP</strong>
-          <span>Fondos en USD</span>
-        </button>
+    <div class="moneda-fija">
+      <span class="mf-dot"></span>
+      <div>
+        <strong>Moneda: D&oacute;lar MEP (USD)</strong>
+        <span class="mf-text">Esta calculadora trabaja &uacute;nicamente con fondos en d&oacute;lar MEP. Se proyecta sobre la TIR ponderada de la cartera, y las TIR de los fondos en USD son comparables entre s&iacute;; en pesos conviven tasas nominales, tasas sobre CER y fondos sin TIR, que no son promediables.</span>
       </div>
-    </section>
+    </div>
 
     <section class="card" id="tipoCarteraSection">
-      <h2>2 · Tipo de Cartera</h2>
-      <p class="sub">Usá una cartera armada según perfil y horizonte, o elegí vos mismo los fondos y el peso de cada uno.</p>
+      <h2>1 &middot; Tipo de Cartera</h2>
+      <p class="sub">Us&aacute; una cartera armada seg&uacute;n perfil y horizonte, o eleg&iacute; vos mismo los fondos y el peso de cada uno.</p>
       <div class="option-row" id="tipoCarteraOptions">
         <button class="option-btn selected" data-tipo="Sugerida">
           <strong>Cartera Sugerida</strong>
@@ -905,14 +790,14 @@
         </button>
         <button class="option-btn" data-tipo="Personalizada">
           <strong>Cartera Personalizada</strong>
-          <span>Elegí los fondos y el % de cada uno</span>
+          <span>Eleg&iacute; los fondos y el % de cada uno</span>
         </button>
       </div>
     </section>
 
     <section class="card" id="perfilSection">
-      <h2 id="perfilTitle">3 · Perfil de inversión</h2>
-      <p class="sub">Define la combinación de fondos que se va a usar para armar la cartera.</p>
+      <h2 id="perfilTitle">2 &middot; Perfil de inversi&oacute;n</h2>
+      <p class="sub">Define la combinaci&oacute;n de fondos que se va a usar para armar la cartera.</p>
       <div class="option-row" id="perfilOptions">
         <button class="option-btn" data-perfil="Conservador"><strong>Conservador</strong><span>Prioriza preservar el capital</span></button>
         <button class="option-btn selected" data-perfil="Moderado"><strong>Moderado</strong><span>Balance entre riesgo y estabilidad</span></button>
@@ -921,21 +806,15 @@
     </section>
 
     <section class="card" id="horizonteSection">
-      <h2 id="horizonteTitle">4 · Horizonte de inversión</h2>
-      <p class="sub">¿Por cuánto tiempo pensás mantener la inversión?</p>
+      <h2 id="horizonteTitle">3 &middot; Horizonte de inversi&oacute;n</h2>
+      <p class="sub">&iquest;Por cu&aacute;nto tiempo pens&aacute;s mantener la inversi&oacute;n?</p>
       <div class="option-row" id="horizonteOptions">
-        <button class="option-btn" data-horizonte="<1m"><strong>Menos de 1 mes</strong></button>
-        <button class="option-btn" data-horizonte="<3m"><strong>Menos de 3 meses</strong></button>
-        <button class="option-btn" data-horizonte="<6m"><strong>Menos de 6 meses</strong></button>
-        <button class="option-btn selected" data-horizonte="<12m"><strong>Menos de 12 meses</strong></button>
-        <button class="option-btn" data-horizonte=">12m"><strong>Más de 12 meses</strong></button>
+        <button class="option-btn" data-horizonte="&lt;1m"><strong>Menos de 1 mes</strong></button>
+        <button class="option-btn" data-horizonte="&lt;3m"><strong>Menos de 3 meses</strong></button>
+        <button class="option-btn" data-horizonte="&lt;6m"><strong>Menos de 6 meses</strong></button>
+        <button class="option-btn selected" data-horizonte="&lt;12m"><strong>Menos de 12 meses</strong></button>
+        <button class="option-btn" data-horizonte="&gt;12m"><strong>M&aacute;s de 12 meses</strong></button>
       </div>
-    </section>
-
-    <section class="card" id="montoSection">
-      <h2 id="montoTitle">5 · Monto a invertir</h2>
-      <label for="montoInput" id="montoLabel">Monto disponible</label>
-      <input type="text" inputmode="numeric" id="montoInput" value="100.000" style="max-width:280px;" />
     </section>
 
     <section class="card" id="resultSection">
@@ -948,40 +827,85 @@
               <th class="num">% objetivo</th>
               <th>Riesgo</th>
               <th>Horizonte</th>
-              <th class="num">Inversión</th>
             </tr>
           </thead>
           <tbody id="carteraTableBody"></tbody>
           <tfoot>
-            <tr class="cartera-total-row" id="carteraTotalRow">
+            <tr class="cartera-total-row" id="carteraTotalRow" style="display:none;">
               <td colspan="4"></td>
-              <td class="num" id="carteraTotalCosto"></td>
             </tr>
           </tfoot>
         </table>
       </div>
       <div id="pctWarning" class="pct-warning" style="display:none;"></div>
-      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.</p>
+      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas seg&uacute;n perfil y horizonte, sobre fondos en d&oacute;lar MEP. Los montos del plan de aportes se cargan m&aacute;s abajo, en la calculadora de patrimonio futuro.</p>
     </section>
 
-    <section class="card" id="composicionSection">
-      <h2>Composición de la cartera</h2>
-      <p class="sub">Distribución del capital asignado según el peso objetivo de cada fondo y su categoría.</p>
-      <div class="composicion-grid">
-        <div class="chart-box">
-          <div class="mini-title">Composición por fondo</div>
-          <div class="chart-wrap"><canvas id="chartFondo"></canvas></div>
+    <section class="card" id="patrimonioSection" style="display:none;">
+      <h2 id="pfTitle">4 &middot; Calculadora de Patrimonio Futuro</h2>
+      <p class="sub">Proyecci&oacute;n de un plan de aportes peri&oacute;dicos invertido en esta cartera, usando la TIR ponderada de los fondos que la componen.</p>
+
+      <div class="pf-modes" id="pfModes">
+        <button class="pf-mode-btn selected" data-pfmode="futuro">
+          Calcular patrimonio futuro
+          <span>A partir del monto de cada cuota</span>
+        </button>
+        <button class="pf-mode-btn" data-pfmode="cuota">
+          Calcular la cuota necesaria
+          <span>A partir de un patrimonio objetivo</span>
+        </button>
+      </div>
+
+      <div class="pf-tir-bar" id="pfTirBar"></div>
+
+      <div class="pf-inputs">
+        <div class="pf-field" id="pfCuotaField">
+          <label for="pfCuota">Monto de cada cuota (USD)</label>
+          <input type="text" id="pfCuota" inputmode="numeric" value="500" />
         </div>
-        <div class="chart-box">
-          <div class="mini-title">Composición por categoría</div>
-          <div class="chart-wrap"><canvas id="chartCategoria"></canvas></div>
+        <div class="pf-field" id="pfObjetivoField" style="display:none;">
+          <label for="pfObjetivo">Patrimonio objetivo (USD)</label>
+          <input type="text" id="pfObjetivo" inputmode="numeric" value="100.000" />
+        </div>
+        <div class="pf-field">
+          <label for="pfFrecuencia">Cuotas por a&ntilde;o</label>
+          <select id="pfFrecuencia">
+            <option value="12" selected>12 &mdash; mensual</option>
+            <option value="4">4 &mdash; trimestral</option>
+            <option value="2">2 &mdash; semestral</option>
+            <option value="1">1 &mdash; anual</option>
+          </select>
+        </div>
+        <div class="pf-field">
+          <label for="pfAnios">A&ntilde;os de inversi&oacute;n</label>
+          <input type="text" id="pfAnios" inputmode="numeric" value="10" />
+        </div>
+        <div class="pf-field">
+          <label for="pfInicial">Capital inicial (opcional)</label>
+          <input type="text" id="pfInicial" inputmode="numeric" value="" placeholder="0" />
         </div>
       </div>
+
+      <div id="pfWarning" class="pf-warning" style="display:none;"></div>
+
+      <div class="pf-result" id="pfResult">
+        <div class="pf-result-label" id="pfResultLabel">Patrimonio futuro estimado</div>
+        <div class="pf-result-value" id="pfResultValue">&mdash;</div>
+        <div class="pf-result-sub" id="pfResultSub"></div>
+      </div>
+
+      <div class="pf-breakdown" id="pfBreakdown"></div>
+
+      <p class="foot-note">
+        C&aacute;lculo de inter&eacute;s compuesto sobre la TIR ponderada de la cartera, con los aportes al inicio de cada per&iacute;odo.
+        La TIR es el rendimiento esperado de los fondos a la fecha indicada y no es un rendimiento asegurado: var&iacute;a con las
+        condiciones de mercado, por lo que el patrimonio efectivamente alcanzado puede diferir del proyectado.
+      </p>
     </section>
 
     <section class="card" id="histSection">
-      <h2>Rendimiento histórico de la cartera</h2>
-      <p class="sub">Evolución simulada de la cartera sugerida a partir del VCP histórico de cada fondo, ponderado según su peso objetivo (sin rebalanceos).</p>
+      <h2>Rendimiento hist&oacute;rico de la cartera</h2>
+      <p class="sub">Evoluci&oacute;n simulada de la cartera a partir del VCP hist&oacute;rico de cada fondo, ponderado seg&uacute;n su peso objetivo (sin rebalanceos).</p>
 
       <div class="perf-grid" id="perfGrid"></div>
 
@@ -1001,7 +925,7 @@
 
     <section class="card" id="carteraFondosSection">
       <h2>Fondos de la cartera</h2>
-      <p class="sub">Rentabilidad de los fondos incluidos en la cartera sugerida, sobre el VCP más reciente comparado contra distintas ventanas de tiempo.</p>
+      <p class="sub">Rentabilidad de los fondos incluidos en la cartera, sobre el VCP m&aacute;s reciente comparado contra distintas ventanas de tiempo.</p>
       <div style="overflow-x:auto;">
         <table id="carteraFondosTable">
           <thead>
@@ -1025,132 +949,7 @@
       <p class="disc-legal">BALANZ SOCIEDAD GERENTE DE FONDOS COMUNES DE INVERSIÓN S.A.U. Agente de Administración de Productos de Inversión Colectiva de Fondos Comunes de Inversión N°32 ante la CNV. Av. Corrientes 330, piso 1, CABA, Argentina. INSCRIPTO ANTE IGJ BAJO EL N° 12.486 DEL LIBRO 18 TOMO - DE SOCIEDADES POR ACCIONES. CUIT: 33-70812346-9.</p>
     </div>
 
-    </div>
-
-    <div id="tab-fondos" class="tab-panel">
-
-    <section class="card" id="fundHistSection" style="display:none;">
-      <h2>Comparar rendimiento histórico de fondos</h2>
-      <p class="sub">Hacé clic en uno o más fondos de la tabla (hasta 6) para compararlos en el mismo gráfico.</p>
-
-      <div id="fundHistEmpty" class="fund-hist-empty">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
-        <p>Seleccioná uno o más fondos de la tabla para ver su rendimiento histórico acá.</p>
-      </div>
-
-      <div id="fundHistBody" style="display:none;">
-        <div class="fund-chips" id="fundChipsRow"></div>
-
-        <div class="chart-header">
-          <div class="hist-subtitle" id="fundHistSubtitle"></div>
-          <div class="range-filters" id="fundHistFilters">
-            <button class="range-btn" data-range="1M">1M</button>
-            <button class="range-btn" data-range="3M">3M</button>
-            <button class="range-btn" data-range="6M">6M</button>
-            <button class="range-btn active" data-range="12M">12M</button>
-            <button class="range-btn" data-range="YTD">YTD</button>
-          </div>
-        </div>
-
-        <div class="hist-chart-wrap"><canvas id="fundHistChart"></canvas></div>
-        <p class="foot-note">* Todas las líneas parten del mismo día: el primer día con datos disponibles del fondo incorporado más recientemente entre los seleccionados, dentro de la ventana elegida.</p>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Fondos disponibles</h2>
-      <p class="sub">Rentabilidad calculada sobre el VCP más reciente de cada fondo, comparado contra el VCP a distintas ventanas de tiempo.</p>
-
-      <div class="option-row" id="fondosMonedaOptions" style="max-width:460px; margin-bottom:20px;">
-        <button class="option-btn selected" data-fmoneda="Pesos">
-          <strong>Pesos</strong>
-          <span>Fondos en ARS</span>
-        </button>
-        <button class="option-btn" data-fmoneda="Dólar">
-          <strong>Dólar MEP</strong>
-          <span>Fondos en USD</span>
-        </button>
-      </div>
-
-      <div class="filters">
-        <input type="text" id="searchBox" class="search-box" placeholder="Buscar fondo…" />
-        <select id="filterCategoria"><option value="">Todas las categorías</option></select>
-        <select id="filterRiesgo"><option value="">Todos los riesgos</option></select>
-      </div>
-
-      <div style="overflow-x:auto;">
-        <table id="fondosTable">
-          <thead>
-            <tr>
-              <th data-key="fondo">Fondo</th>
-              <th data-key="ultimoVCP" class="num">VCP</th>
-              <th data-key="rent.1M" class="num">1M</th>
-              <th data-key="rent.3M" class="num">3M</th>
-              <th data-key="rent.6M" class="num">6M</th>
-              <th data-key="rent.12M" class="num">12M</th>
-              <th data-key="rent.YTD" class="num">YTD</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
-
-      <p class="foot-note" id="rowCount"></p>
-    </section>
-
-    <div class="page-disclaimer">
-      <p>Este reporte (en adelante el “Reporte”) ha sido preparado por Balanz Capital Valores S.A.U. y/o Balanz Sociedad Gerente de Fondos Comunes de Inversión S.A.U. (en adelante "Balanz") para las personas a las que fue dirigido y no debe ser de modo alguno divulgado, distribuido ni reproducido públicamente (ya sea en todo y/o en parte), sin el consentimiento de Balanz. Fue realizado con información accesible al público en general, sin ninguna verificación independiente de Balanz, y Balanz no asume la obligación de actualizarlo. Nada de lo contenido en el Reporte constituye una oferta ni debe ser considerado como asesoramiento de inversión, ni como un compromiso, en cuanto al pasado, presente y/o futuro, ni como una recomendación legal, impositiva, y/o de inversión. Balanz no será responsable de las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Reporte. Quien reciba este Reporte deberá consultar a sus asesores legales y/o financieros para realizar sus estimaciones y sus propias conclusiones de lo referido en este documento.</p>
-      <p class="disc-legal">BALANZ SOCIEDAD GERENTE DE FONDOS COMUNES DE INVERSIÓN S.A.U. Agente de Administración de Productos de Inversión Colectiva de Fondos Comunes de Inversión N°32 ante la CNV. Av. Corrientes 330, piso 1, CABA, Argentina. INSCRIPTO ANTE IGJ BAJO EL N° 12.486 DEL LIBRO 18 TOMO - DE SOCIEDADES POR ACCIONES. CUIT: 33-70812346-9.</p>
-    </div>
-
-    </div>
-
   </main>
-
-  <div id="printDisclaimer">
-    <div class="disc-head">
-      <img class="disc-logo" id="printDiscLogo" alt="Balanz" />
-    </div>
-    <p>Este reporte (en adelante el “Reporte”) ha sido preparado por Balanz Capital Valores S.A.U. y/o Balanz Sociedad Gerente de Fondos Comunes de Inversión S.A.U. (en adelante "Balanz") para las personas a las que fue dirigido y no debe ser de modo alguno divulgado, distribuido ni reproducido públicamente (ya sea en todo y/o en parte), sin el consentimiento de Balanz. Fue realizado con información accesible al público en general, sin ninguna verificación independiente de Balanz, y Balanz no asume la obligación de actualizarlo. Nada de lo contenido en el Reporte constituye una oferta ni debe ser considerado como asesoramiento de inversión, ni como un compromiso, en cuanto al pasado, presente y/o futuro, ni como una recomendación legal, impositiva, y/o de inversión. Balanz no será responsable de las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Reporte. Quien reciba este Reporte deberá consultar a sus asesores legales y/o financieros para realizar sus estimaciones y sus propias conclusiones de lo referido en este documento.</p>
-    <p class="disc-legal">BALANZ SOCIEDAD GERENTE DE FONDOS COMUNES DE INVERSIÓN S.A.U. Agente de Administración de Productos de Inversión Colectiva de Fondos Comunes de Inversión N°32 ante la CNV. Av. Corrientes 330, piso 1, CABA, Argentina. INSCRIPTO ANTE IGJ BAJO EL N° 12.486 DEL LIBRO 18 TOMO - DE SOCIEDADES POR ACCIONES. CUIT: 33-70812346-9.</p>
-  </div>
-
-  <div id="printReport" class="print-report">
-    <div class="print-header">
-      <div class="print-brand">
-        <img src="data:image/png;base64,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" alt="Balanz" class="print-logo" />
-        <span id="printTitleText">Cartera sugerida para el cliente</span>
-      </div>
-      <div class="print-meta" id="printMeta"></div>
-    </div>
-
-    <div class="print-section">
-      <h3>Parámetros de la cartera</h3>
-      <div class="print-params" id="printParams"></div>
-    </div>
-
-    <div class="print-section">
-      <h3>Composición de la cartera</h3>
-      <table class="print-table" id="printCarteraTable"></table>
-    </div>
-
-    <div class="print-section print-charts">
-      <div>
-        <h4>Composición por fondo</h4>
-        <img id="printChartFondo" alt="Composición por fondo" />
-      </div>
-      <div>
-        <h4>Composición por categoría</h4>
-        <img id="printChartCategoria" alt="Composición por categoría" />
-      </div>
-    </div>
-
-    <div class="print-section">
-      <h3>Rendimiento histórico de la cartera</h3>
-      <div class="print-perf-grid" id="printPerfGrid"></div>
-      <img id="printHistChart" class="print-hist-img" alt="Rendimiento histórico de la cartera" />
-    </div>
-  </div>
 
 <script>
 if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
@@ -1166,29 +965,6 @@ let HIST_RAW = {};
 
 // Matriz de ponderaciones: [moneda][perfil][horizonte] -> { fondo: %peso }
 const PORTFOLIOS = {
-  'Pesos': {
-    'Conservador': {
-      '<1m':  { 'Money Market': 100 },
-      '<3m':  { 'Money Market': 50, 'Ahorro corto plazo': 50 },
-      '<6m':  { 'Ahorro corto plazo': 60, 'ONs': 40 },
-      '<12m': { 'Inflation linked': 60, 'ONs': 20, 'Ahorro corto plazo': 20 },
-      '>12m': { 'Inflation linked': 50, 'Opportunity': 25, 'ONs': 25 },
-    },
-    'Moderado': {
-      '<1m':  { 'Money Market': 100 },
-      '<3m':  { 'Money Market': 25, 'Ahorro corto plazo': 75 },
-      '<6m':  { 'Ahorro corto plazo': 60, 'Inflation linked': 40 },
-      '<12m': { 'Inflation linked': 50, 'Opportunity': 25, 'ONs': 25 },
-      '>12m': { 'Inflation linked': 50, 'Opportunity': 50 },
-    },
-    'Audaz': {
-      '<1m':  { 'Money Market': 50, 'Lecaps': 50 },
-      '<3m':  { 'Ahorro corto plazo': 50, 'Lecaps': 50 },
-      '<6m':  { 'Inflation linked': 60, 'Lecaps': 20, 'Ahorro corto plazo': 20 },
-      '<12m': { 'Renta Mixta': 50, 'Inflation linked': 25, 'Opportunity': 25 },
-      '>12m': { 'Equity Selection': 50, 'Balanz Long Pesos': 50 },
-    },
-  },
   'Dólar': {
     'Conservador': {
       '<1m':  { 'Balanz Money Market USD': 100 },
@@ -1250,8 +1026,9 @@ function fondoNameHtml(nombre){
   return `<a href="${url}" target="_blank" rel="noopener" class="fondo-link" title="Ver factsheet de ${nombre}">${nombre}</a>`;
 }
 
+// La moneda esta fija en Dolar MEP: esta pagina no ofrece carteras en pesos.
 // tipo: 'Sugerida' usa la matriz PORTFOLIOS; 'Personalizada' usa customPortfolio
-const selection = { moneda: 'Pesos', tipo: 'Sugerida', perfil: 'Moderado', horizonte: '<12m' };
+const selection = { moneda: 'Dólar', tipo: 'Sugerida', perfil: 'Moderado', horizonte: '<12m' };
 
 // Cartera armada a mano: [{ nombre, pct }]
 let customPortfolio = [];
@@ -1548,93 +1325,9 @@ function periodReturn(rows, period, csIdx){
 /* ---------------------------------------------------------------------
    Graficos: composicion (torta) y rendimiento historico (linea)
 --------------------------------------------------------------------- */
-// Paleta azul: de azul oscuro a azul claro, con pasos bien diferenciados para que
-// haya contraste entre porciones adyacentes de la torta.
-const BLUE_STOPS = ['#0A1638', '#12295E', '#1B3F8C', '#2559B8', '#3B79D6', '#5E9AE6', '#8DBCEF', '#C3DEF8'];
-
-function hexToRgb(hex){
-  const h = hex.replace('#', '');
-  return {
-    r: parseInt(h.substring(0,2), 16),
-    g: parseInt(h.substring(2,4), 16),
-    b: parseInt(h.substring(4,6), 16),
-  };
-}
-function rgbToHex(r, g, b){
-  return '#' + [r,g,b].map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
-}
-function interpolateHex(c1, c2, t){
-  const p1 = hexToRgb(c1), p2 = hexToRgb(c2);
-  return rgbToHex(
-    p1.r + (p2.r - p1.r) * t,
-    p1.g + (p2.g - p1.g) * t,
-    p1.b + (p2.b - p1.b) * t
-  );
-}
-function bluePalette(n){
-  if(n <= 0) return [];
-  if(n === 1) return [BLUE_STOPS[0]];
-  const result = [];
-  for(let i = 0; i < n; i++){
-    const t = i / (n - 1);
-    const pos = t * (BLUE_STOPS.length - 1);
-    const lo = Math.floor(pos), hi = Math.ceil(pos);
-    result.push(lo === hi ? BLUE_STOPS[lo] : interpolateHex(BLUE_STOPS[lo], BLUE_STOPS[hi], pos - lo));
-  }
-  return result;
-}
-
-let chartFondoInstance = null;
-let chartCategoriaInstance = null;
 let histChartInstance = null;
 let currentRange = '12M';
 let lastRows = [];
-let selectedFunds = [];
-let currentFundRange = '12M';
-let fundHistChartInstance = null;
-
-function renderCompositionCharts(rows){
-  const foundRows = rows.filter(r=>r.found);
-
-  const fondoLabels = foundRows.map(r=>r.nombre);
-  const fondoData = foundRows.map(r=>r.pct);
-
-  const catMap = {};
-  foundRows.forEach(r=>{
-    const f = fundByName(r.nombre);
-    const cat = f ? f.categoria : 'Otros';
-    catMap[cat] = (catMap[cat] || 0) + r.pct;
-  });
-  const catLabels = Object.keys(catMap);
-  const catData = Object.values(catMap);
-
-  const donutOptions = (labelFmt)=>({
-    responsive:true,
-    maintainAspectRatio:false,
-    cutout:'62%',
-    plugins:{
-      legend:{ position:'bottom', labels:{ boxWidth:10, padding:12, font:{size:11}, color:'#14182B' } },
-      tooltip:{ callbacks:{ label: labelFmt } },
-      datalabels:{ display:false }
-    }
-  });
-
-  const ctxF = document.getElementById('chartFondo').getContext('2d');
-  if(chartFondoInstance) chartFondoInstance.destroy();
-  chartFondoInstance = new Chart(ctxF, {
-    type:'doughnut',
-    data:{ labels: fondoLabels, datasets:[{ data: fondoData, backgroundColor: bluePalette(fondoData.length), borderWidth:2, borderColor:'#fff' }] },
-    options: donutOptions((c)=> ` ${c.label}: ${c.parsed}%`)
-  });
-
-  const ctxC = document.getElementById('chartCategoria').getContext('2d');
-  if(chartCategoriaInstance) chartCategoriaInstance.destroy();
-  chartCategoriaInstance = new Chart(ctxC, {
-    type:'doughnut',
-    data:{ labels: catLabels, datasets:[{ data: catData, backgroundColor: bluePalette(catData.length), borderWidth:2, borderColor:'#fff' }] },
-    options: donutOptions((c)=> ` ${c.label}: ${c.parsed.toFixed(1)}%`)
-  });
-}
 
 function renderCarteraFondosTable(rows){
   const foundRows = rows.filter(r=>r.found);
@@ -1775,168 +1468,6 @@ document.querySelectorAll('#histFilters .range-btn').forEach(btn=>{
   });
 });
 
-/* ---------------------------------------------------------------------
-   Comparacion de rendimiento historico entre varios fondos
-   (pestaña Fondos disponibles)
---------------------------------------------------------------------- */
-// Paleta de azules para las lineas del comparador. Los tonos se eligieron
-// maximizando la distancia perceptual (CIELAB) entre todos los pares, para que
-// las 6 lineas se distingan entre si sin salirse de la familia de azules.
-const FUND_LINE_COLORS = ['#04152F', '#062593', '#0D5096', '#1E61F6', '#0A7DF5', '#5694F0'];
-const MAX_COMPARE_FUNDS = 6;
-
-function fundColor(index){
-  return FUND_LINE_COLORS[index % FUND_LINE_COLORS.length];
-}
-
-function toggleFundSelection(fondo){
-  const idx = selectedFunds.indexOf(fondo);
-  let added = false;
-  if(idx >= 0){
-    selectedFunds.splice(idx, 1);
-  } else {
-    if(selectedFunds.length >= MAX_COMPARE_FUNDS) return;
-    selectedFunds.push(fondo);
-    added = true;
-  }
-  updateFundRowHighlights();
-  renderFundComparison();
-  if(added){
-    document.getElementById('fundHistSection').scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-}
-
-function updateFundRowHighlights(){
-  document.querySelectorAll('#fondosTable tbody tr[data-fondo]').forEach(tr=>{
-    tr.classList.toggle('row-selected', selectedFunds.includes(tr.dataset.fondo));
-  });
-}
-
-function renderFundComparison(){
-  const section = document.getElementById('fundHistSection');
-  const emptyEl = document.getElementById('fundHistEmpty');
-  const bodyEl = document.getElementById('fundHistBody');
-  const chipsEl = document.getElementById('fundChipsRow');
-  section.style.display = '';
-
-  if(selectedFunds.length === 0){
-    emptyEl.style.display = 'flex';
-    bodyEl.style.display = 'none';
-    if(fundHistChartInstance){ fundHistChartInstance.destroy(); fundHistChartInstance = null; }
-    return;
-  }
-
-  emptyEl.style.display = 'none';
-  bodyEl.style.display = '';
-
-  const rowsAll = selectedFunds.map(f => ({ nombre: f, pct: 100, found: true }));
-  const csIdx = commonStartIdx(rowsAll);
-  const endIdx = DATES.length - 1;
-  const target = subtractPeriod(DATES[endIdx], currentFundRange);
-  const baseIdx = Math.max(csIdx, dateIdxOnOrAfter(target));
-
-  // Chips con el retorno individual de cada fondo en la ventana elegida
-  chipsEl.innerHTML = selectedFunds.map((fondo, i)=>{
-    const color = fundColor(i);
-    const ownCsIdx = FIRST_IDX[fondo] || 0;
-    const ret = periodReturn([{ nombre: fondo, pct: 100, found: true }], currentFundRange, ownCsIdx);
-    return `
-      <div class="fund-chip">
-        <span class="chip-dot" style="background:${color};"></span>
-        <span>${fondo}</span>
-        <span class="chip-ret ${retClass(ret)}">${fmtPct(ret)}</span>
-        <button class="chip-remove" data-fondo="${fondo.replace(/"/g,'&quot;')}" title="Quitar fondo">✕</button>
-      </div>`;
-  }).join('');
-
-  const isoDates = DATES.slice(baseIdx, endIdx + 1);
-  const labels = isoDates.map(fmtDateShort);
-  const isMonthStart = isoDates.map((iso, i)=> i > 0 && iso.slice(0,7) !== isoDates[i-1].slice(0,7));
-
-  const datasets = selectedFunds.map((fondo, i)=>{
-    const color = fundColor(i);
-    const data = isoDates.map((iso, i2)=>{
-      const idxVal = portfolioIndexAt([{ nombre: fondo, pct: 100, found: true }], baseIdx + i2, baseIdx);
-      return idxVal == null ? null : +((idxVal - 1) * 100).toFixed(3);
-    });
-    return {
-      label: fondo,
-      data,
-      borderColor: color,
-      backgroundColor: color,
-      borderWidth: 2.25,
-      pointRadius: 0,
-      pointHoverRadius: 4,
-      fill: false,
-      tension: 0.15,
-    };
-  });
-
-  document.getElementById('fundHistSubtitle').innerHTML = `${fmtDateShort(DATES[baseIdx])} → ${fmtDateShort(DATES[endIdx])}`;
-
-  const ctx = document.getElementById('fundHistChart').getContext('2d');
-  if(fundHistChartInstance) fundHistChartInstance.destroy();
-  fundHistChartInstance = new Chart(ctx, {
-    type:'line',
-    data:{ labels, datasets },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      layout:{ padding:{ top:12 } },
-      interaction:{ mode:'index', intersect:false },
-      plugins:{
-        legend:{
-          display:true,
-          position:'bottom',
-          labels:{ boxWidth:10, boxHeight:10, padding:16, font:{size:11.5, weight:'700'}, color:'#14182B', usePointStyle:true, pointStyle:'circle' }
-        },
-        datalabels:{ display:false },
-        tooltip:{
-          callbacks:{ label:(c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` }
-        }
-      },
-      scales:{
-        x:{
-          ticks:{
-            autoSkip:false,
-            maxRotation:0,
-            minRotation:0,
-            color:'#6E7590',
-            font:{size:11},
-            callback:(val, index)=> isMonthStart[index] ? monthLabel(isoDates[index]) : null,
-          },
-          grid:{ display:false }
-        },
-        y:{
-          ticks:{
-            callback:(v)=> `${v >= 0 ? '+' : ''}${v}%`,
-            color:'#000000',
-            font:{ size:11.5, weight:'700' }
-          },
-          grid:{ color:'#E4E8F1' }
-        }
-      }
-    }
-  });
-}
-
-document.getElementById('fundChipsRow').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.chip-remove');
-  if(!btn) return;
-  const fondo = btn.dataset.fondo;
-  selectedFunds = selectedFunds.filter(f => f !== fondo);
-  updateFundRowHighlights();
-  renderFundComparison();
-});
-
-document.querySelectorAll('#fundHistFilters .range-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    currentFundRange = btn.dataset.range;
-    document.querySelectorAll('#fundHistFilters .range-btn').forEach(b=>b.classList.toggle('active', b === btn));
-    renderFundComparison();
-  });
-});
-
 function selectOption(groupId, attr, value){
   selection[attr] = value;
   document.querySelectorAll(`#${groupId} .option-btn`).forEach(btn=>{
@@ -2026,6 +1557,7 @@ function removeCustomFondo(idx){
 
 // Al cambiar de moneda (o de dataset) se descartan los fondos que ya no aplican
 function sanitizeCustomPortfolio(){
+  const antes = customPortfolio.length;
   customPortfolio = customPortfolio.filter(it=>{
     const f = fundByName(it.nombre);
     return f && f.moneda === selection.moneda;
@@ -2039,10 +1571,8 @@ function updateVisibility(){
   // En cartera personalizada no se usan perfil ni horizonte
   document.getElementById('perfilSection').style.display = custom ? 'none' : '';
   document.getElementById('horizonteSection').style.display = custom ? 'none' : '';
-  document.getElementById('montoTitle').textContent = `${custom ? 3 : 5} · Monto a invertir`;
-
-  document.getElementById('montoLabel').textContent =
-    `Monto a invertir (${selection.moneda === 'Dólar' ? 'USD' : 'ARS'})`;
+  document.getElementById('pfTitle').textContent =
+    `${custom ? 2 : 4} · Calculadora de Patrimonio Futuro`;
 
   renderCartera();
 }
@@ -2050,18 +1580,23 @@ function updateVisibility(){
 /* ---------------------------------------------------------------------
    Armado y render de la cartera (sugerida o personalizada)
 --------------------------------------------------------------------- */
+// Sin monto: la cartera solo define que fondos entran y con que peso. Los
+// importes se cargan abajo, en la calculadora de patrimonio futuro.
 function buildCarteraRows(){
-  const monto = parseMonto(document.getElementById('montoInput').value);
   const entries = isCustom()
     ? customPortfolio.map(it => [it.nombre, Number(it.pct) || 0])
     : Object.entries(PORTFOLIOS[selection.moneda][selection.perfil][selection.horizonte]);
 
   return entries.map(([nombre, pct])=>{
     const fund = fundByName(nombre);
-    const costo = monto * pct / 100;
-    const vcp = fund ? fund.ultimoVCP : null;
-    const nominales = vcp ? Math.floor(costo / vcp) : null;
-    return { nombre, pct, vcp, costo, nominales, found: !!fund, riesgo: fund ? fund.riesgo : null, horizonte: fund ? fund.horizonte : null };
+    return {
+      nombre,
+      pct,
+      vcp: fund ? fund.ultimoVCP : null,
+      found: !!fund,
+      riesgo: fund ? fund.riesgo : null,
+      horizonte: fund ? fund.horizonte : null,
+    };
   });
 }
 
@@ -2084,7 +1619,6 @@ function carteraRowHtml(r, i, custom){
       <td class="num">${pctCell}</td>
       <td>${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
       <td>${r.horizonte || '—'}</td>
-      <td class="num vcp-value">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
 }
 
@@ -2094,14 +1628,13 @@ function addFondoRowHtml(){
   const opts = disponibles
     .map(f => `<option value="${f.fondo.replace(/"/g, '&quot;')}">${f.fondo} — ${f.categoria} (${f.riesgo})</option>`)
     .join('');
-  const monedaTxt = selection.moneda === 'Dólar' ? 'dólar MEP' : 'pesos';
   const placeholder = disponibles.length
-    ? `+ Seleccioná un fondo en ${monedaTxt} para agregarlo a la cartera…`
-    : 'No quedan fondos disponibles en esta moneda';
+    ? '+ Seleccioná un fondo en dólar MEP para agregarlo a la cartera…'
+    : 'No quedan fondos disponibles en dólar MEP';
 
   return `
     <tr class="add-fondo-row">
-      <td colspan="5">
+      <td colspan="4">
         <select id="addFondoSelect" class="add-fondo-select"${disponibles.length ? '' : ' disabled'}>
           <option value="">${placeholder}</option>
           ${opts}
@@ -2116,14 +1649,14 @@ function renderCartera(){
 
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
-    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
-    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
+    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se proyecta solo cuando los porcentajes suman exactamente 100%.'
+    : 'La cartera se arma con ponderaciones predeterminadas según perfil y horizonte, sobre fondos en dólar MEP. Los montos del plan de aportes se cargan más abajo, en la calculadora de patrimonio futuro.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom)).join('');
   if(custom){
     body += addFondoRowHtml();
   } else if(!rows.length){
-    body = '<tr><td colspan="5" class="cartera-empty-msg">No hay fondos definidos para esta combinación.</td></tr>';
+    body = '<tr><td colspan="4" class="cartera-empty-msg">No hay fondos definidos para esta combinación.</td></tr>';
   }
   document.getElementById('carteraTableBody').innerHTML = body;
 
@@ -2132,19 +1665,18 @@ function renderCartera(){
 }
 
 function renderCarteraTotals(rows, custom){
-  const totalCosto = rows.reduce((acc, r)=> acc + r.costo, 0);
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
-
   const excede = totalPct > 100;
   const invalida = custom && totalPct !== 100;
+  const totalRow = document.getElementById('carteraTotalRow');
 
-  document.getElementById('carteraTotalRow').innerHTML = custom
+  // El total solo tiene sentido en la cartera personalizada (control de los %)
+  totalRow.style.display = custom ? '' : 'none';
+  totalRow.innerHTML = custom
     ? `<td>Total</td>
        <td class="num${invalida ? ' pct-exceso' : ''}">${totalPct}%</td>
-       <td colspan="2"></td>
-       <td class="num" id="carteraTotalCosto">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
-    : `<td colspan="4"></td>
-       <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`;
+       <td colspan="2"></td>`
+    : '<td colspan="4"></td>';
 
   const warn = document.getElementById('pctWarning');
   if(!custom || !rows.length){
@@ -2155,54 +1687,230 @@ function renderCarteraTotals(rows, custom){
   warn.style.display = 'block';
   if(totalPct === 100){
     warn.className = 'pct-warning ok';
-    warn.textContent = '✓ Los porcentajes suman 100% del monto a invertir.';
+    warn.textContent = '✓ Los porcentajes suman 100% de la cartera.';
   } else if(excede){
     warn.className = 'pct-warning err';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: hay que bajar ${totalPct - 100}%. La cartera se calcula solo cuando suman exactamente 100%.`;
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: hay que bajar ${totalPct - 100}%. La cartera se proyecta solo cuando suman exactamente 100%.`;
   } else {
     warn.className = 'pct-warning err';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: falta asignar ${100 - totalPct}%. La cartera se calcula solo cuando suman exactamente 100%.`;
+    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: falta asignar ${100 - totalPct}%. La cartera se proyecta solo cuando suman exactamente 100%.`;
   }
 }
 
-// Graficos, rendimiento historico y tabla de fondos de la cartera.
-// Si la cartera esta vacia se ocultan esas secciones.
+// Rendimiento historico, tabla de fondos y proyeccion.
+// Si la cartera esta vacia o los % no cierran, se ocultan esas secciones.
+// La visibilidad de patrimonioSection la maneja solo renderPatrimonioFuturo.
 function renderCarteraDerived(rows, custom){
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
   // La cartera personalizada solo se calcula si los % suman exactamente 100.
-  // Con cualquier otra suma se ocultan las secciones de abajo, igual que
-  // cuando todavia no se eligio ningun fondo.
   const valida = !custom || totalPct === 100;
   const hasRows = valida && rows.some(r => r.found && (Number(r.pct) || 0) > 0);
 
-  ['composicionSection', 'histSection', 'carteraFondosSection'].forEach(id=>{
+  ['histSection', 'carteraFondosSection'].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.style.display = hasRows ? '' : 'none';
   });
 
   lastRows = rows;
-  if(!hasRows) return;
 
-  renderCompositionCharts(rows);
+  if(!hasRows){
+    renderPatrimonioFuturo(null);
+    return;
+  }
+
   renderPerfGrid(rows);
   renderHistChart(rows);
   renderCarteraFondosTable(rows);
+  renderPatrimonioFuturo(rows);
 
-  // Si las secciones venian ocultas, los canvas se crearon sin ancho
+  // Si las secciones venian ocultas, el canvas se creo sin ancho
   requestAnimationFrame(()=>{
-    if(chartFondoInstance) chartFondoInstance.resize();
-    if(chartCategoriaInstance) chartCategoriaInstance.resize();
     if(histChartInstance) histChartInstance.resize();
   });
 }
+
+/* ---------------------------------------------------------------------
+   Calculadora de patrimonio futuro
+
+   Esta pagina trabaja siempre en Dolar MEP: los fondos de renta fija en
+   dolares tienen todos TIR informada y expresada en la misma unidad (USD),
+   de modo que la TIR ponderada de la cartera es consistente. En pesos
+   convivirian tasas nominales, tasas sobre CER y fondos de renta variable
+   sin TIR, que no son promediables entre si.
+--------------------------------------------------------------------- */
+let pfModo = 'futuro';   // 'futuro' = calcula el patrimonio | 'cuota' = calcula el aporte
+
+// TIR de la cartera: promedio de las TIR de cada fondo ponderado por su peso.
+// Devuelve null si algun fondo de la cartera no tiene TIR informada.
+function tirCartera(rows){
+  let suma = 0, peso = 0;
+  const faltantes = [];
+  for(const r of rows){
+    const pct = Number(r.pct) || 0;
+    if(pct <= 0) continue;
+    const info = TIR_DATA[r.nombre];
+    if(!info){ faltantes.push(r.nombre); continue; }
+    suma += info.tir * pct;
+    peso += pct;
+  }
+  if(faltantes.length) return { tir:null, faltantes };
+  if(peso <= 0) return { tir:null, faltantes:[] };
+  return { tir: suma / peso, faltantes: [] };
+}
+
+function pfNum(id){
+  const v = parseMonto(document.getElementById(id).value);
+  return isFinite(v) ? v : 0;
+}
+
+// Factor de una anualidad adelantada: los aportes se hacen al inicio de cada
+// periodo (el 1 de cada mes, si la frecuencia es mensual), de modo que cada
+// cuota devenga intereses por un periodo mas que en una anualidad vencida.
+function factorAnualidad(i, n){
+  if(n <= 0) return 0;
+  if(i === 0) return n;
+  return ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+}
+
+// Valor futuro del plan: capital inicial capitalizado + aportes adelantados
+function valorFuturo(inicial, cuota, i, n){
+  return inicial * Math.pow(1 + i, n) + cuota * factorAnualidad(i, n);
+}
+
+// Inversa: cuota necesaria para alcanzar un objetivo
+function cuotaNecesaria(objetivo, inicial, i, n){
+  const anualidad = factorAnualidad(i, n);
+  if(anualidad <= 0) return null;
+  return (objetivo - inicial * Math.pow(1 + i, n)) / anualidad;
+}
+
+// Unico lugar donde se decide si la seccion se ve o no: se oculta si todavia
+// no se cargaron las TIR o si la cartera de arriba no es valida (rows = null).
+function renderPatrimonioFuturo(rows){
+  const sec = document.getElementById('patrimonioSection');
+  if(!rows || !rows.length || !Object.keys(TIR_DATA).length){
+    sec.style.display = 'none';
+    return;
+  }
+
+  const { tir, faltantes } = tirCartera(rows);
+  const warn = document.getElementById('pfWarning');
+
+  if(tir === null){
+    sec.style.display = '';
+    warn.style.display = 'block';
+    warn.textContent = faltantes.length
+      ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
+      : '⚠ No se puede calcular la TIR de la cartera.';
+    document.getElementById('pfResultValue').textContent = '—';
+    document.getElementById('pfResultSub').textContent = '';
+    document.getElementById('pfBreakdown').innerHTML = '';
+    document.getElementById('pfTirBar').innerHTML = '';
+    return;
+  }
+
+  sec.style.display = '';
+  warn.style.display = 'none';
+
+  // Barra con la tasa usada y cuanto pesa cada fondo dentro de ella
+  const detalle = rows
+    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
+            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
+    .join(' · ');
+  document.getElementById('pfTirBar').innerHTML = `
+    <span class="tb-label">TIR ponderada de la cartera</span>
+    <span class="tb-value">${(tir * 100).toFixed(2)}%</span>
+    <span class="tb-sep"></span>
+    <span class="tb-funds">${detalle}</span>`;
+
+  const c = parseInt(document.getElementById('pfFrecuencia').value, 10) || 12;
+  const anios = Math.max(0, Math.min(60, Math.round(pfNum('pfAnios'))));
+  const inicial = Math.max(0, pfNum('pfInicial'));
+  const n = c * anios;
+
+  // Tasa efectiva del periodo a partir de la TIR (efectiva anual).
+  // Se usa la raiz c-esima para que el rendimiento anual siga siendo la TIR
+  // cualquiera sea la cantidad de cuotas por anio.
+  const i = Math.pow(1 + tir, 1 / c) - 1;
+
+  const label = document.getElementById('pfResultLabel');
+  const value = document.getElementById('pfResultValue');
+  const sub   = document.getElementById('pfResultSub');
+  const bd    = document.getElementById('pfBreakdown');
+
+  const plural = anios === 1 ? 'año' : 'años';
+  const freqTxt = { 12:'mensuales', 4:'trimestrales', 2:'semestrales', 1:'anuales' }[c] || `x${c} por año`;
+
+  if(n <= 0){
+    value.textContent = '—';
+    sub.textContent = 'Ingresá una cantidad de años mayor a cero.';
+    bd.innerHTML = '';
+  } else if(pfModo === 'futuro'){
+    const cuota = Math.max(0, pfNum('pfCuota'));
+    const fv = valorFuturo(inicial, cuota, i, n);
+    const aportado = inicial + cuota * n;
+    label.textContent = 'Patrimonio futuro estimado';
+    value.textContent = fmtMoney(fv, 'Dólar');
+    sub.textContent = `${n} cuotas ${freqTxt} de ${fmtMoney(cuota, 'Dólar')} durante ${anios} ${plural}`;
+    bd.innerHTML = `
+      <div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(aportado, 'Dólar')}</div></div>
+      <div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(fv - aportado, 'Dólar')}</div></div>
+      <div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${n}</div></div>`;
+  } else {
+    const objetivo = Math.max(0, pfNum('pfObjetivo'));
+    const cuota = cuotaNecesaria(objetivo, inicial, i, n);
+    label.textContent = 'Cuota necesaria';
+    if(cuota === null || cuota <= 0){
+      value.textContent = fmtMoney(0, 'Dólar');
+      sub.textContent = 'El capital inicial ya alcanza el objetivo en ese plazo, sin necesidad de aportes.';
+      bd.innerHTML = '';
+    } else {
+      const aportado = inicial + cuota * n;
+      value.textContent = fmtMoney(cuota, 'Dólar');
+      sub.textContent = `${n} cuotas ${freqTxt} durante ${anios} ${plural} para llegar a ${fmtMoney(objetivo, 'Dólar')}`;
+      bd.innerHTML = `
+        <div><div class="bd-label">Total aportado</div><div class="bd-value">${fmtMoney(aportado, 'Dólar')}</div></div>
+        <div><div class="bd-label">Rendimiento generado</div><div class="bd-value">${fmtMoney(objetivo - aportado, 'Dólar')}</div></div>
+        <div><div class="bd-label">Cantidad de cuotas</div><div class="bd-value">${n}</div></div>`;
+    }
+  }
+
+}
+
+function setPfModo(modo){
+  pfModo = modo;
+  document.querySelectorAll('#pfModes .pf-mode-btn').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.pfmode === modo);
+  });
+  document.getElementById('pfCuotaField').style.display    = modo === 'futuro' ? '' : 'none';
+  document.getElementById('pfObjetivoField').style.display = modo === 'cuota'  ? '' : 'none';
+  renderPatrimonioFuturo(lastRows);
+}
+
+document.querySelectorAll('#pfModes .pf-mode-btn').forEach(b=>{
+  b.addEventListener('click', ()=> setPfModo(b.dataset.pfmode));
+});
+
+['pfCuota', 'pfObjetivo', 'pfInicial'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', (e)=>{
+    formatMontoInput(e.target);
+    renderPatrimonioFuturo(lastRows);
+  });
+});
+document.getElementById('pfAnios').addEventListener('input', (e)=>{
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2);
+  renderPatrimonioFuturo(lastRows);
+});
+document.getElementById('pfFrecuencia').addEventListener('change', ()=> renderPatrimonioFuturo(lastRows || []));
 
 /* ---------------------------------------------------------------------
    Interaccion dentro de la tabla de la cartera personalizada
 --------------------------------------------------------------------- */
 let pctRecalcTimer = null;
 
-// Refresca los montos y el total sin re-armar la tabla (si se re-armara se
-// perderia el foco mientras se escribe). No toca los % de los otros fondos.
+// Refresca el total sin re-armar la tabla (si se re-armara se perderia el foco
+// mientras se escribe). No toca los % de los otros fondos.
 function sincronizarFilasCartera(){
   const rows = buildCarteraRows();
   const excede = !carteraSuma100();
@@ -2212,14 +1920,10 @@ function sincronizarFilasCartera(){
     if(!tr) return;
     const inp = tr.querySelector('.pct-input');
     if(inp) inp.classList.toggle('pct-exceso', excede);
-    const cell = tr.querySelector('td:last-child');
-    if(cell) cell.textContent = excede ? '—' : fmtMoney(r.costo, selection.moneda);
   });
   renderCarteraTotals(rows, true);
 }
 
-// Cada fondo se ajusta libremente: cambiar uno no modifica a los demas.
-// Si la suma supera el 100% la cartera no se calcula y se muestra la alerta.
 function onPctInput(idx, inputEl){
   const item = customPortfolio[idx];
   if(!item) return;
@@ -2275,9 +1979,6 @@ carteraBodyEl.addEventListener('click', (e)=>{
 /* ---------------------------------------------------------------------
    Selectores de la calculadora
 --------------------------------------------------------------------- */
-document.querySelectorAll('#monedaOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=> selectOption('monedaOptions', 'moneda', btn.dataset.moneda));
-});
 document.querySelectorAll('#tipoCarteraOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> selectOption('tipoCarteraOptions', 'tipo', btn.dataset.tipo));
 });
@@ -2287,17 +1988,6 @@ document.querySelectorAll('#perfilOptions .option-btn').forEach(btn=>{
 document.querySelectorAll('#horizonteOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> selectOption('horizonteOptions', 'horizonte', btn.dataset.horizonte));
 });
-document.getElementById('montoInput').addEventListener('input', (e)=>{
-  formatMontoInput(e.target);
-  renderCartera();
-});
-
-let sortKey = 'fondo';
-let sortDir = 1;
-
-function getVal(obj, path){
-  return path.split('.').reduce((o,k)=>(o==null?null:o[k]), obj);
-}
 
 function fmtDate(iso){
   const [y,m,d] = iso.split('-');
@@ -2311,127 +2001,11 @@ function renderRet(val){
   return `<span class="ret ${cls}">${sign}${val.toFixed(2)}%</span>`;
 }
 
-function populateFilters(){
-  const cats = [...new Set(DATA.fondos.map(f=>f.categoria))].sort();
-  const riesgos = ['Conservador','Moderado','Audaz'];
-
-  const catSel = document.getElementById('filterCategoria');
-  cats.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; catSel.appendChild(o); });
-
-  const riesgoSel = document.getElementById('filterRiesgo');
-  riesgos.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; riesgoSel.appendChild(o); });
-}
-
-let fondosMoneda = 'Pesos';
-
-function currentRows(){
-  const q = document.getElementById('searchBox').value.trim().toLowerCase();
-  const cat = document.getElementById('filterCategoria').value;
-  const riesgo = document.getElementById('filterRiesgo').value;
-
-  let rows = DATA.fondos.filter(f=>{
-    if(f.moneda !== fondosMoneda) return false;
-    if(q && !f.fondo.toLowerCase().includes(q)) return false;
-    if(cat && f.categoria !== cat) return false;
-    if(riesgo && f.riesgo !== riesgo) return false;
-    return true;
-  });
-
-  rows.sort((a,b)=>{
-    const va = getVal(a, sortKey);
-    const vb = getVal(b, sortKey);
-    if(va === null) return 1;
-    if(vb === null) return -1;
-    if(typeof va === 'string') return va.localeCompare(vb) * sortDir;
-    return (va - vb) * sortDir;
-  });
-
-  return rows;
-}
-
-function render(){
-  const rows = currentRows();
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = rows.map(f => `
-    <tr data-fondo="${f.fondo}" class="${selectedFunds.includes(f.fondo) ? 'row-selected' : ''}">
-      <td>
-        <div class="fondo-name">${fondoNameHtml(f.fondo)}</div>
-        <div class="fondo-meta">
-          <span class="tag tag-riesgo-${f.riesgo}">${f.riesgo}</span>
-          <span style="font-size:11.5px;color:var(--muted);"><span class="moneda-dot moneda-${f.moneda}"></span>${f.moneda} · ${f.categoria}</span>
-        </div>
-      </td>
-      <td class="num vcp-value">${f.ultimoVCP.toFixed(f.ultimoVCP < 10 ? 5 : 2)}</td>
-      <td class="num">${renderRet(f.rent['1M'])}</td>
-      <td class="num">${renderRet(f.rent['3M'])}</td>
-      <td class="num">${renderRet(f.rent['6M'])}</td>
-      <td class="num">${renderRet(f.rent['12M'])}</td>
-      <td class="num">${renderRet(f.rent['YTD'])}</td>
-    </tr>
-  `).join('');
-
-  document.getElementById('rowCount').textContent = `Mostrando ${rows.length} de ${DATA.fondos.filter(f=>f.moneda === fondosMoneda).length} fondos.`;
-
-  document.querySelectorAll('#fondosTable thead th').forEach(th=>{
-    th.classList.toggle('sorted', th.dataset.key === sortKey);
-  });
-}
-
-document.getElementById('tableBody').addEventListener('click', (e)=>{
-  if(e.target.closest('a')) return;
-  const tr = e.target.closest('tr[data-fondo]');
-  if(!tr) return;
-  toggleFundSelection(tr.dataset.fondo);
-});
-
-document.querySelectorAll('#fondosMonedaOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    fondosMoneda = btn.dataset.fmoneda;
-    document.querySelectorAll('#fondosMonedaOptions .option-btn').forEach(b=>b.classList.toggle('selected', b === btn));
-    render();
-    selectedFunds = selectedFunds.filter(f=>{
-      const fund = fundByName(f);
-      return fund && fund.moneda === fondosMoneda;
-    });
-    if(selectedFunds.length === 0){
-      const rows = currentRows();
-      if(rows.length) selectedFunds = [rows[0].fondo];
-    }
-    updateFundRowHighlights();
-    renderFundComparison();
-  });
-});
-
-// Solo los headers de #fondosTable son ordenables: son los unicos que tienen
-// data-key. Sin el scope, el listener tambien caia sobre los th de carteraTable
-// y carteraFondosTable y al clickearlos sortKey quedaba undefined.
-document.querySelectorAll('#fondosTable thead th[data-key]').forEach(th=>{
-  th.addEventListener('click', ()=>{
-    const key = th.dataset.key;
-    if(sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = key==='fondo' ? 1 : -1; }
-    render();
-  });
-});
-
-['searchBox'].forEach(id=>document.getElementById(id).addEventListener('input', render));
-['filterCategoria','filterRiesgo'].forEach(id=>document.getElementById(id).addEventListener('change', render));
-
 /* ---------------------------------------------------------------------
-   Inicializacion: arma la UI una vez que hay datos cargados (populateFilters
-   se llama de nuevo por si cambiaron las categorias/riesgos disponibles)
+   Inicializacion: arma la UI una vez que hay datos cargados
 --------------------------------------------------------------------- */
 function initUI(){
   document.getElementById('asOfDateLabel').textContent = DATA.asOfDate ? fmtDate(DATA.asOfDate) : '—';
-
-  const catSel = document.getElementById('filterCategoria');
-  const riesgoSel = document.getElementById('filterRiesgo');
-  catSel.innerHTML = '<option value="">Todas las categorías</option>';
-  riesgoSel.innerHTML = '<option value="">Todos los riesgos</option>';
-  populateFilters();
-
-  selectedFunds = selectedFunds.filter(f => DATA.fondos.some(x => x.fondo === f && x.moneda === fondosMoneda));
-
-  render();
   updateVisibility();
 }
 
@@ -2465,8 +2039,8 @@ function sesionYaValidada(){
   try{ return sessionStorage.getItem(AUTH_KEY) === 'ok'; }catch(e){ return false; }
 }
 
-// Si ya se valido en esta sesion (en esta pagina o en la otra del sitio) no se
-// vuelve a pedir el login al navegar entre index.html y patrimonio.html.
+// Si ya se valido en esta sesion (en esta pagina o en index.html) no se vuelve
+// a pedir el login al navegar entre las dos.
 if(sesionYaValidada()){
   document.getElementById('loginOverlay').style.display = 'none';
 }
@@ -2494,6 +2068,99 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 });
 
 // Carga inicial: trae data.csv (mismo directorio que este archivo) y arma el tablero.
+/* ---------------------------------------------------------------------
+   TIR / TNA / Duration por fondo (tir_fondos.csv, junto al HTML).
+   Se usa para la calculadora de patrimonio futuro. La carga es opcional:
+   si el archivo no está o falla, la seccion simplemente no se muestra.
+--------------------------------------------------------------------- */
+let TIR_DATA = {};
+
+// Separador del CSV: se deduce del encabezado, porque Excel en configuracion
+// regional argentina exporta con punto y coma en lugar de coma.
+function detectarSeparador(text){
+  const head = text.split(/\r?\n/)[0] || '';
+  const cands = [';', ',', '\t'];
+  let mejor = ',', max = 0;
+  cands.forEach(sep=>{
+    const n = head.split(sep).length - 1;
+    if(n > max){ max = n; mejor = sep; }
+  });
+  return mejor;
+}
+
+// Numero decimal tolerante: acepta "6.2000%", "6,20%", "0.062" y "1.234,56".
+function parseNumeroLocal(v){
+  let t = String(v == null ? '' : v).trim();
+  if(!t) return NaN;
+  const esPct = t.includes('%');
+  t = t.replace(/%/g, '').replace(/\s/g, '');
+  if(t.includes(',') && t.includes('.')){
+    // el ultimo separador que aparece es el decimal
+    t = t.lastIndexOf(',') > t.lastIndexOf('.')
+      ? t.replace(/\./g, '').replace(',', '.')
+      : t.replace(/,/g, '');
+  } else if(t.includes(',')){
+    t = t.replace(',', '.');
+  }
+  const n = parseFloat(t);
+  if(!isFinite(n)) return NaN;
+  // Con signo % el valor viene en porcentaje; sin el, se asume fraccion decimal.
+  return esPct ? n / 100 : n;
+}
+
+function parseTirCsv(text){
+  const rows = parseCsvText(text, detectarSeparador(text));
+  if(!rows.length) return {};
+  const head = rows[0].map(h => h.trim().toLowerCase().replace(/^﻿/, ''));
+  const iFondo = head.indexOf('fondo');
+  const iTir   = head.indexOf('tir');
+  const iTna   = head.indexOf('tna');
+  const iBase  = head.indexOf('base');
+  const iDur   = head.indexOf('duration');
+  if(iFondo === -1 || iTir === -1){
+    console.warn('tir_fondos.csv: faltan las columnas "fondo" y/o "tir". Encabezado leído:', head);
+    return {};
+  }
+
+  const out = {};
+  rows.slice(1).forEach(r=>{
+    const nombre = (r[iFondo] || '').trim();
+    if(!nombre) return;
+    const tir = parseNumeroLocal(r[iTir]);
+    if(!isFinite(tir)) return;                 // fondos sin TIR (renta variable)
+    out[nombre] = {
+      tir,
+      tna: parseNumeroLocal(r[iTna]),
+      base: iBase === -1 ? '' : (r[iBase] || '').trim(),
+      // la duration esta en anios, no es un porcentaje
+      duration: iDur === -1 ? NaN : parseNumeroLocal(r[iDur]),
+    };
+  });
+  return out;
+}
+
+// El archivo puede venir guardado en UTF-8 o en ANSI/Latin-1 (Excel en Windows
+// guarda asi por defecto). Se prueba UTF-8 estricto y, si falla, se reintenta
+// como Windows-1252, para que los acentos de los nombres de fondo no se rompan
+// y sigan coincidiendo con los de data.csv.
+function decodificarCsv(buffer){
+  try{
+    return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+  } catch(e){
+    return new TextDecoder('windows-1252').decode(buffer);
+  }
+}
+
+fetch('tir_fondos.csv')
+  .then(r=> r.ok ? r.arrayBuffer() : Promise.reject(new Error('HTTP ' + r.status)))
+  .then(buf=>{
+    TIR_DATA = parseTirCsv(decodificarCsv(buf));
+    renderCartera();
+  })
+  .catch(err=>{
+    console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
+  });
+
 fetch('data.csv')
   .then(r=>{
     if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
@@ -2510,183 +2177,6 @@ fetch('data.csv')
     console.error('Error cargando data.csv:', err);
     showLoadError(err);
   });
-
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b === btn));
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === `tab-${btn.dataset.tab}`));
-
-    if(btn.dataset.tab === 'fondos'){
-      if(selectedFunds.length === 0){
-        const rows = currentRows();
-        if(rows.length){
-          selectedFunds = [rows[0].fondo];
-          updateFundRowHighlights();
-          renderFundComparison();
-        }
-      } else if(fundHistChartInstance){
-        fundHistChartInstance.resize();
-      }
-    }
-  });
-});
-
-/* ---------------------------------------------------------------------
-   Descargar PDF: arma un reporte imprimible con la cartera actual
-   (tabla, graficos de composicion y rendimiento historico) y abre
-   el dialogo de impresion del navegador para guardarlo como PDF.
---------------------------------------------------------------------- */
-function buildPrintReport(){
-  const rows = lastRows || [];
-  const monedaLabel = selection.moneda === 'Dólar' ? 'Dólar MEP (USD)' : 'Pesos (ARS)';
-  const monto = parseMonto(document.getElementById('montoInput').value);
-  const montoTexto = fmtMoney(monto, selection.moneda);
-
-  document.getElementById('printMeta').innerHTML = `
-    <div>VCP al ${fmtDate(DATA.asOfDate)}</div>
-    <div>Generado el ${new Date().toLocaleDateString('es-AR')}</div>
-  `;
-
-  const custom = isCustom();
-  document.getElementById('printTitleText').textContent = custom
-    ? 'Cartera personalizada para el cliente'
-    : 'Cartera sugerida para el cliente';
-
-  const paramMoneda = `<div class="param-item"><div class="param-label">Moneda</div><div class="param-value">${monedaLabel}</div></div>`;
-  const paramMonto = `<div class="param-item"><div class="param-label">Monto a invertir</div><div class="param-value">${montoTexto}</div></div>`;
-
-  document.getElementById('printParams').innerHTML = custom
-    ? `
-      ${paramMoneda}
-      <div class="param-item"><div class="param-label">Tipo de cartera</div><div class="param-value">Personalizada</div></div>
-      ${paramMonto}
-    `
-    : `
-      ${paramMoneda}
-      <div class="param-item"><div class="param-label">Perfil</div><div class="param-value">${selection.perfil}</div></div>
-      <div class="param-item"><div class="param-label">Horizonte</div><div class="param-value">${HORIZONTE_LABELS[selection.horizonte] || ''}</div></div>
-      ${paramMonto}
-    `;
-
-  let totalCosto = 0;
-  const bodyRows = rows.map(r=>{
-    totalCosto += r.costo;
-    return `
-      <tr>
-        <td>${r.nombre}</td>
-        <td>${r.pct}%</td>
-        <td>${r.riesgo || '—'}</td>
-        <td>${r.horizonte || '—'}</td>
-        <td style="text-align:right;">${fmtMoney(r.costo, selection.moneda)}</td>
-      </tr>`;
-  }).join('');
-
-  document.getElementById('printCarteraTable').innerHTML = `
-    <thead>
-      <tr><th>Fondo</th><th>% objetivo</th><th>Riesgo</th><th>Horizonte</th><th style="text-align:right;">Inversión</th></tr>
-    </thead>
-    <tbody>${bodyRows}</tbody>
-    <tfoot>
-      <tr><td colspan="4"></td><td style="text-align:right;">${fmtMoney(totalCosto, selection.moneda)}</td></tr>
-    </tfoot>
-  `;
-
-  if(chartFondoInstance) document.getElementById('printChartFondo').src = chartFondoInstance.toBase64Image();
-  if(chartCategoriaInstance) document.getElementById('printChartCategoria').src = chartCategoriaInstance.toBase64Image();
-  if(histChartInstance) document.getElementById('printHistChart').src = histChartInstance.toBase64Image();
-
-  const perfGridEl = document.getElementById('perfGrid');
-  document.getElementById('printPerfGrid').innerHTML = perfGridEl ? perfGridEl.innerHTML : '';
-}
-
-document.getElementById('downloadPdfBtn').addEventListener('click', async ()=>{
-  const btn = document.getElementById('downloadPdfBtn');
-  const originalHtml = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = 'Generando PDF…';
-
-  try{
-    buildPrintReport();
-    const el = document.getElementById('printReport');
-    const prevStyle = el.getAttribute('style') || '';
-
-    // Renderizar fuera de pantalla con ancho fijo tipo A4 para que html2canvas lo capture bien
-    el.style.display = 'block';
-    el.style.position = 'fixed';
-    el.style.left = '-9999px';
-    el.style.top = '0';
-    el.style.width = '794px';
-    el.style.background = '#ffffff';
-    el.style.padding = '32px';
-
-    // Esperar a que todas las imagenes (logo, graficos) terminen de decodificar
-    const imgs = el.querySelectorAll('img');
-    await Promise.all(Array.from(imgs).map(img=>{
-      if(img.complete) return Promise.resolve();
-      return new Promise(res=>{ img.onload = res; img.onerror = res; });
-    }));
-    await new Promise(res=> setTimeout(res, 80));
-
-    const canvas = await html2canvas(el, { scale:2, backgroundColor:'#ffffff', useCORS:true });
-
-    el.setAttribute('style', prevStyle);
-
-    // Hoja final con el disclaimer legal: se captura por separado para que
-    // siempre quede en una pagina propia y no se parta entre dos.
-    const disc = document.getElementById('printDisclaimer');
-    const discLogo = document.getElementById('printDiscLogo');
-    discLogo.src = document.querySelector('#printReport .print-logo').src;
-    const discPrev = disc.getAttribute('style') || '';
-    disc.style.display = 'block';
-    disc.style.position = 'fixed';
-    disc.style.left = '-9999px';
-    disc.style.top = '0';
-    disc.style.width = '794px';
-    disc.style.background = '#ffffff';
-    disc.style.padding = '32px';
-    if(!discLogo.complete){
-      await new Promise(res=>{ discLogo.onload = res; discLogo.onerror = res; });
-    }
-    const canvasDisc = await html2canvas(disc, { scale:2, backgroundColor:'#ffffff', useCORS:true });
-    disc.setAttribute('style', discPrev);
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-    const imgData = canvas.toDataURL('image/png');
-
-    let heightLeft = imgHeight;
-    let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while(heightLeft > 0){
-      position -= pageHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
-
-    // El disclaimer va si o si en una hoja nueva al final del reporte
-    pdf.addPage();
-    const discHeight = canvasDisc.height * imgWidth / canvasDisc.width;
-    pdf.addImage(canvasDisc.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, Math.min(discHeight, pageHeight));
-
-    const monedaSlug = selection.moneda === 'Dólar' ? 'usd' : 'ars';
-    const fechaSlug = DATA.asOfDate || '';
-    const tipoSlug = isCustom() ? 'personalizada' : 'sugerida';
-    pdf.save(`cartera-${tipoSlug}-balanz-${monedaSlug}-${fechaSlug}.pdf`);
-  } catch(err){
-    console.error('Error generando el PDF:', err);
-    alert('No se pudo generar el PDF. Probá de nuevo en unos segundos.');
-  } finally{
-    btn.disabled = false;
-    btn.innerHTML = originalHtml;
-  }
-});
 
 </script>
 </body>
