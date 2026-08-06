@@ -6,7 +6,7 @@
       "has": [
         {
           "type": "host",
-          "value": "calculadora-patrimonio.*\\.vercel\\.app"
+          "value": "calculadora-patrimonio-futuro.*\\.vercel\\.app"
         }
       ],
       "destination": "/patrimonio.html"
