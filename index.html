@@ -10,6 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   // Fallback por si cdnjs esta bloqueado en la red del usuario
   if (typeof Chart === 'undefined') {
@@ -23,6 +24,9 @@
   }
   if (typeof window.jspdf === 'undefined') {
     document.write('<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"><\/script>');
+  }
+  if (typeof XLSX === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
   }
 </script>
 <style>
@@ -1144,55 +1148,137 @@ let DATES = [];
 let HIST_RAW = {};
 
 
-// Matriz de ponderaciones: [moneda][perfil][horizonte] -> { fondo: %peso }
-const PORTFOLIOS = {
-  'Pesos': {
-    'Conservador': {
-      '<1m':  { 'Money Market': 100 },
-      '<3m':  { 'Money Market': 50, 'Ahorro corto plazo': 50 },
-      '<6m':  { 'Ahorro corto plazo': 60, 'ONs': 40 },
-      '<12m': { 'Inflation linked': 60, 'ONs': 20, 'Ahorro corto plazo': 20 },
-      '>12m': { 'Inflation linked': 50, 'Opportunity': 25, 'ONs': 25 },
-    },
-    'Moderado': {
-      '<1m':  { 'Money Market': 100 },
-      '<3m':  { 'Money Market': 25, 'Ahorro corto plazo': 75 },
-      '<6m':  { 'Ahorro corto plazo': 60, 'Inflation linked': 40 },
-      '<12m': { 'Inflation linked': 50, 'Opportunity': 25, 'ONs': 25 },
-      '>12m': { 'Inflation linked': 50, 'Opportunity': 50 },
-    },
-    'Audaz': {
-      '<1m':  { 'Money Market': 50, 'Lecaps': 50 },
-      '<3m':  { 'Ahorro corto plazo': 50, 'Lecaps': 50 },
-      '<6m':  { 'Inflation linked': 60, 'Lecaps': 20, 'Ahorro corto plazo': 20 },
-      '<12m': { 'Renta Mixta': 50, 'Inflation linked': 25, 'Opportunity': 25 },
-      '>12m': { 'Equity Selection': 50, 'Balanz Long Pesos': 50 },
-    },
-  },
-  'Dólar': {
-    'Conservador': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Balanz Money Market USD': 100 },
-      '<6m':  { 'Balanz Money Market USD': 50, 'Dolar Corto Plazo': 50 },
-      '<12m': { 'Dolar Corto Plazo': 100 },
-      '>12m': { 'Dolar Corto Plazo': 75, 'Latam': 25 },
-    },
-    'Moderado': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Balanz Money Market USD': 50, 'Dolar Corto Plazo': 50 },
-      '<6m':  { 'Dolar Corto Plazo': 100 },
-      '<12m': { 'Dolar Corto Plazo': 50, 'Corporativo': 25, 'Latam': 25 },
-      '>12m': { 'Dolar Corto Plazo': 25, 'Corporativo': 25, 'Latam': 50 },
-    },
-    'Audaz': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Dolar Corto Plazo': 100 },
-      '<6m':  { 'Dolar Corto Plazo': 25, 'Corporativo': 50, 'Latam': 25 },
-      '<12m': { 'Dolar Corto Plazo': 25, 'Corporativo': 50, 'Latam': 25 },
-      '>12m': { 'Corporativo': 50, 'Soberano': 50 },
-    },
-  },
-};
+/* ---------------------------------------------------------------------
+   Matriz de ponderaciones: [moneda][perfil][horizonte] -> { fondo: %peso }
+
+   Ya NO esta hardcodeada: se arma leyendo carteras.xlsx (hoja "Carteras"),
+   que vive junto a este HTML en el repositorio. Editando ese archivo y
+   subiendolo cambian las carteras sugeridas sin tocar el codigo.
+
+   No hay copia de respaldo en el codigo a proposito: si el archivo no se
+   puede leer la pagina avisa con un error, en lugar de seguir mostrando en
+   silencio ponderaciones viejas distintas a las del Excel.
+--------------------------------------------------------------------- */
+let PORTFOLIOS = {};
+
+// Combinaciones que la web espera encontrar en el archivo
+const MONEDAS_VALIDAS    = ['Pesos', 'Dólar'];
+const PERFILES_VALIDOS   = ['Conservador', 'Moderado', 'Audaz'];
+const HORIZONTES_VALIDOS = ['<1m', '<3m', '<6m', '<12m', '>12m'];
+
+// Filas del Excel cuyo total no da 100%: se avisa al elegir esa cartera
+let CARTERAS_INCONSISTENTES = {};
+
+function claveCartera(moneda, perfil, horizonte){
+  return `${moneda}|${perfil}|${horizonte}`;
+}
+
+/* Convierte la hoja "Carteras" en la matriz PORTFOLIOS.
+   Layout esperado: fila de encabezados con Moneda / Perfil / Horizonte y
+   despues una columna por fondo (mas una columna Total, que se ignora
+   porque es solo un control visual dentro del Excel). */
+function parseCarteras(workbook){
+  const hoja = workbook.Sheets['Carteras'];
+  if(!hoja) throw new Error('carteras.xlsx no tiene una hoja llamada "Carteras".');
+
+  // header:1 -> cada fila es un array, sin inferir encabezados
+  const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, blankrows: false });
+
+  // La fila de encabezados es la primera que arranca con "Moneda"
+  const hdrIdx = filas.findIndex(f => String(f[0] || '').trim() === 'Moneda');
+  if(hdrIdx === -1) throw new Error('No se encontró la fila de encabezados (la que empieza con "Moneda").');
+
+  const hdr = filas[hdrIdx].map(v => String(v == null ? '' : v).trim());
+  if(hdr[1] !== 'Perfil' || hdr[2] !== 'Horizonte'){
+    throw new Error('Los encabezados deben ser Moneda, Perfil y Horizonte en las tres primeras columnas.');
+  }
+
+  // Columnas de fondos: de la cuarta en adelante, salvo la de control "Total"
+  const cols = [];
+  for(let c = 3; c < hdr.length; c++){
+    if(!hdr[c] || hdr[c].toLowerCase() === 'total') continue;
+    cols.push({ c, fondo: hdr[c] });
+  }
+  if(!cols.length) throw new Error('No se encontró ninguna columna de fondos en la hoja "Carteras".');
+
+  const out = {};
+  const inconsistentes = {};
+
+  for(let r = hdrIdx + 1; r < filas.length; r++){
+    const fila = filas[r];
+    const moneda    = String(fila[0] == null ? '' : fila[0]).trim();
+    const perfil    = String(fila[1] == null ? '' : fila[1]).trim();
+    const horizonte = String(fila[2] == null ? '' : fila[2]).trim();
+    if(!moneda && !perfil && !horizonte) continue;
+
+    // Filas con valores no reconocidos se saltean en vez de romper el parseo
+    if(!MONEDAS_VALIDAS.includes(moneda) ||
+       !PERFILES_VALIDOS.includes(perfil) ||
+       !HORIZONTES_VALIDOS.includes(horizonte)){
+      console.warn(`carteras.xlsx: fila ${r + 1} ignorada (moneda/perfil/horizonte no reconocido):`,
+                   moneda, perfil, horizonte);
+      continue;
+    }
+
+    const pesos = {};
+    let total = 0;
+    const encontrados = [];
+    cols.forEach(({ c, fondo })=>{
+      const raw = fila[c];
+      if(raw === null || raw === undefined || raw === '') return;
+      // Las celdas estan formateadas como porcentaje, asi que 50% se guarda
+      // como 0.5: se pasa a la escala entera que usa el resto del codigo.
+      const pct = Math.round(Number(raw) * 100);
+      if(!isFinite(pct) || pct <= 0) return;
+      encontrados.push({ fondo, pct });
+      total += pct;
+    });
+
+    // Se ordena por peso descendente (y alfabetico ante empate) para que la
+    // cartera siempre se muestre con la posicion mas grande arriba, sin
+    // depender del orden de las columnas del Excel.
+    encontrados
+      .sort((a, b)=> b.pct - a.pct || a.fondo.localeCompare(b.fondo, 'es'))
+      .forEach(({ fondo, pct })=>{ pesos[fondo] = pct; });
+
+    out[moneda] = out[moneda] || {};
+    out[moneda][perfil] = out[moneda][perfil] || {};
+    out[moneda][perfil][horizonte] = pesos;
+
+    if(total !== 100) inconsistentes[claveCartera(moneda, perfil, horizonte)] = total;
+  }
+
+  // Todas las combinaciones tienen que existir, si no la web queda con huecos
+  const faltantes = [];
+  MONEDAS_VALIDAS.forEach(m => PERFILES_VALIDOS.forEach(p => HORIZONTES_VALIDOS.forEach(h=>{
+    if(!out[m] || !out[m][p] || !out[m][p][h]) faltantes.push(`${m} / ${p} / ${h}`);
+  })));
+  if(faltantes.length){
+    throw new Error(`Faltan combinaciones en carteras.xlsx: ${faltantes.join(' · ')}.`);
+  }
+
+  if(Object.keys(inconsistentes).length){
+    console.warn('carteras.xlsx: carteras que no suman 100%:', inconsistentes);
+  }
+
+  return { portfolios: out, inconsistentes };
+}
+
+function cargarCarteras(){
+  if(typeof XLSX === 'undefined'){
+    return Promise.reject(new Error('No se pudo cargar la librería para leer archivos Excel (SheetJS).'));
+  }
+  return fetch('carteras.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró carteras.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      const { portfolios, inconsistentes } = parseCarteras(XLSX.read(buf, { type: 'array' }));
+      PORTFOLIOS = portfolios;
+      CARTERAS_INCONSISTENTES = inconsistentes;
+    });
+}
 
 const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6m':'Menos de 6 meses', '<12m':'Menos de 12 meses', '>12m':'Más de 12 meses' };
 
@@ -2034,7 +2120,9 @@ function buildCarteraRows(){
   const monto = parseMonto(document.getElementById('montoInput').value);
   const entries = isCustom()
     ? customPortfolio.map(it => [it.nombre, Number(it.pct) || 0])
-    : Object.entries(PORTFOLIOS[selection.moneda][selection.perfil][selection.horizonte]);
+    : Object.entries(
+        ((PORTFOLIOS[selection.moneda] || {})[selection.perfil] || {})[selection.horizonte] || {}
+      );
 
   return entries.map(([nombre, pct])=>{
     const fund = fundByName(nombre);
@@ -2127,7 +2215,25 @@ function renderCarteraTotals(rows, custom){
        <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`;
 
   const warn = document.getElementById('pctWarning');
-  if(!custom || !rows.length){
+
+  // En cartera sugerida los % vienen del Excel: si esa combinacion no suma
+  // 100% hay que avisarlo, porque es un error de carga y no del usuario.
+  if(!custom){
+    const desvio = CARTERAS_INCONSISTENTES[
+      claveCartera(selection.moneda, selection.perfil, selection.horizonte)
+    ];
+    if(desvio === undefined || !rows.length){
+      warn.style.display = 'none';
+    } else {
+      warn.style.display = 'block';
+      warn.className = 'pct-warning err';
+      warn.textContent = `⚠ En carteras.xlsx esta combinación suma ${desvio}% en lugar de 100%. `
+        + 'Los montos que se muestran abajo están calculados sobre esos porcentajes.';
+    }
+    return;
+  }
+
+  if(!rows.length){
     warn.style.display = 'none';
     return;
   }
@@ -2473,21 +2579,28 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
   document.getElementById('loginOverlay').style.display = 'none';
 });
 
-// Carga inicial: trae data.csv (mismo directorio que este archivo) y arma el tablero.
-fetch('data.csv')
-  .then(r=>{
-    if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
-    return r.text();
-  })
-  .then(text=>{
-    const parsed = buildDatasetFromCsvRows(parseCsvText(text));
-    if(!parsed.dates.length) throw new Error('data.csv no tiene filas de datos válidas.');
+// Carga inicial: trae data.csv (los VCP) y carteras.xlsx (las ponderaciones),
+// ambos en el mismo directorio que este archivo, y arma el tablero.
+Promise.all([
+  fetch('data.csv')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
+      return r.text();
+    })
+    .then(text=>{
+      const parsed = buildDatasetFromCsvRows(parseCsvText(text));
+      if(!parsed.dates.length) throw new Error('data.csv no tiene filas de datos válidas.');
+      return parsed;
+    }),
+  cargarCarteras(),
+])
+  .then(([parsed])=>{
     applyParsedDataset(parsed);
     hideLoadingOverlay();
     initUI();
   })
   .catch(err=>{
-    console.error('Error cargando data.csv:', err);
+    console.error('Error cargando los datos:', err);
     showLoadError(err);
   });
 
