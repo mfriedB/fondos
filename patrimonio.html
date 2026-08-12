@@ -509,17 +509,17 @@
     align-items:flex-start;
     gap:10px;
     padding:12px 16px;
-    background:#EAF6F0;
-    border:1px solid #C9E9D8;
+    background:#EEF1FC;
+    border:1px solid #C9D3F0;
     border-radius:9px;
     margin-bottom:22px;
   }
   .moneda-fija .mf-dot{
     width:9px; height:9px; border-radius:50%;
-    background:var(--pos); margin-top:5px; flex:none;
+    background:var(--accent); margin-top:5px; flex:none;
   }
-  .moneda-fija strong{ display:block; font-size:13.5px; color:#0B6B4A; }
-  .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3D6A59; margin-top:2px; }
+  .moneda-fija strong{ display:block; font-size:13.5px; color:var(--navy); }
+  .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3B4670; margin-top:2px; }
 
   /* Calculadora de patrimonio futuro */
   .pf-modes{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
@@ -1177,32 +1177,38 @@ function filasDesdeExcel(buf){
 
 const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6m':'Menos de 6 meses', '<12m':'Menos de 12 meses', '>12m':'Más de 12 meses' };
 
-// Links a los factsheets (PDF) de cada fondo
-const FACTSHEET_URLS = {
-  'Acciones': 'https://cms.balanz.com/PFS/114112_20260630.acciones.esp.pdf',
-  'Ahorro corto plazo': 'https://cms.balanz.com/PFS/114149_20260630.ahorrocortoplazo.esp.pdf',
-  'Balanz Capital Pymes': 'https://cms.balanz.com/PFS/114126_20260630.pymes.esp.pdf',
-  'Balanz Crecimiento': 'https://cms.balanz.com/PFS/114120_20260630.crecimiento.esp.pdf',
-  'Balanz Crédito Privado': 'https://cms.balanz.com/PFS/114151_20260630.creditoprivado.esp.pdf',
-  'Balanz Desarrollo FCI': 'https://cms.balanz.com/PFS/114122_20260630.desarrollo.esp.pdf',
-  'Balanz Infraestructura FCI': 'https://cms.balanz.com/PFS/114124_20260630.infraestructura.esp.pdf',
-  'Balanz Long Pesos': 'https://cms.balanz.com/PFS/114136_20260630.long.esp.pdf',
-  'Balanz Money Market USD': 'https://cms.balanz.com/PFS/114101_20260630.moneymarketusd.esp.pdf',
-  'Corporativo': 'https://cms.balanz.com/PFS/114095_20260630.corporativo.esp.pdf',
-  'Dolar Corto Plazo': 'https://cms.balanz.com/PFS/114097_20260630.dolarcortoplazo.esp.pdf',
-  'Dolar Linked': 'https://cms.balanz.com/PFS/114132_20260630.dolarlinked.esp.pdf',
-  'Equity Selection': 'https://cms.balanz.com/PFS/114114_20260630.equityselection.esp.pdf',
-  'Inflation linked': 'https://cms.balanz.com/PFS/114134_20260630.institucional.esp.pdf',
-  'Latam': 'https://cms.balanz.com/PFS/114099_20260630.latam.esp.pdf',
-  'Latam (SIN Arg)': 'https://cms.balanz.com/PFS/114107_20260630.latamsinarg.esp.pdf',
-  'Lecaps': 'https://cms.balanz.com/PFS/114153_20260630.lecaps.esp.pdf',
-  'Money Market': 'https://cms.balanz.com/PFS/114155_20260630.moneymarket.esp.pdf',
-  'ONs': 'https://cms.balanz.com/PFS/114143_20260630.ons.esp.pdf',
-  'Opportunity': 'https://cms.balanz.com/PFS/114138_20260630.opportunity.esp.pdf',
-  'Renta Mixta': 'https://cms.balanz.com/PFS/114116_20260630.rentamixta.esp.pdf',
-  'Soberano': 'https://cms.balanz.com/PFS/114109_20260630.soberano.esp.pdf',
-  'Soja': 'https://cms.balanz.com/PFS/114118_20260630.soja.esp.pdf',
-};
+/* ---------------------------------------------------------------------
+   Links a los factsheets (PDF) de cada fondo
+
+   Se leen de factsheets.json en vez de estar hardcodeados: ese archivo lo
+   regenera solo, una vez por mes, el workflow de GitHub Actions
+   ".github/workflows/update-factsheets.yml", que visita la pagina de cada
+   fondo en fondosbalanz.com y extrae el link vigente de "Factsheet en
+   Español" (ver scripts/update-factsheets.mjs). Así no hace falta ir
+   actualizando a mano 20+ links cada vez que Balanz sube el factsheet
+   nuevo del mes.
+
+   No se puede resolver esto con un fetch() directo a fondosbalanz.com
+   desde esta misma pagina: ese sitio no manda headers CORS que lo
+   permitan, así que el navegador bloquearía la respuesta. factsheets.json
+   sí se puede leer porque es un fetch al mismo origen (este repositorio).
+
+   Si el archivo no carga (o un fondo no está en él) el nombre se muestra
+   como texto plano, igual que si nunca hubiera tenido link.
+--------------------------------------------------------------------- */
+let FACTSHEET_URLS = {};
+
+function cargarFactsheets(){
+  return fetch('factsheets.json')
+    .then(r=> r.ok ? r.json() : {})
+    .then(data=>{
+      FACTSHEET_URLS = data || {};
+    })
+    .catch(err=>{
+      console.warn('No se pudo cargar factsheets.json; los fondos quedan sin link a factsheet.', err);
+      FACTSHEET_URLS = {};
+    });
+}
 
 // Envuelve el nombre del fondo en un link al factsheet si hay URL disponible; si no, lo deja como texto plano
 function fondoNameHtml(nombre){
@@ -2561,8 +2567,8 @@ fetch('tir_fondos.csv')
     console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
   });
 
-// Carga inicial: trae data.xlsx (los VCP) y carteras.xlsx (las ponderaciones),
-// ambos en el mismo directorio que este archivo, y arma el tablero.
+// Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones)
+// y factsheets.json (los links a los PDF), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -2575,6 +2581,7 @@ Promise.all([
       return parsed;
     }),
   cargarCarteras(),
+  cargarFactsheets(),   // si falla, deja FACTSHEET_URLS vacío y no bloquea el resto
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
