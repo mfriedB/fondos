@@ -546,12 +546,12 @@
   .moneda-fija strong{ display:block; font-size:13.5px; color:var(--navy); }
   .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3B4670; margin-top:2px; }
 
-  /* Costo de oportunidad: cuatro tarjetas en grilla para comparar ahorro parado vs. invertido */
+  /* Costo de oportunidad: cuatro tarjetas en grilla para comparar ahorro parado vs. invertido,
+     más dos tarjetas de diferencia a ancho completo debajo */
   .co-grid{
-    display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:6px;
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:6px;
   }
-  @media (max-width:900px){ .co-grid{ grid-template-columns:repeat(2, 1fr); } }
-  @media (max-width:480px){ .co-grid{ grid-template-columns:1fr; } }
+  @media (max-width:560px){ .co-grid{ grid-template-columns:1fr; } }
   .co-card{
     padding:16px 16px; border-radius:12px; color:#fff;
     background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
@@ -566,7 +566,22 @@
   }
   .co-card-value{ font-size:23px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
   .co-card-sub{ font-size:11px; color:rgba(255,255,255,0.78); margin-top:5px; line-height:1.4; }
+  .co-card-diff{
+    grid-column:1 / -1; text-align:center; padding:18px 16px;
+  }
+  .co-card-diff .co-card-label{ text-align:center; }
+  .co-card-diff .co-card-value{ font-size:28px; }
+  .co-card-diff .co-card-sub{ font-size:13px; font-weight:700; color:#fff; }
   .co-note{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+  /* Leyenda propia del gráfico de evolución del poder de compra, arriba del canvas
+     (en vez de la leyenda nativa de Chart.js, que quedaba pegada al eje Y) */
+  .co-evol-legend{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    font-size:12.5px; font-weight:600; color:#3B4670; margin-bottom:2px;
+  }
+  .co-evol-legend .cel-item{ display:flex; align-items:center; gap:6px; }
+  .co-evol-legend .cel-dot{ width:10px; height:10px; border-radius:50%; flex:none; }
 
   /* Calculadora de patrimonio futuro */
   .pf-modes{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
@@ -1062,20 +1077,30 @@
           <div class="co-card-value" id="coMontoInicialValue">&mdash;</div>
           <div class="co-card-sub" id="coMontoInicialSub"></div>
         </div>
-        <div class="co-card co-card-neg">
-          <div class="co-card-label">Poder de compra hoy (sin invertir)</div>
-          <div class="co-card-value" id="coPoderCompraValue">&mdash;</div>
-          <div class="co-card-sub" id="coPoderCompraSub"></div>
-        </div>
         <div class="co-card co-card-accent">
           <div class="co-card-label">Nominal hoy si lo invert&iacute;as</div>
           <div class="co-card-value" id="coConInvertirValue">&mdash;</div>
           <div class="co-card-sub" id="coConInvertirSub"></div>
         </div>
+        <div class="co-card co-card-neg">
+          <div class="co-card-label">Poder de compra hoy (sin invertir)</div>
+          <div class="co-card-value" id="coPoderCompraValue">&mdash;</div>
+          <div class="co-card-sub" id="coPoderCompraSub"></div>
+        </div>
         <div class="co-card co-card-pos">
           <div class="co-card-label">Poder de compra hoy (invertido)</div>
           <div class="co-card-value" id="coPoderCompraInvertidoValue">&mdash;</div>
           <div class="co-card-sub" id="coPoderCompraInvertidoSub"></div>
+        </div>
+        <div class="co-card co-card-diff co-card-neutral">
+          <div class="co-card-label">Diferencia nominal: invertido vs. ahorrado</div>
+          <div class="co-card-value" id="coDiffNominalValue">&mdash;</div>
+          <div class="co-card-sub" id="coDiffNominalSub"></div>
+        </div>
+        <div class="co-card co-card-diff co-card-pos">
+          <div class="co-card-label">Diferencia de poder de compra: invertido vs. parado</div>
+          <div class="co-card-value" id="coDiffPoderValue">&mdash;</div>
+          <div class="co-card-sub" id="coDiffPoderSub"></div>
         </div>
       </div>
 
@@ -1097,6 +1122,15 @@
         Mismo monto inicial, dos caminos: el poder de compra a&ntilde;o a a&ntilde;o si lo dejabas parado, contra si lo hub&iacute;as invertido a la
         TIR ponderada de la cartera elegida. Ambas l&iacute;neas est&aacute;n en d&oacute;lares constantes (deflactadas por CPI-U).
       </p>
+
+      <div class="chart-header">
+        <div class="hist-subtitle" id="coEvolSubtitle"></div>
+        <div class="co-evol-legend" id="coEvolLegend">
+          <span class="cel-item"><span class="cel-dot" style="background:#C43D3D;"></span>Ahorro parado</span>
+          <span class="cel-item"><span class="cel-dot" style="background:#0F8A5F;"></span>Invertido en la cartera</span>
+        </div>
+      </div>
+
       <div class="hist-chart-wrap"><canvas id="coEvolChart"></canvas></div>
     </section>
 
@@ -2897,6 +2931,12 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
   const dataAhorro = puntos.map(p => +p.ahorro.toFixed(2));
   const dataInvertido = puntos.map(p => +p.invertido.toFixed(2));
 
+  const ultimo = puntos[puntos.length - 1];
+  const diffFinal = ultimo.invertido - ultimo.ahorro;
+  document.getElementById('coEvolSubtitle').innerHTML =
+    `${labels[0]} → ${labels[labels.length - 1]} · Diferencia final: `
+    + `<strong class="${diffFinal >= 0 ? 'pos' : 'neg'}">${diffFinal >= 0 ? '+' : ''}${fmtMoney(diffFinal, 'Dólar')}</strong>`;
+
   const ctx = document.getElementById('coEvolChart').getContext('2d');
   if(coEvolChartInstance) coEvolChartInstance.destroy();
   coEvolChartInstance = new Chart(ctx, {
@@ -2905,25 +2945,25 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
       labels,
       datasets: [
         {
-          label: 'Ahorro parado (poder de compra)',
+          label: 'Ahorro parado',
           data: dataAhorro,
           borderColor: '#C43D3D',
           backgroundColor: 'rgba(196,61,61,0.08)',
           borderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          fill: true,
           tension: 0.15,
         },
         {
-          label: 'Invertido en la cartera (poder de compra)',
+          label: 'Invertido en la cartera',
           data: dataInvertido,
           borderColor: '#0F8A5F',
           backgroundColor: 'rgba(15,138,95,0.08)',
           borderWidth: 2,
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          fill: false,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          fill: true,
           tension: 0.15,
         },
       ],
@@ -2931,14 +2971,10 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 10 } },
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          align: 'start',
-          labels: { boxWidth: 12, boxHeight: 12, font: { size: 11.5, weight: '600' }, color: '#3B4670' }
-        },
+        legend: { display: false },
         tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmtMoney(c.parsed.y, 'Dólar')}` } },
         datalabels: { display: false },
       },
@@ -3024,6 +3060,10 @@ function renderCostoOportunidad(){
     document.getElementById('coConInvertirSub').textContent = '';
     document.getElementById('coPoderCompraInvertidoValue').textContent = '—';
     document.getElementById('coPoderCompraInvertidoSub').textContent = '';
+    document.getElementById('coDiffNominalValue').textContent = '—';
+    document.getElementById('coDiffNominalSub').textContent = '';
+    document.getElementById('coDiffPoderValue').textContent = '—';
+    document.getElementById('coDiffPoderSub').textContent = '';
     bdInf.innerHTML = `
       <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
       <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
@@ -3060,12 +3100,25 @@ function renderCostoOportunidad(){
   document.getElementById('coPoderCompraInvertidoSub').textContent =
     `${rendimientoRealPct >= 0 ? '+' : ''}${(rendimientoRealPct * 100).toFixed(1)}% neto de inflación vs. el monto original.`;
 
+  const diffNominal = valorInvertidoNominal - monto;
+  const diffNominalPct = diffNominal / monto;
+  document.getElementById('coDiffNominalValue').textContent =
+    `${diffNominal >= 0 ? '+' : ''}${fmtMoney(diffNominal, 'Dólar')}`;
+  document.getElementById('coDiffNominalSub').textContent =
+    `${diffNominalPct >= 0 ? '+' : ''}${(diffNominalPct * 100).toFixed(1)}%`;
+
+  const diffPoder = poderCompraInvertido - poderCompraHoy;
+  const diffPoderPct = diffPoder / poderCompraHoy;
+  document.getElementById('coDiffPoderValue').textContent =
+    `${diffPoder >= 0 ? '+' : ''}${fmtMoney(diffPoder, 'Dólar')}`;
+  document.getElementById('coDiffPoderSub').textContent =
+    `${diffPoderPct >= 0 ? '+' : ''}${(diffPoderPct * 100).toFixed(1)}%`;
+
   bdInf.innerHTML = `
     <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
     <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>
     <div><div class="bd-label">Rendimiento nominal invertido</div><div class="bd-value">${(rendimientoNominalPct * 100).toFixed(1)}%</div></div>
-    <div><div class="bd-label">Rendimiento neto de inflación</div><div class="bd-value">${(rendimientoRealPct >= 0 ? '+' : '')}${(rendimientoRealPct * 100).toFixed(1)}%</div></div>
-    <div><div class="bd-label">Diferencia de poder de compra: invertido vs. parado</div><div class="bd-value">${fmtMoney(poderCompraInvertido - poderCompraHoy, 'Dólar')}</div></div>`;
+    <div><div class="bd-label">Rendimiento neto de inflación</div><div class="bd-value">${(rendimientoRealPct >= 0 ? '+' : '')}${(rendimientoRealPct * 100).toFixed(1)}%</div></div>`;
 
   renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im);
 }
