@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
   // Fallback por si cdnjs esta bloqueado en la red del usuario
   if (typeof Chart === 'undefined') {
@@ -15,6 +16,9 @@
   }
   if (typeof ChartDataLabels === 'undefined') {
     document.write('<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"><\/script>');
+  }
+  if (typeof XLSX === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
   }
 </script>
 <style>
@@ -200,7 +204,6 @@
   }
   .admin-message.ok{ display:block; background:var(--pos-bg); color:var(--pos); }
   .admin-message.err{ display:block; background:var(--neg-bg); color:var(--neg); }
-  .csv-help{ margin-top:14px; font-size:13px; color:var(--muted); }
   code{
     background:#EEF1FC;
     color:var(--navy);
@@ -208,14 +211,6 @@
     border-radius:4px;
     font-family:'JetBrains Mono',monospace;
     font-size:12px;
-  }
-  .csv-help pre{
-    background:#F5F6FB;
-    padding:10px 12px;
-    border-radius:6px;
-    font-size:12px;
-    overflow-x:auto;
-    font-family:'JetBrains Mono',monospace;
   }
 
   /* Filters */
@@ -663,7 +658,7 @@
   }
   .page-disclaimer p:last-child{ margin-bottom:0; }
   .page-disclaimer p.disc-legal{ font-size:9.5px; }
-  /* Overlay de carga inicial de datos (fetch de data.csv) */
+  /* Overlay de carga inicial de datos (fetch de data.xlsx) */
   /* Pantalla de acceso (mail corporativo + contraseña) */
   .login-overlay{
     position:fixed;
@@ -760,7 +755,7 @@
     <div class="loading-box">
       <div class="loading-spinner"></div>
       <div class="loading-title">Cargando datos de cuotapartes…</div>
-      <div class="loading-detail">Leyendo data.csv</div>
+      <div class="loading-detail">Leyendo data.xlsx</div>
     </div>
   </div>
 
@@ -989,32 +984,196 @@ let DATES = [];
 let HIST_RAW = {};
 
 
-// Matriz de ponderaciones: [moneda][perfil][horizonte] -> { fondo: %peso }
-const PORTFOLIOS = {
-  'Dólar': {
-    'Conservador': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Balanz Money Market USD': 100 },
-      '<6m':  { 'Balanz Money Market USD': 50, 'Dolar Corto Plazo': 50 },
-      '<12m': { 'Dolar Corto Plazo': 100 },
-      '>12m': { 'Dolar Corto Plazo': 75, 'Latam': 25 },
-    },
-    'Moderado': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Balanz Money Market USD': 50, 'Dolar Corto Plazo': 50 },
-      '<6m':  { 'Dolar Corto Plazo': 100 },
-      '<12m': { 'Dolar Corto Plazo': 50, 'Corporativo': 25, 'Latam': 25 },
-      '>12m': { 'Dolar Corto Plazo': 25, 'Corporativo': 25, 'Latam': 50 },
-    },
-    'Audaz': {
-      '<1m':  { 'Balanz Money Market USD': 100 },
-      '<3m':  { 'Dolar Corto Plazo': 100 },
-      '<6m':  { 'Dolar Corto Plazo': 25, 'Corporativo': 50, 'Latam': 25 },
-      '<12m': { 'Dolar Corto Plazo': 25, 'Corporativo': 50, 'Latam': 25 },
-      '>12m': { 'Corporativo': 50, 'Soberano': 50 },
-    },
-  },
-};
+/* ---------------------------------------------------------------------
+   Matriz de ponderaciones: [moneda][perfil][horizonte] -> { fondo: %peso }
+
+   Se arma leyendo carteras.xlsx (hoja "Carteras"), el mismo archivo que usa
+   index.html, tomando solo las filas cuya moneda es Dólar. Antes esta pagina
+   tenia su propia copia hardcodeada, que quedaba desincronizada cada vez que
+   se editaba el Excel.
+
+   No hay copia de respaldo en el codigo a proposito: si el archivo no se
+   puede leer la pagina avisa con un error, en lugar de seguir mostrando en
+   silencio ponderaciones viejas distintas a las del Excel.
+--------------------------------------------------------------------- */
+let PORTFOLIOS = {};
+
+// Esta pagina trabaja solo en Dolar MEP: las filas en Pesos del Excel se ignoran
+const MONEDA_UNICA      = 'Dólar';
+const PERFILES_VALIDOS   = ['Conservador', 'Moderado', 'Audaz'];
+const HORIZONTES_VALIDOS = ['<1m', '<3m', '<6m', '<12m', '>12m'];
+
+// Filas del Excel cuyo total no da 100%: se avisa al elegir esa cartera
+let CARTERAS_INCONSISTENTES = {};
+
+function claveCartera(perfil, horizonte){
+  return `${perfil}|${horizonte}`;
+}
+
+/* Convierte la hoja "Carteras" en la matriz PORTFOLIOS.
+   Layout esperado: fila de encabezados con Moneda / Perfil / Horizonte y
+   despues una columna por fondo (mas una columna Total, que se ignora porque
+   es solo un control visual dentro del Excel). */
+function parseCarteras(workbook){
+  const hoja = workbook.Sheets['Carteras'];
+  if(!hoja) throw new Error('carteras.xlsx no tiene una hoja llamada "Carteras".');
+
+  // header:1 -> cada fila es un array, sin inferir encabezados
+  const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, blankrows: false });
+
+  // La fila de encabezados es la primera que arranca con "Moneda"
+  const hdrIdx = filas.findIndex(f => String(f[0] || '').trim() === 'Moneda');
+  if(hdrIdx === -1) throw new Error('No se encontró la fila de encabezados (la que empieza con "Moneda").');
+
+  const hdr = filas[hdrIdx].map(v => String(v == null ? '' : v).trim());
+  if(hdr[1] !== 'Perfil' || hdr[2] !== 'Horizonte'){
+    throw new Error('Los encabezados deben ser Moneda, Perfil y Horizonte en las tres primeras columnas.');
+  }
+
+  // Columnas de fondos: de la cuarta en adelante, salvo la de control "Total"
+  const cols = [];
+  for(let c = 3; c < hdr.length; c++){
+    if(!hdr[c] || hdr[c].toLowerCase() === 'total') continue;
+    cols.push({ c, fondo: hdr[c] });
+  }
+  if(!cols.length) throw new Error('No se encontró ninguna columna de fondos en la hoja "Carteras".');
+
+  const out = {};
+  const inconsistentes = {};
+
+  for(let r = hdrIdx + 1; r < filas.length; r++){
+    const fila = filas[r];
+    const moneda    = String(fila[0] == null ? '' : fila[0]).trim();
+    const perfil    = String(fila[1] == null ? '' : fila[1]).trim();
+    const horizonte = String(fila[2] == null ? '' : fila[2]).trim();
+
+    // Las filas en Pesos son normales en este archivo: se saltean sin avisar
+    if(moneda !== MONEDA_UNICA) continue;
+
+    if(!PERFILES_VALIDOS.includes(perfil) || !HORIZONTES_VALIDOS.includes(horizonte)){
+      console.warn(`carteras.xlsx: fila ${r + 1} ignorada (perfil u horizonte no reconocido):`,
+                   perfil, horizonte);
+      continue;
+    }
+
+    const pesos = {};
+    let total = 0;
+    const encontrados = [];
+    cols.forEach(({ c, fondo })=>{
+      const raw = fila[c];
+      if(raw === null || raw === undefined || raw === '') return;
+      // Las celdas estan formateadas como porcentaje, asi que 50% se guarda
+      // como 0.5: se pasa a la escala entera que usa el resto del codigo.
+      const pct = Math.round(Number(raw) * 100);
+      if(!isFinite(pct) || pct <= 0) return;
+      encontrados.push({ fondo, pct });
+      total += pct;
+    });
+
+    // Se ordena por peso descendente (y alfabetico ante empate) para que la
+    // cartera siempre se muestre con la posicion mas grande arriba.
+    encontrados
+      .sort((a, b)=> b.pct - a.pct || a.fondo.localeCompare(b.fondo, 'es'))
+      .forEach(({ fondo, pct })=>{ pesos[fondo] = pct; });
+
+    out[perfil] = out[perfil] || {};
+    out[perfil][horizonte] = pesos;
+
+    if(total !== 100) inconsistentes[claveCartera(perfil, horizonte)] = total;
+  }
+
+  // Las 15 combinaciones en Dolar tienen que existir, si no la web queda con huecos
+  const faltantes = [];
+  PERFILES_VALIDOS.forEach(p => HORIZONTES_VALIDOS.forEach(h=>{
+    if(!out[p] || !out[p][h]) faltantes.push(`${p} / ${h}`);
+  }));
+  if(faltantes.length){
+    throw new Error(`Faltan combinaciones en dólares en carteras.xlsx: ${faltantes.join(' · ')}.`);
+  }
+
+  if(Object.keys(inconsistentes).length){
+    console.warn('carteras.xlsx: carteras que no suman 100%:', inconsistentes);
+  }
+
+  return { portfolios: { [MONEDA_UNICA]: out }, inconsistentes };
+}
+
+function cargarCarteras(){
+  if(typeof XLSX === 'undefined'){
+    return Promise.reject(new Error('No se pudo cargar la librería para leer archivos Excel (SheetJS).'));
+  }
+  return fetch('carteras.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró carteras.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      const { portfolios, inconsistentes } = parseCarteras(XLSX.read(buf, { type: 'array' }));
+      PORTFOLIOS = portfolios;
+      CARTERAS_INCONSISTENTES = inconsistentes;
+    });
+}
+
+/* ---------------------------------------------------------------------
+   Lectura de data.xlsx (los VCP), igual que en index.html
+--------------------------------------------------------------------- */
+
+function dosDigitos(n){ return String(n).padStart(2, '0'); }
+
+// Excel guarda las fechas como cantidad de dias desde su epoch. Se usan los
+// getters UTC a proposito: con los locales, un navegador en GMT-3 devolveria
+// el dia anterior y todas las series quedarian corridas un dia.
+function fechaISODesdeSerial(serial, base1904){
+  const offset = base1904 ? 24107 : 25569;   // dias entre el epoch de Excel y el de Unix
+  const d = new Date(Math.round((serial - offset) * 86400000));
+  if(isNaN(d.getTime())) return '';
+  return `${d.getUTCFullYear()}-${dosDigitos(d.getUTCMonth() + 1)}-${dosDigitos(d.getUTCDate())}`;
+}
+
+function fechaISODesdeDate(d){
+  if(isNaN(d.getTime())) return '';
+  return `${d.getUTCFullYear()}-${dosDigitos(d.getUTCMonth() + 1)}-${dosDigitos(d.getUTCDate())}`;
+}
+
+/* Convierte data.xlsx en filas de texto con la misma forma que tenia el CSV,
+   para que buildDatasetFromRows() siga recibiendo lo mismo que antes. */
+function filasDesdeExcel(buf){
+  if(typeof XLSX === 'undefined'){
+    throw new Error('No se pudo cargar la librería para leer archivos Excel (SheetJS).');
+  }
+
+  // Sin cellDates: las fechas quedan como numero de serie y se convierten mas
+  // abajo, que es determinístico. Con cellDates la conversion depende de la
+  // zona horaria del navegador segun la version de la librería.
+  const wb = XLSX.read(buf, { type: 'array' });
+
+  // Se toma la primera hoja cuyo encabezado tenga Fecha y VCP, asi el nombre
+  // de la hoja que genere el proceso de exportacion no importa.
+  let filas = null;
+  for(const nombre of wb.SheetNames){
+    const f = XLSX.utils.sheet_to_json(wb.Sheets[nombre], { header: 1, blankrows: false, raw: true });
+    const h = (f[0] || []).map(v => String(v == null ? '' : v).trim());
+    if(h.includes('Fecha') && h.includes('VCP')){ filas = f; break; }
+  }
+  if(!filas){
+    throw new Error('data.xlsx no tiene ninguna hoja con las columnas Fecha y VCP.');
+  }
+
+  const base1904 = !!(wb.Workbook && wb.Workbook.WBProps && wb.Workbook.WBProps.date1904);
+  const header = filas[0].map(v => String(v == null ? '' : v).trim());
+  const colFecha = header.indexOf('Fecha');
+
+  return filas.map((fila, i)=>{
+    if(i === 0) return header;
+    return header.map((_, c)=>{
+      const v = fila[c];
+      if(v === null || v === undefined) return '';
+      if(v instanceof Date) return fechaISODesdeDate(v);
+      if(c === colFecha && typeof v === 'number') return fechaISODesdeSerial(v, base1904);
+      return String(v);
+    });
+  });
+}
 
 const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6m':'Menos de 6 meses', '<12m':'Menos de 12 meses', '>12m':'Más de 12 meses' };
 
@@ -1122,9 +1281,11 @@ function rebuildHistFilled(){
 }
 
 /* ---------------------------------------------------------------------
-   Carga de datos desde CSV (data.csv o archivo subido manualmente)
-   Formato esperado: Fecha,VCP,Fondo,Moneda,Categoria,Riesgo,Horizonte,Liquidacion
-   Se espera un CSV largo (una fila por fondo y fecha) desde enero 2025 a la fecha actual.
+   Parseo de las filas de datos
+
+   Formato esperado: Fecha, VCP, Fondo, Moneda, Categoria, Riesgo, Horizonte,
+   Liquidacion, con una fila por fondo y fecha desde enero 2025 a la fecha
+   actual. Las filas llegan desde data.xlsx via filasDesdeExcel().
 --------------------------------------------------------------------- */
 
 // Parser CSV simple que respeta comillas (el VCP viene entre comillas porque usa
@@ -1156,8 +1317,8 @@ function parseCsvText(text, sep){
   return rows.filter(r => r.length > 1 || (r.length === 1 && r[0].trim() !== ''));
 }
 
-// Construye { dates, histRaw, meta } a partir de las filas parseadas del CSV.
-function buildDatasetFromCsvRows(rows){
+// Construye { dates, histRaw, meta } a partir de las filas leidas del Excel.
+function buildDatasetFromRows(rows){
   if(!rows.length) throw new Error('El archivo está vacío.');
   const header = rows[0].map(h => h.replace(/^\uFEFF/, '').trim());
   const col = {
@@ -1173,7 +1334,7 @@ function buildDatasetFromCsvRows(rows){
   const requiredCols = ['fecha','vcp','fondo','moneda','categoria','riesgo','horizonte'];
   const missing = requiredCols.filter(k => col[k] === -1);
   if(missing.length){
-    throw new Error(`Faltan columnas en el CSV: ${missing.join(', ')}. Se esperan: Fecha, VCP, Fondo, Moneda, Categoria, Riesgo, Horizonte, Liquidacion.`);
+    throw new Error(`Faltan columnas en data.xlsx: ${missing.join(', ')}. Se esperan: Fecha, VCP, Fondo, Moneda, Categoria, Riesgo, Horizonte, Liquidacion.`);
   }
 
   const byFund = {};
@@ -1611,7 +1772,9 @@ function updateVisibility(){
 function buildCarteraRows(){
   const entries = isCustom()
     ? customPortfolio.map(it => [it.nombre, Number(it.pct) || 0])
-    : Object.entries(PORTFOLIOS[selection.moneda][selection.perfil][selection.horizonte]);
+    : Object.entries(
+        ((PORTFOLIOS[selection.moneda] || {})[selection.perfil] || {})[selection.horizonte] || {}
+      );
 
   return entries.map(([nombre, pct])=>{
     const fund = fundByName(nombre);
@@ -1705,7 +1868,23 @@ function renderCarteraTotals(rows, custom){
     : '<td colspan="4"></td>';
 
   const warn = document.getElementById('pctWarning');
-  if(!custom || !rows.length){
+
+  // En cartera sugerida los % vienen del Excel: si esa combinacion no suma
+  // 100% hay que avisarlo, porque es un error de carga y no del usuario.
+  if(!custom){
+    const desvio = CARTERAS_INCONSISTENTES[claveCartera(selection.perfil, selection.horizonte)];
+    if(desvio === undefined || !rows.length){
+      warn.style.display = 'none';
+    } else {
+      warn.style.display = 'block';
+      warn.className = 'pct-warning err';
+      warn.textContent = `⚠ En carteras.xlsx esta combinación suma ${desvio}% en lugar de 100%. `
+        + 'La proyección de abajo está calculada sobre esos porcentajes.';
+    }
+    return;
+  }
+
+  if(!rows.length){
     warn.style.display = 'none';
     return;
   }
@@ -2289,7 +2468,6 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
   document.getElementById('loginOverlay').style.display = 'none';
 });
 
-// Carga inicial: trae data.csv (mismo directorio que este archivo) y arma el tablero.
 /* ---------------------------------------------------------------------
    TIR / TNA / Duration por fondo (tir_fondos.csv, junto al HTML).
    Se usa para la calculadora de patrimonio futuro. La carga es opcional:
@@ -2364,7 +2542,7 @@ function parseTirCsv(text){
 // El archivo puede venir guardado en UTF-8 o en ANSI/Latin-1 (Excel en Windows
 // guarda asi por defecto). Se prueba UTF-8 estricto y, si falla, se reintenta
 // como Windows-1252, para que los acentos de los nombres de fondo no se rompan
-// y sigan coincidiendo con los de data.csv.
+// y sigan coincidiendo con los de data.xlsx.
 function decodificarCsv(buffer){
   try{
     return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
@@ -2383,20 +2561,28 @@ fetch('tir_fondos.csv')
     console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
   });
 
-fetch('data.csv')
-  .then(r=>{
-    if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
-    return r.text();
-  })
-  .then(text=>{
-    const parsed = buildDatasetFromCsvRows(parseCsvText(text));
-    if(!parsed.dates.length) throw new Error('data.csv no tiene filas de datos válidas.');
+// Carga inicial: trae data.xlsx (los VCP) y carteras.xlsx (las ponderaciones),
+// ambos en el mismo directorio que este archivo, y arma el tablero.
+Promise.all([
+  fetch('data.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró data.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      const parsed = buildDatasetFromRows(filasDesdeExcel(buf));
+      if(!parsed.dates.length) throw new Error('data.xlsx no tiene filas de datos válidas.');
+      return parsed;
+    }),
+  cargarCarteras(),
+])
+  .then(([parsed])=>{
     applyParsedDataset(parsed);
     hideLoadingOverlay();
     initUI();
   })
   .catch(err=>{
-    console.error('Error cargando data.csv:', err);
+    console.error('Error cargando los datos:', err);
     showLoadError(err);
   });
 

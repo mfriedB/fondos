@@ -212,7 +212,6 @@
   }
   .admin-message.ok{ display:block; background:var(--pos-bg); color:var(--pos); }
   .admin-message.err{ display:block; background:var(--neg-bg); color:var(--neg); }
-  .csv-help{ margin-top:14px; font-size:13px; color:var(--muted); }
   code{
     background:#EEF1FC;
     color:var(--navy);
@@ -220,14 +219,6 @@
     border-radius:4px;
     font-family:'JetBrains Mono',monospace;
     font-size:12px;
-  }
-  .csv-help pre{
-    background:#F5F6FB;
-    padding:10px 12px;
-    border-radius:6px;
-    font-size:12px;
-    overflow-x:auto;
-    font-family:'JetBrains Mono',monospace;
   }
 
   /* Filters */
@@ -732,7 +723,7 @@
   }
   .page-disclaimer p:last-child{ margin-bottom:0; }
   .page-disclaimer p.disc-legal{ font-size:9.5px; }
-  /* Overlay de carga inicial de datos (fetch de data.csv) */
+  /* Overlay de carga inicial de datos (fetch de data.xlsx) */
   /* Pantalla de acceso (mail corporativo + contraseña) */
   .login-overlay{
     position:fixed;
@@ -829,7 +820,7 @@
     <div class="loading-box">
       <div class="loading-spinner"></div>
       <div class="loading-title">Cargando datos de cuotapartes…</div>
-      <div class="loading-detail">Leyendo data.csv</div>
+      <div class="loading-detail">Leyendo data.xlsx</div>
     </div>
   </div>
 
@@ -1363,7 +1354,7 @@ let HIST_FILLED = {};
 let FIRST_IDX = {};
 
 // Recalcula HIST_FILLED (forward-fill) y FIRST_IDX a partir de HIST_RAW/DATES.
-// Se llama cada vez que se carga o reemplaza el dataset (CSV inicial o subida manual).
+// Se llama cada vez que se carga o reemplaza el dataset.
 function rebuildHistFilled(){
   HIST_FILLED = {};
   FIRST_IDX = {};
@@ -1385,42 +1376,72 @@ function rebuildHistFilled(){
 }
 
 /* ---------------------------------------------------------------------
-   Carga de datos desde CSV (data.csv o archivo subido manualmente)
-   Formato esperado: Fecha,VCP,Fondo,Moneda,Categoria,Riesgo,Horizonte,Liquidacion
-   Se espera un CSV largo (una fila por fondo y fecha) desde enero 2025 a la fecha actual.
+   Carga de datos desde Excel (data.xlsx)
+
+   Formato esperado: una hoja con las columnas Fecha, VCP, Fondo, Moneda,
+   Categoria, Riesgo, Horizonte y Liquidacion, y una fila por fondo y fecha
+   desde enero 2025 a la fecha actual.
 --------------------------------------------------------------------- */
 
-// Parser CSV simple que respeta comillas (el VCP viene entre comillas porque usa
-// coma como separador decimal, ej: "167,58287").
-function parseCsvText(text, sep){
-  const SEP = sep || ',';
-  const rows = [];
-  let row = [];
-  let field = '';
-  let inQuotes = false;
-  for(let i = 0; i < text.length; i++){
-    const c = text[i];
-    if(inQuotes){
-      if(c === '"'){
-        if(text[i+1] === '"'){ field += '"'; i++; }
-        else { inQuotes = false; }
-      } else {
-        field += c;
-      }
-    } else {
-      if(c === '"'){ inQuotes = true; }
-      else if(c === SEP){ row.push(field); field = ''; }
-      else if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
-      else if(c === '\r'){ /* ignorar */ }
-      else { field += c; }
-    }
-  }
-  if(field.length || row.length){ row.push(field); rows.push(row); }
-  return rows.filter(r => r.length > 1 || (r.length === 1 && r[0].trim() !== ''));
+function dosDigitos(n){ return String(n).padStart(2, '0'); }
+
+// Excel guarda las fechas como cantidad de dias desde su epoch. Se usan los
+// getters UTC a proposito: con los locales, un navegador en GMT-3 devolveria
+// el dia anterior y todas las series quedarian corridas un dia.
+function fechaISODesdeSerial(serial, base1904){
+  const offset = base1904 ? 24107 : 25569;   // dias entre el epoch de Excel y el de Unix
+  const d = new Date(Math.round((serial - offset) * 86400000));
+  if(isNaN(d.getTime())) return '';
+  return `${d.getUTCFullYear()}-${dosDigitos(d.getUTCMonth() + 1)}-${dosDigitos(d.getUTCDate())}`;
 }
 
-// Construye { dates, histRaw, meta } a partir de las filas parseadas del CSV.
-function buildDatasetFromCsvRows(rows){
+function fechaISODesdeDate(d){
+  if(isNaN(d.getTime())) return '';
+  return `${d.getUTCFullYear()}-${dosDigitos(d.getUTCMonth() + 1)}-${dosDigitos(d.getUTCDate())}`;
+}
+
+/* Convierte data.xlsx en filas de texto con la misma forma que tenia el CSV,
+   para que buildDatasetFromRows() siga recibiendo lo mismo que antes. */
+function filasDesdeExcel(buf){
+  if(typeof XLSX === 'undefined'){
+    throw new Error('No se pudo cargar la librería para leer archivos Excel (SheetJS).');
+  }
+
+  // Sin cellDates: las fechas quedan como numero de serie y se convierten mas
+  // abajo, que es determinístico. Con cellDates la conversion depende de la
+  // zona horaria del navegador segun la version de la librería.
+  const wb = XLSX.read(buf, { type: 'array' });
+
+  // Se toma la primera hoja cuyo encabezado tenga Fecha y VCP, asi el nombre
+  // de la hoja que genere el proceso de exportacion no importa.
+  let filas = null;
+  for(const nombre of wb.SheetNames){
+    const f = XLSX.utils.sheet_to_json(wb.Sheets[nombre], { header: 1, blankrows: false, raw: true });
+    const hdr = (f[0] || []).map(v => String(v == null ? '' : v).trim());
+    if(hdr.includes('Fecha') && hdr.includes('VCP')){ filas = f; break; }
+  }
+  if(!filas){
+    throw new Error('data.xlsx no tiene ninguna hoja con las columnas Fecha y VCP.');
+  }
+
+  const base1904 = !!(wb.Workbook && wb.Workbook.WBProps && wb.Workbook.WBProps.date1904);
+  const header = filas[0].map(v => String(v == null ? '' : v).trim());
+  const colFecha = header.indexOf('Fecha');
+
+  return filas.map((fila, i)=>{
+    if(i === 0) return header;
+    return header.map((_, c)=>{
+      const v = fila[c];
+      if(v === null || v === undefined) return '';
+      if(v instanceof Date) return fechaISODesdeDate(v);
+      if(c === colFecha && typeof v === 'number') return fechaISODesdeSerial(v, base1904);
+      return String(v);
+    });
+  });
+}
+
+// Construye { dates, histRaw, meta } a partir de las filas leidas del Excel.
+function buildDatasetFromRows(rows){
   if(!rows.length) throw new Error('El archivo está vacío.');
   const header = rows[0].map(h => h.replace(/^\uFEFF/, '').trim());
   const col = {
@@ -1436,7 +1457,7 @@ function buildDatasetFromCsvRows(rows){
   const requiredCols = ['fecha','vcp','fondo','moneda','categoria','riesgo','horizonte'];
   const missing = requiredCols.filter(k => col[k] === -1);
   if(missing.length){
-    throw new Error(`Faltan columnas en el CSV: ${missing.join(', ')}. Se esperan: Fecha, VCP, Fondo, Moneda, Categoria, Riesgo, Horizonte, Liquidacion.`);
+    throw new Error(`Faltan columnas en data.xlsx: ${missing.join(', ')}. Se esperan: Fecha, VCP, Fondo, Moneda, Categoria, Riesgo, Horizonte, Liquidacion.`);
   }
 
   const byFund = {};
@@ -2579,17 +2600,17 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
   document.getElementById('loginOverlay').style.display = 'none';
 });
 
-// Carga inicial: trae data.csv (los VCP) y carteras.xlsx (las ponderaciones),
+// Carga inicial: trae data.xlsx (los VCP) y carteras.xlsx (las ponderaciones),
 // ambos en el mismo directorio que este archivo, y arma el tablero.
 Promise.all([
-  fetch('data.csv')
+  fetch('data.xlsx')
     .then(r=>{
-      if(!r.ok) throw new Error(`No se encontró data.csv junto al HTML (HTTP ${r.status}).`);
-      return r.text();
+      if(!r.ok) throw new Error(`No se encontró data.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
     })
-    .then(text=>{
-      const parsed = buildDatasetFromCsvRows(parseCsvText(text));
-      if(!parsed.dates.length) throw new Error('data.csv no tiene filas de datos válidas.');
+    .then(buf=>{
+      const parsed = buildDatasetFromRows(filasDesdeExcel(buf));
+      if(!parsed.dates.length) throw new Error('data.xlsx no tiene filas de datos válidas.');
       return parsed;
     }),
   cargarCarteras(),
