@@ -546,17 +546,26 @@
   .moneda-fija strong{ display:block; font-size:13.5px; color:var(--navy); }
   .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3B4670; margin-top:2px; }
 
-  /* Costo de oportunidad: dos resultados lado a lado para comparar */
-  .co-compare{
-    display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;
+  /* Costo de oportunidad: cuatro tarjetas en grilla para comparar ahorro parado vs. invertido */
+  .co-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:6px;
   }
-  .co-compare > *{ flex:1; min-width:260px; }
-  .co-vs{
-    display:flex; align-items:center; justify-content:center;
-    font-size:12px; font-weight:800; color:var(--muted);
-    letter-spacing:.04em; flex:none; padding:0 4px;
+  @media (max-width:900px){ .co-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:480px){ .co-grid{ grid-template-columns:1fr; } }
+  .co-card{
+    padding:16px 16px; border-radius:12px; color:#fff;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
   }
-  @media (max-width:720px){ .co-vs{ display:none; } }
+  .co-card.co-card-neutral{ background:linear-gradient(135deg, #4A5578 0%, #2E3654 100%); }
+  .co-card.co-card-neg{ background:linear-gradient(135deg,var(--neg) 0%,#8E2E2E 100%); }
+  .co-card.co-card-pos{ background:linear-gradient(135deg,var(--pos) 0%,#0C6B47 100%); }
+  .co-card.co-card-accent{ background:linear-gradient(135deg,var(--accent) 0%,#1E2E86 100%); }
+  .co-card-label{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.04em;
+    color:rgba(255,255,255,0.75); font-weight:700; margin-bottom:6px; line-height:1.3;
+  }
+  .co-card-value{ font-size:23px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
+  .co-card-sub{ font-size:11px; color:rgba(255,255,255,0.78); margin-top:5px; line-height:1.4; }
   .co-note{ font-size:11px; color:var(--muted); margin-top:4px; }
 
   /* Calculadora de patrimonio futuro */
@@ -1035,58 +1044,60 @@
     </section>
 
     <section class="card" id="coInflacionSection">
-      <h2>2 &middot; P&eacute;rdida de poder adquisitivo por inflaci&oacute;n</h2>
-      <p class="sub">Comparaci&oacute;n contra el &iacute;ndice CPI-U de Estados Unidos, sin desestacionalizar.</p>
+      <h2>2 &middot; Ahorro parado vs. invertido</h2>
+      <p class="sub">
+        Compara qu&eacute; pas&oacute; con tus d&oacute;lares desde la fecha elegida: si los dejaste parados, s&oacute;lo perdieron poder de compra
+        por la inflaci&oacute;n de EE.UU. (CPI-U, sin desestacionalizar); si los hub&iacute;as invertido a la TIR ponderada de la cartera elegida en
+        la solapa <strong>Calculadora de Patrimonio Futuro</strong>, el nominal creci&oacute; y eso cambia cu&aacute;nto poder de compra tienen hoy.
+      </p>
 
       <div id="coInflacionWarning" class="pf-warning" style="display:none;"></div>
+      <div id="coCarteraWarning" class="pf-warning" style="display:none;"></div>
 
-      <div class="pf-result" id="coInflacionResult" style="background:linear-gradient(135deg,var(--neg) 0%,#8E2E2E 100%);">
-        <div class="pf-result-label">Poder de compra hoy de esos mismos d&oacute;lares</div>
-        <div class="pf-result-value" id="coPoderCompraValue">&mdash;</div>
-        <div class="pf-result-sub" id="coPoderCompraSub"></div>
+      <div class="pf-tir-bar" id="coTirBar"></div>
+
+      <div class="co-grid" id="coGrid">
+        <div class="co-card co-card-neutral">
+          <div class="co-card-label">Monto inicial ahorrado</div>
+          <div class="co-card-value" id="coMontoInicialValue">&mdash;</div>
+          <div class="co-card-sub" id="coMontoInicialSub"></div>
+        </div>
+        <div class="co-card co-card-neg">
+          <div class="co-card-label">Poder de compra hoy (sin invertir)</div>
+          <div class="co-card-value" id="coPoderCompraValue">&mdash;</div>
+          <div class="co-card-sub" id="coPoderCompraSub"></div>
+        </div>
+        <div class="co-card co-card-accent">
+          <div class="co-card-label">Nominal hoy si lo invert&iacute;as</div>
+          <div class="co-card-value" id="coConInvertirValue">&mdash;</div>
+          <div class="co-card-sub" id="coConInvertirSub"></div>
+        </div>
+        <div class="co-card co-card-pos">
+          <div class="co-card-label">Poder de compra hoy (invertido)</div>
+          <div class="co-card-value" id="coPoderCompraInvertidoValue">&mdash;</div>
+          <div class="co-card-sub" id="coPoderCompraInvertidoSub"></div>
+        </div>
       </div>
 
       <div class="pf-breakdown" id="coInflacionBreakdown"></div>
 
       <p class="foot-note">
-        El poder de compra se calcula deflactando el monto por la variaci&oacute;n del &iacute;ndice CPI-U (NSA) entre el mes de inicio elegido
-        y el &uacute;ltimo mes disponible en el archivo de inflaci&oacute;n. Es el mismo monto nominal en d&oacute;lares; lo que cambia es cu&aacute;nto
-        alcanza a comprar.
+        El monto ahorrado se mantiene igual en nominal; s&oacute;lo lo golpea la inflaci&oacute;n. El monto invertido, en cambio, crece en nominal
+        a la TIR ponderada de la cartera elegida (inter&eacute;s compuesto mensual) y por eso, aunque tambi&eacute;n lo golpea la misma inflaci&oacute;n,
+        el poder de compra final es distinto. Las dos columnas de poder de compra son las &uacute;nicas comparables entre s&iacute;: ambas est&aacute;n
+        deflactadas por el mismo &iacute;ndice CPI-U (NSA), desde el mes de inicio elegido hasta el &uacute;ltimo mes disponible en el archivo de
+        inflaci&oacute;n. La TIR es el rendimiento esperado de los fondos a la fecha indicada en la otra solapa y no es un rendimiento asegurado: no
+        refleja necesariamente el rendimiento que esa cartera tuvo realmente durante todo el per&iacute;odo elegido.
       </p>
     </section>
 
-    <section class="card" id="coCarteraSection">
-      <h2>3 &middot; Qu&eacute; hubiera pasado si los invert&iacute;as en la cartera elegida</h2>
+    <section class="card" id="coEvolSection">
+      <h2>3 &middot; Evoluci&oacute;n anual del poder de compra</h2>
       <p class="sub">
-        Usa la TIR ponderada de la cartera seleccionada en la solapa <strong>Calculadora de Patrimonio Futuro</strong>, aplicada como si hubieras
-        invertido este mismo monto en esa cartera desde la fecha de inicio en vez de dejarlo sin invertir.
+        Mismo monto inicial, dos caminos: el poder de compra a&ntilde;o a a&ntilde;o si lo dejabas parado, contra si lo hub&iacute;as invertido a la
+        TIR ponderada de la cartera elegida. Ambas l&iacute;neas est&aacute;n en d&oacute;lares constantes (deflactadas por CPI-U).
       </p>
-
-      <div class="pf-tir-bar" id="coTirBar"></div>
-
-      <div id="coCarteraWarning" class="pf-warning" style="display:none;"></div>
-
-      <div class="co-compare" id="coCompare">
-        <div class="pf-result" id="coSinInvertirResult">
-          <div class="pf-result-label">Sin invertir (solo inflaci&oacute;n)</div>
-          <div class="pf-result-value" id="coSinInvertirValue">&mdash;</div>
-          <div class="pf-result-sub" id="coSinInvertirSub"></div>
-        </div>
-        <div class="co-vs">VS</div>
-        <div class="pf-result" id="coConInvertirResult" style="background:linear-gradient(135deg,var(--pos) 0%,#0C6B47 100%);">
-          <div class="pf-result-label">Invertido en la cartera elegida</div>
-          <div class="pf-result-value" id="coConInvertirValue">&mdash;</div>
-          <div class="pf-result-sub" id="coConInvertirSub"></div>
-        </div>
-      </div>
-
-      <div class="pf-breakdown" id="coCarteraBreakdown"></div>
-
-      <p class="foot-note">
-        C&aacute;lculo de inter&eacute;s compuesto mensual sobre la TIR ponderada de la cartera, desde el mes de inicio elegido hasta el &uacute;ltimo
-        mes disponible en el archivo de inflaci&oacute;n. La TIR es el rendimiento esperado de los fondos a la fecha indicada en la otra solapa y no
-        es un rendimiento asegurado: no refleja necesariamente el rendimiento que esa cartera tuvo realmente durante todo el per&iacute;odo elegido.
-      </p>
+      <div class="hist-chart-wrap"><canvas id="coEvolChart"></canvas></div>
     </section>
 
     </div>
@@ -1645,6 +1656,7 @@ function periodReturn(rows, period, csIdx){
    Graficos: composicion (torta) y rendimiento historico (linea)
 --------------------------------------------------------------------- */
 let histChartInstance = null;
+let coEvolChartInstance = null;
 let currentRange = '12M';
 let lastRows = [];
 
@@ -2845,21 +2857,120 @@ function mesesEntre(anioA, mesA, anioB, mesB){
   return (anioB - anioA) * 12 + (mesB - mesA);
 }
 
+// Puntos anuales (mismo mes-calendario que el inicio elegido, año a año) más
+// el punto final real (el último mes disponible en cpi.xlsx, aunque no caiga
+// justo en un aniversario). Cada punto trae, en dólares constantes de hoy:
+// - ahorro: el monto original deflactado por la inflación acumulada a esa fecha
+// - invertido: el monto creciendo mes a mes a la TIR de la cartera, también deflactado
+function buildEvolPoints(monto, anioInicio, mesInicio, cpiInicio, im){
+  const totalMeses = mesesEntre(anioInicio, mesInicio, CPI_DATA.ultimo.anio, CPI_DATA.ultimo.mesIdx);
+  const puntos = [];
+  for(let y = 0; y * 12 <= totalMeses; y++){
+    const anio = anioInicio + y;
+    const cpiPt = CPI_DATA.porClave[claveCpi(anio, mesInicio)];
+    if(cpiPt === undefined) continue;
+    const meses = y * 12;
+    const factor = cpiPt / cpiInicio;
+    puntos.push({
+      anio, mesIdx: mesInicio, meses,
+      ahorro: monto / factor,
+      invertido: (monto * Math.pow(1 + im, meses)) / factor,
+    });
+  }
+  const ultimoPunto = puntos[puntos.length - 1];
+  if(!ultimoPunto || ultimoPunto.meses !== totalMeses){
+    const factor = CPI_DATA.ultimo.cpi / cpiInicio;
+    puntos.push({
+      anio: CPI_DATA.ultimo.anio, mesIdx: CPI_DATA.ultimo.mesIdx, meses: totalMeses,
+      ahorro: monto / factor,
+      invertido: (monto * Math.pow(1 + im, totalMeses)) / factor,
+    });
+  }
+  return puntos;
+}
+
+function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
+  const puntos = buildEvolPoints(monto, anioInicio, mesInicio, cpiInicio, im);
+  const labels = puntos.map(p => p.mesIdx === mesInicio && p.meses % 12 === 0
+    ? String(p.anio)
+    : `${MESES_CPI[p.mesIdx].slice(0, 3)} ${p.anio}`);
+  const dataAhorro = puntos.map(p => +p.ahorro.toFixed(2));
+  const dataInvertido = puntos.map(p => +p.invertido.toFixed(2));
+
+  const ctx = document.getElementById('coEvolChart').getContext('2d');
+  if(coEvolChartInstance) coEvolChartInstance.destroy();
+  coEvolChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Ahorro parado (poder de compra)',
+          data: dataAhorro,
+          borderColor: '#C43D3D',
+          backgroundColor: 'rgba(196,61,61,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: false,
+          tension: 0.15,
+        },
+        {
+          label: 'Invertido en la cartera (poder de compra)',
+          data: dataInvertido,
+          borderColor: '#0F8A5F',
+          backgroundColor: 'rgba(15,138,95,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: false,
+          tension: 0.15,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'start',
+          labels: { boxWidth: 12, boxHeight: 12, font: { size: 11.5, weight: '600' }, color: '#3B4670' }
+        },
+        tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmtMoney(c.parsed.y, 'Dólar')}` } },
+        datalabels: { display: false },
+      },
+      scales: {
+        x: {
+          ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, color: '#6E7590', font: { size: 11 } },
+          grid: { display: false }
+        },
+        y: {
+          ticks: { callback: (v) => fmtMoney(v, 'Dólar'), color: '#000000', font: { size: 11.5, weight: '700' } },
+          grid: { color: '#E4E8F1' }
+        }
+      }
+    }
+  });
+}
+
 function renderCostoOportunidad(){
   const warnInf = document.getElementById('coInflacionWarning');
   const warnCar = document.getElementById('coCarteraWarning');
+  const grid = document.getElementById('coGrid');
+  const evolSection = document.getElementById('coEvolSection');
 
   if(!CPI_DATA){
     warnInf.style.display = 'block';
     warnInf.className = 'pf-warning';
     warnInf.textContent = '⚠ No se pudo cargar cpi.xlsx. Esta calculadora necesita ese archivo junto al HTML.';
-    document.getElementById('coPoderCompraValue').textContent = '—';
-    document.getElementById('coPoderCompraSub').textContent = '';
+    warnCar.style.display = 'none';
+    grid.style.display = 'none';
     document.getElementById('coInflacionBreakdown').innerHTML = '';
     document.getElementById('coTirBar').innerHTML = '';
-    warnCar.style.display = 'none';
-    document.getElementById('coCompare').style.display = 'none';
-    document.getElementById('coCarteraBreakdown').innerHTML = '';
+    evolSection.style.display = 'none';
     return;
   }
   warnInf.style.display = 'none';
@@ -2873,39 +2984,35 @@ function renderCostoOportunidad(){
   const cpiInicio = CPI_DATA.porClave[claveInicio];
   const cpiFin = CPI_DATA.ultimo.cpi;
 
-  const pcValue = document.getElementById('coPoderCompraValue');
-  const pcSub = document.getElementById('coPoderCompraSub');
   const bdInf = document.getElementById('coInflacionBreakdown');
 
   if(cpiInicio === undefined || monto <= 0){
-    pcValue.textContent = '—';
-    pcSub.textContent = monto <= 0 ? 'Ingresá un monto ahorrado mayor a cero.' : '';
+    grid.style.display = 'none';
     bdInf.innerHTML = '';
     document.getElementById('coTirBar').innerHTML = '';
-    warnCar.style.display = 'none';
-    document.getElementById('coCompare').style.display = 'none';
-    document.getElementById('coCarteraBreakdown').innerHTML = '';
+    warnCar.style.display = 'block';
+    warnCar.textContent = monto <= 0 ? '⚠ Ingresá un monto ahorrado mayor a cero.' : '⚠ No hay dato de inflación para ese mes.';
+    evolSection.style.display = 'none';
     return;
   }
+  grid.style.display = '';
 
   const meses = mesesEntre(anioInicio, mesInicio, CPI_DATA.ultimo.anio, CPI_DATA.ultimo.mesIdx);
   const factorInflacion = cpiFin / cpiInicio;                 // >1: los precios subieron
   const poderCompraHoy = monto / factorInflacion;               // en dolares "de la epoca inicial"
   const perdidaPct = 1 - (1 / factorInflacion);                 // 0 a 1
 
-  pcValue.textContent = fmtMoney(poderCompraHoy, 'Dólar');
-  pcSub.textContent = `Esos ${fmtMoney(monto, 'Dólar')} de ${MESES_CPI[mesInicio]} ${anioInicio} compran hoy lo mismo que `
-    + `${fmtMoney(poderCompraHoy, 'Dólar')} compraban en aquel momento.`;
-  bdInf.innerHTML = `
-    <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
-    <div><div class="bd-label">Pérdida de poder adquisitivo</div><div class="bd-value">${(perdidaPct * 100).toFixed(1)}%</div></div>
-    <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
+  document.getElementById('coMontoInicialValue').textContent = fmtMoney(monto, 'Dólar');
+  document.getElementById('coMontoInicialSub').textContent =
+    `Ahorrado en ${MESES_CPI[mesInicio]} ${anioInicio} · sin invertir, el nominal no cambia.`;
+
+  document.getElementById('coPoderCompraValue').textContent = fmtMoney(poderCompraHoy, 'Dólar');
+  document.getElementById('coPoderCompraSub').textContent =
+    `−${(perdidaPct * 100).toFixed(1)}% de poder de compra por inflación.`;
 
   // --- Escenario "invertido en la cartera elegida" ---------------------
   const { tir, faltantes } = tirCartera(lastRows || []);
   const tirBar = document.getElementById('coTirBar');
-  const compare = document.getElementById('coCompare');
-  const bdCar = document.getElementById('coCarteraBreakdown');
 
   if(tir === null){
     warnCar.style.display = 'block';
@@ -2913,12 +3020,18 @@ function renderCostoOportunidad(){
       ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
       : '⚠ Elegí una cartera válida en la solapa "Calculadora de Patrimonio Futuro" para ver esta comparación.';
     tirBar.innerHTML = '';
-    compare.style.display = 'none';
-    bdCar.innerHTML = '';
+    document.getElementById('coConInvertirValue').textContent = '—';
+    document.getElementById('coConInvertirSub').textContent = '';
+    document.getElementById('coPoderCompraInvertidoValue').textContent = '—';
+    document.getElementById('coPoderCompraInvertidoSub').textContent = '';
+    bdInf.innerHTML = `
+      <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
+      <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
+    evolSection.style.display = 'none';
     return;
   }
   warnCar.style.display = 'none';
-  compare.style.display = '';
+  evolSection.style.display = '';
 
   const detalle = (lastRows || [])
     .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
@@ -2932,24 +3045,29 @@ function renderCostoOportunidad(){
     <span class="tb-funds">${detalle}</span>`;
 
   const im = Math.pow(1 + tir, 1 / 12) - 1;
-  const valorInvertido = monto * Math.pow(1 + im, meses);
-  const rendimientoNominalPct = (valorInvertido / monto) - 1;
+  const valorInvertidoNominal = monto * Math.pow(1 + im, meses);
+  const poderCompraInvertido = valorInvertidoNominal / factorInflacion;
+  const rendimientoNominalPct = (valorInvertidoNominal / monto) - 1;
   // Fisher: (1+real) = (1+nominal)/(1+inflacion) -> neteamos el rendimiento
   // de la cartera contra la misma inflacion acumulada de arriba.
   const rendimientoRealPct = ((1 + rendimientoNominalPct) / factorInflacion) - 1;
 
-  document.getElementById('coSinInvertirValue').textContent = fmtMoney(poderCompraHoy, 'Dólar');
-  document.getElementById('coSinInvertirSub').textContent =
-    `Poder de compra real de tus ${fmtMoney(monto, 'Dólar')} originales: −${(perdidaPct * 100).toFixed(1)}%`;
-
-  document.getElementById('coConInvertirValue').textContent = fmtMoney(valorInvertido, 'Dólar');
+  document.getElementById('coConInvertirValue').textContent = fmtMoney(valorInvertidoNominal, 'Dólar');
   document.getElementById('coConInvertirSub').textContent =
-    `Valor nominal proyectado si invertías desde ${MESES_CPI[mesInicio]} ${anioInicio}: +${(rendimientoNominalPct * 100).toFixed(1)}%`;
+    `+${(rendimientoNominalPct * 100).toFixed(1)}% nominal a la TIR de la cartera.`;
 
-  bdCar.innerHTML = `
-    <div><div class="bd-label">Rendimiento nominal generado</div><div class="bd-value">${(rendimientoNominalPct * 100).toFixed(1)}%</div></div>
+  document.getElementById('coPoderCompraInvertidoValue').textContent = fmtMoney(poderCompraInvertido, 'Dólar');
+  document.getElementById('coPoderCompraInvertidoSub').textContent =
+    `${rendimientoRealPct >= 0 ? '+' : ''}${(rendimientoRealPct * 100).toFixed(1)}% neto de inflación vs. el monto original.`;
+
+  bdInf.innerHTML = `
+    <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
+    <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>
+    <div><div class="bd-label">Rendimiento nominal invertido</div><div class="bd-value">${(rendimientoNominalPct * 100).toFixed(1)}%</div></div>
     <div><div class="bd-label">Rendimiento neto de inflación</div><div class="bd-value">${(rendimientoRealPct >= 0 ? '+' : '')}${(rendimientoRealPct * 100).toFixed(1)}%</div></div>
-    <div><div class="bd-label">Diferencia vs. no invertir</div><div class="bd-value">${fmtMoney(valorInvertido - poderCompraHoy, 'Dólar')}</div></div>`;
+    <div><div class="bd-label">Diferencia de poder de compra: invertido vs. parado</div><div class="bd-value">${fmtMoney(poderCompraInvertido - poderCompraHoy, 'Dólar')}</div></div>`;
+
+  renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im);
 }
 
 document.getElementById('coMonto').addEventListener('input', (e)=>{
