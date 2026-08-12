@@ -503,6 +503,31 @@
   .range-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
   .hist-chart-wrap{ position:relative; height:320px; }
 
+  /* Tabs (dos solapas: Patrimonio Futuro / Costo de Oportunidad) */
+  .tabs-nav{
+    display:flex;
+    gap:6px;
+    margin-bottom:22px;
+    border-bottom:2px solid var(--line);
+  }
+  .tab-btn{
+    background:none;
+    border:none;
+    padding:12px 20px;
+    font-size:14px;
+    font-weight:700;
+    font-family:inherit;
+    color:var(--muted);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    margin-bottom:-2px;
+    transition:color .12s ease, border-color .12s ease;
+  }
+  .tab-btn:hover{ color:var(--navy); }
+  .tab-btn.active{ color:var(--navy); border-bottom-color:var(--accent); }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
   /* Aclaracion de moneda fija (esta pagina es solo Dolar MEP) */
   .moneda-fija{
     display:flex;
@@ -520,6 +545,19 @@
   }
   .moneda-fija strong{ display:block; font-size:13.5px; color:var(--navy); }
   .moneda-fija span.mf-text{ display:block; font-size:12.5px; color:#3B4670; margin-top:2px; }
+
+  /* Costo de oportunidad: dos resultados lado a lado para comparar */
+  .co-compare{
+    display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;
+  }
+  .co-compare > *{ flex:1; min-width:260px; }
+  .co-vs{
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; color:var(--muted);
+    letter-spacing:.04em; flex:none; padding:0 4px;
+  }
+  @media (max-width:720px){ .co-vs{ display:none; } }
+  .co-note{ font-size:11px; color:var(--muted); margin-top:4px; }
 
   /* Calculadora de patrimonio futuro */
   .pf-modes{ display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
@@ -787,6 +825,13 @@
       </div>
     </div>
 
+    <div class="tabs-nav">
+      <button class="tab-btn active" data-tab="patrimonio">Calculadora de Patrimonio Futuro</button>
+      <button class="tab-btn" data-tab="costo">Calculadora Costo de Oportunidad</button>
+    </div>
+
+    <div id="tab-patrimonio" class="tab-panel active">
+
     <section class="card" id="tipoCarteraSection">
       <h2>1 &middot; Tipo de Cartera</h2>
       <p class="sub">Us&aacute; una cartera armada seg&uacute;n perfil y horizonte, o eleg&iacute; vos mismo los fondos y el peso de cada uno.</p>
@@ -964,6 +1009,87 @@
         </table>
       </div>
     </section>
+
+    </div>
+
+    <div id="tab-costo" class="tab-panel">
+
+    <section class="card" id="coAhorroSection">
+      <h2>1 &middot; Tus ahorros en d&oacute;lares</h2>
+      <p class="sub">Cont&aacute;nos cu&aacute;nto ten&eacute;s guardado y desde cu&aacute;ndo, para medir cu&aacute;nto perdi&oacute; de poder de compra por la inflaci&oacute;n de EE.UU.</p>
+      <div class="pf-inputs">
+        <div class="pf-field">
+          <label for="coMonto">Monto ahorrado (USD)</label>
+          <input type="text" id="coMonto" inputmode="numeric" value="10.000" />
+        </div>
+        <div class="pf-field">
+          <label for="coMes">Desde qu&eacute; mes</label>
+          <select id="coMes"></select>
+        </div>
+        <div class="pf-field">
+          <label for="coAnio">Desde qu&eacute; a&ntilde;o</label>
+          <select id="coAnio"></select>
+        </div>
+      </div>
+      <p class="co-note" id="coRangoNote"></p>
+    </section>
+
+    <section class="card" id="coInflacionSection">
+      <h2>2 &middot; P&eacute;rdida de poder adquisitivo por inflaci&oacute;n</h2>
+      <p class="sub">Comparaci&oacute;n contra el &iacute;ndice CPI-U de Estados Unidos, sin desestacionalizar.</p>
+
+      <div id="coInflacionWarning" class="pf-warning" style="display:none;"></div>
+
+      <div class="pf-result" id="coInflacionResult" style="background:linear-gradient(135deg,var(--neg) 0%,#8E2E2E 100%);">
+        <div class="pf-result-label">Poder de compra hoy de esos mismos d&oacute;lares</div>
+        <div class="pf-result-value" id="coPoderCompraValue">&mdash;</div>
+        <div class="pf-result-sub" id="coPoderCompraSub"></div>
+      </div>
+
+      <div class="pf-breakdown" id="coInflacionBreakdown"></div>
+
+      <p class="foot-note">
+        El poder de compra se calcula deflactando el monto por la variaci&oacute;n del &iacute;ndice CPI-U (NSA) entre el mes de inicio elegido
+        y el &uacute;ltimo mes disponible en el archivo de inflaci&oacute;n. Es el mismo monto nominal en d&oacute;lares; lo que cambia es cu&aacute;nto
+        alcanza a comprar.
+      </p>
+    </section>
+
+    <section class="card" id="coCarteraSection">
+      <h2>3 &middot; Qu&eacute; hubiera pasado si los invert&iacute;as en la cartera elegida</h2>
+      <p class="sub">
+        Usa la TIR ponderada de la cartera seleccionada en la solapa <strong>Calculadora de Patrimonio Futuro</strong>, aplicada como si hubieras
+        invertido este mismo monto en esa cartera desde la fecha de inicio en vez de dejarlo sin invertir.
+      </p>
+
+      <div class="pf-tir-bar" id="coTirBar"></div>
+
+      <div id="coCarteraWarning" class="pf-warning" style="display:none;"></div>
+
+      <div class="co-compare" id="coCompare">
+        <div class="pf-result" id="coSinInvertirResult">
+          <div class="pf-result-label">Sin invertir (solo inflaci&oacute;n)</div>
+          <div class="pf-result-value" id="coSinInvertirValue">&mdash;</div>
+          <div class="pf-result-sub" id="coSinInvertirSub"></div>
+        </div>
+        <div class="co-vs">VS</div>
+        <div class="pf-result" id="coConInvertirResult" style="background:linear-gradient(135deg,var(--pos) 0%,#0C6B47 100%);">
+          <div class="pf-result-label">Invertido en la cartera elegida</div>
+          <div class="pf-result-value" id="coConInvertirValue">&mdash;</div>
+          <div class="pf-result-sub" id="coConInvertirSub"></div>
+        </div>
+      </div>
+
+      <div class="pf-breakdown" id="coCarteraBreakdown"></div>
+
+      <p class="foot-note">
+        C&aacute;lculo de inter&eacute;s compuesto mensual sobre la TIR ponderada de la cartera, desde el mes de inicio elegido hasta el &uacute;ltimo
+        mes disponible en el archivo de inflaci&oacute;n. La TIR es el rendimiento esperado de los fondos a la fecha indicada en la otra solapa y no
+        es un rendimiento asegurado: no refleja necesariamente el rendimiento que esa cartera tuvo realmente durante todo el per&iacute;odo elegido.
+      </p>
+    </section>
+
+    </div>
 
     <div class="page-disclaimer">
       <p>Este reporte (en adelante el “Reporte”) ha sido preparado por Balanz Capital Valores S.A.U. y/o Balanz Sociedad Gerente de Fondos Comunes de Inversión S.A.U. (en adelante "Balanz") para las personas a las que fue dirigido y no debe ser de modo alguno divulgado, distribuido ni reproducido públicamente (ya sea en todo y/o en parte), sin el consentimiento de Balanz. Fue realizado con información accesible al público en general, sin ninguna verificación independiente de Balanz, y Balanz no asume la obligación de actualizarlo. Nada de lo contenido en el Reporte constituye una oferta ni debe ser considerado como asesoramiento de inversión, ni como un compromiso, en cuanto al pasado, presente y/o futuro, ni como una recomendación legal, impositiva, y/o de inversión. Balanz no será responsable de las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Reporte. Quien reciba este Reporte deberá consultar a sus asesores legales y/o financieros para realizar sus estimaciones y sus propias conclusiones de lo referido en este documento.</p>
@@ -2056,6 +2182,7 @@ function renderPatrimonioFuturo(rows){
   const sec = document.getElementById('patrimonioSection');
   if(!rows || !rows.length || !Object.keys(TIR_DATA).length){
     sec.style.display = 'none';
+    renderCostoOportunidad();
     return;
   }
 
@@ -2072,6 +2199,7 @@ function renderPatrimonioFuturo(rows){
     document.getElementById('pfResultSub').textContent = '';
     document.getElementById('pfBreakdown').innerHTML = '';
     document.getElementById('pfTirBar').innerHTML = '';
+    renderCostoOportunidad();
     return;
   }
 
@@ -2188,6 +2316,7 @@ function renderPatrimonioFuturo(rows){
     }
   }
 
+  renderCostoOportunidad();
 }
 
 function setPfModo(modo){
@@ -2567,6 +2696,10 @@ fetch('tir_fondos.csv')
     console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
   });
 
+// cpi.xlsx alimenta solo la solapa "Calculadora Costo de Oportunidad": se
+// carga en paralelo y, si falla, esa solapa avisa sin afectar al resto.
+cargarCpi().then(renderCostoOportunidad);
+
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones)
 // y factsheets.json (los links a los PDF), todos junto a este archivo.
 Promise.all([
@@ -2592,6 +2725,253 @@ Promise.all([
     console.error('Error cargando los datos:', err);
     showLoadError(err);
   });
+/* ---------------------------------------------------------------------
+   Calculadora Costo de Oportunidad
+
+   Compara, para un monto en dolares guardado sin invertir desde un mes/año
+   elegido, (a) cuanto perdio de poder de compra por la inflacion de EE.UU.
+   (CPI-U, NSA) hasta el ultimo mes disponible en cpi.xlsx, contra (b) cuanto
+   hubiera valido invertido desde esa misma fecha en la cartera elegida en la
+   solapa "Calculadora de Patrimonio Futuro", a su TIR ponderada.
+--------------------------------------------------------------------- */
+
+const MESES_CPI = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// { porClave: {'2000-01': 168.8, ...}, orden: ['2000-01', ...], primero: {...}, ultimo: {...} }
+let CPI_DATA = null;
+
+function claveCpi(anio, mesIdx){ return `${anio}-${String(mesIdx + 1).padStart(2, '0')}`; }
+
+function parseCpiRows(filas){
+  const header = (filas[0] || []).map(v => String(v == null ? '' : v).trim());
+  const iAnio = header.indexOf('Año');
+  const iMes  = header.indexOf('Mes');
+  const iCpi  = header.findIndex(h => h.toLowerCase().startsWith('cpi'));
+  if(iAnio === -1 || iMes === -1 || iCpi === -1){
+    throw new Error('cpi.xlsx debe tener las columnas Año, Mes y CPI-U (NSA).');
+  }
+
+  const porClave = {};
+  const entradas = [];
+  for(let r = 1; r < filas.length; r++){
+    const fila = filas[r];
+    if(!fila) continue;
+    const anio = parseInt(fila[iAnio], 10);
+    const mesNombre = String(fila[iMes] || '').trim();
+    const cpi = Number(fila[iCpi]);
+    const mesIdx = MESES_CPI.indexOf(mesNombre);
+    if(!isFinite(anio) || mesIdx === -1 || !isFinite(cpi)) continue;
+    const clave = claveCpi(anio, mesIdx);
+    porClave[clave] = cpi;
+    entradas.push({ anio, mesIdx, clave, cpi });
+  }
+  if(!entradas.length) throw new Error('cpi.xlsx no tiene filas de datos válidas.');
+
+  entradas.sort((a, b) => a.clave.localeCompare(b.clave));
+  return {
+    porClave,
+    orden: entradas.map(e => e.clave),
+    primero: entradas[0],
+    ultimo: entradas[entradas.length - 1],
+  };
+}
+
+function cargarCpi(){
+  if(typeof XLSX === 'undefined') return Promise.resolve(); // se avisa igual en renderCostoOportunidad
+  return fetch('cpi.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró cpi.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      const wb = XLSX.read(buf, { type: 'array' });
+      const hoja = wb.Sheets['CPI Mensual'] || wb.Sheets[wb.SheetNames[0]];
+      const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, blankrows: false, raw: true });
+      CPI_DATA = parseCpiRows(filas);
+    })
+    .catch(err=>{
+      console.warn('No se pudo cargar cpi.xlsx; la Calculadora Costo de Oportunidad queda deshabilitada.', err);
+      CPI_DATA = null;
+    });
+}
+
+// Arma los selects de mes/año una sola vez, apenas se conoce el rango de cpi.xlsx.
+function initSelectoresCpi(){
+  if(!CPI_DATA) return;
+  const selMes = document.getElementById('coMes');
+  const selAnio = document.getElementById('coAnio');
+  if(!selMes.options.length){
+    MESES_CPI.forEach((m, i)=>{
+      selMes.appendChild(new Option(m, String(i)));
+    });
+  }
+  if(!selAnio.options.length){
+    for(let a = CPI_DATA.primero.anio; a <= CPI_DATA.ultimo.anio; a++){
+      selAnio.appendChild(new Option(String(a), String(a)));
+    }
+    // Default: 5 años antes del ultimo mes disponible (o el primero, si el
+    // archivo tiene menos de 5 años de historia).
+    const anioDefault = Math.max(CPI_DATA.primero.anio, CPI_DATA.ultimo.anio - 5);
+    selAnio.value = String(anioDefault);
+    selMes.value = String(CPI_DATA.ultimo.mesIdx);
+  }
+  ajustarMesesDisponibles();
+  document.getElementById('coRangoNote').textContent =
+    `Datos de inflación disponibles desde ${MESES_CPI[CPI_DATA.primero.mesIdx]} ${CPI_DATA.primero.anio} `
+    + `hasta ${MESES_CPI[CPI_DATA.ultimo.mesIdx]} ${CPI_DATA.ultimo.anio} (CPI-U, NSA).`;
+}
+
+// El año elegido puede no tener los 12 meses (el primero y el ultimo del
+// archivo, tipicamente). Se deshabilitan los meses que no existan para ese año.
+function ajustarMesesDisponibles(){
+  if(!CPI_DATA) return;
+  const anio = parseInt(document.getElementById('coAnio').value, 10);
+  const selMes = document.getElementById('coMes');
+  let seleccionValida = false;
+  [...selMes.options].forEach(opt=>{
+    const existe = !!CPI_DATA.porClave[claveCpi(anio, Number(opt.value))];
+    opt.disabled = !existe;
+    if(existe && opt.value === selMes.value) seleccionValida = true;
+  });
+  if(!seleccionValida){
+    const primero = [...selMes.options].find(o => !o.disabled);
+    if(primero) selMes.value = primero.value;
+  }
+}
+
+// Meses de calendario entre (anioA, mesA) y (anioB, mesB), ambos 0-indexados.
+function mesesEntre(anioA, mesA, anioB, mesB){
+  return (anioB - anioA) * 12 + (mesB - mesA);
+}
+
+function renderCostoOportunidad(){
+  const warnInf = document.getElementById('coInflacionWarning');
+  const warnCar = document.getElementById('coCarteraWarning');
+
+  if(!CPI_DATA){
+    warnInf.style.display = 'block';
+    warnInf.className = 'pf-warning';
+    warnInf.textContent = '⚠ No se pudo cargar cpi.xlsx. Esta calculadora necesita ese archivo junto al HTML.';
+    document.getElementById('coPoderCompraValue').textContent = '—';
+    document.getElementById('coPoderCompraSub').textContent = '';
+    document.getElementById('coInflacionBreakdown').innerHTML = '';
+    document.getElementById('coTirBar').innerHTML = '';
+    warnCar.style.display = 'none';
+    document.getElementById('coCompare').style.display = 'none';
+    document.getElementById('coCarteraBreakdown').innerHTML = '';
+    return;
+  }
+  warnInf.style.display = 'none';
+
+  initSelectoresCpi();
+
+  const monto = Math.max(0, pfNum('coMonto'));
+  const anioInicio = parseInt(document.getElementById('coAnio').value, 10);
+  const mesInicio = parseInt(document.getElementById('coMes').value, 10);
+  const claveInicio = claveCpi(anioInicio, mesInicio);
+  const cpiInicio = CPI_DATA.porClave[claveInicio];
+  const cpiFin = CPI_DATA.ultimo.cpi;
+
+  const pcValue = document.getElementById('coPoderCompraValue');
+  const pcSub = document.getElementById('coPoderCompraSub');
+  const bdInf = document.getElementById('coInflacionBreakdown');
+
+  if(cpiInicio === undefined || monto <= 0){
+    pcValue.textContent = '—';
+    pcSub.textContent = monto <= 0 ? 'Ingresá un monto ahorrado mayor a cero.' : '';
+    bdInf.innerHTML = '';
+    document.getElementById('coTirBar').innerHTML = '';
+    warnCar.style.display = 'none';
+    document.getElementById('coCompare').style.display = 'none';
+    document.getElementById('coCarteraBreakdown').innerHTML = '';
+    return;
+  }
+
+  const meses = mesesEntre(anioInicio, mesInicio, CPI_DATA.ultimo.anio, CPI_DATA.ultimo.mesIdx);
+  const factorInflacion = cpiFin / cpiInicio;                 // >1: los precios subieron
+  const poderCompraHoy = monto / factorInflacion;               // en dolares "de la epoca inicial"
+  const perdidaPct = 1 - (1 / factorInflacion);                 // 0 a 1
+
+  pcValue.textContent = fmtMoney(poderCompraHoy, 'Dólar');
+  pcSub.textContent = `Esos ${fmtMoney(monto, 'Dólar')} de ${MESES_CPI[mesInicio]} ${anioInicio} compran hoy lo mismo que `
+    + `${fmtMoney(poderCompraHoy, 'Dólar')} compraban en aquel momento.`;
+  bdInf.innerHTML = `
+    <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
+    <div><div class="bd-label">Pérdida de poder adquisitivo</div><div class="bd-value">${(perdidaPct * 100).toFixed(1)}%</div></div>
+    <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
+
+  // --- Escenario "invertido en la cartera elegida" ---------------------
+  const { tir, faltantes } = tirCartera(lastRows || []);
+  const tirBar = document.getElementById('coTirBar');
+  const compare = document.getElementById('coCompare');
+  const bdCar = document.getElementById('coCarteraBreakdown');
+
+  if(tir === null){
+    warnCar.style.display = 'block';
+    warnCar.textContent = faltantes.length
+      ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
+      : '⚠ Elegí una cartera válida en la solapa "Calculadora de Patrimonio Futuro" para ver esta comparación.';
+    tirBar.innerHTML = '';
+    compare.style.display = 'none';
+    bdCar.innerHTML = '';
+    return;
+  }
+  warnCar.style.display = 'none';
+  compare.style.display = '';
+
+  const detalle = (lastRows || [])
+    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
+            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
+    .join(' · ');
+  tirBar.innerHTML = `
+    <span class="tb-label">TIR ponderada de la cartera elegida</span>
+    <span class="tb-value">${(tir * 100).toFixed(2)}%</span>
+    <span class="tb-sep"></span>
+    <span class="tb-funds">${detalle}</span>`;
+
+  const im = Math.pow(1 + tir, 1 / 12) - 1;
+  const valorInvertido = monto * Math.pow(1 + im, meses);
+  const rendimientoNominalPct = (valorInvertido / monto) - 1;
+  // Fisher: (1+real) = (1+nominal)/(1+inflacion) -> neteamos el rendimiento
+  // de la cartera contra la misma inflacion acumulada de arriba.
+  const rendimientoRealPct = ((1 + rendimientoNominalPct) / factorInflacion) - 1;
+
+  document.getElementById('coSinInvertirValue').textContent = fmtMoney(poderCompraHoy, 'Dólar');
+  document.getElementById('coSinInvertirSub').textContent =
+    `Poder de compra real de tus ${fmtMoney(monto, 'Dólar')} originales: −${(perdidaPct * 100).toFixed(1)}%`;
+
+  document.getElementById('coConInvertirValue').textContent = fmtMoney(valorInvertido, 'Dólar');
+  document.getElementById('coConInvertirSub').textContent =
+    `Valor nominal proyectado si invertías desde ${MESES_CPI[mesInicio]} ${anioInicio}: +${(rendimientoNominalPct * 100).toFixed(1)}%`;
+
+  bdCar.innerHTML = `
+    <div><div class="bd-label">Rendimiento nominal generado</div><div class="bd-value">${(rendimientoNominalPct * 100).toFixed(1)}%</div></div>
+    <div><div class="bd-label">Rendimiento neto de inflación</div><div class="bd-value">${(rendimientoRealPct >= 0 ? '+' : '')}${(rendimientoRealPct * 100).toFixed(1)}%</div></div>
+    <div><div class="bd-label">Diferencia vs. no invertir</div><div class="bd-value">${fmtMoney(valorInvertido - poderCompraHoy, 'Dólar')}</div></div>`;
+}
+
+document.getElementById('coMonto').addEventListener('input', (e)=>{
+  formatMontoInput(e.target);
+  renderCostoOportunidad();
+});
+document.getElementById('coMes').addEventListener('change', renderCostoOportunidad);
+document.getElementById('coAnio').addEventListener('change', ()=>{
+  ajustarMesesDisponibles();
+  renderCostoOportunidad();
+});
+
+/* ---------------------------------------------------------------------
+   Solapas: Calculadora de Patrimonio Futuro / Calculadora Costo de Oportunidad
+--------------------------------------------------------------------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === `tab-${btn.dataset.tab}`));
+    if(btn.dataset.tab === 'costo') renderCostoOportunidad();
+  });
+});
 
 </script>
 </body>
