@@ -1,0 +1,37 @@
+name: Actualizar factsheets
+
+# Corre solo, sin intervencion manual: el dia 15 de cada mes a las 09:00 ART
+# (12:00 UTC). "workflow_dispatch" permite tambien lanzarlo a mano desde la
+# pestaña Actions del repo si hace falta antes de esa fecha.
+on:
+  schedule:
+    - cron: '0 12 15 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Resolver los links vigentes de factsheets
+        run: node scripts/update-factsheets.mjs
+
+      - name: Commitear factsheets.json si cambio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- factsheets.json; then
+            echo "Sin cambios en los factsheets."
+          else
+            git add factsheets.json
+            git commit -m "Actualizar links de factsheets ($(date -u +%Y-%m-%d))"
+            git push
+          fi
