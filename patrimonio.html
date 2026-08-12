@@ -1072,13 +1072,13 @@
           <div class="co-card-value" id="coMontoInicialValue">&mdash;</div>
           <div class="co-card-sub" id="coMontoInicialSub"></div>
         </div>
-        <div class="co-card co-card-accent">
+        <div class="co-card co-card-neutral">
           <div class="co-card-label">Nominal hoy si lo invert&iacute;as</div>
           <div class="co-card-value" id="coConInvertirValue">&mdash;</div>
           <div class="co-card-sub" id="coConInvertirSub"></div>
         </div>
-        <div class="co-card co-card-neutral">
-          <div class="co-card-label">Diferencia nominal: invertido vs. ahorrado</div>
+        <div class="co-card co-card-neutral" id="coDiffNominalCard">
+          <div class="co-card-label">Diferencia Nominal</div>
           <div class="co-card-value" id="coDiffNominalValue">&mdash;</div>
         </div>
         <div class="co-card co-card-neg">
@@ -1086,13 +1086,13 @@
           <div class="co-card-value" id="coPoderCompraValue">&mdash;</div>
           <div class="co-card-sub" id="coPoderCompraSub"></div>
         </div>
-        <div class="co-card co-card-pos">
+        <div class="co-card co-card-neutral" id="coPoderCompraInvertidoCard">
           <div class="co-card-label">Poder de compra hoy (invertido)</div>
           <div class="co-card-value" id="coPoderCompraInvertidoValue">&mdash;</div>
           <div class="co-card-sub" id="coPoderCompraInvertidoSub"></div>
         </div>
-        <div class="co-card co-card-pos">
-          <div class="co-card-label">Diferencia de poder de compra: invertido vs. parado</div>
+        <div class="co-card co-card-neutral" id="coDiffPoderCard">
+          <div class="co-card-label">Diferencia de Poder de Compra</div>
           <div class="co-card-value" id="coDiffPoderValue">&mdash;</div>
         </div>
       </div>
@@ -2961,13 +2961,13 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      layout: { padding: { top: 26, bottom: 22 } },
+      layout: { padding: { top: 26, bottom: 22, right: 42 } },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmtMoney(c.parsed.y, 'Dólar')}` } },
         datalabels: {
-          display: true,
+          display: (c) => c.dataIndex !== 0,
           align: (c) => c.datasetIndex === 0 ? 'bottom' : 'top',
           anchor: (c) => c.datasetIndex === 0 ? 'start' : 'end',
           offset: 6,
@@ -2977,6 +2977,7 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
           padding: { top: 3, bottom: 3, left: 5, right: 5 },
           font: { size: 9.5, weight: '700', family: "'JetBrains Mono', monospace" },
           formatter: (value) => fmtMoney(value, 'Dólar'),
+          clip: false,
         },
       },
       scales: {
@@ -2991,6 +2992,15 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
       }
     }
   });
+}
+
+// Colorea una tarjeta co-card como positiva (verde) o negativa (roja) según el signo
+// del valor que muestra, para que el color siempre transmita si conviene o no.
+function setCardTone(cardId, positive){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  card.classList.remove('co-card-pos', 'co-card-neg', 'co-card-neutral');
+  card.classList.add(positive ? 'co-card-pos' : 'co-card-neg');
 }
 
 function renderCostoOportunidad(){
@@ -3063,6 +3073,10 @@ function renderCostoOportunidad(){
     document.getElementById('coPoderCompraInvertidoSub').textContent = '';
     document.getElementById('coDiffNominalValue').textContent = '—';
     document.getElementById('coDiffPoderValue').textContent = '—';
+    ['coDiffNominalCard', 'coPoderCompraInvertidoCard', 'coDiffPoderCard'].forEach(id=>{
+      document.getElementById(id).classList.remove('co-card-pos', 'co-card-neg');
+      document.getElementById(id).classList.add('co-card-neutral');
+    });
     bdInf.innerHTML = `
       <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
       <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
@@ -3098,14 +3112,17 @@ function renderCostoOportunidad(){
   document.getElementById('coPoderCompraInvertidoValue').textContent = fmtMoney(poderCompraInvertido, 'Dólar');
   document.getElementById('coPoderCompraInvertidoSub').textContent =
     `${rendimientoRealPct >= 0 ? '+' : ''}${(rendimientoRealPct * 100).toFixed(1)}% neto de inflación vs. el monto original.`;
+  setCardTone('coPoderCompraInvertidoCard', rendimientoRealPct >= 0);
 
   const diffNominal = valorInvertidoNominal - monto;
   document.getElementById('coDiffNominalValue').textContent =
     `${diffNominal >= 0 ? '+' : ''}${fmtMoney(diffNominal, 'Dólar')}`;
+  setCardTone('coDiffNominalCard', diffNominal >= 0);
 
   const diffPoder = poderCompraInvertido - poderCompraHoy;
   document.getElementById('coDiffPoderValue').textContent =
     `${diffPoder >= 0 ? '+' : ''}${fmtMoney(diffPoder, 'Dólar')}`;
+  setCardTone('coDiffPoderCard', diffPoder >= 0);
 
   bdInf.innerHTML = `
     <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
