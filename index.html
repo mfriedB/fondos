@@ -498,7 +498,11 @@
     margin-bottom:22px;
   }
   @media (max-width:820px){ .perf-grid{ grid-template-columns:repeat(3, 1fr); } }
-  @media (max-width:480px){ .perf-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:480px){
+    .perf-grid{ grid-template-columns:repeat(2, 1fr); }
+    /* YTD es el 5to item: con 2 columnas queda solo en su fila, así que ocupa el ancho completo */
+    .perf-grid .perf-item:nth-child(5){ grid-column:1 / -1; }
+  }
   .perf-item{
     background:#FAFBFE;
     border:1px solid var(--line);
@@ -810,6 +814,11 @@
     .card{ padding:16px; }
     .tabs-nav{ flex-wrap:wrap; gap:2px; }
     .tab-btn{ padding:10px 12px; font-size:13px; }
+    .brand-logo-row{ gap:10px; }
+    .brand-logo{ height:20px; }
+    .brand-divider{ height:26px; }
+    .brand-title{ font-size:14px; }
+    .brand-subtitle{ font-size:9.5px; margin-top:1px; }
 
     #carteraTable thead, #carteraFondosTable thead, #fondosTable thead{
       display:none;
