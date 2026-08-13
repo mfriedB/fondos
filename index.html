@@ -46,8 +46,10 @@
     --radius: 10px;
   }
   *{box-sizing:border-box;}
+  html{ overflow-x:hidden; }
   body{
     margin:0;
+    overflow-x:hidden;
     background:var(--bg);
     color:var(--text);
     font-family:'Inter',system-ui,sans-serif;
@@ -794,6 +796,91 @@
   @keyframes loading-spin{ to{ transform:rotate(360deg); } }
   .loading-title{ font-size:14.5px; font-weight:700; color:var(--navy); margin-bottom:6px; }
   .loading-detail{ font-size:12.5px; color:var(--muted); }
+
+  /* ============================================================
+     Mobile (≤720px): la pantalla es angosta para 5-7 columnas de
+     datos, así que las tablas se convierten en tarjetas apiladas
+     (una por fila), con el nombre del fondo arriba y el resto de
+     los valores como pares etiqueta/valor. Se apoya en los
+     atributos data-label que trae cada <td> generado por JS.
+     ============================================================ */
+  @media (max-width:720px){
+    .topbar{ padding:14px 16px; }
+    .container{ padding:18px 14px 40px; }
+    .card{ padding:16px; }
+    .tabs-nav{ flex-wrap:wrap; gap:2px; }
+    .tab-btn{ padding:10px 12px; font-size:13px; }
+
+    #carteraTable thead, #carteraFondosTable thead, #fondosTable thead{
+      display:none;
+    }
+    #carteraTable tbody, #carteraFondosTable tbody, #fondosTable tbody,
+    #carteraTable tr, #carteraFondosTable tr, #fondosTable tr,
+    #carteraTable td, #carteraFondosTable td, #fondosTable td{
+      display:block; width:100%;
+    }
+    #carteraTable tbody tr, #carteraFondosTable tbody tr, #fondosTable tbody tr{
+      border:1px solid var(--line);
+      border-radius:10px;
+      margin-bottom:10px;
+      background:#fff;
+      overflow:hidden;
+    }
+    #carteraTable tbody tr:hover, #carteraFondosTable tbody tr:hover, #fondosTable tbody tr:hover{
+      background:#fff;
+    }
+    #carteraTable tbody td, #carteraFondosTable tbody td, #fondosTable tbody td{
+      padding:10px 14px;
+      border-bottom:1px solid var(--line);
+    }
+    #carteraTable tbody tr:last-child td:last-child,
+    #carteraFondosTable tbody tr:last-child td:last-child,
+    #fondosTable tbody tr:last-child td:last-child{
+      border-bottom:none;
+    }
+    #carteraTable tbody td:last-child, #carteraFondosTable tbody td:last-child, #fondosTable tbody td:last-child{
+      border-bottom:none;
+    }
+    /* Celdas con data-label (todo menos la primera, la del fondo): se muestran
+       como fila etiqueta ↔ valor, con la etiqueta a la izquierda en mayúsculas. */
+    #carteraTable tbody td[data-label], #carteraFondosTable tbody td[data-label], #fondosTable tbody td[data-label]{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      text-align:right;
+    }
+    #carteraTable tbody td[data-label]::before, #carteraFondosTable tbody td[data-label]::before, #fondosTable tbody td[data-label]::before{
+      content:attr(data-label);
+      font-size:10.5px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:700;
+      color:var(--muted);
+      text-align:left;
+    }
+    /* La celda del fondo (sin data-label) queda como encabezado de la tarjeta */
+    #carteraTable tbody td:not([data-label]), #carteraFondosTable tbody td:not([data-label]), #fondosTable tbody td:not([data-label]){
+      background:#FAFBFE;
+    }
+    #carteraTable tbody tr.add-fondo-row td, #carteraTable tbody tr.cartera-empty-msg,
+    #carteraTable tbody .cartera-empty-msg{
+      background:#fff;
+    }
+    #carteraTable tfoot, #carteraTable tfoot tr, #carteraTable tfoot td{ display:block; width:100%; }
+    #carteraTable tfoot .cartera-total-row{
+      border-radius:10px; overflow:hidden; margin-top:2px;
+    }
+    #carteraTable tfoot .cartera-total-row td[colspan]{ display:none; }
+    #carteraTable tfoot .cartera-total-row td[data-label]{
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    #carteraTable tfoot .cartera-total-row td[data-label]::before{
+      content:attr(data-label);
+      font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700;
+      color:var(--navy); opacity:.6;
+    }
+  }
 </style>
 </head>
 <body>
@@ -930,7 +1017,7 @@
           <tfoot>
             <tr class="cartera-total-row" id="carteraTotalRow">
               <td colspan="4"></td>
-              <td class="num" id="carteraTotalCosto"></td>
+              <td class="num" id="carteraTotalCosto" data-label="Total"></td>
             </tr>
           </tfoot>
         </table>
@@ -1742,12 +1829,12 @@ function renderCarteraFondosTable(rows){
             <span style="font-size:11.5px;color:var(--muted);"><span class="moneda-dot moneda-${f.moneda}"></span>${f.moneda} · ${f.categoria}</span>
           </div>
         </td>
-        <td class="num vcp-value">${f.ultimoVCP.toFixed(f.ultimoVCP < 10 ? 5 : 2)}</td>
-        <td class="num">${renderRet(f.rent['1M'])}</td>
-        <td class="num">${renderRet(f.rent['3M'])}</td>
-        <td class="num">${renderRet(f.rent['6M'])}</td>
-        <td class="num">${renderRet(f.rent['12M'])}</td>
-        <td class="num">${renderRet(f.rent['YTD'])}</td>
+        <td class="num vcp-value" data-label="VCP">${f.ultimoVCP.toFixed(f.ultimoVCP < 10 ? 5 : 2)}</td>
+        <td class="num" data-label="1M">${renderRet(f.rent['1M'])}</td>
+        <td class="num" data-label="3M">${renderRet(f.rent['3M'])}</td>
+        <td class="num" data-label="6M">${renderRet(f.rent['6M'])}</td>
+        <td class="num" data-label="12M">${renderRet(f.rent['12M'])}</td>
+        <td class="num" data-label="YTD">${renderRet(f.rent['YTD'])}</td>
       </tr>`;
   }).join('');
 }
@@ -2176,10 +2263,10 @@ function carteraRowHtml(r, i, custom){
         <div class="fondo-name">${r.nombre}${removeBtn}</div>
         ${!r.found ? '<div style="font-size:11px;color:var(--neg);margin-top:2px;">⚠ fondo no encontrado en los datos cargados</div>' : ''}
       </td>
-      <td class="num">${pctCell}</td>
-      <td>${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
-      <td>${r.horizonte || '—'}</td>
-      <td class="num vcp-value">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
+      <td class="num" data-label="% objetivo">${pctCell}</td>
+      <td data-label="Riesgo">${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
+      <td data-label="Horizonte">${r.horizonte || '—'}</td>
+      <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
 }
 
@@ -2235,11 +2322,11 @@ function renderCarteraTotals(rows, custom){
 
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
-       <td class="num${invalida ? ' pct-exceso' : ''}">${totalPct}%</td>
+       <td class="num${invalida ? ' pct-exceso' : ''}" data-label="Total %">${totalPct}%</td>
        <td colspan="2"></td>
-       <td class="num" id="carteraTotalCosto">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
+       <td class="num" id="carteraTotalCosto" data-label="Total">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
     : `<td colspan="4"></td>
-       <td class="num" id="carteraTotalCosto">${fmtMoney(totalCosto, selection.moneda)}</td>`;
+       <td class="num" id="carteraTotalCosto" data-label="Total">${fmtMoney(totalCosto, selection.moneda)}</td>`;
 
   const warn = document.getElementById('pctWarning');
 
@@ -2474,12 +2561,12 @@ function render(){
           <span style="font-size:11.5px;color:var(--muted);"><span class="moneda-dot moneda-${f.moneda}"></span>${f.moneda} · ${f.categoria}</span>
         </div>
       </td>
-      <td class="num vcp-value">${f.ultimoVCP.toFixed(f.ultimoVCP < 10 ? 5 : 2)}</td>
-      <td class="num">${renderRet(f.rent['1M'])}</td>
-      <td class="num">${renderRet(f.rent['3M'])}</td>
-      <td class="num">${renderRet(f.rent['6M'])}</td>
-      <td class="num">${renderRet(f.rent['12M'])}</td>
-      <td class="num">${renderRet(f.rent['YTD'])}</td>
+      <td class="num vcp-value" data-label="VCP">${f.ultimoVCP.toFixed(f.ultimoVCP < 10 ? 5 : 2)}</td>
+      <td class="num" data-label="1M">${renderRet(f.rent['1M'])}</td>
+      <td class="num" data-label="3M">${renderRet(f.rent['3M'])}</td>
+      <td class="num" data-label="6M">${renderRet(f.rent['6M'])}</td>
+      <td class="num" data-label="12M">${renderRet(f.rent['12M'])}</td>
+      <td class="num" data-label="YTD">${renderRet(f.rent['YTD'])}</td>
     </tr>
   `).join('');
 
