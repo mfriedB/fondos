@@ -554,10 +554,11 @@
   @media (max-width:820px){ .co-grid{ grid-template-columns:repeat(2, 1fr); } }
   @media (max-width:480px){ .co-grid{ grid-template-columns:1fr; } }
   .co-card{
-    padding:16px 16px; border-radius:12px; color:#fff;
+    padding:16px 16px; border-radius:12px; color:#fff; text-align:center;
     background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
   }
   .co-card.co-card-neutral{ background:linear-gradient(135deg, #4A5578 0%, #2E3654 100%); }
+  .co-card.co-card-pos-light{ background:linear-gradient(135deg, #3DAE7A 0%, #1D8F5E 100%); }
   .co-card.co-card-neg{ background:linear-gradient(135deg,var(--neg) 0%,#8E2E2E 100%); }
   .co-card.co-card-pos{ background:linear-gradient(135deg,var(--pos) 0%,#0C6B47 100%); }
   .co-card.co-card-accent{ background:linear-gradient(135deg,var(--accent) 0%,#1E2E86 100%); }
@@ -654,19 +655,21 @@
   .pf-result{
     margin-top:18px; padding:18px 20px;
     background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
-    border-radius:12px; color:#fff;
+    border-radius:12px; color:#fff; text-align:center;
   }
   .pf-result-label{
     font-size:11px; text-transform:uppercase; letter-spacing:.05em;
     color:rgba(255,255,255,0.72); font-weight:700; margin-bottom:6px;
   }
   .pf-result-value{ font-size:31px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-0.02em; }
+  /* Excepción: el valor de "Patrimonio futuro estimado" / "Cuota necesaria" no se centra */
+  #pfResult .pf-result-value{ text-align:left; }
   .pf-result-sub{ font-size:12px; color:rgba(255,255,255,0.78); margin-top:6px; }
   .pf-breakdown{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
   .pf-breakdown div{
     flex:1; min-width:130px;
     background:#F5F8FE; border:1px solid var(--line);
-    border-radius:8px; padding:10px 12px;
+    border-radius:8px; padding:10px 12px; text-align:center;
   }
   .pf-breakdown .bd-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; }
   .pf-breakdown .bd-value{ font-size:16px; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--navy); margin-top:3px; }
@@ -847,6 +850,7 @@
     <div class="tabs-nav">
       <button class="tab-btn active" data-tab="patrimonio">Calculadora de Patrimonio Futuro</button>
       <button class="tab-btn" data-tab="costo">Calculadora Costo de Oportunidad</button>
+      <button class="tab-btn" data-tab="costo2">Costo de Oportunidad (Retorno 12M)</button>
     </div>
 
     <div id="tab-patrimonio" class="tab-panel active">
@@ -1091,7 +1095,7 @@
           <div class="co-card-value" id="coPoderCompraInvertidoValue">&mdash;</div>
           <div class="co-card-sub" id="coPoderCompraInvertidoSub"></div>
         </div>
-        <div class="co-card co-card-neutral" id="coDiffPoderCard">
+        <div class="co-card co-card-pos-light" id="coDiffPoderCard">
           <div class="co-card-label">Diferencia de Poder de Compra</div>
           <div class="co-card-value" id="coDiffPoderValue">&mdash;</div>
         </div>
@@ -1122,6 +1126,102 @@
       </div>
 
       <div class="hist-chart-wrap"><canvas id="coEvolChart"></canvas></div>
+    </section>
+
+    </div>
+
+    <div id="tab-costo2" class="tab-panel">
+
+    <section class="card" id="co2AhorroSection">
+      <h2>1 &middot; Tus ahorros en d&oacute;lares</h2>
+      <p class="sub">Cont&aacute;nos cu&aacute;nto ten&eacute;s guardado y desde cu&aacute;ndo, para medir cu&aacute;nto perdi&oacute; de poder de compra por la inflaci&oacute;n de EE.UU.</p>
+      <div class="pf-inputs">
+        <div class="pf-field">
+          <label for="co2Monto">Monto ahorrado (USD)</label>
+          <input type="text" id="co2Monto" inputmode="numeric" value="10.000" />
+        </div>
+        <div class="pf-field">
+          <label for="co2Mes">Desde qu&eacute; mes</label>
+          <select id="co2Mes"></select>
+        </div>
+        <div class="pf-field">
+          <label for="co2Anio">Desde qu&eacute; a&ntilde;o</label>
+          <select id="co2Anio"></select>
+        </div>
+      </div>
+      <p class="co-note" id="co2RangoNote"></p>
+    </section>
+
+    <section class="card" id="co2InflacionSection">
+      <h2>2 &middot; Ahorro parado vs. invertido</h2>
+      <p class="sub">
+        La misma comparaci&oacute;n que en la otra solapa, pero usando el <strong>retorno real de la cartera elegida en los &uacute;ltimos 12
+        meses</strong> (seg&uacute;n el VCP hist&oacute;rico de cada fondo) en vez de la TIR ponderada esperada. Sirve para ver qu&eacute; hubiera
+        pasado si el rendimiento reciente de la cartera se repitiera hacia adelante.
+      </p>
+
+      <div id="co2InflacionWarning" class="pf-warning" style="display:none;"></div>
+      <div id="co2CarteraWarning" class="pf-warning" style="display:none;"></div>
+
+      <div class="pf-tir-bar" id="co2TirBar"></div>
+
+      <div class="co-grid" id="co2Grid">
+        <div class="co-card co-card-neutral">
+          <div class="co-card-label">Monto inicial ahorrado</div>
+          <div class="co-card-value" id="co2MontoInicialValue">&mdash;</div>
+          <div class="co-card-sub" id="co2MontoInicialSub"></div>
+        </div>
+        <div class="co-card co-card-neutral">
+          <div class="co-card-label">Nominal hoy si lo invert&iacute;as</div>
+          <div class="co-card-value" id="co2ConInvertirValue">&mdash;</div>
+          <div class="co-card-sub" id="co2ConInvertirSub"></div>
+        </div>
+        <div class="co-card co-card-neutral" id="co2DiffNominalCard">
+          <div class="co-card-label">Diferencia Nominal</div>
+          <div class="co-card-value" id="co2DiffNominalValue">&mdash;</div>
+        </div>
+        <div class="co-card co-card-neg">
+          <div class="co-card-label">Poder de compra hoy (sin invertir)</div>
+          <div class="co-card-value" id="co2PoderCompraValue">&mdash;</div>
+          <div class="co-card-sub" id="co2PoderCompraSub"></div>
+        </div>
+        <div class="co-card co-card-neutral" id="co2PoderCompraInvertidoCard">
+          <div class="co-card-label">Poder de compra hoy (invertido)</div>
+          <div class="co-card-value" id="co2PoderCompraInvertidoValue">&mdash;</div>
+          <div class="co-card-sub" id="co2PoderCompraInvertidoSub"></div>
+        </div>
+        <div class="co-card co-card-pos-light" id="co2DiffPoderCard">
+          <div class="co-card-label">Diferencia de Poder de Compra</div>
+          <div class="co-card-value" id="co2DiffPoderValue">&mdash;</div>
+        </div>
+      </div>
+
+      <div class="pf-breakdown" id="co2InflacionBreakdown"></div>
+
+      <p class="foot-note">
+        El monto ahorrado se mantiene igual en nominal; s&oacute;lo lo golpea la inflaci&oacute;n. El monto invertido, en cambio, crece en nominal
+        al retorno de los &uacute;ltimos 12 meses de la cartera elegida (inter&eacute;s compuesto mensual) y por eso, aunque tambi&eacute;n lo golpea
+        la misma inflaci&oacute;n, el poder de compra final es distinto. Las dos columnas de poder de compra son las &uacute;nicas comparables entre
+        s&iacute;: ambas est&aacute;n deflactadas por el mismo &iacute;ndice CPI-U (NSA), desde el mes de inicio elegido hasta el &uacute;ltimo mes
+        disponible en el archivo de inflaci&oacute;n. El retorno de los &uacute;ltimos 12 meses es hist&oacute;rico y no es un rendimiento asegurado
+        hacia adelante: no refleja necesariamente el rendimiento que esa cartera vaya a tener en el futuro.
+      </p>
+    </section>
+
+    <section class="card" id="co2EvolSection">
+      <h2>3 &middot; Evoluci&oacute;n anual del poder de compra</h2>
+      <p class="sub">
+        Mismo monto inicial, dos caminos: el poder de compra a&ntilde;o a a&ntilde;o si lo dejabas parado, contra si lo hub&iacute;as invertido al
+        retorno de los &uacute;ltimos 12 meses de la cartera elegida. Ambas l&iacute;neas est&aacute;n en d&oacute;lares constantes (deflactadas por
+        CPI-U).
+      </p>
+
+      <div class="co-evol-legend" id="co2EvolLegend">
+        <span class="cel-item"><span class="cel-dot" style="background:#C43D3D;"></span>Ahorro parado</span>
+        <span class="cel-item"><span class="cel-dot" style="background:#0F8A5F;"></span>Invertido en la cartera</span>
+      </div>
+
+      <div class="hist-chart-wrap"><canvas id="co2EvolChart"></canvas></div>
     </section>
 
     </div>
@@ -1680,7 +1780,7 @@ function periodReturn(rows, period, csIdx){
    Graficos: composicion (torta) y rendimiento historico (linea)
 --------------------------------------------------------------------- */
 let histChartInstance = null;
-let coEvolChartInstance = null;
+const coEvolChartInstances = {};
 let currentRange = '12M';
 let lastRows = [];
 
@@ -2219,6 +2319,7 @@ function renderPatrimonioFuturo(rows){
   if(!rows || !rows.length || !Object.keys(TIR_DATA).length){
     sec.style.display = 'none';
     renderCostoOportunidad();
+    renderCostoOportunidad2();
     return;
   }
 
@@ -2236,6 +2337,7 @@ function renderPatrimonioFuturo(rows){
     document.getElementById('pfBreakdown').innerHTML = '';
     document.getElementById('pfTirBar').innerHTML = '';
     renderCostoOportunidad();
+    renderCostoOportunidad2();
     return;
   }
 
@@ -2353,6 +2455,7 @@ function renderPatrimonioFuturo(rows){
   }
 
   renderCostoOportunidad();
+  renderCostoOportunidad2();
 }
 
 function setPfModo(modo){
@@ -2833,10 +2936,10 @@ function cargarCpi(){
 }
 
 // Arma los selects de mes/año una sola vez, apenas se conoce el rango de cpi.xlsx.
-function initSelectoresCpi(){
+function initSelectoresCpi(mesId, anioId, noteId){
   if(!CPI_DATA) return;
-  const selMes = document.getElementById('coMes');
-  const selAnio = document.getElementById('coAnio');
+  const selMes = document.getElementById(mesId);
+  const selAnio = document.getElementById(anioId);
   if(!selMes.options.length){
     MESES_CPI.forEach((m, i)=>{
       selMes.appendChild(new Option(m, String(i)));
@@ -2852,18 +2955,18 @@ function initSelectoresCpi(){
     selAnio.value = String(anioDefault);
     selMes.value = String(CPI_DATA.ultimo.mesIdx);
   }
-  ajustarMesesDisponibles();
-  document.getElementById('coRangoNote').textContent =
+  ajustarMesesDisponibles(anioId, mesId);
+  document.getElementById(noteId).textContent =
     `Datos de inflación disponibles desde ${MESES_CPI[CPI_DATA.primero.mesIdx]} ${CPI_DATA.primero.anio} `
     + `hasta ${MESES_CPI[CPI_DATA.ultimo.mesIdx]} ${CPI_DATA.ultimo.anio} (CPI-U, NSA).`;
 }
 
 // El año elegido puede no tener los 12 meses (el primero y el ultimo del
 // archivo, tipicamente). Se deshabilitan los meses que no existan para ese año.
-function ajustarMesesDisponibles(){
+function ajustarMesesDisponibles(anioId, mesId){
   if(!CPI_DATA) return;
-  const anio = parseInt(document.getElementById('coAnio').value, 10);
-  const selMes = document.getElementById('coMes');
+  const anio = parseInt(document.getElementById(anioId).value, 10);
+  const selMes = document.getElementById(mesId);
   let seleccionValida = false;
   [...selMes.options].forEach(opt=>{
     const existe = !!CPI_DATA.porClave[claveCpi(anio, Number(opt.value))];
@@ -2913,7 +3016,7 @@ function buildEvolPoints(monto, anioInicio, mesInicio, cpiInicio, im){
   return puntos;
 }
 
-function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
+function renderCoEvolChart(canvasId, monto, anioInicio, mesInicio, cpiInicio, im, instanceKey){
   const puntos = buildEvolPoints(monto, anioInicio, mesInicio, cpiInicio, im);
   const labels = puntos.map(p => p.mesIdx === mesInicio && p.meses % 12 === 0
     ? String(p.anio)
@@ -2921,9 +3024,9 @@ function renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im){
   const dataAhorro = puntos.map(p => +p.ahorro.toFixed(2));
   const dataInvertido = puntos.map(p => +p.invertido.toFixed(2));
 
-  const ctx = document.getElementById('coEvolChart').getContext('2d');
-  if(coEvolChartInstance) coEvolChartInstance.destroy();
-  coEvolChartInstance = new Chart(ctx, {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  if(coEvolChartInstances[instanceKey]) coEvolChartInstances[instanceKey].destroy();
+  coEvolChartInstances[instanceKey] = new Chart(ctx, {
     type: 'line',
     data: {
       labels,
@@ -3003,11 +3106,69 @@ function setCardTone(cardId, positive){
   card.classList.add(positive ? 'co-card-pos' : 'co-card-neg');
 }
 
-function renderCostoOportunidad(){
-  const warnInf = document.getElementById('coInflacionWarning');
-  const warnCar = document.getElementById('coCarteraWarning');
-  const grid = document.getElementById('coGrid');
-  const evolSection = document.getElementById('coEvolSection');
+/* ---------------------------------------------------------------------
+   Proveedores de tasa: cada uno toma las filas de la cartera elegida y
+   devuelve { valor, warning, barHtml }. "valor" es la tasa anual en
+   decimal (ej. 0.05 = 5%) que después se compone mes a mes. Si no se
+   puede calcular, valor queda en null y warning trae el texto a mostrar.
+--------------------------------------------------------------------- */
+function tasaProviderTIR(rows){
+  const { tir, faltantes } = tirCartera(rows);
+  if(tir === null){
+    const warning = faltantes.length
+      ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
+      : '⚠ Elegí una cartera válida en la solapa "Calculadora de Patrimonio Futuro" para ver esta comparación.';
+    return { valor: null, warning, barHtml: '' };
+  }
+  const detalle = rows
+    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
+            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
+    .join(' · ');
+  const barHtml = `
+    <span class="tb-label">TIR ponderada de la cartera elegida</span>
+    <span class="tb-value">${(tir * 100).toFixed(2)}%</span>
+    <span class="tb-sep"></span>
+    <span class="tb-funds">${detalle}</span>`;
+  return { valor: tir, warning: null, barHtml };
+}
+
+function tasaProviderRetorno12M(rows){
+  const csIdx = commonStartIdx(rows);
+  const retorno = periodReturn(rows, '12M', csIdx); // en % (ej. 5.2), o null
+  if(retorno === null){
+    return {
+      valor: null,
+      warning: '⚠ La cartera elegida no tiene 12 meses de historial disponible para calcular este retorno. Elegí una cartera con más historial, o una cartera válida en la solapa "Calculadora de Patrimonio Futuro".',
+      barHtml: '',
+    };
+  }
+  const valor = retorno / 100;
+  const detalle = rows
+    .filter(r => (Number(r.pct) || 0) > 0 && r.found)
+    .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b>`)
+    .join(' · ');
+  const barHtml = `
+    <span class="tb-label">Retorno de la cartera (últimos 12 meses)</span>
+    <span class="tb-value">${(valor * 100).toFixed(2)}%</span>
+    <span class="tb-sep"></span>
+    <span class="tb-funds">${detalle}</span>`;
+  return { valor, warning: null, barHtml };
+}
+
+/* ---------------------------------------------------------------------
+   Motor genérico de la Calculadora de Costo de Oportunidad: recibe los ids
+   de todos los elementos de una solapa y la función que provee la tasa
+   (TIR ponderada o retorno de los últimos 12 meses), y hace todo el resto
+   exactamente igual en ambas solapas.
+--------------------------------------------------------------------- */
+function renderCostoOportunidadTab(cfg){
+  const warnInf = document.getElementById(cfg.warnInfId);
+  const warnCar = document.getElementById(cfg.warnCarId);
+  const grid = document.getElementById(cfg.gridId);
+  const evolSection = document.getElementById(cfg.evolSectionId);
+  const tirBar = document.getElementById(cfg.tirBarId);
+  const bdInf = document.getElementById(cfg.breakdownId);
 
   if(!CPI_DATA){
     warnInf.style.display = 'block';
@@ -3015,28 +3176,26 @@ function renderCostoOportunidad(){
     warnInf.textContent = '⚠ No se pudo cargar cpi.xlsx. Esta calculadora necesita ese archivo junto al HTML.';
     warnCar.style.display = 'none';
     grid.style.display = 'none';
-    document.getElementById('coInflacionBreakdown').innerHTML = '';
-    document.getElementById('coTirBar').innerHTML = '';
+    bdInf.innerHTML = '';
+    tirBar.innerHTML = '';
     evolSection.style.display = 'none';
     return;
   }
   warnInf.style.display = 'none';
 
-  initSelectoresCpi();
+  initSelectoresCpi(cfg.mesId, cfg.anioId, cfg.rangoNoteId);
 
-  const monto = Math.max(0, pfNum('coMonto'));
-  const anioInicio = parseInt(document.getElementById('coAnio').value, 10);
-  const mesInicio = parseInt(document.getElementById('coMes').value, 10);
+  const monto = Math.max(0, pfNum(cfg.montoId));
+  const anioInicio = parseInt(document.getElementById(cfg.anioId).value, 10);
+  const mesInicio = parseInt(document.getElementById(cfg.mesId).value, 10);
   const claveInicio = claveCpi(anioInicio, mesInicio);
   const cpiInicio = CPI_DATA.porClave[claveInicio];
   const cpiFin = CPI_DATA.ultimo.cpi;
 
-  const bdInf = document.getElementById('coInflacionBreakdown');
-
   if(cpiInicio === undefined || monto <= 0){
     grid.style.display = 'none';
     bdInf.innerHTML = '';
-    document.getElementById('coTirBar').innerHTML = '';
+    tirBar.innerHTML = '';
     warnCar.style.display = 'block';
     warnCar.textContent = monto <= 0 ? '⚠ Ingresá un monto ahorrado mayor a cero.' : '⚠ No hay dato de inflación para ese mes.';
     evolSection.style.display = 'none';
@@ -3049,34 +3208,30 @@ function renderCostoOportunidad(){
   const poderCompraHoy = monto / factorInflacion;               // en dolares "de la epoca inicial"
   const perdidaPct = 1 - (1 / factorInflacion);                 // 0 a 1
 
-  document.getElementById('coMontoInicialValue').textContent = fmtMoney(monto, 'Dólar');
-  document.getElementById('coMontoInicialSub').textContent =
+  document.getElementById(cfg.montoInicialValueId).textContent = fmtMoney(monto, 'Dólar');
+  document.getElementById(cfg.montoInicialSubId).textContent =
     `Ahorrado en ${MESES_CPI[mesInicio]} ${anioInicio} · sin invertir, el nominal no cambia.`;
 
-  document.getElementById('coPoderCompraValue').textContent = fmtMoney(poderCompraHoy, 'Dólar');
-  document.getElementById('coPoderCompraSub').textContent =
+  document.getElementById(cfg.poderCompraValueId).textContent = fmtMoney(poderCompraHoy, 'Dólar');
+  document.getElementById(cfg.poderCompraSubId).textContent =
     `−${(perdidaPct * 100).toFixed(1)}% de poder de compra por inflación.`;
 
   // --- Escenario "invertido en la cartera elegida" ---------------------
-  const { tir, faltantes } = tirCartera(lastRows || []);
-  const tirBar = document.getElementById('coTirBar');
+  const tasa = cfg.getRate(lastRows || []);
 
-  if(tir === null){
+  if(tasa.valor === null){
     warnCar.style.display = 'block';
-    warnCar.textContent = faltantes.length
-      ? `⚠ No hay TIR informada para: ${faltantes.join(', ')}. No se puede proyectar esta cartera.`
-      : '⚠ Elegí una cartera válida en la solapa "Calculadora de Patrimonio Futuro" para ver esta comparación.';
+    warnCar.textContent = tasa.warning;
     tirBar.innerHTML = '';
-    document.getElementById('coConInvertirValue').textContent = '—';
-    document.getElementById('coConInvertirSub').textContent = '';
-    document.getElementById('coPoderCompraInvertidoValue').textContent = '—';
-    document.getElementById('coPoderCompraInvertidoSub').textContent = '';
-    document.getElementById('coDiffNominalValue').textContent = '—';
-    document.getElementById('coDiffPoderValue').textContent = '—';
-    ['coDiffNominalCard', 'coPoderCompraInvertidoCard', 'coDiffPoderCard'].forEach(id=>{
-      document.getElementById(id).classList.remove('co-card-pos', 'co-card-neg');
-      document.getElementById(id).classList.add('co-card-neutral');
-    });
+    document.getElementById(cfg.conInvertirValueId).textContent = '—';
+    document.getElementById(cfg.conInvertirSubId).textContent = '';
+    document.getElementById(cfg.poderCompraInvertidoValueId).textContent = '—';
+    document.getElementById(cfg.poderCompraInvertidoSubId).textContent = '';
+    document.getElementById(cfg.diffNominalValueId).textContent = '—';
+    document.getElementById(cfg.diffPoderValueId).textContent = '—';
+    const invertidoCard = document.getElementById(cfg.poderCompraInvertidoCardId);
+    invertidoCard.classList.remove('co-card-pos', 'co-card-neg');
+    invertidoCard.classList.add('co-card-neutral');
     bdInf.innerHTML = `
       <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
       <div><div class="bd-label">Tiempo transcurrido</div><div class="bd-value">${(meses / 12).toFixed(1)} años</div></div>`;
@@ -3085,19 +3240,9 @@ function renderCostoOportunidad(){
   }
   warnCar.style.display = 'none';
   evolSection.style.display = '';
+  tirBar.innerHTML = tasa.barHtml;
 
-  const detalle = (lastRows || [])
-    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
-    .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
-            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
-    .join(' · ');
-  tirBar.innerHTML = `
-    <span class="tb-label">TIR ponderada de la cartera elegida</span>
-    <span class="tb-value">${(tir * 100).toFixed(2)}%</span>
-    <span class="tb-sep"></span>
-    <span class="tb-funds">${detalle}</span>`;
-
-  const im = Math.pow(1 + tir, 1 / 12) - 1;
+  const im = Math.pow(1 + tasa.valor, 1 / 12) - 1;
   const valorInvertidoNominal = monto * Math.pow(1 + im, meses);
   const poderCompraInvertido = valorInvertidoNominal / factorInflacion;
   const rendimientoNominalPct = (valorInvertidoNominal / monto) - 1;
@@ -3105,24 +3250,22 @@ function renderCostoOportunidad(){
   // de la cartera contra la misma inflacion acumulada de arriba.
   const rendimientoRealPct = ((1 + rendimientoNominalPct) / factorInflacion) - 1;
 
-  document.getElementById('coConInvertirValue').textContent = fmtMoney(valorInvertidoNominal, 'Dólar');
-  document.getElementById('coConInvertirSub').textContent =
-    `+${(rendimientoNominalPct * 100).toFixed(1)}% nominal a la TIR de la cartera.`;
+  document.getElementById(cfg.conInvertirValueId).textContent = fmtMoney(valorInvertidoNominal, 'Dólar');
+  document.getElementById(cfg.conInvertirSubId).textContent =
+    `+${(rendimientoNominalPct * 100).toFixed(1)}% nominal a la ${cfg.tasaLabel}.`;
 
-  document.getElementById('coPoderCompraInvertidoValue').textContent = fmtMoney(poderCompraInvertido, 'Dólar');
-  document.getElementById('coPoderCompraInvertidoSub').textContent =
+  document.getElementById(cfg.poderCompraInvertidoValueId).textContent = fmtMoney(poderCompraInvertido, 'Dólar');
+  document.getElementById(cfg.poderCompraInvertidoSubId).textContent =
     `${rendimientoRealPct >= 0 ? '+' : ''}${(rendimientoRealPct * 100).toFixed(1)}% neto de inflación vs. el monto original.`;
-  setCardTone('coPoderCompraInvertidoCard', rendimientoRealPct >= 0);
+  setCardTone(cfg.poderCompraInvertidoCardId, rendimientoRealPct >= 0);
 
   const diffNominal = valorInvertidoNominal - monto;
-  document.getElementById('coDiffNominalValue').textContent =
+  document.getElementById(cfg.diffNominalValueId).textContent =
     `${diffNominal >= 0 ? '+' : ''}${fmtMoney(diffNominal, 'Dólar')}`;
-  setCardTone('coDiffNominalCard', diffNominal >= 0);
 
   const diffPoder = poderCompraInvertido - poderCompraHoy;
-  document.getElementById('coDiffPoderValue').textContent =
+  document.getElementById(cfg.diffPoderValueId).textContent =
     `${diffPoder >= 0 ? '+' : ''}${fmtMoney(diffPoder, 'Dólar')}`;
-  setCardTone('coDiffPoderCard', diffPoder >= 0);
 
   bdInf.innerHTML = `
     <div><div class="bd-label">Inflación acumulada (CPI EE.UU.)</div><div class="bd-value">${(factorInflacion * 100 - 100).toFixed(1)}%</div></div>
@@ -3130,8 +3273,41 @@ function renderCostoOportunidad(){
     <div><div class="bd-label">Rendimiento nominal invertido</div><div class="bd-value">${(rendimientoNominalPct * 100).toFixed(1)}%</div></div>
     <div><div class="bd-label">Rendimiento neto de inflación</div><div class="bd-value">${(rendimientoRealPct >= 0 ? '+' : '')}${(rendimientoRealPct * 100).toFixed(1)}%</div></div>`;
 
-  renderCoEvolChart(monto, anioInicio, mesInicio, cpiInicio, im);
+  renderCoEvolChart(cfg.evolChartId, monto, anioInicio, mesInicio, cpiInicio, im, cfg.chartInstanceKey);
 }
+
+const COSTO_CFG_TIR = {
+  montoId: 'coMonto', mesId: 'coMes', anioId: 'coAnio', rangoNoteId: 'coRangoNote',
+  warnInfId: 'coInflacionWarning', warnCarId: 'coCarteraWarning', gridId: 'coGrid',
+  tirBarId: 'coTirBar', breakdownId: 'coInflacionBreakdown',
+  montoInicialValueId: 'coMontoInicialValue', montoInicialSubId: 'coMontoInicialSub',
+  poderCompraValueId: 'coPoderCompraValue', poderCompraSubId: 'coPoderCompraSub',
+  conInvertirValueId: 'coConInvertirValue', conInvertirSubId: 'coConInvertirSub',
+  poderCompraInvertidoCardId: 'coPoderCompraInvertidoCard',
+  poderCompraInvertidoValueId: 'coPoderCompraInvertidoValue', poderCompraInvertidoSubId: 'coPoderCompraInvertidoSub',
+  diffNominalValueId: 'coDiffNominalValue', diffPoderValueId: 'coDiffPoderValue',
+  evolSectionId: 'coEvolSection', evolChartId: 'coEvolChart', chartInstanceKey: 'co',
+  tasaLabel: 'TIR de la cartera',
+  getRate: tasaProviderTIR,
+};
+
+const COSTO_CFG_12M = {
+  montoId: 'co2Monto', mesId: 'co2Mes', anioId: 'co2Anio', rangoNoteId: 'co2RangoNote',
+  warnInfId: 'co2InflacionWarning', warnCarId: 'co2CarteraWarning', gridId: 'co2Grid',
+  tirBarId: 'co2TirBar', breakdownId: 'co2InflacionBreakdown',
+  montoInicialValueId: 'co2MontoInicialValue', montoInicialSubId: 'co2MontoInicialSub',
+  poderCompraValueId: 'co2PoderCompraValue', poderCompraSubId: 'co2PoderCompraSub',
+  conInvertirValueId: 'co2ConInvertirValue', conInvertirSubId: 'co2ConInvertirSub',
+  poderCompraInvertidoCardId: 'co2PoderCompraInvertidoCard',
+  poderCompraInvertidoValueId: 'co2PoderCompraInvertidoValue', poderCompraInvertidoSubId: 'co2PoderCompraInvertidoSub',
+  diffNominalValueId: 'co2DiffNominalValue', diffPoderValueId: 'co2DiffPoderValue',
+  evolSectionId: 'co2EvolSection', evolChartId: 'co2EvolChart', chartInstanceKey: 'co2',
+  tasaLabel: 'retorno de los últimos 12 meses de la cartera',
+  getRate: tasaProviderRetorno12M,
+};
+
+function renderCostoOportunidad(){ renderCostoOportunidadTab(COSTO_CFG_TIR); }
+function renderCostoOportunidad2(){ renderCostoOportunidadTab(COSTO_CFG_12M); }
 
 document.getElementById('coMonto').addEventListener('input', (e)=>{
   formatMontoInput(e.target);
@@ -3139,8 +3315,18 @@ document.getElementById('coMonto').addEventListener('input', (e)=>{
 });
 document.getElementById('coMes').addEventListener('change', renderCostoOportunidad);
 document.getElementById('coAnio').addEventListener('change', ()=>{
-  ajustarMesesDisponibles();
+  ajustarMesesDisponibles('coAnio', 'coMes');
   renderCostoOportunidad();
+});
+
+document.getElementById('co2Monto').addEventListener('input', (e)=>{
+  formatMontoInput(e.target);
+  renderCostoOportunidad2();
+});
+document.getElementById('co2Mes').addEventListener('change', renderCostoOportunidad2);
+document.getElementById('co2Anio').addEventListener('change', ()=>{
+  ajustarMesesDisponibles('co2Anio', 'co2Mes');
+  renderCostoOportunidad2();
 });
 
 /* ---------------------------------------------------------------------
@@ -3151,6 +3337,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b === btn));
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === `tab-${btn.dataset.tab}`));
     if(btn.dataset.tab === 'costo') renderCostoOportunidad();
+    if(btn.dataset.tab === 'costo2') renderCostoOportunidad2();
   });
 });
 
