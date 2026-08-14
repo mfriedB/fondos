@@ -307,6 +307,14 @@
     margin-top:16px;
   }
   #carteraTable{ margin:0; }
+  /* Layout fijo (a partir del colgroup) para que las 7 columnas se repartan
+     el ancho de forma pareja en vez de encogerse al contenido; en mobile la
+     tabla pasa a tarjetas apiladas (ver media query mas abajo) asi que esto
+     no la afecta. */
+  @media (min-width:721px){
+    #carteraTable{ table-layout:fixed; }
+    #carteraTable .fondo-name{ overflow-wrap:break-word; }
+  }
   #carteraTable thead th{
     background:#EEF1FC;
     color:var(--navy);
@@ -371,7 +379,7 @@
     border:1px solid #DCE4F5;
     cursor:help;
   }
-  .base-chip-CER{ background:#FFF3E0; color:#8A5A0F; border-color:#F3E1BD; }
+  .base-chip-CER{ background:#C7D3F0; color:#1F3A93; border-color:#A8B8E0; }
   .base-chip-USD{ background:#E8F5EF; color:#0F8A5F; border-color:#C9E9D8; }
 
   /* Fila final: una linea por base cuando la cartera las mezcla */
@@ -1070,6 +1078,15 @@
       <h2 id="resultTitle">Cartera sugerida</h2>
       <div class="cartera-table-wrap">
         <table class="nav-table" id="carteraTable">
+          <colgroup>
+            <col style="width:23%">
+            <col style="width:9%">
+            <col style="width:12%">
+            <col style="width:13%">
+            <col style="width:16%">
+            <col style="width:12%">
+            <col style="width:15%">
+          </colgroup>
           <thead>
             <tr>
               <th>Fondo</th>
@@ -1093,7 +1110,7 @@
         </table>
       </div>
       <div id="pctWarning" class="pct-warning" style="display:none;"></div>
-      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Cada TIR se muestra con su base: CER es una tasa real (rinde sobre la inflación) y ARS una tasa nominal, así que cuando la cartera mezcla ambas la última fila pondera cada base por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.</p>
+      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Si la cartera mezcla Inflation linked (CER, tasa real) con fondos en pesos (ARS, tasa nominal), cada TIR se muestra con su base y la última fila pondera cada una por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.</p>
     </section>
 
     <section class="card" id="composicionSection">
@@ -1584,6 +1601,10 @@ function normalizarBase(base){
 function ponderadosPorBase(rows, campo){
   const grupos = new Map();
   let pesoCartera = 0;
+  // Orden de aparicion de cada base, siguiendo el orden visual de las filas
+  // de la cartera (no el peso), para que si Inflation linked (CER) esta
+  // arriba en la tabla, su linea tambien quede arriba en el ponderado.
+  const orden = [];
 
   (rows || []).forEach(r=>{
     const w = Number(r.pct) || 0;
@@ -1594,21 +1615,24 @@ function ponderadosPorBase(rows, campo){
     if(v === null || v === undefined || !isFinite(v)) return;
 
     const base = r.base || 's/base';
-    const g = grupos.get(base) || { base, peso: 0, suma: 0 };
+    if(!grupos.has(base)){
+      grupos.set(base, { base, peso: 0, suma: 0 });
+      orden.push(base);
+    }
+    const g = grupos.get(base);
     g.peso += w;
     g.suma += v * w;
-    grupos.set(base, g);
   });
 
-  const lista = [...grupos.values()]
-    .map(g => ({
+  const lista = orden.map(base=>{
+    const g = grupos.get(base);
+    return {
       base: g.base,
       valor: g.suma / g.peso,
       peso: g.peso,
       share: pesoCartera ? g.peso / pesoCartera : 0,
-    }))
-    // La base con mas peso primero, para que la cifra dominante quede arriba
-    .sort((a, b)=> b.peso - a.peso || a.base.localeCompare(b.base, 'es'));
+    };
+  });
 
   const pesoConDato = lista.reduce((acc, g)=> acc + g.peso, 0);
 
@@ -2518,7 +2542,16 @@ function buildCarteraRows(){
   });
 }
 
-function carteraRowHtml(r, i, custom){
+// La cartera solo mezcla bases cuando tiene Inflation linked (CER) junto con
+// algun fondo en pesos (ARS): ese es el unico cruce que hoy pasa. En fondos
+// en dolares no hay para que aclarar la base, asi que ahi nunca se muestra.
+function hayMezclaDeBase(rows){
+  if(selection.moneda === 'Dólar') return false;
+  const bases = new Set((rows || []).map(r => r.base).filter(Boolean));
+  return bases.has('CER') && bases.has('ARS');
+}
+
+function carteraRowHtml(r, i, custom, mostrarBase){
   const excede = custom && !carteraSuma100();
   const pctCell = custom
     ? `<div class="pct-cell"><input type="text" inputmode="numeric" maxlength="3" class="pct-input${excede ? ' pct-exceso' : ''}" data-idx="${i}" value="${r.pct}" aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
@@ -2537,7 +2570,7 @@ function carteraRowHtml(r, i, custom){
       <td class="num" data-label="% objetivo">${pctCell}</td>
       <td data-label="Riesgo">${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
       <td data-label="Horizonte">${r.horizonte || '—'}</td>
-      <td class="num" data-label="TIR">${tirCellHtml(r)}</td>
+      <td class="num" data-label="TIR">${tirCellHtml(r, mostrarBase)}</td>
       <td class="num" data-label="Duration">${durCellHtml(r)}</td>
       <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
@@ -2560,12 +2593,12 @@ function baseChipHtml(base, extraTitle){
   return `<span class="base-chip base-chip-${base}" title="${extraTitle ? extraTitle + ' · ' : ''}${t}">${base}</span>`;
 }
 
-function tirCellHtml(r){
+function tirCellHtml(r, mostrarBase){
   const txt = fmtTir(r.tir);
   if(!txt){
     return `<span class="tir-value sin-dato" title="Sin TIR en tir_fondos.xlsx">s/d</span>`;
   }
-  return `<span class="tir-value">${txt}</span>${baseChipHtml(r.base)}`;
+  return `<span class="tir-value">${txt}</span>${mostrarBase ? baseChipHtml(r.base) : ''}`;
 }
 
 function durCellHtml(r){
@@ -2604,9 +2637,9 @@ function renderCartera(){
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
     ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
-    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Cada TIR se muestra con su base: CER es una tasa real (rinde sobre la inflación) y ARS una tasa nominal, así que cuando la cartera mezcla ambas la última fila pondera cada base por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.';
+    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Si la cartera mezcla Inflation linked (CER, tasa real) con fondos en pesos (ARS, tasa nominal), cada TIR se muestra con su base y la última fila pondera cada una por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.';
 
-  let body = rows.map((r, i)=> carteraRowHtml(r, i, custom)).join('');
+  let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayMezclaDeBase(rows))).join('');
   if(custom){
     body += addFondoRowHtml();
   } else if(!rows.length){
@@ -2639,10 +2672,12 @@ function ponderadoCellHtml(rows, campo, formateador, label){
   const mezclada = grupos.length > 1;
 
   const lineas = grupos.map(g=>{
-    // El peso de cada base solo se muestra si hay mas de una: con una sola
-    // base siempre seria 100% y agregaria ruido.
+    // El chip de base y el peso de cada linea solo se muestran cuando la
+    // cartera mezcla CER con ARS: con una sola base seria ruido repetir la
+    // etiqueta, y en carteras USD nunca hace falta aclarar nada.
+    const chip = mezclada ? baseChipHtml(g.base) : '';
     const peso = mezclada ? `<span class="pond-peso">${Math.round(g.share * 100)}%</span>` : '';
-    return `<span class="pond-linea"><span class="${clase}">${formateador(g.valor)}</span>${baseChipHtml(g.base)}${peso}</span>`;
+    return `<span class="pond-linea"><span class="${clase}">${formateador(g.valor)}</span>${chip}${peso}</span>`;
   }).join('');
 
   const detalle = grupos
@@ -3136,15 +3171,17 @@ function buildPrintReport(){
     `;
 
   let totalCosto = 0;
+  const mostrarBasePdf = hayMezclaDeBase(rows);
   const bodyRows = rows.map(r=>{
     totalCosto += r.costo;
+    const tirTxt = fmtTir(r.tir);
     return `
       <tr>
         <td>${r.nombre}</td>
         <td>${r.pct}%</td>
         <td>${r.riesgo || '—'}</td>
         <td>${r.horizonte || '—'}</td>
-        <td style="text-align:right;">${fmtTir(r.tir) ? fmtTir(r.tir) + (r.base ? ' ' + r.base : '') : 's/d'}</td>
+        <td style="text-align:right;">${tirTxt ? tirTxt + (mostrarBasePdf && r.base ? ' ' + r.base : '') : 's/d'}</td>
         <td style="text-align:right;">${fmtDuration(r.duration) || 's/d'}</td>
         <td style="text-align:right;">${fmtMoney(r.costo, selection.moneda)}</td>
       </tr>`;
@@ -3152,14 +3189,15 @@ function buildPrintReport(){
 
   // Mismos ponderados que muestra la web, para que el PDF no dependa del DOM.
   // Si la cartera mezcla bases (CER + ARS) van en lineas separadas, porque
-  // promediar una tasa real con una nominal daria un numero sin sentido.
+  // promediar una tasa real con una nominal daria un numero sin sentido; la
+  // base solo se rotula en ese caso mezclado, igual que en la tabla.
   function pondTextoPdf(campo, formateador){
     const { grupos, cobertura } = ponderadosPorBase(rows, campo);
     if(!grupos.length) return 's/d';
     const mezclada = grupos.length > 1;
     const parcial = cobertura < 0.999;
     return grupos
-      .map(g => `${formateador(g.valor)} ${g.base}${mezclada ? ` (${Math.round(g.share * 100)}%)` : ''}`)
+      .map(g => `${formateador(g.valor)}${mezclada ? ` ${g.base} (${Math.round(g.share * 100)}%)` : ''}`)
       .join('<br>') + (parcial ? '*' : '');
   }
 
