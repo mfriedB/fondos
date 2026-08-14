@@ -364,7 +364,7 @@
   .pond-parcial{ font-weight:700; color:var(--muted); margin-left:2px; }
 
   /* Base de la tasa (ARS / CER / USD): una TIR CER es real y una ARS es
-     nominal, asi que la base va siempre al lado del numero. */
+     nominal, asi que la base va al lado del numero. */
   .base-chip{
     display:inline-block;
     margin-left:6px;
@@ -946,6 +946,8 @@
       border-radius:10px; overflow:hidden; margin-top:2px;
     }
     #carteraTable tfoot .cartera-total-row td[colspan]{ display:none; }
+    /* Celdas de relleno del pie (sin contenido) no generan tarjeta vacia */
+    #carteraTable tfoot .cartera-total-row td:empty{ display:none; }
     #carteraTable tfoot .cartera-total-row td[data-label]{
       display:flex; justify-content:space-between; align-items:center;
     }
@@ -1080,30 +1082,31 @@
         <table class="nav-table" id="carteraTable">
           <colgroup>
             <col style="width:23%">
-            <col style="width:9%">
             <col style="width:12%">
             <col style="width:13%">
             <col style="width:16%">
             <col style="width:12%">
+            <col style="width:9%">
             <col style="width:15%">
           </colgroup>
           <thead>
             <tr>
               <th>Fondo</th>
-              <th class="num">% objetivo</th>
               <th>Riesgo</th>
               <th>Horizonte</th>
               <th class="num">TIR</th>
               <th class="num">Duration</th>
+              <th class="num">% objetivo</th>
               <th class="num">Inversión</th>
             </tr>
           </thead>
           <tbody id="carteraTableBody"></tbody>
           <tfoot>
             <tr class="cartera-total-row" id="carteraTotalRow">
-              <td colspan="4"></td>
+              <td colspan="3"></td>
               <td class="num" data-label="TIR ponderada"></td>
               <td class="num" data-label="Duration ponderada"></td>
+              <td class="num"></td>
               <td class="num" id="carteraTotalCosto" data-label="Total"></td>
             </tr>
           </tfoot>
@@ -2567,11 +2570,11 @@ function carteraRowHtml(r, i, custom, mostrarBase){
         <div class="fondo-name">${r.nombre}${removeBtn}</div>
         ${!r.found ? '<div style="font-size:11px;color:var(--neg);margin-top:2px;">⚠ fondo no encontrado en los datos cargados</div>' : ''}
       </td>
-      <td class="num" data-label="% objetivo">${pctCell}</td>
       <td data-label="Riesgo">${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
       <td data-label="Horizonte">${r.horizonte || '—'}</td>
       <td class="num" data-label="TIR">${tirCellHtml(r, mostrarBase)}</td>
       <td class="num" data-label="Duration">${durCellHtml(r)}</td>
+      <td class="num" data-label="% objetivo">${pctCell}</td>
       <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
 }
@@ -2710,14 +2713,15 @@ function renderCarteraTotals(rows, custom){
 
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
-       <td class="num${invalida ? ' pct-exceso' : ''}" data-label="Total %">${totalPct}%</td>
        <td colspan="2"></td>
        ${tirCell}
        ${durCell}
+       <td class="num${invalida ? ' pct-exceso' : ''}" data-label="Total %">${totalPct}%</td>
        <td class="num" id="carteraTotalCosto" data-label="Total">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
-    : `<td colspan="4"></td>
+    : `<td colspan="3"></td>
        ${tirCell}
        ${durCell}
+       <td class="num"></td>
        <td class="num" id="carteraTotalCosto" data-label="Total">${fmtMoney(totalCosto, selection.moneda)}</td>`;
 
   const warn = document.getElementById('pctWarning');
@@ -3178,11 +3182,11 @@ function buildPrintReport(){
     return `
       <tr>
         <td>${r.nombre}</td>
-        <td>${r.pct}%</td>
         <td>${r.riesgo || '—'}</td>
         <td>${r.horizonte || '—'}</td>
         <td style="text-align:right;">${tirTxt ? tirTxt + (mostrarBasePdf && r.base ? ' ' + r.base : '') : 's/d'}</td>
         <td style="text-align:right;">${fmtDuration(r.duration) || 's/d'}</td>
+        <td style="text-align:right;">${r.pct}%</td>
         <td style="text-align:right;">${fmtMoney(r.costo, selection.moneda)}</td>
       </tr>`;
   }).join('');
@@ -3197,7 +3201,7 @@ function buildPrintReport(){
     const mezclada = grupos.length > 1;
     const parcial = cobertura < 0.999;
     return grupos
-      .map(g => `${formateador(g.valor)}${mezclada ? ` ${g.base} (${Math.round(g.share * 100)}%)` : ''}`)
+      .map(g => `${formateador(g.valor)} ${g.base}${mezclada ? ` (${Math.round(g.share * 100)}%)` : ''}`)
       .join('<br>') + (parcial ? '*' : '');
   }
 
@@ -3206,11 +3210,11 @@ function buildPrintReport(){
 
   document.getElementById('printCarteraTable').innerHTML = `
     <thead>
-      <tr><th>Fondo</th><th>% objetivo</th><th>Riesgo</th><th>Horizonte</th><th style="text-align:right;">TIR</th><th style="text-align:right;">Duration</th><th style="text-align:right;">Inversión</th></tr>
+      <tr><th>Fondo</th><th>Riesgo</th><th>Horizonte</th><th style="text-align:right;">TIR</th><th style="text-align:right;">Duration</th><th style="text-align:right;">% objetivo</th><th style="text-align:right;">Inversión</th></tr>
     </thead>
     <tbody>${bodyRows}</tbody>
     <tfoot>
-      <tr><td colspan="4"></td><td style="text-align:right;">${tirPondTxt}</td><td style="text-align:right;">${durPondTxt}</td><td style="text-align:right;">${fmtMoney(totalCosto, selection.moneda)}</td></tr>
+      <tr><td colspan="3"></td><td style="text-align:right;">${tirPondTxt}</td><td style="text-align:right;">${durPondTxt}</td><td></td><td style="text-align:right;">${fmtMoney(totalCosto, selection.moneda)}</td></tr>
     </tfoot>
   `;
 
