@@ -319,10 +319,11 @@
      columnas. Asi las proporciones no cambian de una pantalla a otra.
      Por debajo de 720px manda la vista de tarjetas apiladas. */
   @media (min-width:721px){
-    #carteraTable{ table-layout:fixed; min-width:1128px; }
+    /* Cambiamos min-width por width:100% para que se adapte al contenedor y elimine el scroll */
+    #carteraTable{ table-layout:fixed; width:100%; }
     #carteraTable th, #carteraTable td{ padding-left:12px; padding-right:12px; }
     #carteraTable .fondo-name{ overflow-wrap:break-word; }
-    .cartera-table-wrap{ overflow-x:auto; }
+    .cartera-table-wrap{ overflow-x:hidden; } /* Evita cualquier desborde residual */
   }
 
   #carteraTable thead th{
@@ -1095,13 +1096,14 @@
                Horizonte se achica para que TIR quede mas cerca y no queden
                huecos grandes en el medio de la tabla. -->
           <colgroup>
-            <col style="width:28%">
-            <col style="width:10%">
-            <col style="width:12%">
-            <col style="width:11%">
-            <col style="width:14%">
-            <col style="width:12%">
-            <col style="width:13%">
+            <!-- Ajustamos las proporciones para reducir el espacio suelto -->
+            <col style="width:29%"> <!-- Fondo -->
+            <col style="width:9%"> <!-- % objetivo -->
+            <col style="width:11%"> <!-- Riesgo -->
+            <col style="width:12%"> <!-- Horizonte -->
+            <col style="width:13%"> <!-- TIR -->
+            <col style="width:12%"> <!-- Duration -->
+            <col style="width:14%"> <!-- Inversión -->
           </colgroup>
           <thead>
             <tr>
