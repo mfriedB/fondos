@@ -307,36 +307,22 @@
     margin-top:16px;
   }
   #carteraTable{ margin:0; }
-  /* Sin colgroup y con table-layout fijo, las 7 columnas se reparten el
-     ancho en partes iguales (1/7 cada una) y el padding es el mismo en
-     todas, asi que el espaciado entre columnas queda parejo. Los nombres
-     largos de fondo cortan en dos lineas en vez de ensanchar su columna.
-     En mobile la tabla pasa a tarjetas apiladas (ver media query mas
-     abajo), asi que esto no la afecta. */
+  /* Con table-layout fijo mandan los anchos del colgroup: asi Fondo (la
+     columna principal) respira y las columnas numericas quedan compactas,
+     en vez de que cada una se ajuste al largo de su contenido. El padding
+     es el mismo en todas para que el espaciado sea parejo. En mobile la
+     tabla pasa a tarjetas apiladas (ver media query mas abajo), asi que
+     esto no la afecta. */
+  /* La tabla mantiene siempre la misma geometria que en desktop completo
+     (1128px, que es el ancho del contenedor al maximo): si la pantalla es
+     mas angosta el contenedor scrollea en horizontal en vez de apretar las
+     columnas. Asi las proporciones no cambian de una pantalla a otra.
+     Por debajo de 720px manda la vista de tarjetas apiladas. */
   @media (min-width:721px){
-    #carteraTable{ table-layout:fixed; }
+    #carteraTable{ table-layout:fixed; min-width:1128px; }
     #carteraTable th, #carteraTable td{ padding-left:12px; padding-right:12px; }
     #carteraTable .fondo-name{ overflow-wrap:break-word; }
-  }
-  /* Banda intermedia: con columnas iguales y poco ancho total, 1/7 se queda
-     corto para "USD 100.000" y para la linea del pie. Se compacta un poco
-     todo y se esconde el badge de peso (el dato sigue en el tooltip). */
-  @media (min-width:721px) and (max-width:1080px){
-    #carteraTable{ font-size:12.5px; }
-    #carteraTable th, #carteraTable td{ padding-left:8px; padding-right:8px; }
-    #carteraTable .pond-peso{ display:none; }
-    #carteraTable tbody .vcp-value,
-    #carteraTable tfoot #carteraTotalCosto{ font-size:13.5px; }
-    #carteraTable tbody .tir-value,
-    #carteraTable tbody .dur-value{ font-size:12.5px; }
-    .base-chip{ margin-left:4px; padding:1px 4px; }
-  }
-  /* Franja angosta (todavia no es la vista de tarjetas): con 7 columnas
-     iguales no entra ni compactando, asi que se le da un ancho minimo y el
-     contenedor scrollea en horizontal, en vez de desarmar la grilla pareja. */
-  @media (min-width:721px) and (max-width:880px){
     .cartera-table-wrap{ overflow-x:auto; }
-    #carteraTable{ min-width:830px; }
   }
 
   #carteraTable thead th{
@@ -415,12 +401,12 @@
   }
   .pond-linea{ display:flex; align-items:center; justify-content:flex-end; }
   .pond-peso{
-    font-size:10.5px;
+    font-size:10px;
     font-weight:700;
     color:var(--navy);
     opacity:.55;
-    margin-left:6px;
-    min-width:30px;
+    margin-left:4px;
+    min-width:26px;
     text-align:right;
   }
 
@@ -1025,7 +1011,7 @@
         </div>
       </div>
       <div class="topbar-actions">
-        <span class="pill">VCP al <strong id="asOfDateLabel">—</strong></span>
+        <span class="pill">Datos al <strong id="asOfDateLabel">—</strong></span>
         <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
           Descargar PDF
@@ -1105,6 +1091,18 @@
       <h2 id="resultTitle">Cartera sugerida</h2>
       <div class="cartera-table-wrap">
         <table class="nav-table" id="carteraTable">
+          <!-- Fondo se lleva el ancho extra por ser la columna principal, y
+               Horizonte se achica para que TIR quede mas cerca y no queden
+               huecos grandes en el medio de la tabla. -->
+          <colgroup>
+            <col style="width:28%">
+            <col style="width:10%">
+            <col style="width:12%">
+            <col style="width:11%">
+            <col style="width:14%">
+            <col style="width:12%">
+            <col style="width:13%">
+          </colgroup>
           <thead>
             <tr>
               <th>Fondo</th>
@@ -1128,7 +1126,7 @@
         </table>
       </div>
       <div id="pctWarning" class="pct-warning" style="display:none;"></div>
-      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Si la cartera mezcla Inflation linked (CER, tasa real) con fondos en pesos (ARS, tasa nominal), cada TIR se muestra con su base y la última fila pondera cada una por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.</p>
+      <p class="foot-note" id="resultFootNote">Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.</p>
     </section>
 
     <section class="card" id="composicionSection">
@@ -2582,7 +2580,7 @@ function carteraRowHtml(r, i, custom, mostrarBase){
   return `
     <tr>
       <td>
-        <div class="fondo-name">${r.nombre}${removeBtn}</div>
+        <div class="fondo-name">${fondoNameHtml(r.nombre)}${removeBtn}</div>
         ${!r.found ? '<div style="font-size:11px;color:var(--neg);margin-top:2px;">⚠ fondo no encontrado en los datos cargados</div>' : ''}
       </td>
       <td data-label="% objetivo">${pctCell}</td>
@@ -2655,7 +2653,7 @@ function renderCartera(){
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
     ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
-    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Si la cartera mezcla Inflation linked (CER, tasa real) con fondos en pesos (ARS, tasa nominal), cada TIR se muestra con su base y la última fila pondera cada una por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.';
+    : 'Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayMezclaDeBase(rows))).join('');
   if(custom){
@@ -3163,7 +3161,7 @@ function buildPrintReport(){
   const montoTexto = fmtMoney(monto, selection.moneda);
 
   document.getElementById('printMeta').innerHTML = `
-    <div>VCP al ${fmtDate(DATA.asOfDate)}</div>
+    <div>Datos al ${fmtDate(DATA.asOfDate)}</div>
     <div>Generado el ${new Date().toLocaleDateString('es-AR')}</div>
   `;
 
