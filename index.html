@@ -307,14 +307,38 @@
     margin-top:16px;
   }
   #carteraTable{ margin:0; }
-  /* Layout fijo (a partir del colgroup) para que las 7 columnas se repartan
-     el ancho de forma pareja en vez de encogerse al contenido; en mobile la
-     tabla pasa a tarjetas apiladas (ver media query mas abajo) asi que esto
-     no la afecta. */
+  /* Sin colgroup y con table-layout fijo, las 7 columnas se reparten el
+     ancho en partes iguales (1/7 cada una) y el padding es el mismo en
+     todas, asi que el espaciado entre columnas queda parejo. Los nombres
+     largos de fondo cortan en dos lineas en vez de ensanchar su columna.
+     En mobile la tabla pasa a tarjetas apiladas (ver media query mas
+     abajo), asi que esto no la afecta. */
   @media (min-width:721px){
     #carteraTable{ table-layout:fixed; }
+    #carteraTable th, #carteraTable td{ padding-left:12px; padding-right:12px; }
     #carteraTable .fondo-name{ overflow-wrap:break-word; }
   }
+  /* Banda intermedia: con columnas iguales y poco ancho total, 1/7 se queda
+     corto para "USD 100.000" y para la linea del pie. Se compacta un poco
+     todo y se esconde el badge de peso (el dato sigue en el tooltip). */
+  @media (min-width:721px) and (max-width:1080px){
+    #carteraTable{ font-size:12.5px; }
+    #carteraTable th, #carteraTable td{ padding-left:8px; padding-right:8px; }
+    #carteraTable .pond-peso{ display:none; }
+    #carteraTable tbody .vcp-value,
+    #carteraTable tfoot #carteraTotalCosto{ font-size:13.5px; }
+    #carteraTable tbody .tir-value,
+    #carteraTable tbody .dur-value{ font-size:12.5px; }
+    .base-chip{ margin-left:4px; padding:1px 4px; }
+  }
+  /* Franja angosta (todavia no es la vista de tarjetas): con 7 columnas
+     iguales no entra ni compactando, asi que se le da un ancho minimo y el
+     contenedor scrollea en horizontal, en vez de desarmar la grilla pareja. */
+  @media (min-width:721px) and (max-width:880px){
+    .cartera-table-wrap{ overflow-x:auto; }
+    #carteraTable{ min-width:830px; }
+  }
+
   #carteraTable thead th{
     background:#EEF1FC;
     color:var(--navy);
@@ -1081,15 +1105,6 @@
       <h2 id="resultTitle">Cartera sugerida</h2>
       <div class="cartera-table-wrap">
         <table class="nav-table" id="carteraTable">
-          <colgroup>
-            <col style="width:23%">
-            <col style="width:9%">
-            <col style="width:12%">
-            <col style="width:13%">
-            <col style="width:16%">
-            <col style="width:12%">
-            <col style="width:15%">
-          </colgroup>
           <thead>
             <tr>
               <th>Fondo</th>
