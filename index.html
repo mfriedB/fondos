@@ -334,6 +334,63 @@
   #carteraTable tbody .vcp-value{
     font-size:15px;
   }
+  /* TIR y Duration: se muestran en monoespaciada para que las cifras
+     queden alineadas columna a columna, igual que la inversion. */
+  #carteraTable tbody .tir-value,
+  #carteraTable tbody .dur-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13.5px;
+    color:var(--navy);
+    white-space:nowrap;
+  }
+  #carteraTable tbody .tir-value.sin-dato,
+  #carteraTable tbody .dur-value.sin-dato{ color:var(--muted); }
+  #carteraTable tfoot .cartera-total-row .tir-total,
+  #carteraTable tfoot .cartera-total-row .dur-total{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    white-space:nowrap;
+  }
+  #carteraTable tfoot .cartera-total-row .sin-dato{ opacity:.65; font-weight:600; }
+  /* Asterisco cuando el ponderado no cubre el 100% de la cartera */
+  .pond-parcial{ font-weight:700; color:var(--muted); margin-left:2px; }
+
+  /* Base de la tasa (ARS / CER / USD): una TIR CER es real y una ARS es
+     nominal, asi que la base va siempre al lado del numero. */
+  .base-chip{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 5px;
+    border-radius:4px;
+    font-size:9.5px;
+    font-weight:800;
+    letter-spacing:.04em;
+    vertical-align:1px;
+    background:#EEF1FC;
+    color:#5B6785;
+    border:1px solid #DCE4F5;
+    cursor:help;
+  }
+  .base-chip-CER{ background:#FFF3E0; color:#8A5A0F; border-color:#F3E1BD; }
+  .base-chip-USD{ background:#E8F5EF; color:#0F8A5F; border-color:#C9E9D8; }
+
+  /* Fila final: una linea por base cuando la cartera las mezcla */
+  .pond-lista{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:3px;
+  }
+  .pond-linea{ display:flex; align-items:center; justify-content:flex-end; }
+  .pond-peso{
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--navy);
+    opacity:.55;
+    margin-left:6px;
+    min-width:30px;
+    text-align:right;
+  }
 
   /* Selectores de moneda / perfil / horizonte */
   .option-row{ display:flex; gap:12px; flex-wrap:wrap; }
@@ -1019,6 +1076,8 @@
               <th class="num">% objetivo</th>
               <th>Riesgo</th>
               <th>Horizonte</th>
+              <th class="num">TIR</th>
+              <th class="num">Duration</th>
               <th class="num">Inversión</th>
             </tr>
           </thead>
@@ -1026,13 +1085,15 @@
           <tfoot>
             <tr class="cartera-total-row" id="carteraTotalRow">
               <td colspan="4"></td>
+              <td class="num" data-label="TIR ponderada"></td>
+              <td class="num" data-label="Duration ponderada"></td>
               <td class="num" id="carteraTotalCosto" data-label="Total"></td>
             </tr>
           </tfoot>
         </table>
       </div>
       <div id="pctWarning" class="pct-warning" style="display:none;"></div>
-      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.</p>
+      <p class="foot-note" id="resultFootNote">La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Cada TIR se muestra con su base: CER es una tasa real (rinde sobre la inflación) y ARS una tasa nominal, así que cuando la cartera mezcla ambas la última fila pondera cada base por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.</p>
     </section>
 
     <section class="card" id="composicionSection">
@@ -1365,6 +1426,197 @@ function cargarCarteras(){
       PORTFOLIOS = portfolios;
       CARTERAS_INCONSISTENTES = inconsistentes;
     });
+}
+
+/* ---------------------------------------------------------------------
+   TIR y Duration de cada fondo (tir_fondos.xlsx)
+
+   Antes este dato vivia en tir_fondos.csv; ahora se lee del .xlsx que esta
+   junto a este HTML, con la misma logica que carteras.xlsx y data.xlsx.
+
+   Layout esperado (hoja "tir_fondos", o la primera hoja del libro):
+     fondo | base | tna | tir | duration
+   Las celdas de tna/tir vienen en escala decimal (0,285 = 28,5%) porque en
+   el Excel estan formateadas como porcentaje. Las filas sin tir (rotulos de
+   seccion como "GLOBAL", o fondos de renta variable que no tienen TIR) se
+   ignoran y esos fondos quedan mostrando "s/d" en la tabla.
+
+   El cruce con la cartera es por NOMBRE de fondo, normalizado (sin acentos,
+   sin mayusculas y sin espacios de mas) para que una diferencia menor de
+   tipeo entre archivos no rompa el match.
+
+   Si el archivo no se puede leer la pagina NO se cae: se avisa por consola y
+   las columnas quedan en "s/d", igual que factsheets.json.
+--------------------------------------------------------------------- */
+let TIR_FONDOS = {};
+
+function normalizarNombreFondo(nombre){
+  return String(nombre == null ? '' : nombre)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // saca acentos
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function parseTirFondos(workbook){
+  const hoja = workbook.Sheets['tir_fondos'] || workbook.Sheets[workbook.SheetNames[0]];
+  if(!hoja) throw new Error('tir_fondos.xlsx no tiene ninguna hoja.');
+
+  const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, blankrows: false });
+
+  // La fila de encabezados es la primera que tenga una columna llamada "fondo"
+  const hdrIdx = filas.findIndex(f =>
+    (f || []).some(v => normalizarNombreFondo(v) === 'fondo'));
+  if(hdrIdx === -1) throw new Error('No se encontró la fila de encabezados (la que tiene la columna "fondo").');
+
+  const hdr = (filas[hdrIdx] || []).map(v => normalizarNombreFondo(v));
+  const idxFondo = hdr.indexOf('fondo');
+  const idxBase  = hdr.indexOf('base');
+  const idxTna   = hdr.indexOf('tna');
+  const idxTir   = hdr.indexOf('tir');
+  // "duration" o "duracion", por si el archivo cambia de rotulo
+  const idxDur   = hdr.findIndex(h => h === 'duration' || h === 'duracion');
+
+  if(idxTir === -1 && idxDur === -1){
+    throw new Error('tir_fondos.xlsx no tiene columnas "tir" ni "duration".');
+  }
+
+  // Convierte la celda a numero. Acepta tanto 0,285 como "28,5%" / "28.5"
+  // (si el valor viene mayor a 2 se asume que esta expresado en % y se pasa
+  // a decimal, porque ningun fondo tiene una TIR de 200%+).
+  function numTasa(raw){
+    const n = numSimple(raw);
+    if(n === null) return null;
+    return Math.abs(n) > 2 ? n / 100 : n;
+  }
+
+  function numSimple(raw){
+    if(raw === null || raw === undefined || raw === '') return null;
+    if(typeof raw === 'number') return isFinite(raw) ? raw : null;
+    const limpio = String(raw).replace('%', '').replace(/\./g, '').replace(',', '.').trim();
+    const n = Number(limpio);
+    return isFinite(n) ? n : null;
+  }
+
+  const out = {};
+  for(let r = hdrIdx + 1; r < filas.length; r++){
+    const fila = filas[r] || [];
+    const nombre = String(fila[idxFondo] == null ? '' : fila[idxFondo]).trim();
+    if(!nombre) continue;
+
+    const tir = idxTir === -1 ? null : numTasa(fila[idxTir]);
+    const dur = idxDur === -1 ? null : numSimple(fila[idxDur]);
+    // Filas sin ningun dato util (rotulos de seccion) se saltean
+    if(tir === null && dur === null) continue;
+
+    out[normalizarNombreFondo(nombre)] = {
+      fondo: nombre,
+      base: idxBase === -1 ? null : (fila[idxBase] || null),
+      tna:  idxTna  === -1 ? null : numTasa(fila[idxTna]),
+      tir,
+      duration: dur,
+    };
+  }
+
+  if(!Object.keys(out).length){
+    throw new Error('tir_fondos.xlsx no tiene filas con TIR o Duration válidas.');
+  }
+  return out;
+}
+
+function cargarTirFondos(){
+  if(typeof XLSX === 'undefined'){
+    console.warn('SheetJS no disponible: la cartera queda sin TIR ni Duration.');
+    TIR_FONDOS = {};
+    return Promise.resolve();
+  }
+  return fetch('tir_fondos.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró tir_fondos.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      TIR_FONDOS = parseTirFondos(XLSX.read(buf, { type: 'array' }));
+    })
+    .catch(err=>{
+      console.warn('No se pudo cargar tir_fondos.xlsx; la cartera queda sin TIR ni Duration.', err);
+      TIR_FONDOS = {};
+    });
+}
+
+// Devuelve { tir, duration } del fondo, o null si no esta en el archivo
+function tirDurationDeFondo(nombre){
+  return TIR_FONDOS[normalizarNombreFondo(nombre)] || null;
+}
+
+// 0.285 -> "28,50%"   |   null -> null
+function fmtTir(v){
+  if(v === null || v === undefined || !isFinite(v)) return null;
+  return (v * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+}
+
+// 0.78 -> "0,78"
+function fmtDuration(v){
+  if(v === null || v === undefined || !isFinite(v)) return null;
+  return v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Base de la tasa, normalizada al rotulo corto que se muestra en la tabla.
+// El Excel trae ARS / CER / USD; si aparece cualquier otra cosa se respeta
+// tal cual vino (en mayusculas) en lugar de descartarla.
+function normalizarBase(base){
+  const b = String(base == null ? '' : base).trim().toUpperCase();
+  return b || null;
+}
+
+/* Promedio ponderado de un campo (tir / duration), agrupado POR BASE de tasa.
+
+   Por que agrupado: la TIR de un fondo CER es una tasa REAL (rinde inflacion
+   + x%) y la de un fondo ARS es NOMINAL. Promediarlas en un solo numero da
+   una cifra que no significa nada. En la practica esto solo pasa en carteras
+   en pesos que mezclan Inflation linked con fondos ARS: en el resto de los
+   casos hay una sola base y la fila final muestra un unico valor, como antes.
+
+   Los fondos sin dato se excluyen y cada base se re-normaliza sobre los que
+   si lo tienen; "cobertura" dice que porcentaje de la cartera quedo
+   representado, para marcarlo con un asterisco cuando es parcial.
+--------------------------------------------------------------------- */
+function ponderadosPorBase(rows, campo){
+  const grupos = new Map();
+  let pesoCartera = 0;
+
+  (rows || []).forEach(r=>{
+    const w = Number(r.pct) || 0;
+    if(w <= 0) return;
+    pesoCartera += w;
+
+    const v = r[campo];
+    if(v === null || v === undefined || !isFinite(v)) return;
+
+    const base = r.base || 's/base';
+    const g = grupos.get(base) || { base, peso: 0, suma: 0 };
+    g.peso += w;
+    g.suma += v * w;
+    grupos.set(base, g);
+  });
+
+  const lista = [...grupos.values()]
+    .map(g => ({
+      base: g.base,
+      valor: g.suma / g.peso,
+      peso: g.peso,
+      share: pesoCartera ? g.peso / pesoCartera : 0,
+    }))
+    // La base con mas peso primero, para que la cifra dominante quede arriba
+    .sort((a, b)=> b.peso - a.peso || a.base.localeCompare(b.base, 'es'));
+
+  const pesoConDato = lista.reduce((acc, g)=> acc + g.peso, 0);
+
+  return {
+    grupos: lista,
+    pesoCartera,
+    cobertura: pesoCartera ? pesoConDato / pesoCartera : 0,
+  };
 }
 
 const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6m':'Menos de 6 meses', '<12m':'Menos de 12 meses', '>12m':'Más de 12 meses' };
@@ -2252,7 +2504,17 @@ function buildCarteraRows(){
     const costo = monto * pct / 100;
     const vcp = fund ? fund.ultimoVCP : null;
     const nominales = vcp ? Math.floor(costo / vcp) : null;
-    return { nombre, pct, vcp, costo, nominales, found: !!fund, riesgo: fund ? fund.riesgo : null, horizonte: fund ? fund.horizonte : null };
+    // TIR y Duration salen de tir_fondos.xlsx, cruzando por nombre de fondo
+    const td = tirDurationDeFondo(nombre);
+    return {
+      nombre, pct, vcp, costo, nominales,
+      found: !!fund,
+      riesgo: fund ? fund.riesgo : null,
+      horizonte: fund ? fund.horizonte : null,
+      tir: td ? td.tir : null,
+      duration: td ? td.duration : null,
+      base: td ? normalizarBase(td.base) : null,
+    };
   });
 }
 
@@ -2275,8 +2537,42 @@ function carteraRowHtml(r, i, custom){
       <td class="num" data-label="% objetivo">${pctCell}</td>
       <td data-label="Riesgo">${r.riesgo ? `<span class="tag tag-riesgo-${r.riesgo}">${r.riesgo}</span>` : '—'}</td>
       <td data-label="Horizonte">${r.horizonte || '—'}</td>
+      <td class="num" data-label="TIR">${tirCellHtml(r)}</td>
+      <td class="num" data-label="Duration">${durCellHtml(r)}</td>
       <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
+}
+
+// Celdas de TIR / Duration de cada fondo.
+// La TIR va con la base al lado (ARS / CER / USD) porque no son la misma
+// unidad: "CER 6,95%" es una tasa real sobre inflacion y "ARS 28,50%" es
+// nominal. Sin ese rotulo la columna parece comparar cosas comparables.
+// Si el fondo no esta en tir_fondos.xlsx (o no tiene el dato) va "s/d".
+const BASE_TITULOS = {
+  ARS: 'Tasa nominal en pesos',
+  CER: 'Tasa real: rinde por encima de la inflación (CER)',
+  USD: 'Tasa en dólares',
+};
+
+function baseChipHtml(base, extraTitle){
+  if(!base) return '';
+  const t = BASE_TITULOS[base] || `Tasa expresada en base ${base}`;
+  return `<span class="base-chip base-chip-${base}" title="${extraTitle ? extraTitle + ' · ' : ''}${t}">${base}</span>`;
+}
+
+function tirCellHtml(r){
+  const txt = fmtTir(r.tir);
+  if(!txt){
+    return `<span class="tir-value sin-dato" title="Sin TIR en tir_fondos.xlsx">s/d</span>`;
+  }
+  return `<span class="tir-value">${txt}</span>${baseChipHtml(r.base)}`;
+}
+
+function durCellHtml(r){
+  const txt = fmtDuration(r.duration);
+  return txt
+    ? `<span class="dur-value">${txt}</span>`
+    : `<span class="dur-value sin-dato" title="Sin Duration en tir_fondos.xlsx">s/d</span>`;
 }
 
 // Fila final con el selector para agregar un fondo mas a la cartera
@@ -2292,7 +2588,7 @@ function addFondoRowHtml(){
 
   return `
     <tr class="add-fondo-row">
-      <td colspan="5">
+      <td colspan="7">
         <select id="addFondoSelect" class="add-fondo-select"${disponibles.length ? '' : ' disabled'}>
           <option value="">${placeholder}</option>
           ${opts}
@@ -2307,19 +2603,59 @@ function renderCartera(){
 
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
-    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.'
-    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
+    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
+    : 'La cartera se arma con ponderaciones predeterminadas según perfil, horizonte y moneda. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de cada fondo se toman de tir_fondos.xlsx. Cada TIR se muestra con su base: CER es una tasa real (rinde sobre la inflación) y ARS una tasa nominal, así que cuando la cartera mezcla ambas la última fila pondera cada base por separado en vez de promediarlas. Un asterisco indica que algún fondo no tiene el dato y quedó fuera del cálculo.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom)).join('');
   if(custom){
     body += addFondoRowHtml();
   } else if(!rows.length){
-    body = '<tr><td colspan="5" class="cartera-empty-msg">No hay fondos definidos para esta combinación.</td></tr>';
+    body = '<tr><td colspan="7" class="cartera-empty-msg">No hay fondos definidos para esta combinación.</td></tr>';
   }
   document.getElementById('carteraTableBody').innerHTML = body;
 
   renderCarteraTotals(rows, custom);
   renderCarteraDerived(rows, custom);
+}
+
+/* Celda de la fila final con el ponderado de TIR o Duration.
+
+   Con una sola base (el caso habitual) muestra un unico valor, igual que
+   antes. Cuando la cartera mezcla bases -en la practica, Inflation linked
+   (CER) junto con fondos en pesos (ARS)- muestra una linea por base con su
+   peso, en vez de un promedio unico que mezclaria tasa real con nominal.
+
+   El asterisco aparece si algun fondo de la cartera no tiene el dato: el
+   ponderado se calcula sobre el resto y el tooltip aclara la cobertura. */
+function ponderadoCellHtml(rows, campo, formateador, label){
+  const { grupos, cobertura } = ponderadosPorBase(rows, campo);
+  const clase = campo === 'tir' ? 'tir-total' : 'dur-total';
+
+  if(!grupos.length){
+    return `<td class="num" data-label="${label}"><span class="${clase} sin-dato" title="Ningún fondo de la cartera tiene este dato en tir_fondos.xlsx">s/d</span></td>`;
+  }
+
+  const parcial  = cobertura < 0.999;
+  const mezclada = grupos.length > 1;
+
+  const lineas = grupos.map(g=>{
+    // El peso de cada base solo se muestra si hay mas de una: con una sola
+    // base siempre seria 100% y agregaria ruido.
+    const peso = mezclada ? `<span class="pond-peso">${Math.round(g.share * 100)}%</span>` : '';
+    return `<span class="pond-linea"><span class="${clase}">${formateador(g.valor)}</span>${baseChipHtml(g.base)}${peso}</span>`;
+  }).join('');
+
+  const detalle = grupos
+    .map(g => `${g.base} ${formateador(g.valor)} sobre el ${Math.round(g.share * 100)}% de la cartera`)
+    .join(' · ');
+
+  const title = mezclada
+    ? `Cada base se pondera por separado porque no son comparables entre sí: ${detalle}.`
+    : (parcial
+        ? `Ponderado sobre el ${Math.round(cobertura * 100)}% de la cartera (los fondos sin dato quedan afuera del cálculo)`
+        : 'Ponderado por el peso de cada fondo en la cartera');
+
+  return `<td class="num" data-label="${label}"><span class="pond-lista" title="${title}">${lineas}${parcial ? '<span class="pond-parcial" title="Hay fondos sin dato: el ponderado se calcula sobre el resto">*</span>' : ''}</span></td>`;
 }
 
 function renderCarteraTotals(rows, custom){
@@ -2329,12 +2665,24 @@ function renderCarteraTotals(rows, custom){
   const excede = totalPct > 100;
   const invalida = custom && totalPct !== 100;
 
+  // TIR y Duration ponderadas por el peso de cada fondo en la cartera.
+  // En la cartera personalizada solo se muestran si los % suman 100%,
+  // igual que el total invertido.
+  const tirCell = invalida ? '<td class="num" data-label="TIR ponderada">—</td>'
+                           : ponderadoCellHtml(rows, 'tir', fmtTir, 'TIR ponderada');
+  const durCell = invalida ? '<td class="num" data-label="Duration ponderada">—</td>'
+                           : ponderadoCellHtml(rows, 'duration', fmtDuration, 'Duration ponderada');
+
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
        <td class="num${invalida ? ' pct-exceso' : ''}" data-label="Total %">${totalPct}%</td>
        <td colspan="2"></td>
+       ${tirCell}
+       ${durCell}
        <td class="num" id="carteraTotalCosto" data-label="Total">${invalida ? '—' : fmtMoney(totalCosto, selection.moneda)}</td>`
     : `<td colspan="4"></td>
+       ${tirCell}
+       ${durCell}
        <td class="num" id="carteraTotalCosto" data-label="Total">${fmtMoney(totalCosto, selection.moneda)}</td>`;
 
   const warn = document.getElementById('pctWarning');
@@ -2702,8 +3050,9 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
   document.getElementById('loginOverlay').style.display = 'none';
 });
 
-// Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones)
-// y factsheets.json (los links a los PDF), todos junto a este archivo.
+// Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones),
+// factsheets.json (los links a los PDF) y tir_fondos.xlsx (TIR y Duration de
+// cada fondo), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -2717,6 +3066,7 @@ Promise.all([
     }),
   cargarCarteras(),
   cargarFactsheets(),   // si falla, deja FACTSHEET_URLS vacío y no bloquea el resto
+  cargarTirFondos(),    // si falla, la cartera queda con TIR y Duration en "s/d"
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
@@ -2794,17 +3144,35 @@ function buildPrintReport(){
         <td>${r.pct}%</td>
         <td>${r.riesgo || '—'}</td>
         <td>${r.horizonte || '—'}</td>
+        <td style="text-align:right;">${fmtTir(r.tir) ? fmtTir(r.tir) + (r.base ? ' ' + r.base : '') : 's/d'}</td>
+        <td style="text-align:right;">${fmtDuration(r.duration) || 's/d'}</td>
         <td style="text-align:right;">${fmtMoney(r.costo, selection.moneda)}</td>
       </tr>`;
   }).join('');
 
+  // Mismos ponderados que muestra la web, para que el PDF no dependa del DOM.
+  // Si la cartera mezcla bases (CER + ARS) van en lineas separadas, porque
+  // promediar una tasa real con una nominal daria un numero sin sentido.
+  function pondTextoPdf(campo, formateador){
+    const { grupos, cobertura } = ponderadosPorBase(rows, campo);
+    if(!grupos.length) return 's/d';
+    const mezclada = grupos.length > 1;
+    const parcial = cobertura < 0.999;
+    return grupos
+      .map(g => `${formateador(g.valor)} ${g.base}${mezclada ? ` (${Math.round(g.share * 100)}%)` : ''}`)
+      .join('<br>') + (parcial ? '*' : '');
+  }
+
+  const tirPondTxt = pondTextoPdf('tir', fmtTir);
+  const durPondTxt = pondTextoPdf('duration', fmtDuration);
+
   document.getElementById('printCarteraTable').innerHTML = `
     <thead>
-      <tr><th>Fondo</th><th>% objetivo</th><th>Riesgo</th><th>Horizonte</th><th style="text-align:right;">Inversión</th></tr>
+      <tr><th>Fondo</th><th>% objetivo</th><th>Riesgo</th><th>Horizonte</th><th style="text-align:right;">TIR</th><th style="text-align:right;">Duration</th><th style="text-align:right;">Inversión</th></tr>
     </thead>
     <tbody>${bodyRows}</tbody>
     <tfoot>
-      <tr><td colspan="4"></td><td style="text-align:right;">${fmtMoney(totalCosto, selection.moneda)}</td></tr>
+      <tr><td colspan="4"></td><td style="text-align:right;">${tirPondTxt}</td><td style="text-align:right;">${durPondTxt}</td><td style="text-align:right;">${fmtMoney(totalCosto, selection.moneda)}</td></tr>
     </tfoot>
   `;
 
