@@ -1437,41 +1437,128 @@ const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6
 /* ---------------------------------------------------------------------
    Links a los factsheets (PDF) de cada fondo
 
-   Se leen de factsheets.json en vez de estar hardcodeados: ese archivo lo
-   regenera solo, una vez por mes, el workflow de GitHub Actions
-   ".github/workflows/update-factsheets.yml", que visita la pagina de cada
-   fondo en fondosbalanz.com y extrae el link vigente de "Factsheet en
-   Español" (ver scripts/update-factsheets.mjs). Así no hace falta ir
-   actualizando a mano 20+ links cada vez que Balanz sube el factsheet
-   nuevo del mes.
+   Los PDF viven en la carpeta /WEEKLY de este mismo repositorio y se
+   suben a mano. Ya no se scrapea fondosbalanz.com: la unica fuente de
+   verdad es lo que vos subiste.
 
-   No se puede resolver esto con un fetch() directo a fondosbalanz.com
-   desde esta misma pagina: ese sitio no manda headers CORS que lo
-   permitan, así que el navegador bloquearía la respuesta. factsheets.json
-   sí se puede leer porque es un fetch al mismo origen (este repositorio).
+   factsheets.json es solo un INDICE de esa carpeta, que regenera solo el
+   workflow ".github/workflows/index-factsheets.yml" en cada push (ver
+   scripts/index-factsheets.mjs). Hace falta ese indice porque el navegador
+   no puede listar una carpeta en el servidor, y las URLs distinguen
+   mayusculas de minusculas: sin el, la pagina no tendria como saber si el
+   archivo es "opportunity.esp.pdf" u "Opportunity.esp.pdf", ni que fecha
+   lleva el prefijo este mes.
 
-   Si el archivo no carga (o un fondo no está en él) el nombre se muestra
-   como texto plano, igual que si nunca hubiera tenido link.
+   Si un fondo no tiene PDF subido, el nombre queda como texto plano. No hay
+   fallback a ningun sitio externo.
 --------------------------------------------------------------------- */
-let FACTSHEET_URLS = {};
+let FACTSHEETS = [];
+const FACTSHEET_CACHE = new Map();
 
 function cargarFactsheets(){
   return fetch('factsheets.json')
-    .then(r=> r.ok ? r.json() : {})
+    .then(r=> r.ok ? r.json() : null)
     .then(data=>{
-      FACTSHEET_URLS = data || {};
+      // Formato nuevo: { generado, archivos:[...] }
+      FACTSHEETS = (data && Array.isArray(data.archivos)) ? data.archivos : [];
+      FACTSHEET_CACHE.clear();
+      if(!FACTSHEETS.length){
+        console.warn('factsheets.json está vacío o tiene un formato viejo: los fondos quedan sin link.');
+      }
     })
     .catch(err=>{
       console.warn('No se pudo cargar factsheets.json; los fondos quedan sin link a factsheet.', err);
-      FACTSHEET_URLS = {};
+      FACTSHEETS = [];
+      FACTSHEET_CACHE.clear();
     });
 }
 
-// Envuelve el nombre del fondo en un link al factsheet si hay URL disponible; si no, lo deja como texto plano
+// "Balanz Crédito Privado" -> "balanzcreditoprivado"
+function slugFondo(nombre){
+  return String(nombre == null ? '' : nombre)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+/* Excepciones: fondos cuyo PDF NO se puede deducir del nombre.
+
+   El cruce automatico (ver buscarFactsheet) resuelve la mayoria, pero hay
+   casos donde el archivo se llama de una forma que no tiene nada que ver
+   con el nombre del fondo, o usa una abreviatura. Esos van a mano aca.
+
+   La clave es el nombre del fondo normalizado (minusculas, sin acentos ni
+   espacios) y el valor es el slug del archivo, o sea la parte del medio de
+   "AAAAMMDD.LoQueVaAca.esp.pdf" tambien normalizada.
+
+   Si algun dia el archivo pasa a llamarse igual que el fondo, se borra la
+   linea de aca y el cruce automatico se encarga solo. */
+const ALIAS_FACTSHEET = {
+  // "Inflation linked" se publica como el factsheet Institucional
+  'inflationlinked': 'institucional',
+  // El Excel abrevia "Rta" y el archivo escribe "Renta" completo
+  'balanzrtafijaestrategica': 'rentafijaestrategica',
+};
+
+/* Busca el factsheet de un fondo. Los nombres del Excel y los de los
+   archivos no siempre coinciden palabra por palabra, asi que se intenta en
+   tres pasadas:
+
+     1. Alias manual (tabla ALIAS_FACTSHEET de arriba)
+
+     2. Coincidencia exacta del slug
+        "Dolar Corto Plazo" -> DolarCortoPlazo
+
+     3. El slug del archivo contenido dentro del slug del fondo, quedandose
+        con el mas largo. Esto resuelve los nombres del Excel que traen
+        palabras de mas:
+        "Balanz Capital Pymes"       -> pymes
+        "Balanz Infraestructura FCI" -> infraestructura
+        "Balanz Excalibur Regisseur" -> excalibur
+        "Balanz Estrategia II USD"   -> EstrategiaII
+        "Balanz Money Market USD"    -> moneymarketusd (gana sobre moneymarket
+                                        justamente por ser el mas largo)
+        Se piden 4 caracteres minimo para no enganchar coincidencias sueltas.
+
+   Si ninguna pasada da resultado, el fondo se queda sin link. */
+function buscarFactsheet(nombre){
+  if(FACTSHEET_CACHE.has(nombre)) return FACTSHEET_CACHE.get(nombre);
+
+  const slug = slugFondo(nombre);
+  let hallado = null;
+
+  if(slug){
+    const alias = ALIAS_FACTSHEET[slug];
+    if(alias) hallado = FACTSHEETS.find(f => f.slug === alias) || null;
+
+    if(!hallado) hallado = FACTSHEETS.find(f => f.slug === slug) || null;
+
+    if(!hallado){
+      let mejor = null;
+      for(const f of FACTSHEETS){
+        if(!f.slug || f.slug.length < 4) continue;
+        if(!slug.includes(f.slug)) continue;
+        if(!mejor || f.slug.length > mejor.slug.length) mejor = f;
+      }
+      hallado = mejor;
+    }
+  }
+
+  FACTSHEET_CACHE.set(nombre, hallado);
+  return hallado;
+}
+
+// AAAAMMDD -> "31/07/2026", para mostrar de que mes es el factsheet
+function fmtFechaFactsheet(f){
+  return (f && /^\d{8}$/.test(f)) ? `${f.slice(6,8)}/${f.slice(4,6)}/${f.slice(0,4)}` : '';
+}
+
+// Envuelve el nombre del fondo en un link al factsheet si hay PDF subido; si no, lo deja como texto plano
 function fondoNameHtml(nombre){
-  const url = FACTSHEET_URLS[nombre];
-  if(!url) return nombre;
-  return `<a href="${url}" target="_blank" rel="noopener" class="fondo-link" title="Ver factsheet de ${nombre}">${nombre}</a>`;
+  const fs = buscarFactsheet(nombre);
+  if(!fs) return nombre;
+  const fecha = fmtFechaFactsheet(fs.fecha);
+  const title = `Ver factsheet de ${nombre}${fecha ? ` (al ${fecha})` : ''}`;
+  return `<a href="${fs.url}" target="_blank" rel="noopener" class="fondo-link" title="${title}">${nombre}</a>`;
 }
 
 // La moneda esta fija en Dolar MEP: esta pagina no ofrece carteras en pesos.
@@ -2217,7 +2304,7 @@ function tirCartera(rows){
   for(const r of rows){
     const pct = Number(r.pct) || 0;
     if(pct <= 0) continue;
-    const info = TIR_DATA[r.nombre];
+    const info = tirDeFondo(r.nombre);
     if(!info){ faltantes.push(r.nombre); continue; }
     suma += info.tir * pct;
     peso += pct;
@@ -2342,9 +2429,9 @@ function renderPatrimonioFuturo(rows){
 
   // Barra con la tasa usada y cuanto pesa cada fondo dentro de ella
   const detalle = rows
-    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .filter(r => (Number(r.pct) || 0) > 0 && tirDeFondo(r.nombre))
     .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
-            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
+            + `<span class="tb-tir">(TIR ${(tirDeFondo(r.nombre).tir * 100).toFixed(2)}%)</span>`)
     .join(' · ');
   document.getElementById('pfTirBar').innerHTML = `
     <span class="tb-label">TIR ponderada de la cartera</span>
@@ -2739,96 +2826,102 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 });
 
 /* ---------------------------------------------------------------------
-   TIR / TNA / Duration por fondo (tir_fondos.csv, junto al HTML).
+   TIR / TNA / Duration por fondo (tir_fondos.xlsx, junto al HTML).
+
+   Antes esto se leia de tir_fondos.csv; ahora sale del mismo .xlsx que usa
+   la calculadora de carteras, asi que hay una sola fuente de verdad y no
+   hay que mantener dos archivos en sincronia.
+
    Se usa para la calculadora de patrimonio futuro. La carga es opcional:
-   si el archivo no está o falla, la seccion simplemente no se muestra.
+   si el archivo no esta o falla, la seccion simplemente no se muestra.
+
+   Layout esperado (hoja "tir_fondos", o la primera del libro):
+     fondo | base | tna | tir | duration
+   Las celdas de tna/tir vienen en escala decimal (0,062 = 6,20%) porque en
+   el Excel estan formateadas como porcentaje. Las filas sin tir (rotulos de
+   seccion, o fondos de renta variable) se ignoran.
 --------------------------------------------------------------------- */
 let TIR_DATA = {};
+let TIR_POR_SLUG = {};
 
-// Separador del CSV: se deduce del encabezado, porque Excel en configuracion
-// regional argentina exporta con punto y coma en lugar de coma.
-function detectarSeparador(text){
-  const head = text.split(/\r?\n/)[0] || '';
-  const cands = [';', ',', '\t'];
-  let mejor = ',', max = 0;
-  cands.forEach(sep=>{
-    const n = head.split(sep).length - 1;
-    if(n > max){ max = n; mejor = sep; }
-  });
-  return mejor;
+/* Busca la TIR de un fondo. Primero por nombre exacto y, si no aparece, por
+   nombre normalizado: asi una diferencia de acentos, mayusculas o espacios
+   entre data.xlsx y tir_fondos.xlsx no deja al fondo sin TIR (que en esta
+   pagina significa no poder proyectar la cartera entera). */
+function tirDeFondo(nombre){
+  if(nombre == null) return null;
+  return TIR_DATA[nombre] || TIR_POR_SLUG[slugFondo(nombre)] || null;
 }
 
-// Numero decimal tolerante: acepta "6.2000%", "6,20%", "0.062" y "1.234,56".
-function parseNumeroLocal(v){
-  let t = String(v == null ? '' : v).trim();
-  if(!t) return NaN;
-  const esPct = t.includes('%');
-  t = t.replace(/%/g, '').replace(/\s/g, '');
-  if(t.includes(',') && t.includes('.')){
-    // el ultimo separador que aparece es el decimal
-    t = t.lastIndexOf(',') > t.lastIndexOf('.')
-      ? t.replace(/\./g, '').replace(',', '.')
-      : t.replace(/,/g, '');
-  } else if(t.includes(',')){
-    t = t.replace(',', '.');
+function parseTirFondos(workbook){
+  const hoja = workbook.Sheets['tir_fondos'] || workbook.Sheets[workbook.SheetNames[0]];
+  if(!hoja) throw new Error('tir_fondos.xlsx no tiene ninguna hoja.');
+
+  const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, blankrows: false });
+
+  // La fila de encabezados es la primera que tenga una columna llamada "fondo"
+  const hdrIdx = filas.findIndex(f =>
+    (f || []).some(v => slugFondo(v) === 'fondo'));
+  if(hdrIdx === -1) throw new Error('No se encontró la fila de encabezados (la que tiene la columna "fondo").');
+
+  const hdr = (filas[hdrIdx] || []).map(v => slugFondo(v));
+  const iFondo = hdr.indexOf('fondo');
+  const iBase  = hdr.indexOf('base');
+  const iTna   = hdr.indexOf('tna');
+  const iTir   = hdr.indexOf('tir');
+  const iDur   = hdr.findIndex(h => h === 'duration' || h === 'duracion');
+
+  if(iTir === -1){
+    throw new Error('tir_fondos.xlsx no tiene columna "tir".');
   }
-  const n = parseFloat(t);
-  if(!isFinite(n)) return NaN;
-  // Con signo % el valor viene en porcentaje; sin el, se asume fraccion decimal.
-  return esPct ? n / 100 : n;
-}
 
-function parseTirCsv(text){
-  const rows = parseCsvText(text, detectarSeparador(text));
-  if(!rows.length) return {};
-  const head = rows[0].map(h => h.trim().toLowerCase().replace(/^﻿/, ''));
-  const iFondo = head.indexOf('fondo');
-  const iTir   = head.indexOf('tir');
-  const iTna   = head.indexOf('tna');
-  const iBase  = head.indexOf('base');
-  const iDur   = head.indexOf('duration');
-  if(iFondo === -1 || iTir === -1){
-    console.warn('tir_fondos.csv: faltan las columnas "fondo" y/o "tir". Encabezado leído:', head);
-    return {};
+  // Acepta tanto 0,062 como "6,2%" / "6.2". Si el valor supera 2 se asume
+  // que esta expresado en porcentaje y se pasa a decimal.
+  function numTasa(raw){
+    const n = numSimple(raw);
+    if(n === null) return null;
+    return Math.abs(n) > 2 ? n / 100 : n;
+  }
+
+  function numSimple(raw){
+    if(raw === null || raw === undefined || raw === '') return null;
+    if(typeof raw === 'number') return isFinite(raw) ? raw : null;
+    const limpio = String(raw).replace('%', '').replace(/\./g, '').replace(',', '.').trim();
+    const n = Number(limpio);
+    return isFinite(n) ? n : null;
   }
 
   const out = {};
-  rows.slice(1).forEach(r=>{
-    const nombre = (r[iFondo] || '').trim();
-    if(!nombre) return;
-    const tir = parseNumeroLocal(r[iTir]);
-    if(!isFinite(tir)) return;                 // fondos sin TIR (renta variable)
+  for(let r = hdrIdx + 1; r < filas.length; r++){
+    const fila = filas[r] || [];
+    const nombre = String(fila[iFondo] == null ? '' : fila[iFondo]).trim();
+    if(!nombre) continue;
+
+    const tir = numTasa(fila[iTir]);
+    if(tir === null) continue;               // fondos sin TIR (renta variable)
+
+    const dur = iDur === -1 ? null : numSimple(fila[iDur]);
     out[nombre] = {
       tir,
-      tna: parseNumeroLocal(r[iTna]),
-      base: iBase === -1 ? '' : (r[iBase] || '').trim(),
+      tna: iTna === -1 ? NaN : (numTasa(fila[iTna]) ?? NaN),
+      base: iBase === -1 ? '' : String(fila[iBase] == null ? '' : fila[iBase]).trim(),
       // la duration esta en anios, no es un porcentaje
-      duration: iDur === -1 ? NaN : parseNumeroLocal(r[iDur]),
+      duration: dur === null ? NaN : dur,
     };
-  });
+  }
   return out;
 }
 
-// El archivo puede venir guardado en UTF-8 o en ANSI/Latin-1 (Excel en Windows
-// guarda asi por defecto). Se prueba UTF-8 estricto y, si falla, se reintenta
-// como Windows-1252, para que los acentos de los nombres de fondo no se rompan
-// y sigan coincidiendo con los de data.xlsx.
-function decodificarCsv(buffer){
-  try{
-    return new TextDecoder('utf-8', { fatal: true }).decode(buffer);
-  } catch(e){
-    return new TextDecoder('windows-1252').decode(buffer);
-  }
-}
-
-fetch('tir_fondos.csv')
+fetch('tir_fondos.xlsx')
   .then(r=> r.ok ? r.arrayBuffer() : Promise.reject(new Error('HTTP ' + r.status)))
   .then(buf=>{
-    TIR_DATA = parseTirCsv(decodificarCsv(buf));
+    TIR_DATA = parseTirFondos(XLSX.read(buf, { type: 'array' }));
+    TIR_POR_SLUG = {};
+    Object.keys(TIR_DATA).forEach(n => { TIR_POR_SLUG[slugFondo(n)] = TIR_DATA[n]; });
     renderCartera();
   })
   .catch(err=>{
-    console.warn('No se pudo cargar tir_fondos.csv; la calculadora de patrimonio futuro queda oculta.', err);
+    console.warn('No se pudo cargar tir_fondos.xlsx; la calculadora de patrimonio futuro queda oculta.', err);
   });
 
 // cpi.xlsx alimenta solo la solapa "Calculadora Costo de Oportunidad": se
@@ -2836,7 +2929,7 @@ fetch('tir_fondos.csv')
 cargarCpi().then(renderCostoOportunidad);
 
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones)
-// y factsheets.json (los links a los PDF), todos junto a este archivo.
+// y factsheets.json (el índice de los PDF de /WEEKLY), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -2849,7 +2942,7 @@ Promise.all([
       return parsed;
     }),
   cargarCarteras(),
-  cargarFactsheets(),   // si falla, deja FACTSHEET_URLS vacío y no bloquea el resto
+  cargarFactsheets(),   // si falla, los fondos quedan sin link y no bloquea el resto
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
@@ -3117,9 +3210,9 @@ function tasaProviderTIR(rows){
     return { valor: null, warning, barHtml: '' };
   }
   const detalle = rows
-    .filter(r => (Number(r.pct) || 0) > 0 && TIR_DATA[r.nombre])
+    .filter(r => (Number(r.pct) || 0) > 0 && tirDeFondo(r.nombre))
     .map(r => `<span class="tb-pct">${r.pct}%</span> <b>${r.nombre}</b> `
-            + `<span class="tb-tir">(TIR ${(TIR_DATA[r.nombre].tir * 100).toFixed(2)}%)</span>`)
+            + `<span class="tb-tir">(TIR ${(tirDeFondo(r.nombre).tir * 100).toFixed(2)}%)</span>`)
     .join(' · ');
   const barHtml = `
     <span class="tb-label">TIR ponderada de la cartera elegida</span>
