@@ -313,17 +313,15 @@
      es el mismo en todas para que el espaciado sea parejo. En mobile la
      tabla pasa a tarjetas apiladas (ver media query mas abajo), asi que
      esto no la afecta. */
-  /* La tabla mantiene siempre la misma geometria que en desktop completo
-     (1128px, que es el ancho del contenedor al maximo): si la pantalla es
-     mas angosta el contenedor scrollea en horizontal en vez de apretar las
-     columnas. Asi las proporciones no cambian de una pantalla a otra.
+  /* La tabla ocupa siempre el 100% del ancho disponible y nunca scrollea:
+     con table-layout fijo, los porcentajes del colgroup reparten ese ancho
+     sea cual sea. Si la pantalla es muy angosta el contenido se acomoda en
+     dos lineas antes que aparecer una barra horizontal.
      Por debajo de 720px manda la vista de tarjetas apiladas. */
   @media (min-width:721px){
-    /* Cambiamos min-width por width:100% para que se adapte al contenedor y elimine el scroll */
-    #carteraTable{ table-layout:fixed; width:100%; }
+    #carteraTable{ table-layout:fixed; }
     #carteraTable th, #carteraTable td{ padding-left:12px; padding-right:12px; }
     #carteraTable .fondo-name{ overflow-wrap:break-word; }
-    .cartera-table-wrap{ overflow-x:hidden; } /* Evita cualquier desborde residual */
   }
 
   #carteraTable thead th{
@@ -1096,14 +1094,13 @@
                Horizonte se achica para que TIR quede mas cerca y no queden
                huecos grandes en el medio de la tabla. -->
           <colgroup>
-            <!-- Ajustamos las proporciones para reducir el espacio suelto -->
-            <col style="width:29%"> <!-- Fondo -->
-            <col style="width:9%"> <!-- % objetivo -->
-            <col style="width:11%"> <!-- Riesgo -->
-            <col style="width:12%"> <!-- Horizonte -->
-            <col style="width:13%"> <!-- TIR -->
-            <col style="width:12%"> <!-- Duration -->
-            <col style="width:14%"> <!-- Inversión -->
+            <col style="width:28%">
+            <col style="width:10%">
+            <col style="width:12%">
+            <col style="width:11%">
+            <col style="width:14%">
+            <col style="width:12%">
+            <col style="width:13%">
           </colgroup>
           <thead>
             <tr>
@@ -1666,41 +1663,128 @@ const HORIZONTE_LABELS = { '<1m':'Menos de 1 mes', '<3m':'Menos de 3 meses', '<6
 /* ---------------------------------------------------------------------
    Links a los factsheets (PDF) de cada fondo
 
-   Se leen de factsheets.json en vez de estar hardcodeados: ese archivo lo
-   regenera solo, una vez por mes, el workflow de GitHub Actions
-   ".github/workflows/update-factsheets.yml", que visita la pagina de cada
-   fondo en fondosbalanz.com y extrae el link vigente de "Factsheet en
-   Español" (ver scripts/update-factsheets.mjs). Así no hace falta ir
-   actualizando a mano 20+ links cada vez que Balanz sube el factsheet
-   nuevo del mes.
+   Los PDF viven en la carpeta /factsheets de este mismo repositorio y se
+   suben a mano. Ya no se scrapea fondosbalanz.com: la unica fuente de
+   verdad es lo que vos subiste.
 
-   No se puede resolver esto con un fetch() directo a fondosbalanz.com
-   desde esta misma pagina: ese sitio no manda headers CORS que lo
-   permitan, así que el navegador bloquearía la respuesta. factsheets.json
-   sí se puede leer porque es un fetch al mismo origen (este repositorio).
+   factsheets.json es solo un INDICE de esa carpeta, que regenera solo el
+   workflow ".github/workflows/index-factsheets.yml" en cada push (ver
+   scripts/index-factsheets.mjs). Hace falta ese indice porque el navegador
+   no puede listar una carpeta en el servidor, y las URLs distinguen
+   mayusculas de minusculas: sin el, la pagina no tendria como saber si el
+   archivo es "opportunity.esp.pdf" u "Opportunity.esp.pdf", ni que fecha
+   lleva el prefijo este mes.
 
-   Si el archivo no carga (o un fondo no está en él) el nombre se muestra
-   como texto plano, igual que si nunca hubiera tenido link.
+   Si un fondo no tiene PDF subido, el nombre queda como texto plano. No hay
+   fallback a ningun sitio externo.
 --------------------------------------------------------------------- */
-let FACTSHEET_URLS = {};
+let FACTSHEETS = [];
+const FACTSHEET_CACHE = new Map();
 
 function cargarFactsheets(){
   return fetch('factsheets.json')
-    .then(r=> r.ok ? r.json() : {})
+    .then(r=> r.ok ? r.json() : null)
     .then(data=>{
-      FACTSHEET_URLS = data || {};
+      // Formato nuevo: { generado, archivos:[...] }
+      FACTSHEETS = (data && Array.isArray(data.archivos)) ? data.archivos : [];
+      FACTSHEET_CACHE.clear();
+      if(!FACTSHEETS.length){
+        console.warn('factsheets.json está vacío o tiene un formato viejo: los fondos quedan sin link.');
+      }
     })
     .catch(err=>{
       console.warn('No se pudo cargar factsheets.json; los fondos quedan sin link a factsheet.', err);
-      FACTSHEET_URLS = {};
+      FACTSHEETS = [];
+      FACTSHEET_CACHE.clear();
     });
 }
 
-// Envuelve el nombre del fondo en un link al factsheet si hay URL disponible; si no, lo deja como texto plano
+// "Balanz Crédito Privado" -> "balanzcreditoprivado"
+function slugFondo(nombre){
+  return String(nombre == null ? '' : nombre)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+/* Excepciones: fondos cuyo PDF NO se puede deducir del nombre.
+
+   El cruce automatico (ver buscarFactsheet) resuelve la mayoria, pero hay
+   casos donde el archivo se llama de una forma que no tiene nada que ver
+   con el nombre del fondo, o usa una abreviatura. Esos van a mano aca.
+
+   La clave es el nombre del fondo normalizado (minusculas, sin acentos ni
+   espacios) y el valor es el slug del archivo, o sea la parte del medio de
+   "AAAAMMDD.LoQueVaAca.esp.pdf" tambien normalizada.
+
+   Si algun dia el archivo pasa a llamarse igual que el fondo, se borra la
+   linea de aca y el cruce automatico se encarga solo. */
+const ALIAS_FACTSHEET = {
+  // "Inflation linked" se publica como el factsheet Institucional
+  'inflationlinked': 'institucional',
+  // El Excel abrevia "Rta" y el archivo escribe "Renta" completo
+  'balanzrtafijaestrategica': 'rentafijaestrategica',
+};
+
+/* Busca el factsheet de un fondo. Los nombres del Excel y los de los
+   archivos no siempre coinciden palabra por palabra, asi que se intenta en
+   tres pasadas:
+
+     1. Alias manual (tabla ALIAS_FACTSHEET de arriba)
+
+     2. Coincidencia exacta del slug
+        "Dolar Corto Plazo" -> DolarCortoPlazo
+
+     3. El slug del archivo contenido dentro del slug del fondo, quedandose
+        con el mas largo. Esto resuelve los nombres del Excel que traen
+        palabras de mas:
+        "Balanz Capital Pymes"       -> pymes
+        "Balanz Infraestructura FCI" -> infraestructura
+        "Balanz Excalibur Regisseur" -> excalibur
+        "Balanz Estrategia II USD"   -> EstrategiaII
+        "Balanz Money Market USD"    -> moneymarketusd (gana sobre moneymarket
+                                        justamente por ser el mas largo)
+        Se piden 4 caracteres minimo para no enganchar coincidencias sueltas.
+
+   Si ninguna pasada da resultado, el fondo se queda sin link. */
+function buscarFactsheet(nombre){
+  if(FACTSHEET_CACHE.has(nombre)) return FACTSHEET_CACHE.get(nombre);
+
+  const slug = slugFondo(nombre);
+  let hallado = null;
+
+  if(slug){
+    const alias = ALIAS_FACTSHEET[slug];
+    if(alias) hallado = FACTSHEETS.find(f => f.slug === alias) || null;
+
+    if(!hallado) hallado = FACTSHEETS.find(f => f.slug === slug) || null;
+
+    if(!hallado){
+      let mejor = null;
+      for(const f of FACTSHEETS){
+        if(!f.slug || f.slug.length < 4) continue;
+        if(!slug.includes(f.slug)) continue;
+        if(!mejor || f.slug.length > mejor.slug.length) mejor = f;
+      }
+      hallado = mejor;
+    }
+  }
+
+  FACTSHEET_CACHE.set(nombre, hallado);
+  return hallado;
+}
+
+// AAAAMMDD -> "31/07/2026", para mostrar de que mes es el factsheet
+function fmtFechaFactsheet(f){
+  return (f && /^\d{8}$/.test(f)) ? `${f.slice(6,8)}/${f.slice(4,6)}/${f.slice(0,4)}` : '';
+}
+
+// Envuelve el nombre del fondo en un link al factsheet si hay PDF subido; si no, lo deja como texto plano
 function fondoNameHtml(nombre){
-  const url = FACTSHEET_URLS[nombre];
-  if(!url) return nombre;
-  return `<a href="${url}" target="_blank" rel="noopener" class="fondo-link" title="Ver factsheet de ${nombre}">${nombre}</a>`;
+  const fs = buscarFactsheet(nombre);
+  if(!fs) return nombre;
+  const fecha = fmtFechaFactsheet(fs.fecha);
+  const title = `Ver factsheet de ${nombre}${fecha ? ` (al ${fecha})` : ''}`;
+  return `<a href="${fs.url}" target="_blank" rel="noopener" class="fondo-link" title="${title}">${nombre}</a>`;
 }
 
 // tipo: 'Sugerida' usa la matriz PORTFOLIOS; 'Personalizada' usa customPortfolio
@@ -3104,7 +3188,7 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 });
 
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones),
-// factsheets.json (los links a los PDF) y tir_fondos.xlsx (TIR y Duration de
+// factsheets.json (el índice de los PDF de /factsheets) y tir_fondos.xlsx (TIR y Duration de
 // cada fondo), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
@@ -3118,7 +3202,7 @@ Promise.all([
       return parsed;
     }),
   cargarCarteras(),
-  cargarFactsheets(),   // si falla, deja FACTSHEET_URLS vacío y no bloquea el resto
+  cargarFactsheets(),   // si falla, los fondos quedan sin link y no bloquea el resto
   cargarTirFondos(),    // si falla, la cartera queda con TIR y Duration en "s/d"
 ])
   .then(([parsed])=>{
