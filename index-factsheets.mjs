@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------
-   Genera factsheets.json a partir del contenido de la carpeta /factsheets
+   Genera factsheets.json a partir del contenido de la carpeta /WEEKLY
 
    Este script NO sale a internet ni depende de fondosbalanz.com: solo mira
    los archivos que vos subiste al repositorio y arma un indice con ellos.
@@ -23,7 +23,7 @@
 import { readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const CARPETA = 'factsheets';
+const CARPETA = 'WEEKLY';   // ojo: en mayusculas, igual que en el repo
 const SALIDA = 'factsheets.json';
 
 // Normaliza a solo letras y numeros en minuscula: "Dolar Corto Plazo" y

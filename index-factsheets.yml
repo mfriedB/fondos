@@ -1,7 +1,7 @@
-# Regenera factsheets.json cada vez que cambia la carpeta /factsheets.
+# Regenera factsheets.json cada vez que cambia la carpeta /WEEKLY.
 #
 # Flujo de actualizacion mensual:
-#   1. Subis los PDF nuevos a /factsheets (arrastrandolos en GitHub o con push)
+#   1. Subis los PDF nuevos a /WEEKLY (arrastrandolos en GitHub o con push)
 #   2. Este workflow corre solo y actualiza factsheets.json
 #   3. Vercel redeploya y los links de la calculadora apuntan al mes nuevo
 #
@@ -12,7 +12,7 @@ name: Indexar factsheets
 on:
   push:
     paths:
-      - 'factsheets/**'
+      - 'WEEKLY/**'
       - 'scripts/index-factsheets.mjs'
       - '.github/workflows/index-factsheets.yml'
   workflow_dispatch:        # permite correrlo a mano desde la pestaña Actions
