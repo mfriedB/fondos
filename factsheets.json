@@ -1,26 +1,194 @@
 {
-  "_actualizado": "2026-08-15T13:40:00.512Z",
-  "Acciones": "https://cms.balanz.com/PFS/098438_acciones.esp.pdf",
-  "Ahorro corto plazo": "https://cms.balanz.com/PFS/098439_ahorrocortoplazo.esp.pdf",
-  "Balanz Capital Pymes": "https://cms.balanz.com/PFS/098455_pymes.esp.pdf",
-  "Balanz Crecimiento": "https://cms.balanz.com/PFS/098444_crecimiento.esp.pdf",
-  "Balanz Crédito Privado": "https://cms.balanz.com/PFS/100620_performancexiv.esp.pdf",
-  "Balanz Desarrollo FCI": "https://cms.balanz.com/PFS/098448_desarrollo.esp.pdf",
-  "Balanz Infraestructura FCI": "https://cms.balanz.com/PFS/098445_infraestructura.esp.pdf",
-  "Balanz Long Pesos": "https://cms.balanz.com/PFS/098443_long.esp.pdf",
-  "Balanz Money Market USD": "https://cms.balanz.com/PFS/098458_moneymarketusd.esp.pdf",
-  "Corporativo": "https://cms.balanz.com/PFS/098442_corporativo.esp.pdf",
-  "Dolar Corto Plazo": "https://cms.balanz.com/PFS/098441_dolarcortoplazo.esp.pdf",
-  "Dolar Linked": "https://cms.balanz.com/PFS/098449_dolarlinked.esp.pdf",
-  "Equity Selection": "https://cms.balanz.com/PFS/098450_equityselection.esp.pdf",
-  "Inflation linked": "https://cms.balanz.com/PFS/098447_inflationlinked.esp.pdf",
-  "Latam": "https://cms.balanz.com/PFS/098453_latam.esp.pdf",
-  "Latam (SIN Arg)": "https://cms.balanz.com/PFS/098454_latamsinarg.esp.pdf",
-  "Lecaps": "https://cms.balanz.com/PFS/098456_lecaps.esp.pdf",
-  "Money Market": "https://cms.balanz.com/PFS/098457_moneymarket.esp.pdf",
-  "ONs": "https://cms.balanz.com/PFS/098459_ons.esp.pdf",
-  "Opportunity": "https://cms.balanz.com/PFS/098460_opportunity.esp.pdf",
-  "Renta Mixta": "https://cms.balanz.com/PFS/098467_rentamixta.esp.pdf",
-  "Soberano": "https://cms.balanz.com/PFS/098440_soberano.esp.pdf",
-  "Soja": "https://cms.balanz.com/PFS/098468_soja.esp.pdf"
+  "generado": "2026-08-21T20:22:58.591Z",
+  "archivos": [
+    {
+      "slug": "acciones",
+      "nombre": "Acciones",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Acciones.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "ahorrocortoplazo",
+      "nombre": "AhorroCortoPlazo",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.AhorroCortoPlazo.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "corporativo",
+      "nombre": "Corporativo",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Corporativo.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "crecimiento",
+      "nombre": "crecimiento",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.crecimiento.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "creditoprivado",
+      "nombre": "creditoprivado",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.creditoprivado.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "desarrollo",
+      "nombre": "desarrollo",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.desarrollo.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "dolarcortoplazo",
+      "nombre": "DolarCortoPlazo",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.DolarCortoPlazo.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "dolarlinked",
+      "nombre": "DolarLinked",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.DolarLinked.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "equityselection",
+      "nombre": "EquitySelection",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.EquitySelection.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "estrategiaii",
+      "nombre": "EstrategiaII",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.EstrategiaII.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "estrategiaiv",
+      "nombre": "EstrategiaIV",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.EstrategiaIV.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "excalibur",
+      "nombre": "excalibur",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.excalibur.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "infraestructura",
+      "nombre": "infraestructura",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.infraestructura.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "institucional",
+      "nombre": "Institucional",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Institucional.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "latam",
+      "nombre": "Latam",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Latam.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "latamsinarg",
+      "nombre": "LatamsinArg",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.LatamsinArg.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "lecaps",
+      "nombre": "Lecaps",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Lecaps.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "long",
+      "nombre": "long",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.long.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "moneymarket",
+      "nombre": "MoneyMarket",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.MoneyMarket.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "moneymarketusd",
+      "nombre": "MoneyMarketUSD",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.MoneyMarketUSD.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "ons",
+      "nombre": "ONs",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.ONs.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "opportunity",
+      "nombre": "opportunity",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.opportunity.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "pymes",
+      "nombre": "pymes",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.pymes.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "rentafijaestrategica",
+      "nombre": "RentaFijaEstrategica",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.RentaFijaEstrategica.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "rentamixta",
+      "nombre": "rentamixta",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.rentamixta.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "soberano",
+      "nombre": "Soberano",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.Soberano.esp.pdf",
+      "esPdf": true
+    },
+    {
+      "slug": "soja",
+      "nombre": "soja",
+      "fecha": "20260731",
+      "url": "WEEKLY/20260731.soja.esp.pdf",
+      "esPdf": true
+    }
+  ]
 }
