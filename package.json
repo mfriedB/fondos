@@ -1,0 +1,13 @@
+{
+  "name": "fondos",
+  "version": "1.0.0",
+  "description": "Calculadora de Cartera de Fondos",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
