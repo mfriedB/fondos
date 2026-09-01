@@ -1326,7 +1326,10 @@ if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
 }
 let DATA = { asOfDate: null, fondos: [] };
 
-const EXCLUDED_FONDOS = ['GLOBAL', 'Balanz Renta Fija Global', 'Dolar Linked', 'Balanz Desarrollo FCI'];
+// Fondos que no se muestran en ningun lado: ni en el comparador, ni entre
+// los que se pueden agregar a una cartera personalizada.
+// "GLOBAL" no es un fondo sino un rotulo de seccion del Excel.
+const EXCLUDED_FONDOS = ['GLOBAL', 'Balanz Renta Fija Global', 'Balanz Desarrollo FCI'];
 
 let DATES = [];
 let HIST_RAW = {};
