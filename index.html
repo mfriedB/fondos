@@ -1611,10 +1611,11 @@ function normalizarBase(base){
 /* Promedio ponderado de un campo (tir / duration), agrupado POR BASE de tasa.
 
    Por que agrupado: la TIR de un fondo CER es una tasa REAL (rinde inflacion
-   + x%) y la de un fondo ARS es NOMINAL. Promediarlas en un solo numero da
-   una cifra que no significa nada. En la practica esto solo pasa en carteras
-   en pesos que mezclan Inflation linked con fondos ARS: en el resto de los
-   casos hay una sola base y la fila final muestra un unico valor, como antes.
+   + x%), la de un fondo ARS es NOMINAL y la de un USD esta en moneda dura.
+   Promediarlas en un solo numero da una cifra que no significa nada. Los
+   cruces tipicos son Inflation linked (CER) con fondos ARS, y una cartera en
+   pesos que suma un dolar linked (USD). Cuando hay una sola base, la fila
+   final muestra un unico valor y no se dibujan chips.
 
    Los fondos sin dato se excluyen y cada base se re-normaliza sobre los que
    si lo tienen; "cobertura" dice que porcentaje de la cartera quedo
@@ -2651,13 +2652,27 @@ function buildCarteraRows(){
   });
 }
 
-// La cartera solo mezcla bases cuando tiene Inflation linked (CER) junto con
-// algun fondo en pesos (ARS): ese es el unico cruce que hoy pasa. En fondos
-// en dolares no hay para que aclarar la base, asi que ahi nunca se muestra.
+/* ¿La cartera mezcla bases de tasa? Si mezcla, cada fila muestra su base al
+   lado de la TIR; si no, el chip seria ruido porque todas dirian lo mismo.
+
+   Se cuenta igual que en la fila final (ver ponderadosPorBase): solo fondos
+   con peso y con dato, asi que las filas y el total siempre coinciden en si
+   muestran los chips o no.
+
+   Aplica a cualquier combinacion, no solo CER + ARS: una cartera en pesos
+   con un fondo dolar linked mezcla ARS con USD y tambien necesita la
+   aclaracion, porque un 9% en dolares no es comparable con un 30% nominal
+   en pesos. */
 function hayMezclaDeBase(rows){
-  if(selection.moneda === 'Dólar') return false;
-  const bases = new Set((rows || []).map(r => r.base).filter(Boolean));
-  return bases.has('CER') && bases.has('ARS');
+  const bases = new Set();
+  (rows || []).forEach(r=>{
+    if((Number(r.pct) || 0) <= 0) return;
+    if(!r.base) return;
+    const tieneDato = (r.tir !== null && r.tir !== undefined && isFinite(r.tir))
+                   || (r.duration !== null && r.duration !== undefined && isFinite(r.duration));
+    if(tieneDato) bases.add(r.base);
+  });
+  return bases.size > 1;
 }
 
 function carteraRowHtml(r, i, custom, mostrarBase){
