@@ -2652,18 +2652,32 @@ function buildCarteraRows(){
   });
 }
 
-/* ¿La cartera mezcla bases de tasa? Si mezcla, cada fila muestra su base al
-   lado de la TIR; si no, el chip seria ruido porque todas dirian lo mismo.
+/* Base "esperada" segun la moneda de la cartera: una cartera en pesos se
+   asume en tasa nominal ARS y una en dolares, en USD. Es la base que NO hace
+   falta aclarar porque es la que el lector da por sentada. */
+function baseEsperada(){
+  return selection.moneda === 'Dólar' ? 'USD' : 'ARS';
+}
 
-   Se cuenta igual que en la fila final (ver ponderadosPorBase): solo fondos
-   con peso y con dato, asi que las filas y el total siempre coinciden en si
-   muestran los chips o no.
+/* ¿Hay que mostrar la base al lado de la TIR? Dos motivos para que si:
 
-   Aplica a cualquier combinacion, no solo CER + ARS: una cartera en pesos
-   con un fondo dolar linked mezcla ARS con USD y tambien necesita la
-   aclaracion, porque un 9% en dolares no es comparable con un 30% nominal
-   en pesos. */
-function hayMezclaDeBase(rows){
+     1. La cartera mezcla bases. Ahi hay que distinguirlas si o si, porque
+        conviven numeros que no son comparables entre ellos.
+
+     2. Hay una sola base pero NO es la esperada para la moneda. Un fondo
+        CER solo en una cartera en pesos muestra 8,52%, que es una tasa REAL
+        sobre inflacion y no un 8,52% nominal; un dolar linked solo muestra
+        9,57%, que esta en dolares. Sin el chip los dos se leerian como si
+        fueran tasas en pesos.
+
+   Solo cuentan los fondos con peso y con dato, igual que en la fila final
+   (ver ponderadosPorBase), asi que las filas y el total siempre coinciden.
+   Por eso una cartera de un fondo CER junto con Acciones (que no tiene TIR)
+   igual muestra el chip: la unica base con dato sigue siendo CER.
+
+   Una cartera toda ARS en pesos, o toda USD en dolares, no lleva chips:
+   serian todos iguales y no aclararian nada. */
+function hayQueMostrarBase(rows){
   const bases = new Set();
   (rows || []).forEach(r=>{
     if((Number(r.pct) || 0) <= 0) return;
@@ -2672,7 +2686,9 @@ function hayMezclaDeBase(rows){
                    || (r.duration !== null && r.duration !== undefined && isFinite(r.duration));
     if(tieneDato) bases.add(r.base);
   });
-  return bases.size > 1;
+  if(bases.size > 1) return true;
+  if(bases.size === 1) return !bases.has(baseEsperada());
+  return false;
 }
 
 function carteraRowHtml(r, i, custom, mostrarBase){
@@ -2763,7 +2779,7 @@ function renderCartera(){
     ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
     : 'Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
 
-  let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayMezclaDeBase(rows))).join('');
+  let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayQueMostrarBase(rows))).join('');
   if(custom){
     body += addFondoRowHtml();
   } else if(!rows.length){
@@ -2777,14 +2793,17 @@ function renderCartera(){
 
 /* Celda de la fila final con el ponderado de TIR o Duration.
 
-   Con una sola base (el caso habitual) muestra un unico valor, igual que
-   antes. Cuando la cartera mezcla bases -en la practica, Inflation linked
-   (CER) junto con fondos en pesos (ARS)- muestra una linea por base con su
-   peso, en vez de un promedio unico que mezclaria tasa real con nominal.
+   Con una sola base muestra un unico valor. Cuando la cartera mezcla bases
+   muestra una linea por base con su peso, en vez de un promedio unico que
+   mezclaria, por ejemplo, tasa real con nominal.
+
+   El chip de base sigue el mismo criterio que las filas (ver
+   hayQueMostrarBase), asi que aparece tambien cuando hay una sola base pero
+   no es la esperada para la moneda de la cartera.
 
    El asterisco aparece si algun fondo de la cartera no tiene el dato: el
    ponderado se calcula sobre el resto y el tooltip aclara la cobertura. */
-function ponderadoCellHtml(rows, campo, formateador, label){
+function ponderadoCellHtml(rows, campo, formateador, label, mostrarBase){
   const { grupos, cobertura } = ponderadosPorBase(rows, campo);
   const clase = campo === 'tir' ? 'tir-total' : 'dur-total';
 
@@ -2796,10 +2815,9 @@ function ponderadoCellHtml(rows, campo, formateador, label){
   const mezclada = grupos.length > 1;
 
   const lineas = grupos.map(g=>{
-    // El chip de base y el peso de cada linea solo se muestran cuando la
-    // cartera mezcla CER con ARS: con una sola base seria ruido repetir la
-    // etiqueta, y en carteras USD nunca hace falta aclarar nada.
-    const chip = mezclada ? baseChipHtml(g.base) : '';
+    // El peso solo se imprime si hay mas de una base: con una sola siempre
+    // seria 100% y agregaria ruido.
+    const chip = mostrarBase ? baseChipHtml(g.base) : '';
     const peso = mezclada ? `<span class="pond-peso">${Math.round(g.share * 100)}%</span>` : '';
     return `<span class="pond-linea"><span class="${clase}">${formateador(g.valor)}</span>${chip}${peso}</span>`;
   }).join('');
@@ -2827,10 +2845,12 @@ function renderCarteraTotals(rows, custom){
   // TIR y Duration ponderadas por el peso de cada fondo en la cartera.
   // En la cartera personalizada solo se muestran si los % suman 100%,
   // igual que el total invertido.
+  // Mismo criterio que las filas, para que los chips aparezcan en los dos lados o en ninguno
+  const mostrarBase = hayQueMostrarBase(rows);
   const tirCell = invalida ? '<td class="num" data-label="TIR ponderada">—</td>'
-                           : ponderadoCellHtml(rows, 'tir', fmtTir, 'TIR ponderada');
+                           : ponderadoCellHtml(rows, 'tir', fmtTir, 'TIR ponderada', mostrarBase);
   const durCell = invalida ? '<td class="num" data-label="Duration ponderada">—</td>'
-                           : ponderadoCellHtml(rows, 'duration', fmtDuration, 'Duration ponderada');
+                           : ponderadoCellHtml(rows, 'duration', fmtDuration, 'Duration ponderada', mostrarBase);
 
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
@@ -3295,7 +3315,7 @@ function buildPrintReport(){
     `;
 
   let totalCosto = 0;
-  const mostrarBasePdf = hayMezclaDeBase(rows);
+  const mostrarBasePdf = hayQueMostrarBase(rows);
   const bodyRows = rows.map(r=>{
     totalCosto += r.costo;
     const tirTxt = fmtTir(r.tir);
@@ -3312,16 +3332,16 @@ function buildPrintReport(){
   }).join('');
 
   // Mismos ponderados que muestra la web, para que el PDF no dependa del DOM.
-  // Si la cartera mezcla bases (CER + ARS) van en lineas separadas, porque
-  // promediar una tasa real con una nominal daria un numero sin sentido; la
-  // base solo se rotula en ese caso mezclado, igual que en la tabla.
+  // Si la cartera mezcla bases van en lineas separadas, porque promediar una
+  // tasa real con una nominal daria un numero sin sentido. La base se rotula
+  // con el mismo criterio que en la tabla (mostrarBasePdf).
   function pondTextoPdf(campo, formateador){
     const { grupos, cobertura } = ponderadosPorBase(rows, campo);
     if(!grupos.length) return 's/d';
     const mezclada = grupos.length > 1;
     const parcial = cobertura < 0.999;
     return grupos
-      .map(g => `${formateador(g.valor)} ${g.base}${mezclada ? ` (${Math.round(g.share * 100)}%)` : ''}`)
+      .map(g => `${formateador(g.valor)}${mostrarBasePdf ? ` ${g.base}` : ''}${mezclada ? ` (${Math.round(g.share * 100)}%)` : ''}`)
       .join('<br>') + (parcial ? '*' : '');
   }
 
