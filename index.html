@@ -743,6 +743,20 @@
   .print-brand span{ font-size:12px; color:var(--muted); }
   .print-meta{ font-size:10.5px; color:var(--muted); text-align:right; line-height:1.5; }
   .print-section{ margin-bottom:14px; }
+  /* Destinatario del reporte (nombre ingresado al descargar el PDF) */
+  .print-client{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#F5F8FE;
+    border:1px solid var(--line);
+    border-left:4px solid var(--navy);
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:16px;
+  }
+  .print-client-label{ font-size:9px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700; margin-bottom:2px; }
+  .print-client-name{ font-size:18px; font-weight:800; color:var(--navy); letter-spacing:-0.01em; line-height:1.25; word-break:break-word; }
   .print-section h3{
     font-size:12px;
     text-transform:uppercase;
@@ -852,6 +866,29 @@
     margin-bottom:14px;
   }
   .login-submit{ width:100%; justify-content:center; padding:12px; font-size:14.5px; }
+
+  /* Modal: nombre del cliente antes de generar el PDF */
+  .client-modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(14,22,48,0.55);
+    backdrop-filter:blur(2px);
+    z-index:9000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .client-modal-overlay.open{ display:flex; animation:client-modal-fade .15s ease; }
+  @keyframes client-modal-fade{ from{ opacity:0; } to{ opacity:1; } }
+  .client-modal-overlay .login-box{ max-width:420px; animation:client-modal-pop .18s ease; }
+  @keyframes client-modal-pop{ from{ transform:translateY(8px); opacity:.6; } to{ transform:none; opacity:1; } }
+  .client-modal-overlay .login-box input{ margin-bottom:6px; }
+  .client-modal-hint{ font-size:11.5px; color:var(--muted); margin:0 0 18px; }
+  .client-modal-overlay .login-error{ margin:8px 0 14px; }
+  .client-modal-actions{ display:flex; gap:10px; justify-content:flex-end; }
+  .client-modal-actions .btn{ font-family:inherit; }
+  .client-modal-actions .btn-outline:hover{ background:#F5F7FC; }
 
   .loading-overlay{
     position:fixed;
@@ -1275,6 +1312,24 @@
 
   </main>
 
+  <div id="clientModal" class="client-modal-overlay" aria-hidden="true">
+    <form id="clientModalForm" class="login-box" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle" autocomplete="off" novalidate>
+      <h1 id="clientModalTitle">Descargar PDF</h1>
+      <p class="login-sub">Indicá a quién le vas a enviar la cartera. El nombre aparece al inicio del reporte.</p>
+
+      <label for="clientNameInput">Nombre del cliente</label>
+      <input type="text" id="clientNameInput" maxlength="80" placeholder="Ej.: Juan Pérez" autocomplete="off" spellcheck="false" />
+      <p class="client-modal-hint">Máximo 80 caracteres.</p>
+
+      <div id="clientModalError" class="login-error" style="display:none;"></div>
+
+      <div class="client-modal-actions">
+        <button type="button" id="clientModalCancel" class="btn btn-outline">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Generar PDF</button>
+      </div>
+    </form>
+  </div>
+
   <div id="printDisclaimer">
     <div class="disc-head">
       <img class="disc-logo" id="printDiscLogo" alt="Balanz" />
@@ -1290,6 +1345,13 @@
         <span id="printTitleText">Cartera sugerida para el cliente</span>
       </div>
       <div class="print-meta" id="printMeta"></div>
+    </div>
+
+    <div class="print-client" id="printClient">
+      <div>
+        <div class="print-client-label">Preparado para</div>
+        <div class="print-client-name" id="printClientName"></div>
+      </div>
     </div>
 
     <div class="print-section">
@@ -3282,8 +3344,12 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
    (tabla, graficos de composicion y rendimiento historico) y abre
    el dialogo de impresion del navegador para guardarlo como PDF.
 --------------------------------------------------------------------- */
-function buildPrintReport(){
+function buildPrintReport(clientName){
   const rows = lastRows || [];
+
+  // Nombre del destinatario (textContent: no se interpreta como HTML)
+  document.getElementById('printClientName').textContent = clientName || '';
+  document.getElementById('printClient').style.display = clientName ? 'flex' : 'none';
   const monedaLabel = selection.moneda === 'Dólar' ? 'Dólar MEP (USD)' : 'Pesos (ARS)';
   const monto = parseMonto(document.getElementById('montoInput').value);
   const montoTexto = fmtMoney(monto, selection.moneda);
@@ -3366,14 +3432,75 @@ function buildPrintReport(){
   document.getElementById('printPerfGrid').innerHTML = perfGridEl ? perfGridEl.innerHTML : '';
 }
 
-document.getElementById('downloadPdfBtn').addEventListener('click', async ()=>{
+/* ---------------------------------------------------------------------
+   Modal "Nombre del cliente": se abre al tocar Descargar PDF. El nombre
+   queda recordado durante la sesión para no reescribirlo si se generan
+   varias versiones de la misma cartera.
+--------------------------------------------------------------------- */
+const clientModal = document.getElementById('clientModal');
+const clientModalForm = document.getElementById('clientModalForm');
+const clientNameInput = document.getElementById('clientNameInput');
+const clientModalError = document.getElementById('clientModalError');
+let lastClientName = '';
+
+function normalizarNombreCliente(txt){
+  return String(txt || '').replace(/\s+/g, ' ').trim();
+}
+
+function openClientModal(){
+  clientNameInput.value = lastClientName;
+  clientModalError.style.display = 'none';
+  clientModal.classList.add('open');
+  clientModal.setAttribute('aria-hidden', 'false');
+  setTimeout(()=>{ clientNameInput.focus(); clientNameInput.select(); }, 30);
+}
+
+function closeClientModal(){
+  clientModal.classList.remove('open');
+  clientModal.setAttribute('aria-hidden', 'true');
+  document.getElementById('downloadPdfBtn').focus();
+}
+
+document.getElementById('downloadPdfBtn').addEventListener('click', openClientModal);
+document.getElementById('clientModalCancel').addEventListener('click', closeClientModal);
+clientModal.addEventListener('mousedown', (e)=>{ if(e.target === clientModal) closeClientModal(); });
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && clientModal.classList.contains('open')) closeClientModal();
+});
+clientNameInput.addEventListener('input', ()=>{ clientModalError.style.display = 'none'; });
+
+clientModalForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const nombre = normalizarNombreCliente(clientNameInput.value);
+  if(!nombre){
+    clientModalError.textContent = 'Ingresá el nombre del cliente para continuar.';
+    clientModalError.style.display = 'block';
+    clientNameInput.focus();
+    return;
+  }
+  lastClientName = nombre;
+  closeClientModal();
+  generarPdf(nombre);
+});
+
+// Slug para el nombre del archivo: sin tildes ni caracteres especiales
+function slugNombreArchivo(txt){
+  return String(txt || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40);
+}
+
+async function generarPdf(clientName){
   const btn = document.getElementById('downloadPdfBtn');
   const originalHtml = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = 'Generando PDF…';
 
   try{
-    buildPrintReport();
+    buildPrintReport(clientName);
     const el = document.getElementById('printReport');
     const prevStyle = el.getAttribute('style') || '';
 
@@ -3445,7 +3572,8 @@ document.getElementById('downloadPdfBtn').addEventListener('click', async ()=>{
     const monedaSlug = selection.moneda === 'Dólar' ? 'usd' : 'ars';
     const fechaSlug = DATA.asOfDate || '';
     const tipoSlug = isCustom() ? 'personalizada' : 'sugerida';
-    pdf.save(`cartera-${tipoSlug}-balanz-${monedaSlug}-${fechaSlug}.pdf`);
+    const clienteSlug = slugNombreArchivo(clientName);
+    pdf.save(`cartera-${tipoSlug}-balanz${clienteSlug ? '-' + clienteSlug : ''}-${monedaSlug}-${fechaSlug}.pdf`);
   } catch(err){
     console.error('Error generando el PDF:', err);
     alert('No se pudo generar el PDF. Probá de nuevo en unos segundos.');
@@ -3453,7 +3581,7 @@ document.getElementById('downloadPdfBtn').addEventListener('click', async ()=>{
     btn.disabled = false;
     btn.innerHTML = originalHtml;
   }
-});
+}
 
 </script>
 </body>
