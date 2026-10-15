@@ -1078,13 +1078,15 @@
     gap:8px;
     align-items:flex-start;
     font-size:12.5px;
-    color:#8A5A0F;
-    background:#FFF6E5;
-    border:1px solid #F3E1BD;
+    color:var(--navy);
+    background:#EEF1FC;
+    border:1px solid #D9E0F5;
+    border-left:3px solid var(--accent);
     border-radius:8px;
     padding:10px 12px;
     margin:0 0 16px;
   }
+  .hon-clase-nota > span:first-child{ color:var(--accent); font-weight:700; }
 
   #honTable{ table-layout:fixed; }
   #honTable thead th{ cursor:default; background:#EEF1FC; color:var(--navy); border-bottom:none; white-space:normal; vertical-align:bottom; }
@@ -1522,7 +1524,7 @@
         <div class="hon-param">
           <label for="honPctAsesor">% de Ingresos sobre Honorarios Totales</label>
           <div class="hon-input-wrap hon-input-pct">
-            <input type="text" inputmode="decimal" id="honPctAsesor" placeholder="Ej: 30" maxlength="6" autocomplete="off" />
+            <input type="text" inputmode="decimal" id="honPctAsesor" maxlength="6" autocomplete="off" />
             <span class="hon-unit">%</span>
           </div>
           <div class="hon-help">Se aplica a toda la cartera</div>
