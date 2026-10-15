@@ -1014,11 +1014,25 @@
      Solapa "Estimador de Honorarios"
      ============================================================ */
   .hon-params{
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 300px)) 1fr;
-    gap:18px;
-    align-items:end;
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px 32px;
+    align-items:flex-start;
   }
+  /* Anchos a medida: el % va de 0 a 100 y el tipo de cambio tiene 4 cifras */
+  .hon-input-pct{ width:120px; }
+  .hon-input-tc{ width:210px; }
+  .hon-section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .hon-section-head h2{ margin:0; }
+  .hon-section-head .btn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; font-size:13px; }
+  .hon-section-head .btn-outline:hover{ border-color:#B9C4E8; background:#F7F9FE; }
   .hon-param label{ margin-bottom:8px; }
   .hon-input-wrap{
     display:flex;
@@ -1058,14 +1072,6 @@
     white-space:nowrap;
   }
   .hon-param .hon-help{ font-size:11.5px; color:var(--muted); margin-top:6px; }
-  .hon-param-actions{ display:flex; justify-content:flex-end; }
-  .hon-param-actions .btn{ display:inline-flex; align-items:center; gap:7px; }
-  .hon-param-actions .btn-outline:hover{ border-color:#B9C4E8; background:#F7F9FE; }
-  @media (max-width:820px){
-    .hon-params{ grid-template-columns:1fr 1fr; }
-    .hon-param-actions{ grid-column:1 / -1; justify-content:flex-start; }
-  }
-  @media (max-width:480px){ .hon-params{ grid-template-columns:1fr; } }
 
   .hon-clase-nota{
     display:flex;
@@ -1514,33 +1520,32 @@
       <p class="sub">Los ingresos se expresan en dólares. Los honorarios de los fondos en pesos se convierten al tipo de cambio que ingreses; los de fondos en dólares no se convierten.</p>
       <div class="hon-params">
         <div class="hon-param">
-          <label for="honPctAsesor">% del honorario que le corresponde al asesor</label>
-          <div class="hon-input-wrap">
-            <input type="text" inputmode="decimal" id="honPctAsesor" placeholder="Ej: 30" autocomplete="off" />
+          <label for="honPctAsesor">% de Ingresos sobre Honorarios Totales</label>
+          <div class="hon-input-wrap hon-input-pct">
+            <input type="text" inputmode="decimal" id="honPctAsesor" placeholder="Ej: 30" maxlength="6" autocomplete="off" />
             <span class="hon-unit">%</span>
           </div>
-          <div class="hon-help">Porcentaje neto del honorario de gerente que va al asesor. Se aplica a toda la cartera.</div>
+          <div class="hon-help">Se aplica a toda la cartera</div>
         </div>
         <div class="hon-param">
           <label for="honTipoCambio">Tipo de cambio</label>
-          <div class="hon-input-wrap">
-            <input type="text" inputmode="decimal" id="honTipoCambio" value="1.550" autocomplete="off" />
+          <div class="hon-input-wrap hon-input-tc">
+            <input type="text" inputmode="decimal" id="honTipoCambio" value="1.550" maxlength="9" autocomplete="off" />
             <span class="hon-unit">ARS por USD</span>
           </div>
-          <div class="hon-help">Se usa solo para dolarizar los honorarios de los fondos en pesos.</div>
-        </div>
-        <div class="hon-param-actions">
-          <button type="button" class="btn btn-outline" id="honImportarBtn" title="Reemplaza la cartera de abajo por la armada en la solapa Calculadora de Carteras">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
-            Traer cartera de la Calculadora
-          </button>
         </div>
       </div>
     </section>
 
     <section class="card">
-      <h2>2 · Cartera para la estimación</h2>
-      <p class="sub" id="honOrigen">Elegí la clase de cada fondo y ajustá el saldo promedio anual. Podés agregar o quitar fondos libremente.</p>
+      <div class="hon-section-head">
+        <h2>2 · Cartera para la estimación</h2>
+        <button type="button" class="btn btn-outline" id="honImportarBtn" title="Reemplaza la cartera de abajo por la armada en la solapa Calculadora de Carteras">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          Traer cartera de la Calculadora
+        </button>
+      </div>
+      <p class="sub">Elegí la clase de cada fondo y ajustá los saldos o los fondos libremente</p>
       <div class="hon-clase-nota">
         <span aria-hidden="true">ⓘ</span>
         <span>La clase a elegir depende del monto a suscribir en cada fondo. Cada clase tiene un honorario de gerente distinto, que se muestra al lado de la letra.</span>
@@ -1577,8 +1582,8 @@
     </section>
 
     <section class="card">
-      <h2>3 · Ingreso estimado del asesor</h2>
-      <p class="sub">Suma de los fondos con clase elegida. Honorario anual = saldo promedio anual × honorario de gerente de la clase × % del asesor; el mensual es el anual dividido 12.</p>
+      <h2>3 · Ingreso Estimado</h2>
+      <p class="sub">Suma de los fondos con clase elegida. Honorario anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales; el mensual es el anual dividido 12.</p>
       <div class="hon-kpis">
         <div class="hon-kpi destacado">
           <div class="label">Ingreso mensual</div>
@@ -1591,12 +1596,12 @@
           <div class="detail">USD por año</div>
         </div>
         <div class="hon-kpi">
-          <div class="label">Saldo considerado</div>
+          <div class="label">Saldo en Fondos considerado</div>
           <div class="value" id="honKpiSaldo">—</div>
           <div class="detail" id="honKpiSaldoDetalle">Equivalente en USD</div>
         </div>
       </div>
-      <p class="foot-note" id="honFootNote">Estimación sobre un saldo constante durante todo el año. No considera variaciones del saldo ni del tipo de cambio, ni impuestos o retenciones sobre el ingreso del asesor.</p>
+      <p class="foot-note" id="honFootNote">Estimación sobre un saldo constante durante todo el año. No considera variaciones del saldo ni del tipo de cambio.</p>
     </section>
 
     <div class="page-disclaimer">
@@ -3684,7 +3689,6 @@ let HONORARIOS = {};          // clave normalizada -> [{ clase, hon }]
 let HONORARIOS_ERROR = null;
 let honCartera = [];          // [{ nombre, clase, saldo }]
 let honInicializado = false;
-let honOrigenTexto = '';
 const HON_TC_DEFAULT = 1550;
 
 function claveHonorario(nombre){
@@ -3915,8 +3919,6 @@ function renderHonorarios(){
   const vacio = honCartera.length ? '' :
     '<tr><td colspan="5" class="cartera-empty-msg" style="padding:18px 12px;">No hay fondos en la estimación. Agregá uno desde el selector de abajo o traé la cartera de la Calculadora.</td></tr>';
   body.innerHTML = filas + vacio + honAddRowHtml();
-  document.getElementById('honOrigen').textContent = honOrigenTexto ||
-    'Elegí la clase de cada fondo y ajustá el saldo promedio anual. Podés agregar o quitar fondos libremente.';
   actualizarHonTotales();
 }
 
@@ -3964,8 +3966,8 @@ function actualizarHonTotales(){
   }
   if(pct == null){
     msgs.push(document.getElementById('honPctAsesor').value.trim()
-      ? 'El % del asesor tiene que estar entre 0 y 100.'
-      : 'Ingresá el % del honorario que le corresponde al asesor para calcular los ingresos.');
+      ? 'El % de ingresos sobre honorarios totales tiene que estar entre 0 y 100.'
+      : 'Ingresá el % de ingresos sobre honorarios totales para calcular los ingresos.');
     if(nivel !== 'err') nivel = 'warn';
   }
   if(!tc && hayPesos){
@@ -4008,21 +4010,6 @@ function importarCarteraCalculadora(){
     saldo: Math.round(r.costo || 0),
   }));
 
-  const monto = parseMonto(document.getElementById('montoInput').value);
-  const partes = [isCustom() ? 'Cartera personalizada' : 'Cartera sugerida'];
-  if(!isCustom()){
-    const txt = (grp, attr, val) => {
-      const el = document.querySelector(`#${grp} .option-btn[data-${attr}="${val}"] strong`);
-      return el ? el.textContent : val;
-    };
-    partes.push(txt('perfilOptions', 'perfil', selection.perfil));
-    partes.push(txt('horizonteOptions', 'horizonte', selection.horizonte));
-  }
-  partes.push(fmtMoney(monto, selection.moneda));
-  const aviso = (isCustom() && !carteraSuma100())
-    ? ' Ojo: en la Calculadora los porcentajes no suman 100%.'
-    : '';
-  honOrigenTexto = `Cartera traída de la Calculadora de Carteras (${partes.join(' · ')}).${aviso} Elegí la clase de cada fondo y ajustá los saldos o los fondos libremente.`;
   renderHonorarios();
 }
 
