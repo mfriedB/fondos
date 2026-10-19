@@ -1148,8 +1148,9 @@
     border:none;
   }
   #honTable tfoot td.num{ font-family:'JetBrains Mono',monospace; font-size:14px; white-space:nowrap; }
-  #honTable tfoot td:first-child{ border-radius:0 0 0 10px; }
-  #honTable tfoot td:last-child{ border-radius:0 0 10px 0; }
+  #honTable tfoot tr:last-child td:first-child{ border-radius:0 0 0 10px; }
+  #honTable tfoot tr:last-child td:last-child{ border-radius:0 0 10px 0; }
+  #honTable tfoot .hon-tfoot-label .moneda-dot{ margin-right:6px; }
 
   .hon-kpis{
     display:grid;
@@ -1174,6 +1175,45 @@
   }
   .hon-kpi .detail{ font-size:11.5px; color:var(--muted); margin-top:4px; }
   @media (max-width:720px){ .hon-kpis{ grid-template-columns:1fr; } }
+
+  /* Ingreso estimado: una subseccion por moneda + total dolarizado */
+  .hon-sub{ margin-top:18px; }
+  .hon-sub:first-child{ margin-top:0; }
+  .hon-sub-title{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--navy);
+    margin-bottom:10px;
+  }
+  .hon-sub-title .moneda-dot{ margin-right:0; }
+  .hon-sub-unit{
+    padding:2px 7px;
+    border-radius:4px;
+    font-size:10px;
+    font-weight:800;
+    background:#F3F5FA;
+    color:#5B6785;
+    border:1px solid var(--line);
+  }
+  .hon-sub-unit.hon-unit-USD{ background:#E8F5EF; color:#0F8A5F; border-color:#C9E9D8; }
+  .hon-sub-tc{ font-size:11.5px; font-weight:600; text-transform:none; letter-spacing:0; color:var(--muted); }
+  .hon-dolarizar-row{ margin-top:20px; display:flex; justify-content:flex-start; }
+  .hon-dolarizar-row .btn{ display:inline-flex; align-items:center; gap:8px; }
+  .hon-sub-dolarizado{
+    margin-top:16px;
+    padding:16px;
+    border:1px solid #C9D4F4;
+    border-radius:10px;
+    background:#F7F9FE;
+  }
+  .hon-sub-dolarizado .pct-warning{ margin:0 0 12px; }
+  #honTable tfoot tr + tr td{ border-top:1px solid #D3DCF3; }
 
   @media (max-width:720px){
     #honTable thead{ display:none; }
@@ -1211,9 +1251,9 @@
     /* El saldo va con la etiqueta arriba y el input a todo el ancho */
     #honTable tbody td.hon-saldo-td{ flex-direction:column; align-items:stretch; gap:6px; }
     .hon-saldo-cell .hon-input-wrap{ max-width:none; }
-    #honTable tfoot tr{ border-radius:10px; overflow:hidden; display:block; }
+    #honTable tfoot tr{ border-radius:10px; overflow:hidden; display:block; margin-top:6px; }
     #honTable tfoot td{ border-radius:0 !important; }
-    #honTable tfoot td.hon-tfoot-label{ display:none; }
+    #honTable tfoot td.hon-tfoot-label{ display:block; padding-bottom:4px; }
   }
 </style>
 </head>
@@ -1519,7 +1559,7 @@
 
     <section class="card">
       <h2>1 · Parámetros</h2>
-      <p class="sub">Los ingresos se expresan en dólares. Los honorarios de los fondos en pesos se convierten al tipo de cambio que ingreses; los de fondos en dólares no se convierten.</p>
+      <p class="sub">Los ingresos de cada fondo se expresan en su moneda: en ARS los fondos en pesos y en USD los fondos en dólares. El tipo de cambio se usa al dolarizar los ingresos con el botón del final.</p>
       <div class="hon-params">
         <div class="hon-param">
           <label for="honPctAsesor">% de Ingresos sobre Honorarios Totales</label>
@@ -1566,18 +1606,12 @@
               <th>Fondo</th>
               <th>Clase · Hon. gerente</th>
               <th>Saldo promedio anual</th>
-              <th class="num">Ingreso anual (USD)</th>
-              <th class="num">Ingreso mensual (USD)</th>
+              <th class="num">Ingreso anual</th>
+              <th class="num">Ingreso mensual</th>
             </tr>
           </thead>
           <tbody id="honTableBody"></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3" class="hon-tfoot-label">Total</td>
-              <td class="num" id="honTotalAnual" data-label="Total anual (USD)"></td>
-              <td class="num" id="honTotalMensual" data-label="Total mensual (USD)"></td>
-            </tr>
-          </tfoot>
+          <tfoot id="honTableFoot"></tfoot>
         </table>
       </div>
       <div id="honWarning" class="pct-warning" style="display:none;"></div>
@@ -1585,22 +1619,33 @@
 
     <section class="card">
       <h2>3 · Ingreso Estimado</h2>
-      <p class="sub">Suma de los fondos con clase elegida. Honorario anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales; el mensual es el anual dividido 12.</p>
-      <div class="hon-kpis">
-        <div class="hon-kpi destacado">
-          <div class="label">Ingreso mensual</div>
-          <div class="value" id="honKpiMensual">—</div>
-          <div class="detail">USD por mes</div>
-        </div>
-        <div class="hon-kpi">
-          <div class="label">Ingreso anual</div>
-          <div class="value" id="honKpiAnual">—</div>
-          <div class="detail">USD por año</div>
-        </div>
-        <div class="hon-kpi">
-          <div class="label">Saldo en Fondos considerado</div>
-          <div class="value" id="honKpiSaldo">—</div>
-          <div class="detail" id="honKpiSaldoDetalle">Equivalente en USD</div>
+      <p class="sub">Suma de los fondos con clase elegida, separada por moneda. Ingreso anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales; el mensual es el anual dividido 12.</p>
+      <div id="honResumenMonedas"></div>
+      <div class="hon-dolarizar-row">
+        <button type="button" class="btn btn-primary" id="honDolarizarBtn" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 6.5c-.8-1.5-2.6-2.5-5-2.5-3 0-5 1.5-5 3.75S9 11 12 12s5 1.75 5 4.25S15 20 12 20c-2.4 0-4.2-1-5-2.5"/></svg>
+          <span id="honDolarizarTxt">Dolarizar Ingresos a Tipo de Cambio elegido</span>
+        </button>
+      </div>
+      <div id="honDolarizado" class="hon-sub hon-sub-dolarizado" style="display:none;">
+        <div class="hon-sub-title">Total dolarizado <span class="hon-sub-unit hon-unit-USD">USD</span><span class="hon-sub-tc" id="honDolarizadoTc"></span></div>
+        <div id="honDolarizadoAviso" class="pct-warning warn" style="display:none;"></div>
+        <div class="hon-kpis">
+          <div class="hon-kpi destacado">
+            <div class="label">Ingreso mensual</div>
+            <div class="value" id="honKpiMensual">—</div>
+            <div class="detail">USD por mes</div>
+          </div>
+          <div class="hon-kpi">
+            <div class="label">Ingreso anual</div>
+            <div class="value" id="honKpiAnual">—</div>
+            <div class="detail">USD por año</div>
+          </div>
+          <div class="hon-kpi">
+            <div class="label">Saldo en Fondos considerado</div>
+            <div class="value" id="honKpiSaldo">—</div>
+            <div class="detail">Equivalente en USD</div>
+          </div>
         </div>
       </div>
       <p class="foot-note" id="honFootNote">Estimación sobre un saldo constante durante todo el año. No considera variaciones del saldo ni del tipo de cambio.</p>
@@ -3685,12 +3730,15 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
    Calculo por fondo:
      ingreso anual   = saldo promedio anual x hon. gerente x % asesor
      ingreso mensual = ingreso anual / 12
-   Los fondos en pesos se dolarizan dividiendo por el tipo de cambio.
+   El ingreso queda en la moneda del fondo (ARS o USD). Solo al apretar
+   "Dolarizar Ingresos" los montos en pesos se dividen por el tipo de cambio
+   para armar el total consolidado en USD.
 --------------------------------------------------------------------- */
 let HONORARIOS = {};          // clave normalizada -> [{ clase, hon }]
 let HONORARIOS_ERROR = null;
 let honCartera = [];          // [{ nombre, clase, saldo }]
 let honInicializado = false;
+let honDolarizadoVisible = false;
 const HON_TC_DEFAULT = 1550;
 
 function claveHonorario(nombre){
@@ -3812,40 +3860,61 @@ function honTipoCambio(){
   return (n == null || n <= 0) ? null : n;
 }
 
-function fmtUsd(n, dec){
+// Monto con su moneda explicita: "ARS 1.234,56" | "USD 12,34"
+function fmtMonHon(n, unidad, dec){
   const d = dec == null ? 2 : dec;
-  return 'USD ' + n.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  return unidad + ' ' + n.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
 }
 function fmtPctHon(h){
   return (h * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
 }
 
-// Resultado de una fila. estado: ok | sinHon | sinClase | sinPct | sinTc
+// Resultado de una fila, en la moneda del fondo.
+// estado: ok | sinHon | sinClase | sinPct
 function calcHonFila(it){
+  const unidad = unidadHon(it.nombre);
   const clases = clasesDeFondo(it.nombre);
-  if(!clases) return { estado: 'sinHon' };
+  if(!clases) return { estado: 'sinHon', unidad };
   const c = clases.find(x => x.clase === it.clase);
-  if(!c) return { estado: 'sinClase' };
-  const pesos = monedaHon(it.nombre) !== 'Dólar';
-  const tc = honTipoCambio();
-  if(pesos && !tc) return { estado: 'sinTc' };
-  const saldoUsd = (Number(it.saldo) || 0) / (pesos ? tc : 1);
+  if(!c) return { estado: 'sinClase', unidad };
+  const saldo = Number(it.saldo) || 0;
   const pct = honPctAsesor();
-  if(pct == null) return { estado: 'sinPct', saldoUsd };
-  const anual = saldoUsd * c.hon * pct / 100;
-  return { estado: 'ok', saldoUsd, anual, mensual: anual / 12 };
+  if(pct == null) return { estado: 'sinPct', unidad, saldo };
+  const anual = saldo * c.hon * pct / 100;
+  return { estado: 'ok', unidad, saldo, anual, mensual: anual / 12 };
 }
 
 function honCeldasIngreso(res){
-  if(res.estado === 'ok') return [fmtUsd(res.anual), fmtUsd(res.mensual)];
+  if(res.estado === 'ok') return [fmtMonHon(res.anual, res.unidad), fmtMonHon(res.mensual, res.unidad)];
   const txt = {
     sinHon:   's/d',
     sinClase: 'Elegir clase',
-    sinTc:    'Falta TC',
     sinPct:   '—',
   }[res.estado];
   const html = `<span class="sin-dato">${txt}</span>`;
   return [html, html];
+}
+
+// Totales por moneda: solo fondos con clase elegida.
+// Devuelve { ARS: {...}, USD: {...} } con las monedas presentes en la cartera.
+function totalesHonPorMoneda(){
+  const pct = honPctAsesor();
+  const out = {};
+  honCartera.forEach(it=>{
+    const r = calcHonFila(it);
+    const t = out[r.unidad] = out[r.unidad] || { fondos: 0, conClase: 0, anual: 0, saldo: 0 };
+    t.fondos++;
+    if(r.estado === 'ok' || r.estado === 'sinPct'){
+      t.conClase++;
+      t.saldo += r.saldo;
+      if(r.estado === 'ok') t.anual += r.anual;
+    }
+  });
+  Object.values(out).forEach(t=>{
+    t.calculable = pct != null && t.conClase > 0;
+    t.mensual = t.anual / 12;
+  });
+  return out;
 }
 
 function honRowHtml(it, i){
@@ -3886,8 +3955,8 @@ function honRowHtml(it, i){
           </div>
         </div>
       </td>
-      <td class="num hon-anual" data-label="Ingreso anual (USD)">${anual}</td>
-      <td class="num hon-mensual" data-label="Ingreso mensual (USD)">${mensual}</td>
+      <td class="num hon-anual" data-label="Ingreso anual (${unidad})">${anual}</td>
+      <td class="num hon-mensual" data-label="Ingreso mensual (${unidad})">${mensual}</td>
     </tr>`;
 }
 
@@ -3938,26 +4007,58 @@ function actualizarHonCalculos(){
   actualizarHonTotales();
 }
 
+const HON_MONEDAS = [
+  { unidad: 'ARS', moneda: 'Pesos', titulo: 'Fondos en pesos' },
+  { unidad: 'USD', moneda: 'Dólar', titulo: 'Fondos en dólares' },
+];
+
 function actualizarHonTotales(){
   const res = honCartera.map(calcHonFila);
-  const ok = res.filter(r => r.estado === 'ok');
   const pct = honPctAsesor();
-  const tc = honTipoCambio();
+  const tot = totalesHonPorMoneda();
+  const presentes = HON_MONEDAS.filter(m => tot[m.unidad]);
 
-  const anual = ok.reduce((a, r) => a + r.anual, 0);
-  // Solo cuentan los fondos que entran al calculo (con clase elegida)
-  const saldoUsd = res.reduce((a, r) => a + ((r.estado === 'ok' || r.estado === 'sinPct') ? r.saldoUsd : 0), 0);
-  const puedeTotal = pct != null && ok.length > 0;
+  // Pie de la tabla: un total por moneda (no se suman pesos con dolares)
+  document.getElementById('honTableFoot').innerHTML = presentes.map(m=>{
+    const t = tot[m.unidad];
+    const a = t.calculable ? fmtMonHon(t.anual, m.unidad) : '—';
+    const me = t.calculable ? fmtMonHon(t.mensual, m.unidad) : '—';
+    return `<tr>
+      <td colspan="3" class="hon-tfoot-label"><span class="moneda-dot moneda-${m.moneda}"></span>Total ${m.titulo.toLowerCase()}</td>
+      <td class="num" data-label="Total anual (${m.unidad})">${a}</td>
+      <td class="num" data-label="Total mensual (${m.unidad})">${me}</td>
+    </tr>`;
+  }).join('');
 
-  document.getElementById('honTotalAnual').textContent = puedeTotal ? fmtUsd(anual) : '—';
-  document.getElementById('honTotalMensual').textContent = puedeTotal ? fmtUsd(anual / 12) : '—';
-  document.getElementById('honKpiAnual').textContent = puedeTotal ? fmtUsd(anual) : '—';
-  document.getElementById('honKpiMensual').textContent = puedeTotal ? fmtUsd(anual / 12) : '—';
-  document.getElementById('honKpiSaldo').textContent = saldoUsd > 0 ? fmtUsd(saldoUsd, 0) : '—';
-  const hayPesos = honCartera.some(it => monedaHon(it.nombre) !== 'Dólar');
-  document.getElementById('honKpiSaldoDetalle').textContent = hayPesos && tc
-    ? `Equivalente en USD · TC ${fmtDecimalAR(tc, 2)} ARS por USD`
-    : 'Equivalente en USD';
+  // Ingreso estimado: una subseccion por cada moneda que haya en la cartera
+  document.getElementById('honResumenMonedas').innerHTML = presentes.length
+    ? presentes.map(m=>{
+        const t = tot[m.unidad];
+        const v = n => t.calculable ? fmtMonHon(n, m.unidad) : '—';
+        return `<div class="hon-sub">
+          <div class="hon-sub-title"><span class="moneda-dot moneda-${m.moneda}"></span>${m.titulo}<span class="hon-sub-unit hon-unit-${m.unidad}">${m.unidad}</span></div>
+          <div class="hon-kpis">
+            <div class="hon-kpi destacado">
+              <div class="label">Ingreso mensual</div>
+              <div class="value">${v(t.mensual)}</div>
+              <div class="detail">${m.unidad} por mes</div>
+            </div>
+            <div class="hon-kpi">
+              <div class="label">Ingreso anual</div>
+              <div class="value">${v(t.anual)}</div>
+              <div class="detail">${m.unidad} por año</div>
+            </div>
+            <div class="hon-kpi">
+              <div class="label">Saldo en Fondos considerado</div>
+              <div class="value">${t.saldo > 0 ? fmtMonHon(t.saldo, m.unidad, 0) : '—'}</div>
+              <div class="detail">${m.unidad} · ${t.conClase} de ${t.fondos} ${t.fondos === 1 ? 'fondo' : 'fondos'} con clase elegida</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<p class="cartera-empty-msg" style="text-align:left;margin:0;">Agregá fondos a la cartera para ver el ingreso estimado.</p>';
+
+  actualizarHonDolarizado(tot);
 
   // Avisos
   const msgs = [];
@@ -3970,10 +4071,6 @@ function actualizarHonTotales(){
     msgs.push(document.getElementById('honPctAsesor').value.trim()
       ? 'El % de ingresos sobre honorarios totales tiene que estar entre 0 y 100.'
       : 'Ingresá el % de ingresos sobre honorarios totales para calcular los ingresos.');
-    if(nivel !== 'err') nivel = 'warn';
-  }
-  if(!tc && hayPesos){
-    msgs.push('Ingresá un tipo de cambio válido para dolarizar los fondos en pesos.');
     if(nivel !== 'err') nivel = 'warn';
   }
   const sinClase = res.filter(r => r.estado === 'sinClase').length;
@@ -3998,6 +4095,45 @@ function actualizarHonTotales(){
   } else {
     warn.style.display = 'none';
   }
+}
+
+// Total consolidado en USD: los pesos se dividen por el tipo de cambio.
+// Solo se muestra despues de apretar "Dolarizar Ingresos" y se mantiene
+// actualizado si cambian los saldos, las clases, el % o el tipo de cambio.
+function actualizarHonDolarizado(tot){
+  const box = document.getElementById('honDolarizado');
+  const btn = document.getElementById('honDolarizarBtn');
+  document.getElementById('honDolarizarTxt').textContent = honDolarizadoVisible
+    ? 'Ocultar ingresos dolarizados'
+    : 'Dolarizar Ingresos a Tipo de Cambio elegido';
+  btn.setAttribute('aria-expanded', honDolarizadoVisible ? 'true' : 'false');
+  btn.disabled = !honCartera.length;
+  box.style.display = (honDolarizadoVisible && honCartera.length) ? '' : 'none';
+  if(!honDolarizadoVisible) return;
+
+  tot = tot || totalesHonPorMoneda();
+  const ars = tot.ARS, usd = tot.USD;
+  const tc = honTipoCambio();
+  const aviso = document.getElementById('honDolarizadoAviso');
+  const tcEl = document.getElementById('honDolarizadoTc');
+  const set = (id, txt) => { document.getElementById(id).textContent = txt; };
+
+  tcEl.textContent = (ars && tc) ? `· TC ${fmtDecimalAR(tc, 2)} ARS por USD` : '';
+
+  if(ars && !tc){
+    aviso.textContent = 'Ingresá un tipo de cambio válido en Parámetros para dolarizar los ingresos de los fondos en pesos.';
+    aviso.style.display = '';
+    set('honKpiMensual', '—'); set('honKpiAnual', '—'); set('honKpiSaldo', '—');
+    return;
+  }
+  aviso.style.display = 'none';
+
+  const calculable = (ars && ars.calculable) || (usd && usd.calculable);
+  const anual = (ars ? ars.anual / tc : 0) + (usd ? usd.anual : 0);
+  const saldo = (ars ? ars.saldo / tc : 0) + (usd ? usd.saldo : 0);
+  set('honKpiMensual', calculable ? fmtMonHon(anual / 12, 'USD') : '—');
+  set('honKpiAnual', calculable ? fmtMonHon(anual, 'USD') : '—');
+  set('honKpiSaldo', saldo > 0 ? fmtMonHon(saldo, 'USD', 0) : '—');
 }
 
 // Trae la cartera armada en "Calculadora de Carteras": los saldos son el monto
@@ -4086,6 +4222,14 @@ function activarHonorarios(){
     const n = honPctAsesor();
     if(n != null) pctEl.value = fmtDecimalAR(n, 2);
   });
+  document.getElementById('honDolarizarBtn').addEventListener('click', ()=>{
+    honDolarizadoVisible = !honDolarizadoVisible;
+    actualizarHonDolarizado();
+    if(honDolarizadoVisible){
+      document.getElementById('honDolarizado').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
   tcEl.addEventListener('blur', ()=>{
     const n = honTipoCambio();
     tcEl.value = fmtDecimalAR(n != null ? n : HON_TC_DEFAULT, 2);
