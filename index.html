@@ -1009,6 +1009,212 @@
       color:var(--navy); opacity:.6;
     }
   }
+
+  /* ============================================================
+     Solapa "Estimador de Honorarios"
+     ============================================================ */
+  .hon-params{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px 32px;
+    align-items:flex-start;
+  }
+  /* Anchos a medida: el % va de 0 a 100 y el tipo de cambio tiene 4 cifras */
+  .hon-input-pct{ width:120px; }
+  .hon-input-tc{ width:210px; }
+  .hon-section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+  }
+  .hon-section-head h2{ margin:0; }
+  .hon-section-head .btn{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; font-size:13px; }
+  .hon-section-head .btn-outline:hover{ border-color:#B9C4E8; background:#F7F9FE; }
+  .hon-param label{ margin-bottom:8px; }
+  .hon-input-wrap{
+    display:flex;
+    align-items:center;
+    border:1.5px solid #C6CEE8;
+    border-radius:8px;
+    background:#fff;
+    overflow:hidden;
+  }
+  .hon-input-wrap:focus-within{
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px rgba(52,87,213,0.16);
+  }
+  .hon-input-wrap input[type=text]{
+    border:none;
+    border-radius:0;
+    padding:12px 14px;
+    font-size:18px;
+    font-weight:700;
+    font-family:'JetBrains Mono',monospace;
+    color:var(--navy);
+    min-width:0;
+  }
+  .hon-input-wrap input[type=text]:focus{ outline:none; }
+  .hon-unit{
+    flex:0 0 auto;
+    padding:0 12px;
+    align-self:stretch;
+    display:flex;
+    align-items:center;
+    background:#F3F5FA;
+    border-left:1px solid var(--line);
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.03em;
+    color:#5B6785;
+    white-space:nowrap;
+  }
+  .hon-param .hon-help{ font-size:11.5px; color:var(--muted); margin-top:6px; }
+
+  .hon-clase-nota{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    font-size:12.5px;
+    color:var(--navy);
+    background:#EEF1FC;
+    border:1px solid #D9E0F5;
+    border-left:3px solid var(--accent);
+    border-radius:8px;
+    padding:10px 12px;
+    margin:0 0 16px;
+  }
+  .hon-clase-nota > span:first-child{ color:var(--accent); font-weight:700; }
+
+  #honTable{ table-layout:fixed; }
+  #honTable thead th{ cursor:default; background:#EEF1FC; color:var(--navy); border-bottom:none; white-space:normal; vertical-align:bottom; }
+  #honTable tbody tr:nth-child(odd){ background:#FFFFFF; }
+  #honTable tbody tr:nth-child(even){ background:#F7F9FE; }
+  #honTable tbody td{ border-bottom:1px solid #EBEFF9; vertical-align:middle; }
+  #honTable tbody tr:last-child td{ border-bottom:none; }
+  #honTable .fondo-name{ overflow-wrap:break-word; }
+  #honTable select.hon-clase-select{
+    width:100%;
+    max-width:190px;
+    padding:8px 9px;
+    border:1.5px solid #C6CEE8;
+    border-radius:7px;
+    font-weight:600;
+    color:var(--navy);
+    cursor:pointer;
+  }
+  #honTable select.hon-clase-select.pendiente{
+    border-style:dashed;
+    border-color:#E0B36A;
+    background:#FFFBF2;
+    color:#8A5A0F;
+  }
+  #honTable select.hon-clase-select:focus{ outline:none; border-color:var(--accent); }
+  .hon-saldo-cell{ display:flex; align-items:center; gap:6px; }
+  .hon-saldo-cell .hon-input-wrap{ border-radius:7px; width:100%; max-width:220px; }
+  #honTable .hon-saldo-cell input[type=text]{
+    padding:7px 9px;
+    font-size:14px;
+    text-align:right;
+  }
+  .hon-saldo-cell .hon-unit{ padding:0 8px; font-size:10.5px; }
+  .hon-unit-USD{ background:#E8F5EF; color:#0F8A5F; }
+  #honTable td.num{ font-family:'JetBrains Mono',monospace; font-weight:600; white-space:nowrap; }
+  #honTable td.num.hon-mensual{ font-weight:800; color:var(--navy); }
+  #honTable td.num .sin-dato{ color:var(--muted); font-weight:600; font-family:'Inter',system-ui,sans-serif; font-size:12px; }
+  #honTable .hon-aviso-fila{ font-size:11px; color:var(--neg); margin-top:3px; }
+  #honTable tbody .add-fondo-row td{ background:#F7F9FE; padding:14px 12px; }
+  #honTable select.add-fondo-select{
+    width:100%;
+    max-width:560px;
+    padding:11px 12px;
+    border:1.5px dashed #B9C4E8;
+    border-radius:9px;
+    background:#fff;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--navy);
+    cursor:pointer;
+  }
+  #honTable select.add-fondo-select:hover{ border-color:var(--accent); }
+  #honTable tfoot td{
+    background:#E4EAF9;
+    color:var(--navy);
+    font-weight:800;
+    padding:12px;
+    border:none;
+  }
+  #honTable tfoot td.num{ font-family:'JetBrains Mono',monospace; font-size:14px; white-space:nowrap; }
+  #honTable tfoot td:first-child{ border-radius:0 0 0 10px; }
+  #honTable tfoot td:last-child{ border-radius:0 0 10px 0; }
+
+  .hon-kpis{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+  }
+  .hon-kpi{
+    background:#FAFBFE;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px 18px;
+  }
+  .hon-kpi.destacado{ background:#EEF1FC; border-color:#C9D4F4; }
+  .hon-kpi .label{
+    font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--muted); font-weight:700; margin-bottom:6px;
+  }
+  .hon-kpi .value{
+    font-size:22px; font-weight:800; color:var(--navy);
+    font-family:'JetBrains Mono',monospace;
+    overflow-wrap:anywhere;
+  }
+  .hon-kpi .detail{ font-size:11.5px; color:var(--muted); margin-top:4px; }
+  @media (max-width:720px){ .hon-kpis{ grid-template-columns:1fr; } }
+
+  @media (max-width:720px){
+    #honTable thead{ display:none; }
+    #honTable, #honTable tbody, #honTable tfoot, #honTable tr, #honTable td{ display:block; width:100%; }
+    #honTable tbody tr{
+      border:1px solid var(--line);
+      border-radius:10px;
+      margin-bottom:10px;
+      background:#fff !important;
+      overflow:hidden;
+    }
+    #honTable tbody td{ padding:10px 14px; }
+    #honTable tbody td:last-child{ border-bottom:none; }
+    #honTable tbody td:not([data-label]){ background:#FAFBFE; }
+    #honTable tbody tr.add-fondo-row td{ background:#fff; }
+    #honTable tbody td[data-label], #honTable tfoot td[data-label]{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      text-align:right;
+    }
+    #honTable tbody td[data-label]::before, #honTable tfoot td[data-label]::before{
+      content:attr(data-label);
+      font-size:10.5px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:700;
+      color:var(--muted);
+      text-align:left;
+      flex:0 0 auto;
+    }
+    #honTable tbody td[data-label]::before, #honTable tfoot td[data-label]::before{ font-family:'Inter',system-ui,sans-serif; }
+    #honTable select.hon-clase-select{ max-width:200px; }
+    /* El saldo va con la etiqueta arriba y el input a todo el ancho */
+    #honTable tbody td.hon-saldo-td{ flex-direction:column; align-items:stretch; gap:6px; }
+    .hon-saldo-cell .hon-input-wrap{ max-width:none; }
+    #honTable tfoot tr{ border-radius:10px; overflow:hidden; display:block; }
+    #honTable tfoot td{ border-radius:0 !important; }
+    #honTable tfoot td.hon-tfoot-label{ display:none; }
+  }
 </style>
 </head>
 <body>
@@ -1063,6 +1269,7 @@
     <div class="tabs-nav">
       <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
       <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
+      <button class="tab-btn" data-tab="honorarios">Estimador de Honorarios</button>
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
@@ -1304,6 +1511,103 @@
     <div class="page-disclaimer">
       <p>Este informe (el “Informe”) ha sido elaborado con información accesible al público en general, sin ninguna verificación independiente. No existe obligación de actualizarlo. El presente informe no podrá divulgarse, distribuirse ni reproducirse públicamente (ya sea en todo y/o en parte) sin consentimiento previo y por escrito. El destinatario de este Informe deberá consultar a sus asesores legales, contables y/o impositivos sobre la conveniencia de realizar la presente inversión. No se asume responsabilidad alguna por las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Informe. No se otorgan garantías ni se aseguran rentabilidades. El anuncio de rentabilidad pasada no es garantía o promesa de rentabilidad futura.</p>
       <p class="disc-legal">Documento de uso interno, de carácter meramente informativo. No constituye una oferta, invitación ni recomendación de inversión. Las cifras son estimativas y están sujetas a variaciones de mercado.</p>
+    </div>
+
+    </div>
+
+    <div id="tab-honorarios" class="tab-panel">
+
+    <section class="card">
+      <h2>1 · Parámetros</h2>
+      <p class="sub">Los ingresos se expresan en dólares. Los honorarios de los fondos en pesos se convierten al tipo de cambio que ingreses; los de fondos en dólares no se convierten.</p>
+      <div class="hon-params">
+        <div class="hon-param">
+          <label for="honPctAsesor">% de Ingresos sobre Honorarios Totales</label>
+          <div class="hon-input-wrap hon-input-pct">
+            <input type="text" inputmode="decimal" id="honPctAsesor" maxlength="6" autocomplete="off" />
+            <span class="hon-unit">%</span>
+          </div>
+          <div class="hon-help">Se aplica a toda la cartera</div>
+        </div>
+        <div class="hon-param">
+          <label for="honTipoCambio">Tipo de cambio</label>
+          <div class="hon-input-wrap hon-input-tc">
+            <input type="text" inputmode="decimal" id="honTipoCambio" value="1.550" maxlength="9" autocomplete="off" />
+            <span class="hon-unit">ARS por USD</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="hon-section-head">
+        <h2>2 · Cartera para la estimación</h2>
+        <button type="button" class="btn btn-outline" id="honImportarBtn" title="Reemplaza la cartera de abajo por la armada en la solapa Calculadora de Carteras">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          Traer cartera de la Calculadora
+        </button>
+      </div>
+      <p class="sub">Elegí la clase de cada fondo y ajustá los saldos o los fondos libremente</p>
+      <div class="hon-clase-nota">
+        <span aria-hidden="true">ⓘ</span>
+        <span>La clase a elegir depende del monto a suscribir en cada fondo. Cada clase tiene un honorario de gerente distinto, que se muestra al lado de la letra.</span>
+      </div>
+      <div class="cartera-table-wrap">
+        <table id="honTable">
+          <colgroup>
+            <col style="width:26%">
+            <col style="width:19%">
+            <col style="width:23%">
+            <col style="width:16%">
+            <col style="width:16%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Fondo</th>
+              <th>Clase · Hon. gerente</th>
+              <th>Saldo promedio anual</th>
+              <th class="num">Ingreso anual (USD)</th>
+              <th class="num">Ingreso mensual (USD)</th>
+            </tr>
+          </thead>
+          <tbody id="honTableBody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="hon-tfoot-label">Total</td>
+              <td class="num" id="honTotalAnual" data-label="Total anual (USD)"></td>
+              <td class="num" id="honTotalMensual" data-label="Total mensual (USD)"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div id="honWarning" class="pct-warning" style="display:none;"></div>
+    </section>
+
+    <section class="card">
+      <h2>3 · Ingreso Estimado</h2>
+      <p class="sub">Suma de los fondos con clase elegida. Honorario anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales; el mensual es el anual dividido 12.</p>
+      <div class="hon-kpis">
+        <div class="hon-kpi destacado">
+          <div class="label">Ingreso mensual</div>
+          <div class="value" id="honKpiMensual">—</div>
+          <div class="detail">USD por mes</div>
+        </div>
+        <div class="hon-kpi">
+          <div class="label">Ingreso anual</div>
+          <div class="value" id="honKpiAnual">—</div>
+          <div class="detail">USD por año</div>
+        </div>
+        <div class="hon-kpi">
+          <div class="label">Saldo en Fondos considerado</div>
+          <div class="value" id="honKpiSaldo">—</div>
+          <div class="detail" id="honKpiSaldoDetalle">Equivalente en USD</div>
+        </div>
+      </div>
+      <p class="foot-note" id="honFootNote">Estimación sobre un saldo constante durante todo el año. No considera variaciones del saldo ni del tipo de cambio.</p>
+    </section>
+
+    <div class="page-disclaimer">
+      <p class="disc-legal">Documento de uso interno, de carácter meramente informativo. Las cifras son estimativas y no constituyen un compromiso de pago.</p>
     </div>
 
     </div>
@@ -3314,8 +3618,8 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 });
 
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones),
-// factsheets.json (el índice de los PDF de /factsheets) y tir_fondos.xlsx (TIR y Duration de
-// cada fondo), todos junto a este archivo.
+// factsheets.json (el índice de los PDF de /factsheets), tir_fondos.xlsx (TIR y Duration de
+// cada fondo) y Honorarios.xlsx (honorarios de gerente por clase), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -3330,6 +3634,7 @@ Promise.all([
   cargarCarteras(),
   cargarFactsheets(),   // si falla, los fondos quedan sin link y no bloquea el resto
   cargarTirFondos(),    // si falla, la cartera queda con TIR y Duration en "s/d"
+  cargarHonorarios(),   // si falla, la solapa de honorarios avisa el error y no bloquea el resto
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
@@ -3360,6 +3665,441 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     }
   });
 });
+
+/* ---------------------------------------------------------------------
+   Estimador de Honorarios (Honorarios.xlsx)
+
+   Layout esperado (primera hoja del libro):
+     Fondo | Moneda | Clase | Hon. Gerente
+   El honorario viene en escala decimal (0,025 = 2,5% anual) porque en el
+   Excel esta formateado como porcentaje. Tambien se acepta texto "2,5%".
+
+   El cruce con data.xlsx es por NOMBRE de fondo, sin prefijo de marca y
+   normalizado (sin acentos, sin mayusculas, sin espacios de mas). Solo se
+   ofrecen los fondos que la web ya muestra (DATA.fondos), asi los que se
+   filtran (Dedicados y EXCLUDED_FONDOS) tampoco aparecen aca.
+
+   Si el archivo no se puede leer la pagina NO se cae: la solapa avisa el
+   error y el resto de la calculadora sigue funcionando.
+
+   Calculo por fondo:
+     ingreso anual   = saldo promedio anual x hon. gerente x % asesor
+     ingreso mensual = ingreso anual / 12
+   Los fondos en pesos se dolarizan dividiendo por el tipo de cambio.
+--------------------------------------------------------------------- */
+let HONORARIOS = {};          // clave normalizada -> [{ clase, hon }]
+let HONORARIOS_ERROR = null;
+let honCartera = [];          // [{ nombre, clase, saldo }]
+let honInicializado = false;
+const HON_TC_DEFAULT = 1550;
+
+function claveHonorario(nombre){
+  return normalizarNombreFondo(nombreFondoVisible(nombre));
+}
+
+function parseTasaHonorario(raw){
+  if(raw == null || raw === '') return null;
+  if(typeof raw === 'number') return isFinite(raw) ? (raw > 1 ? raw / 100 : raw) : null;
+  let s = String(raw).replace(/\s/g, '');
+  const tienePct = s.includes('%');
+  s = s.replace('%', '');
+  if(s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  if(!isFinite(n)) return null;
+  return (tienePct || n > 1) ? n / 100 : n;
+}
+
+function parseHonorarios(workbook){
+  const hoja = workbook.Sheets['Honorarios'] || workbook.Sheets[workbook.SheetNames[0]];
+  const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, raw: true, defval: null });
+  const norm = v => normalizarNombreFondo(v);
+
+  // La fila de encabezados es la primera que tenga una celda "Fondo"
+  const hIdx = filas.findIndex(f => (f || []).some(c => norm(c) === 'fondo'));
+  if(hIdx < 0) throw new Error('Honorarios.xlsx no tiene una fila de encabezados con la columna "Fondo".');
+  const head = filas[hIdx].map(norm);
+  const iFondo = head.indexOf('fondo');
+  const iClase = head.indexOf('clase');
+  const iHon   = head.findIndex(h => h.startsWith('hon'));
+  if(iClase < 0 || iHon < 0){
+    throw new Error('Honorarios.xlsx debe tener las columnas Fondo, Clase y Hon. Gerente.');
+  }
+
+  const out = {};
+  filas.slice(hIdx + 1).forEach(f=>{
+    if(!f) return;
+    const fondo = f[iFondo] == null ? '' : String(f[iFondo]).trim();
+    const clase = f[iClase] == null ? '' : String(f[iClase]).trim();
+    const hon = parseTasaHonorario(f[iHon]);
+    if(!fondo || !clase || hon == null) return;
+    const k = claveHonorario(fondo);
+    (out[k] = out[k] || []);
+    if(!out[k].some(c => c.clase === clase)) out[k].push({ clase, hon });
+  });
+  return out;
+}
+
+function cargarHonorarios(){
+  if(typeof XLSX === 'undefined'){
+    HONORARIOS_ERROR = 'No se pudo cargar la librería para leer archivos Excel.';
+    return Promise.resolve();
+  }
+  return fetch('Honorarios.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró Honorarios.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      HONORARIOS = parseHonorarios(XLSX.read(buf, { type: 'array' }));
+      HONORARIOS_ERROR = null;
+    })
+    .catch(err=>{
+      console.warn('Honorarios.xlsx:', err);
+      HONORARIOS = {};
+      HONORARIOS_ERROR = (err && err.message) ? err.message : String(err);
+    });
+}
+
+function clasesDeFondo(nombre){
+  const c = HONORARIOS[claveHonorario(nombre)];
+  return c && c.length ? c : null;
+}
+
+// Si el fondo tiene una sola clase (ej. clase F o Única) se elige sola
+function claseInicial(nombre){
+  const c = clasesDeFondo(nombre);
+  return c && c.length === 1 ? c[0].clase : '';
+}
+
+function monedaHon(nombre){
+  const f = fundByName(nombre);
+  return f ? f.moneda : 'Pesos';
+}
+function unidadHon(nombre){
+  return monedaHon(nombre) === 'Dólar' ? 'USD' : 'ARS';
+}
+
+function escAttr(s){
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+// Numeros con coma decimal (formato es-AR): "1.550" -> 1550 | "37,5" -> 37.5
+function parseDecimalAR(str){
+  const s = String(str == null ? '' : str).replace(/\s/g, '');
+  if(!s) return null;
+  const n = parseFloat(s.replace(/\./g, '').replace(',', '.'));
+  return isFinite(n) ? n : null;
+}
+
+// Deja solo digitos, puntos de miles y una coma decimal mientras se escribe
+function limpiarDecimalInput(input){
+  let v = input.value.replace(/[^\d.,]/g, '');
+  const i = v.indexOf(',');
+  if(i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/[.,]/g, '');
+  if(v !== input.value) input.value = v;
+}
+
+function fmtDecimalAR(n, maxDec){
+  return n.toLocaleString('es-AR', { maximumFractionDigits: maxDec });
+}
+
+function honPctAsesor(){
+  const n = parseDecimalAR(document.getElementById('honPctAsesor').value);
+  return (n == null || n < 0 || n > 100) ? null : n;
+}
+function honTipoCambio(){
+  const n = parseDecimalAR(document.getElementById('honTipoCambio').value);
+  return (n == null || n <= 0) ? null : n;
+}
+
+function fmtUsd(n, dec){
+  const d = dec == null ? 2 : dec;
+  return 'USD ' + n.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtPctHon(h){
+  return (h * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+}
+
+// Resultado de una fila. estado: ok | sinHon | sinClase | sinPct | sinTc
+function calcHonFila(it){
+  const clases = clasesDeFondo(it.nombre);
+  if(!clases) return { estado: 'sinHon' };
+  const c = clases.find(x => x.clase === it.clase);
+  if(!c) return { estado: 'sinClase' };
+  const pesos = monedaHon(it.nombre) !== 'Dólar';
+  const tc = honTipoCambio();
+  if(pesos && !tc) return { estado: 'sinTc' };
+  const saldoUsd = (Number(it.saldo) || 0) / (pesos ? tc : 1);
+  const pct = honPctAsesor();
+  if(pct == null) return { estado: 'sinPct', saldoUsd };
+  const anual = saldoUsd * c.hon * pct / 100;
+  return { estado: 'ok', saldoUsd, anual, mensual: anual / 12 };
+}
+
+function honCeldasIngreso(res){
+  if(res.estado === 'ok') return [fmtUsd(res.anual), fmtUsd(res.mensual)];
+  const txt = {
+    sinHon:   's/d',
+    sinClase: 'Elegir clase',
+    sinTc:    'Falta TC',
+    sinPct:   '—',
+  }[res.estado];
+  const html = `<span class="sin-dato">${txt}</span>`;
+  return [html, html];
+}
+
+function honRowHtml(it, i){
+  const clases = clasesDeFondo(it.nombre);
+  const moneda = monedaHon(it.nombre);
+  const unidad = unidadHon(it.nombre);
+  const nombreVis = nombreFondoVisible(it.nombre);
+
+  let claseCell;
+  if(!clases){
+    claseCell = '<span class="sin-dato" style="color:var(--muted);font-size:12px;">Sin honorarios cargados</span>';
+  } else {
+    const pendiente = !clases.some(c => c.clase === it.clase);
+    const opts = clases.map(c =>
+      `<option value="${escAttr(c.clase)}"${c.clase === it.clase ? ' selected' : ''}>Clase ${c.clase} · ${fmtPctHon(c.hon)}</option>`
+    ).join('');
+    claseCell = `<select class="hon-clase-select${pendiente ? ' pendiente' : ''}" data-idx="${i}" aria-label="Clase de ${escAttr(nombreVis)}">
+        ${pendiente ? '<option value="" selected>Elegir clase…</option>' : ''}${opts}
+      </select>`;
+  }
+
+  const saldoTxt = it.saldo ? Number(it.saldo).toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
+  const [anual, mensual] = honCeldasIngreso(calcHonFila(it));
+
+  return `
+    <tr data-idx="${i}">
+      <td>
+        <div class="fondo-name">${fondoNameHtml(it.nombre)}<button type="button" class="remove-fondo-btn" data-idx="${i}" title="Quitar ${escAttr(nombreVis)}">×</button></div>
+        <div class="fondo-meta"><span style="font-size:11.5px;color:var(--muted);"><span class="moneda-dot moneda-${moneda}"></span>Fondo en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} · saldo en ${unidad}</span></div>
+        ${!clases ? '<div class="hon-aviso-fila">⚠ Este fondo no figura en Honorarios.xlsx: no se suma al total</div>' : ''}
+      </td>
+      <td data-label="Clase · Hon. gerente">${claseCell}</td>
+      <td class="hon-saldo-td" data-label="Saldo promedio anual (${unidad})">
+        <div class="hon-saldo-cell">
+          <div class="hon-input-wrap">
+            <input type="text" inputmode="numeric" class="hon-saldo-input" data-idx="${i}" value="${saldoTxt}" placeholder="0" aria-label="Saldo promedio anual en ${unidad} de ${escAttr(nombreVis)}" />
+            <span class="hon-unit hon-unit-${unidad}">${unidad}</span>
+          </div>
+        </div>
+      </td>
+      <td class="num hon-anual" data-label="Ingreso anual (USD)">${anual}</td>
+      <td class="num hon-mensual" data-label="Ingreso mensual (USD)">${mensual}</td>
+    </tr>`;
+}
+
+function honAddRowHtml(){
+  const ya = new Set(honCartera.map(it => it.nombre));
+  const disp = DATA.fondos.filter(f => clasesDeFondo(f.fondo) && !ya.has(f.fondo));
+  const grupo = (moneda, label) => {
+    const opts = disp
+      .filter(f => f.moneda === moneda)
+      .sort((a, b) => nombreFondoVisible(a.fondo).localeCompare(nombreFondoVisible(b.fondo), 'es'))
+      .map(f => `<option value="${escAttr(f.fondo)}">${nombreFondoVisible(f.fondo)} — ${f.categoria}</option>`)
+      .join('');
+    return opts ? `<optgroup label="${label}">${opts}</optgroup>` : '';
+  };
+  const hay = disp.length > 0;
+  return `
+    <tr class="add-fondo-row">
+      <td colspan="5">
+        <select id="honAddSelect" class="add-fondo-select"${hay ? '' : ' disabled'}>
+          <option value="">${hay ? '+ Seleccioná un fondo para agregarlo a la estimación…' : 'No quedan fondos disponibles para agregar'}</option>
+          ${grupo('Pesos', 'Fondos en pesos (saldo en ARS)')}
+          ${grupo('Dólar', 'Fondos en dólares (saldo en USD)')}
+        </select>
+      </td>
+    </tr>`;
+}
+
+function renderHonorarios(){
+  const body = document.getElementById('honTableBody');
+  const filas = honCartera.map(honRowHtml).join('');
+  const vacio = honCartera.length ? '' :
+    '<tr><td colspan="5" class="cartera-empty-msg" style="padding:18px 12px;">No hay fondos en la estimación. Agregá uno desde el selector de abajo o traé la cartera de la Calculadora.</td></tr>';
+  body.innerHTML = filas + vacio + honAddRowHtml();
+  actualizarHonTotales();
+}
+
+// Refresca ingresos y totales sin re-armar la tabla (asi no se pierde el
+// foco del input mientras se escribe)
+function actualizarHonCalculos(){
+  const trs = document.querySelectorAll('#honTableBody tr[data-idx]');
+  honCartera.forEach((it, i)=>{
+    const tr = trs[i];
+    if(!tr) return;
+    const [anual, mensual] = honCeldasIngreso(calcHonFila(it));
+    tr.querySelector('.hon-anual').innerHTML = anual;
+    tr.querySelector('.hon-mensual').innerHTML = mensual;
+  });
+  actualizarHonTotales();
+}
+
+function actualizarHonTotales(){
+  const res = honCartera.map(calcHonFila);
+  const ok = res.filter(r => r.estado === 'ok');
+  const pct = honPctAsesor();
+  const tc = honTipoCambio();
+
+  const anual = ok.reduce((a, r) => a + r.anual, 0);
+  // Solo cuentan los fondos que entran al calculo (con clase elegida)
+  const saldoUsd = res.reduce((a, r) => a + ((r.estado === 'ok' || r.estado === 'sinPct') ? r.saldoUsd : 0), 0);
+  const puedeTotal = pct != null && ok.length > 0;
+
+  document.getElementById('honTotalAnual').textContent = puedeTotal ? fmtUsd(anual) : '—';
+  document.getElementById('honTotalMensual').textContent = puedeTotal ? fmtUsd(anual / 12) : '—';
+  document.getElementById('honKpiAnual').textContent = puedeTotal ? fmtUsd(anual) : '—';
+  document.getElementById('honKpiMensual').textContent = puedeTotal ? fmtUsd(anual / 12) : '—';
+  document.getElementById('honKpiSaldo').textContent = saldoUsd > 0 ? fmtUsd(saldoUsd, 0) : '—';
+  const hayPesos = honCartera.some(it => monedaHon(it.nombre) !== 'Dólar');
+  document.getElementById('honKpiSaldoDetalle').textContent = hayPesos && tc
+    ? `Equivalente en USD · TC ${fmtDecimalAR(tc, 2)} ARS por USD`
+    : 'Equivalente en USD';
+
+  // Avisos
+  const msgs = [];
+  let nivel = 'ok';
+  if(HONORARIOS_ERROR){
+    msgs.push(`No se pudieron leer los honorarios: ${HONORARIOS_ERROR}`);
+    nivel = 'err';
+  }
+  if(pct == null){
+    msgs.push(document.getElementById('honPctAsesor').value.trim()
+      ? 'El % de ingresos sobre honorarios totales tiene que estar entre 0 y 100.'
+      : 'Ingresá el % de ingresos sobre honorarios totales para calcular los ingresos.');
+    if(nivel !== 'err') nivel = 'warn';
+  }
+  if(!tc && hayPesos){
+    msgs.push('Ingresá un tipo de cambio válido para dolarizar los fondos en pesos.');
+    if(nivel !== 'err') nivel = 'warn';
+  }
+  const sinClase = res.filter(r => r.estado === 'sinClase').length;
+  if(sinClase){
+    msgs.push(`Falta elegir la clase en ${sinClase} ${sinClase === 1 ? 'fondo' : 'fondos'}: no se ${sinClase === 1 ? 'suma' : 'suman'} al total hasta que la elijas.`);
+    if(nivel !== 'err') nivel = 'warn';
+  }
+  const sinHon = res.filter(r => r.estado === 'sinHon').length;
+  if(sinHon && !HONORARIOS_ERROR){
+    msgs.push(`${sinHon} ${sinHon === 1 ? 'fondo no tiene' : 'fondos no tienen'} honorarios cargados en Honorarios.xlsx y no ${sinHon === 1 ? 'se suma' : 'se suman'} al total.`);
+    if(nivel !== 'err') nivel = 'warn';
+  }
+  if(!msgs.length && honCartera.length){
+    msgs.push('✓ Todos los fondos tienen clase elegida y se suman al total.');
+  }
+
+  const warn = document.getElementById('honWarning');
+  if(msgs.length){
+    warn.className = `pct-warning ${nivel}`;
+    warn.innerHTML = msgs.map(m => `<div>${m}</div>`).join('');
+    warn.style.display = '';
+  } else {
+    warn.style.display = 'none';
+  }
+}
+
+// Trae la cartera armada en "Calculadora de Carteras": los saldos son el monto
+// asignado a cada fondo. Si un fondo ya estaba en la estimacion conserva la
+// clase elegida; si no, la clase queda pendiente (salvo fondos de clase unica).
+function importarCarteraCalculadora(){
+  const prevClase = new Map(honCartera.map(it => [it.nombre, it.clase]));
+  const rows = buildCarteraRows().filter(r => (Number(r.pct) || 0) > 0);
+  honCartera = rows.map(r => ({
+    nombre: r.nombre,
+    clase: prevClase.get(r.nombre) || claseInicial(r.nombre),
+    saldo: Math.round(r.costo || 0),
+  }));
+
+  renderHonorarios();
+}
+
+function activarHonorarios(){
+  if(!honInicializado){
+    honInicializado = true;
+    importarCarteraCalculadora();
+  } else {
+    renderHonorarios();
+  }
+}
+
+(function initHonorariosUI(){
+  const body = document.getElementById('honTableBody');
+
+  body.addEventListener('input', (e)=>{
+    const inp = e.target.closest('.hon-saldo-input');
+    if(!inp) return;
+    const it = honCartera[parseInt(inp.dataset.idx, 10)];
+    if(!it) return;
+    it.saldo = formatMontoInput(inp);
+    actualizarHonCalculos();
+  });
+
+  body.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' && e.target.classList && e.target.classList.contains('hon-saldo-input')){
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
+
+  body.addEventListener('change', (e)=>{
+    if(e.target.id === 'honAddSelect'){
+      const nombre = e.target.value;
+      if(!nombre || honCartera.some(it => it.nombre === nombre)) return;
+      honCartera.push({ nombre, clase: claseInicial(nombre), saldo: 0 });
+      renderHonorarios();
+      const inputs = document.querySelectorAll('#honTableBody .hon-saldo-input');
+      const ultimo = inputs[inputs.length - 1];
+      if(ultimo) ultimo.focus();
+      return;
+    }
+    const sel = e.target.closest('.hon-clase-select');
+    if(sel){
+      const it = honCartera[parseInt(sel.dataset.idx, 10)];
+      if(!it) return;
+      it.clase = sel.value;
+      // Una vez elegida la clase se saca la opcion "Elegir clase…"
+      const vacia = sel.querySelector('option[value=""]');
+      if(vacia && sel.value) vacia.remove();
+      sel.classList.toggle('pendiente', !sel.value);
+      actualizarHonCalculos();
+    }
+  });
+
+  body.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.remove-fondo-btn');
+    if(!btn) return;
+    const idx = parseInt(btn.dataset.idx, 10);
+    if(idx < 0 || idx >= honCartera.length) return;
+    honCartera.splice(idx, 1);
+    renderHonorarios();
+  });
+
+  const pctEl = document.getElementById('honPctAsesor');
+  const tcEl = document.getElementById('honTipoCambio');
+  [pctEl, tcEl].forEach(el=>{
+    el.addEventListener('input', ()=>{ limpiarDecimalInput(el); actualizarHonCalculos(); });
+    el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); el.blur(); } });
+  });
+  pctEl.addEventListener('blur', ()=>{
+    const n = honPctAsesor();
+    if(n != null) pctEl.value = fmtDecimalAR(n, 2);
+  });
+  tcEl.addEventListener('blur', ()=>{
+    const n = honTipoCambio();
+    tcEl.value = fmtDecimalAR(n != null ? n : HON_TC_DEFAULT, 2);
+    actualizarHonCalculos();
+  });
+
+  document.getElementById('honImportarBtn').addEventListener('click', importarCarteraCalculadora);
+
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.dataset.tab === 'honorarios') activarHonorarios();
+    });
+  });
+})();
 
 /* ---------------------------------------------------------------------
    Descargar PDF: arma un reporte imprimible con la cartera actual
