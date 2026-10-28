@@ -1178,6 +1178,9 @@
 
   /* Ingreso estimado: una subseccion por moneda + total dolarizado */
   .hon-sub{ margin-top:18px; }
+  .hon-metodologia{ margin:0 0 18px; }
+  .card .hon-metodologia .sub{ margin:0 0 4px; line-height:1.5; }
+  .card .hon-metodologia .sub:last-child{ margin-bottom:0; }
   .hon-sub:first-child{ margin-top:0; }
   .hon-sub-title{
     display:flex;
@@ -1619,7 +1622,10 @@
 
     <section class="card">
       <h2>3 · Ingreso Estimado</h2>
-      <p class="sub">Suma de los fondos con clase elegida, separada por moneda. Ingreso anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales; el mensual es el anual dividido 12.</p>
+      <div class="hon-metodologia">
+        <p class="sub">Ingreso anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales.</p>
+        <p class="sub">Estimación sobre un saldo constante durante todo el año. No considera variaciones del tipo de cambio.</p>
+      </div>
       <div id="honResumenMonedas"></div>
       <div class="hon-dolarizar-row">
         <button type="button" class="btn btn-primary" id="honDolarizarBtn" aria-expanded="false">
@@ -1648,7 +1654,6 @@
           </div>
         </div>
       </div>
-      <p class="foot-note" id="honFootNote">Estimación sobre un saldo constante durante todo el año. No considera variaciones del saldo ni del tipo de cambio.</p>
     </section>
 
     <div class="page-disclaimer">
