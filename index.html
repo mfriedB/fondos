@@ -3819,9 +3819,12 @@ function cargarHonorarios(){
     });
 }
 
+// La clase D no se ofrece en el Simulador, aunque figure en Honorarios.xlsx
+const CLASES_OCULTAS = new Set(['D']);
+
 function clasesDeFondo(nombre){
-  const c = HONORARIOS[claveHonorario(nombre)];
-  return c && c.length ? c : null;
+  const c = (HONORARIOS[claveHonorario(nombre)] || []).filter(x => !CLASES_OCULTAS.has(String(x.clase).toUpperCase()));
+  return c.length ? c : null;
 }
 
 // Si el fondo tiene una sola clase (ej. clase F o Única) se elige sola
@@ -3884,7 +3887,7 @@ function fmtPctHon(h){
 // Pesos: rangos del comunicado vigente desde el 14/8/25, para todos los
 // fondos en pesos. Dolares: mismo esquema para todos los fondos en USD.
 const RANGOS_CLASE = {
-  ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M', D: '+$10.000M' },
+  ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M' },
   USD: { A: 'USD 100 a USD 1M', B: 'USD 1M a USD 10M', C: '+USD 10M' }
 };
 function rangoClase(nombre, clase){
