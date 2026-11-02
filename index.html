@@ -1099,7 +1099,7 @@
   #honTable .fondo-name{ overflow-wrap:break-word; }
   #honTable select.hon-clase-select{
     width:100%;
-    max-width:190px;
+    max-width:330px;
     padding:8px 9px;
     border:1.5px solid #C6CEE8;
     border-radius:7px;
@@ -1252,9 +1252,9 @@
       flex:0 0 auto;
     }
     #honTable tbody td[data-label]::before, #honTable tfoot td[data-label]::before{ font-family:'Inter',system-ui,sans-serif; }
-    #honTable select.hon-clase-select{ max-width:200px; }
+    #honTable select.hon-clase-select{ max-width:none; }
     /* El saldo va con la etiqueta arriba y el input a todo el ancho */
-    #honTable tbody td.hon-saldo-td{ flex-direction:column; align-items:stretch; gap:6px; }
+    #honTable tbody td.hon-saldo-td, #honTable tbody td.hon-clase-td{ flex-direction:column; align-items:stretch; gap:6px; }
     .hon-saldo-cell .hon-input-wrap{ max-width:none; }
     #honTable tfoot tr{ border-radius:10px; overflow:hidden; display:block; margin-top:6px; }
     #honTable tfoot td{ border-radius:0 !important; }
@@ -1598,16 +1598,16 @@
       <p class="sub">Elegí la clase de cada fondo y ajustá los saldos o los fondos libremente</p>
       <div class="hon-clase-nota">
         <span aria-hidden="true">ⓘ</span>
-        <span>La clase a elegir depende del monto a suscribir en cada fondo. Cada clase tiene un honorario de gerente distinto, que se muestra al lado de la letra.</span>
+        <span>La clase a elegir depende del monto a suscribir en cada fondo. Al lado de cada letra se muestra su honorario de gerente y su rango de monto.</span>
       </div>
       <div class="cartera-table-wrap">
         <table id="honTable">
           <colgroup>
-            <col style="width:26%">
+            <col style="width:21%">
+            <col style="width:30%">
             <col style="width:19%">
-            <col style="width:23%">
-            <col style="width:16%">
-            <col style="width:16%">
+            <col style="width:15%">
+            <col style="width:15%">
           </colgroup>
           <thead>
             <tr>
@@ -3880,6 +3880,23 @@ function fmtPctHon(h){
   return (h * 100).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
 }
 
+// Rango de monto de cada clase, segun la tenencia valorizada en el fondo.
+// Pesos: comunicado de rangos vigente desde el 14/8/25, aplica solo a los
+// fondos listados ahi. Dolares: mismo esquema para todos los fondos en USD.
+const RANGOS_CLASE = {
+  ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M', D: '+$10.000M' },
+  USD: { A: 'USD 100 a USD 1M', B: 'USD 1M a USD 10M', C: '+USD 10M' }
+};
+const FONDOS_RANGO_ARS = new Set([
+  'money market', 'lecaps', 'ahorro corto plazo', 'renta fija plus', 'ons',
+  'dolar linked', 'inflation linked', 'opportunity', 'long pesos', 'renta mixta',
+  'acciones', 'equity selection', 'soja'
+]);
+function rangoClase(nombre, clase){
+  if(unidadHon(nombre) === 'USD') return RANGOS_CLASE.USD[clase] || '';
+  return FONDOS_RANGO_ARS.has(claveHonorario(nombre)) ? (RANGOS_CLASE.ARS[clase] || '') : '';
+}
+
 // Resultado de una fila, en la moneda del fondo.
 // estado: ok | sinHon | sinClase | sinPct
 function calcHonFila(it){
@@ -3939,9 +3956,10 @@ function honRowHtml(it, i){
     claseCell = '<span class="sin-dato" style="color:var(--muted);font-size:12px;">Sin honorarios cargados</span>';
   } else {
     const pendiente = !clases.some(c => c.clase === it.clase);
-    const opts = clases.map(c =>
-      `<option value="${escAttr(c.clase)}"${c.clase === it.clase ? ' selected' : ''}>Clase ${c.clase} · ${fmtPctHon(c.hon)}</option>`
-    ).join('');
+    const opts = clases.map(c => {
+      const rango = rangoClase(it.nombre, c.clase);
+      return `<option value="${escAttr(c.clase)}"${c.clase === it.clase ? ' selected' : ''}>Clase ${c.clase} · ${fmtPctHon(c.hon)}${rango ? ' · ' + rango : ''}</option>`;
+    }).join('');
     claseCell = `<select class="hon-clase-select${pendiente ? ' pendiente' : ''}" data-idx="${i}" aria-label="Clase de ${escAttr(nombreVis)}">
         ${pendiente ? '<option value="" selected>Elegir clase…</option>' : ''}${opts}
       </select>`;
@@ -3957,7 +3975,7 @@ function honRowHtml(it, i){
         <div class="fondo-meta"><span style="font-size:11.5px;color:var(--muted);"><span class="moneda-dot moneda-${moneda}"></span>Fondo en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} · saldo en ${unidad}</span></div>
         ${!clases ? '<div class="hon-aviso-fila">⚠ Este fondo no figura en Honorarios.xlsx: no se suma al total</div>' : ''}
       </td>
-      <td data-label="Clase · Hon. gerente">${claseCell}</td>
+      <td class="hon-clase-td" data-label="Clase · Hon. gerente">${claseCell}</td>
       <td class="hon-saldo-td" data-label="Saldo promedio anual (${unidad})">
         <div class="hon-saldo-cell">
           <div class="hon-input-wrap">
