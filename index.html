@@ -1099,8 +1099,9 @@
   #honTable .fondo-name{ overflow-wrap:break-word; }
   #honTable select.hon-clase-select{
     width:100%;
-    max-width:330px;
-    padding:8px 9px;
+    max-width:370px;
+    padding:8px 6px;
+    font-size:12.5px;
     border:1.5px solid #C6CEE8;
     border-radius:7px;
     font-weight:600;
@@ -1603,9 +1604,9 @@
       <div class="cartera-table-wrap">
         <table id="honTable">
           <colgroup>
-            <col style="width:21%">
-            <col style="width:30%">
             <col style="width:19%">
+            <col style="width:33%">
+            <col style="width:18%">
             <col style="width:15%">
             <col style="width:15%">
           </colgroup>
@@ -3819,11 +3820,14 @@ function cargarHonorarios(){
     });
 }
 
-// La clase D no se ofrece en el Simulador, aunque figure en Honorarios.xlsx
-const CLASES_OCULTAS = new Set(['D']);
+// La clase D solo se ofrece en los fondos en pesos (en dolares se oculta,
+// aunque figure en Honorarios.xlsx)
+function claseVisible(nombre, clase){
+  return !(String(clase).toUpperCase() === 'D' && unidadHon(nombre) === 'USD');
+}
 
 function clasesDeFondo(nombre){
-  const c = (HONORARIOS[claveHonorario(nombre)] || []).filter(x => !CLASES_OCULTAS.has(String(x.clase).toUpperCase()));
+  const c = (HONORARIOS[claveHonorario(nombre)] || []).filter(x => claseVisible(nombre, x.clase));
   return c.length ? c : null;
 }
 
@@ -3887,11 +3891,12 @@ function fmtPctHon(h){
 // Pesos: rangos del comunicado vigente desde el 14/8/25, para todos los
 // fondos en pesos. Dolares: mismo esquema para todos los fondos en USD.
 const RANGOS_CLASE = {
-  ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M' },
+  ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M', D: 'Desde $10.000M' },
   USD: { A: 'USD 100 a USD 1M', B: 'USD 1M a USD 10M', C: '+USD 10M' }
 };
 function rangoClase(nombre, clase){
-  return RANGOS_CLASE[unidadHon(nombre)][clase] || '';
+  const r = RANGOS_CLASE[unidadHon(nombre)][clase];
+  return r ? r + ' x Cliente' : '';
 }
 
 // Resultado de una fila, en la moneda del fondo.
