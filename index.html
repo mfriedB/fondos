@@ -3881,20 +3881,14 @@ function fmtPctHon(h){
 }
 
 // Rango de monto de cada clase, segun la tenencia valorizada en el fondo.
-// Pesos: comunicado de rangos vigente desde el 14/8/25, aplica solo a los
-// fondos listados ahi. Dolares: mismo esquema para todos los fondos en USD.
+// Pesos: rangos del comunicado vigente desde el 14/8/25, para todos los
+// fondos en pesos. Dolares: mismo esquema para todos los fondos en USD.
 const RANGOS_CLASE = {
   ARS: { A: 'Hasta $1.000M', B: '$1.000M a $5.000M', C: '$5.000M a $10.000M', D: '+$10.000M' },
   USD: { A: 'USD 100 a USD 1M', B: 'USD 1M a USD 10M', C: '+USD 10M' }
 };
-const FONDOS_RANGO_ARS = new Set([
-  'money market', 'lecaps', 'ahorro corto plazo', 'renta fija plus', 'ons',
-  'dolar linked', 'inflation linked', 'opportunity', 'long pesos', 'renta mixta',
-  'acciones', 'equity selection', 'soja'
-]);
 function rangoClase(nombre, clase){
-  if(unidadHon(nombre) === 'USD') return RANGOS_CLASE.USD[clase] || '';
-  return FONDOS_RANGO_ARS.has(claveHonorario(nombre)) ? (RANGOS_CLASE.ARS[clase] || '') : '';
+  return RANGOS_CLASE[unidadHon(nombre)][clase] || '';
 }
 
 // Resultado de una fila, en la moneda del fondo.
