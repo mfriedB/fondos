@@ -117,8 +117,8 @@
     display:inline-flex;
     align-items:center;
     gap:7px;
-    background:#fff;
-    color:var(--navy);
+    background:var(--navy);
+    color:#fff;
     border:none;
     border-radius:8px;
     padding:9px 16px;
@@ -129,7 +129,9 @@
     white-space:nowrap;
     transition:background .15s ease, transform .1s ease;
   }
-  .btn-pdf:hover{ background:#EAEEFA; }
+  .btn-pdf:hover{ background:var(--navy-2); }
+  .btn-pdf:disabled{ opacity:.7; cursor:wait; }
+  .tab-toolbar{ display:flex; justify-content:flex-end; margin:-6px 0 16px; }
   .btn-pdf:active{ transform:translateY(1px); }
 
   .container{ max-width:1240px; margin:0 auto; padding:28px 32px 60px; }
@@ -1299,10 +1301,6 @@
       </div>
       <div class="topbar-actions">
         <span class="pill">Datos al <strong id="asOfDateLabel">—</strong></span>
-        <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
-          Descargar PDF
-        </button>
       </div>
     </div>
   </header>
@@ -1316,6 +1314,13 @@
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
+
+    <div class="tab-toolbar">
+      <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+        Descargar PDF
+      </button>
+    </div>
 
     <section class="card">
       <h2>1 · Moneda</h2>
