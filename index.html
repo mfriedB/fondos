@@ -1565,7 +1565,7 @@
       <p class="sub">Los ingresos de cada fondo se expresan en su moneda: en ARS los fondos en pesos y en USD los fondos en dólares. El tipo de cambio se usa al dolarizar los ingresos con el botón del final.</p>
       <div class="hon-params">
         <div class="hon-param">
-          <label for="honPctAsesor">% de Ingresos sobre Honorarios Totales</label>
+          <label for="honPctAsesor">% de Acuerdo sobre Honorarios</label>
           <div class="hon-input-wrap hon-input-pct">
             <input type="text" inputmode="decimal" id="honPctAsesor" maxlength="6" autocomplete="off" />
             <span class="hon-unit">%</span>
@@ -1623,7 +1623,7 @@
     <section class="card">
       <h2>3 · Ingreso Estimado</h2>
       <div class="hon-metodologia">
-        <p class="sub">Ingreso anual = saldo promedio anual × honorario de gerente de la clase × % de ingresos sobre honorarios totales.</p>
+        <p class="sub">Ingreso anual = saldo promedio anual × honorario de gerente de la clase × % de acuerdo sobre honorarios.</p>
         <p class="sub">Estimación sobre un saldo constante durante todo el año. No considera variaciones del tipo de cambio.</p>
       </div>
       <div id="honResumenMonedas"></div>
@@ -4074,8 +4074,8 @@ function actualizarHonTotales(){
   }
   if(pct == null){
     msgs.push(document.getElementById('honPctAsesor').value.trim()
-      ? 'El % de ingresos sobre honorarios totales tiene que estar entre 0 y 100.'
-      : 'Ingresá el % de ingresos sobre honorarios totales para calcular los ingresos.');
+      ? 'El % de acuerdo sobre honorarios tiene que estar entre 0 y 100.'
+      : 'Ingresá el % de acuerdo sobre honorarios para calcular los ingresos.');
     if(nivel !== 'err') nivel = 'warn';
   }
   const sinClase = res.filter(r => r.estado === 'sinClase').length;
