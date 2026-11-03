@@ -2272,8 +2272,9 @@ function fundByName(nombre){
 /* ---------------------------------------------------------------------
    Dolar Cable
    No es una moneda de data.xlsx sino una opcion de la calculadora: solo
-   admite los fondos listados aca (que en el Excel figuran como "Dólar")
-   y solo se puede armar como cartera personalizada.
+   admite los fondos listados aca (que en el Excel figuran como "Dólar"),
+   esos fondos dejan de ofrecerse en Dolar MEP, y solo se puede armar como
+   cartera personalizada.
 --------------------------------------------------------------------- */
 const FONDOS_CABLE = ['Latam (SIN Arg)'];
 
@@ -2286,14 +2287,17 @@ function esMonedaUSD(moneda){
   return moneda === 'Dólar' || moneda === 'Cable';
 }
 
+function esFondoCable(f){
+  const visible = nombreFondoVisible(f.fondo).toLowerCase();
+  return FONDOS_CABLE.some(x => x.toLowerCase() === visible);
+}
+
 // ¿El fondo se puede usar con la moneda elegida en la calculadora?
+// Los fondos cable solo se ofrecen con Dolar Cable (no con MEP).
 function fondoAplicaAMoneda(f, moneda){
   if(!f) return false;
-  if(moneda === 'Cable'){
-    const visible = nombreFondoVisible(f.fondo).toLowerCase();
-    return FONDOS_CABLE.some(x => x.toLowerCase() === visible);
-  }
-  return f.moneda === moneda;
+  if(moneda === 'Cable') return esFondoCable(f);
+  return f.moneda === moneda && !esFondoCable(f);
 }
 
 function fmtMoney(n, moneda){
