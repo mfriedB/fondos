@@ -438,6 +438,22 @@
     background:#EEF1FC;
     box-shadow:inset 0 0 0 1px var(--accent);
   }
+  /* Dolar Cable: boton chico al lado de Pesos / Dolar MEP */
+  .option-btn.option-btn-mini{
+    flex:0 0 auto;
+    min-width:0;
+    padding:8px 12px;
+    align-self:center;
+    border-radius:8px;
+    gap:1px;
+  }
+  .option-btn.option-btn-mini strong{ font-size:12.5px; }
+  .option-btn.option-btn-mini span{ font-size:10.5px; }
+  .option-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+  .option-btn:disabled:hover{ border-color:var(--line); }
 
   /* Cartera personalizada: input de %, boton de quitar y selector para agregar fondos */
   .pct-cell{ display:flex; align-items:center; justify-content:flex-start; gap:5px; }
@@ -1334,6 +1350,10 @@
         <button class="option-btn" data-moneda="Dólar">
           <strong>Dólar MEP</strong>
           <span>Fondos en USD</span>
+        </button>
+        <button class="option-btn option-btn-mini" data-moneda="Cable" title="Dólar Cable: solo Latam (SIN Arg), cartera personalizada">
+          <strong>Dólar Cable</strong>
+          <span>USD cable</span>
         </button>
       </div>
     </section>
@@ -2249,8 +2269,35 @@ function fundByName(nombre){
   return DATA.fondos.find(f => f.fondo === nombre);
 }
 
+/* ---------------------------------------------------------------------
+   Dolar Cable
+   No es una moneda de data.xlsx sino una opcion de la calculadora: solo
+   admite los fondos listados aca (que en el Excel figuran como "Dólar")
+   y solo se puede armar como cartera personalizada.
+--------------------------------------------------------------------- */
+const FONDOS_CABLE = ['Latam (SIN Arg)'];
+
+function esCable(){
+  return selection.moneda === 'Cable';
+}
+
+// Las dos variantes de dolar (MEP y Cable) se expresan en USD
+function esMonedaUSD(moneda){
+  return moneda === 'Dólar' || moneda === 'Cable';
+}
+
+// ¿El fondo se puede usar con la moneda elegida en la calculadora?
+function fondoAplicaAMoneda(f, moneda){
+  if(!f) return false;
+  if(moneda === 'Cable'){
+    const visible = nombreFondoVisible(f.fondo).toLowerCase();
+    return FONDOS_CABLE.some(x => x.toLowerCase() === visible);
+  }
+  return f.moneda === moneda;
+}
+
 function fmtMoney(n, moneda){
-  const prefix = moneda === 'Dólar' ? 'USD ' : '$ ';
+  const prefix = esMonedaUSD(moneda) ? 'USD ' : '$ ';
   return prefix + n.toLocaleString('es-AR', { maximumFractionDigits: 0 });
 }
 
@@ -2977,7 +3024,7 @@ function isCustom(){
 function fondosDisponiblesParaAgregar(){
   const yaElegidos = new Set(customPortfolio.map(it => it.nombre));
   return DATA.fondos
-    .filter(f => f.moneda === selection.moneda && !yaElegidos.has(f.fondo))
+    .filter(f => fondoAplicaAMoneda(f, selection.moneda) && !yaElegidos.has(f.fondo))
     .sort((a, b) => a.fondo.localeCompare(b.fondo, 'es'));
 }
 
@@ -3047,13 +3094,33 @@ function removeCustomFondo(idx){
 function sanitizeCustomPortfolio(){
   customPortfolio = customPortfolio.filter(it=>{
     const f = fundByName(it.nombre);
-    return f && f.moneda === selection.moneda;
+    return fondoAplicaAMoneda(f, selection.moneda);
   });
 }
 
 function updateVisibility(){
+  // Dolar Cable solo admite cartera personalizada: se fuerza y se bloquea la sugerida
+  const cable = esCable();
+  if(cable && selection.tipo !== 'Personalizada'){
+    selection.tipo = 'Personalizada';
+    document.querySelectorAll('#tipoCarteraOptions .option-btn').forEach(btn=>{
+      btn.classList.toggle('selected', btn.dataset.tipo === 'Personalizada');
+    });
+  }
+  const btnSugerida = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Sugerida"]');
+  if(btnSugerida){
+    btnSugerida.disabled = cable;
+    btnSugerida.title = cable ? 'No disponible para Dólar Cable' : '';
+  }
+
   const custom = isCustom();
   sanitizeCustomPortfolio();
+
+  // Con Dolar Cable y la cartera vacia, se carga el fondo cable al 100%
+  if(cable && !customPortfolio.length){
+    fondosDisponiblesParaAgregar().forEach(f => customPortfolio.push({ nombre: f.fondo, pct: 0 }));
+    repartirEnPartesIguales();
+  }
 
   // En cartera personalizada no se usan perfil ni horizonte
   document.getElementById('perfilSection').style.display = custom ? 'none' : '';
@@ -3061,7 +3128,7 @@ function updateVisibility(){
   document.getElementById('montoTitle').textContent = `${custom ? 3 : 5} · Monto a invertir`;
 
   document.getElementById('montoLabel').textContent =
-    `Monto a invertir (${selection.moneda === 'Dólar' ? 'USD' : 'ARS'})`;
+    `Monto a invertir (${esMonedaUSD(selection.moneda) ? 'USD' : 'ARS'})`;
 
   renderCartera();
 }
@@ -3100,7 +3167,7 @@ function buildCarteraRows(){
    asume en tasa nominal ARS y una en dolares, en USD. Es la base que NO hace
    falta aclarar porque es la que el lector da por sentada. */
 function baseEsperada(){
-  return selection.moneda === 'Dólar' ? 'USD' : 'ARS';
+  return esMonedaUSD(selection.moneda) ? 'USD' : 'ARS';
 }
 
 /* ¿Hay que mostrar la base al lado de la TIR? Dos motivos para que si:
@@ -3198,7 +3265,7 @@ function addFondoRowHtml(){
   const opts = disponibles
     .map(f => `<option value="${f.fondo.replace(/"/g, '&quot;')}">${nombreFondoVisible(f.fondo)} — ${f.categoria} (${f.riesgo})</option>`)
     .join('');
-  const monedaTxt = selection.moneda === 'Dólar' ? 'dólar MEP' : 'pesos';
+  const monedaTxt = esCable() ? 'dólar cable' : (selection.moneda === 'Dólar' ? 'dólar MEP' : 'pesos');
   const placeholder = disponibles.length
     ? `+ Seleccioná un fondo en ${monedaTxt} para agregarlo a la cartera…`
     : 'No quedan fondos disponibles en esta moneda';
@@ -3456,10 +3523,18 @@ carteraBodyEl.addEventListener('click', (e)=>{
    Selectores de la calculadora
 --------------------------------------------------------------------- */
 document.querySelectorAll('#monedaOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=> selectOption('monedaOptions', 'moneda', btn.dataset.moneda));
+  btn.addEventListener('click', ()=>{
+    // Entrar o salir de Dolar Cable arranca la cartera personalizada de cero:
+    // cable y MEP son liquidaciones distintas aunque los fondos sean en USD
+    if((selection.moneda === 'Cable') !== (btn.dataset.moneda === 'Cable')) customPortfolio = [];
+    selectOption('monedaOptions', 'moneda', btn.dataset.moneda);
+  });
 });
 document.querySelectorAll('#tipoCarteraOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=> selectOption('tipoCarteraOptions', 'tipo', btn.dataset.tipo));
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    selectOption('tipoCarteraOptions', 'tipo', btn.dataset.tipo);
+  });
 });
 document.querySelectorAll('#perfilOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> selectOption('perfilOptions', 'perfil', btn.dataset.perfil));
@@ -4287,7 +4362,7 @@ function buildPrintReport(clientName){
   // Nombre del destinatario (textContent: no se interpreta como HTML)
   document.getElementById('printClientName').textContent = clientName || '';
   document.getElementById('printClient').style.display = clientName ? 'flex' : 'none';
-  const monedaLabel = selection.moneda === 'Dólar' ? 'Dólar MEP (USD)' : 'Pesos (ARS)';
+  const monedaLabel = esCable() ? 'Dólar Cable (USD)' : (selection.moneda === 'Dólar' ? 'Dólar MEP (USD)' : 'Pesos (ARS)');
   const monto = parseMonto(document.getElementById('montoInput').value);
   const montoTexto = fmtMoney(monto, selection.moneda);
 
@@ -4501,7 +4576,7 @@ async function generarPdf(clientName){
     const discHeight = canvasDisc.height * imgWidth / canvasDisc.width;
     pdf.addImage(canvasDisc.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, Math.min(discHeight, pageHeight));
 
-    const monedaSlug = selection.moneda === 'Dólar' ? 'usd' : 'ars';
+    const monedaSlug = esCable() ? 'usd-cable' : (selection.moneda === 'Dólar' ? 'usd' : 'ars');
     const fechaSlug = DATA.asOfDate || '';
     const tipoSlug = isCustom() ? 'personalizada' : 'sugerida';
     const clienteSlug = slugNombreArchivo(clientName);
