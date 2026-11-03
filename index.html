@@ -439,21 +439,12 @@
     box-shadow:inset 0 0 0 1px var(--accent);
   }
   /* Dolar Cable: boton chico al lado de Pesos / Dolar MEP */
+  /* Misma altura que los otros botones (el flex los estira), pero angosto */
   .option-btn.option-btn-mini{
     flex:0 0 auto;
     min-width:0;
-    padding:8px 12px;
-    align-self:center;
-    border-radius:8px;
-    gap:1px;
+    padding:14px 14px;
   }
-  .option-btn.option-btn-mini strong{ font-size:12.5px; }
-  .option-btn.option-btn-mini span{ font-size:10.5px; }
-  .option-btn:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-  }
-  .option-btn:disabled:hover{ border-color:var(--line); }
 
   /* Cartera personalizada: input de %, boton de quitar y selector para agregar fondos */
   .pct-cell{ display:flex; align-items:center; justify-content:flex-start; gap:5px; }
@@ -1353,7 +1344,7 @@
         </button>
         <button class="option-btn option-btn-mini" data-moneda="Cable" title="Dólar Cable: solo Latam (SIN Arg), cartera personalizada">
           <strong>Dólar Cable</strong>
-          <span>USD cable</span>
+          <span>Fondos en USD</span>
         </button>
       </div>
     </section>
@@ -3111,11 +3102,10 @@ function updateVisibility(){
       btn.classList.toggle('selected', btn.dataset.tipo === 'Personalizada');
     });
   }
+  // Con Dolar Cable la opcion sugerida no existe: se oculta y la personalizada
+  // ocupa todo el ancho
   const btnSugerida = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Sugerida"]');
-  if(btnSugerida){
-    btnSugerida.disabled = cable;
-    btnSugerida.title = cable ? 'No disponible para Dólar Cable' : '';
-  }
+  if(btnSugerida) btnSugerida.style.display = cable ? 'none' : '';
 
   const custom = isCustom();
   sanitizeCustomPortfolio();
@@ -3535,10 +3525,7 @@ document.querySelectorAll('#monedaOptions .option-btn').forEach(btn=>{
   });
 });
 document.querySelectorAll('#tipoCarteraOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    if(btn.disabled) return;
-    selectOption('tipoCarteraOptions', 'tipo', btn.dataset.tipo);
-  });
+  btn.addEventListener('click', ()=> selectOption('tipoCarteraOptions', 'tipo', btn.dataset.tipo));
 });
 document.querySelectorAll('#perfilOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=> selectOption('perfilOptions', 'perfil', btn.dataset.perfil));
