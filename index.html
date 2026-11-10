@@ -1270,8 +1270,8 @@
   }
 
   /* ============================================================
-     CAPA COMERCIAL (comercial.xlsx): termometro de mercado,
-     argumento de la semana, carteras modelo y Escenarios 2027
+     CAPA COMERCIAL (comercial.xlsx): carteras modelo y solapa
+     Carteras Post-Elecciones (termometro de mercado y cobertura)
      ============================================================ */
 
   /* --- Termometro de mercado: franja compacta arriba de las solapas --- */
@@ -1374,74 +1374,11 @@
     #carteraTable tbody td .inv-wrap{ text-align:right; }
   }
 
-  /* --- Escenarios 2027 --- */
-  .esc-resumen{ display:flex; gap:10px 28px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; }
-  .esc-cartera{ font-size:13px; color:var(--text); line-height:1.5; }
-  .esc-cartera strong{ color:var(--navy); }
-  .esc-controles{ display:flex; gap:18px; flex-wrap:wrap; align-items:center; }
-  .esc-control-label{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-right:6px; }
-  .esc-rango-lista{ display:flex; flex-direction:column; gap:18px; margin-top:6px; }
-  .esc-rango-fila{ display:grid; grid-template-columns:190px minmax(0, 1fr); gap:16px; align-items:center; }
-  @media (max-width:720px){ .esc-rango-fila{ grid-template-columns:1fr; gap:6px; } }
-  .esc-rango-nombre{ font-size:13px; font-weight:700; color:var(--navy); }
-  .esc-rango-nombre span{ display:block; font-size:11px; font-weight:500; color:var(--muted); margin-top:1px; }
-  .esc-rango-valor{ font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--navy); font-variant-numeric:tabular-nums; }
-  .esc-pista{ position:relative; height:34px; margin-top:4px; }
-  .esc-pista::before{
-    content:''; position:absolute; left:0; right:0; top:14px; height:6px;
-    border-radius:3px; background:#E4E8F1;
-  }
-  .esc-tramo{ position:absolute; top:14px; height:6px; border-radius:3px; background:#9DB4EA; }
-  .esc-cero{ position:absolute; top:6px; width:1px; height:22px; background:#6E7590; }
-  .esc-cero::after{
-    content:'0%'; position:absolute; top:22px; left:-10px; width:20px; text-align:center;
-    font-size:9.5px; color:var(--muted);
-  }
-  .esc-punto{
-    position:absolute; top:9px; width:16px; height:16px; margin-left:-8px;
-    border-radius:50%; border:2px solid #fff;
-    box-shadow:0 0 0 1px rgba(19,30,66,.25);
-  }
-  .esc-leyenda{ display:flex; gap:16px; flex-wrap:wrap; margin-top:16px; font-size:11.5px; color:var(--text); }
-  .esc-leyenda i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
-  .esc-cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:14px; margin-bottom:20px; }
-  .esc-card{
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    border-top:4px solid var(--navy); padding:18px 18px 16px;
-  }
-  .esc-card h3{ font-size:15px; font-weight:800; color:var(--navy); margin:0 0 6px; }
-  .esc-card .esc-desc{ font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 14px; min-height:56px; }
-  .esc-kpis{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
-  .esc-kpi{ background:#FAFBFE; border:1px solid var(--line); border-radius:8px; padding:9px 10px; }
-  .esc-kpi.principal{ background:#EEF1FC; border-color:#D5DEF6; }
-  .esc-kpi .k-label{ font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
-  .esc-kpi .k-valor{ font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums; }
-  .esc-kpi .k-valor.pos{ color:var(--pos); }
-  .esc-kpi .k-valor.neg{ color:var(--neg); }
-  .esc-final{ font-size:12px; color:var(--text); margin:0 0 12px; }
-  .esc-final strong{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--navy); }
-  .esc-supuestos{ border-top:1px solid var(--line); padding-top:10px; display:grid; grid-template-columns:1fr auto; gap:4px 10px; font-size:11.5px; }
-  .esc-supuestos span:nth-child(odd){ color:var(--muted); }
-  .esc-supuestos span:nth-child(even){ font-family:'JetBrains Mono',monospace; text-align:right; color:var(--navy); }
-  .esc-chart-wrap{ position:relative; height:280px; }
-  .esc-detalle-table td.num, .esc-detalle-table th.num{ text-align:right; }
-  .esc-detalle-table .esc-ret{ font-family:'JetBrains Mono',monospace; font-size:13px; font-variant-numeric:tabular-nums; }
-  .esc-detalle-table .esc-ret.pos{ color:var(--pos); }
-  .esc-detalle-table .esc-ret.neg{ color:var(--neg); }
-  .esc-detalle-table tfoot td{ background:#E4EAF9; font-weight:800; color:var(--navy); border:none; padding:12px 14px; }
-  .esc-vacio{ text-align:center; color:var(--muted); font-size:13.5px; padding:26px 10px; }
   .print-table tr.print-bloque td{
     background:#F1F4FB; font-size:8.5px; font-weight:800; text-transform:uppercase;
     letter-spacing:.04em; color:var(--navy); padding:3px 8px;
   }
 
-  .esc-supuestos em{ font-style:normal; font-size:10px; color:#8A91A8; margin-left:4px; }
-  .esc-supuestos em::before{ content:'· '; }
-  .esc-anclas{ display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:10px; }
-  .esc-ancla{ background:#FAFBFE; border:1px solid var(--line); border-radius:8px; padding:11px 12px; }
-  .esc-ancla .k-label{ font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
-  .esc-ancla .k-valor{ font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--navy); margin:3px 0 2px; font-variant-numeric:tabular-nums; }
-  .esc-ancla .k-det{ font-size:11px; color:var(--muted); line-height:1.4; }
 
   /* --- Solapa del modelo bimonetario (Puente 2027) --- */
   .pte-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
@@ -1509,6 +1446,8 @@
     .cob-table td[data-label]::before{ content:attr(data-label); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); flex:0 0 42%; }
     .cob-table td.cob-como{ min-width:0; }
   }
+  .termo-implicito{ display:block; font-size:10.5px; font-weight:500; color:#8A91A8; margin-top:1px; }
+  .termo-hitos td{ vertical-align:top; }
 
   /* --- Solapa Reinversion de cupones --- */
   .cup-controles{ display:flex; gap:18px 28px; flex-wrap:wrap; align-items:flex-end; margin-top:18px; }
@@ -1668,6 +1607,42 @@
     .cg-fila{ grid-template-columns:minmax(0, 1fr) auto; }
     .cg-pista{ grid-column:1 / -1; grid-row:2; }
   }
+
+  /* --- Cuadro unico de la solapa: nominales y fondo sugerido --- */
+  .cg-opciones{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  .cg-opciones .cup-check{ padding-bottom:0; }
+  .cg-grid{ grid-template-columns:repeat(auto-fit, minmax(520px, 1fr)); }
+  @media (max-width:620px){ .cg-grid{ grid-template-columns:1fr; } }
+  .cg-fila, .cg-cab{ grid-template-columns:minmax(0, 170px) minmax(40px, 1fr) minmax(0, 118px) 116px; }
+  .cg-cab{ display:grid; gap:10px; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-top:8px; }
+  .cg-cab span:nth-child(3), .cg-cab span:nth-child(4){ text-align:right; }
+  .cg-entrada{ text-align:right; min-width:0; }
+  .cg-entrada .cup-input{ width:100%; text-align:right; font-family:'JetBrains Mono',monospace; font-size:12.5px; border:1.5px solid var(--line); border-radius:6px; padding:5px 7px; background:#fff; color:var(--navy); }
+  .cg-entrada .cup-input:focus{ outline:none; border-color:var(--accent); }
+  .cg-cobro{ display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:var(--pos); margin-top:2px; min-height:13px; white-space:nowrap; }
+  .cg-inst .cup-marca{ margin-left:4px; }
+  .cg-reco{ margin-top:14px; padding-top:12px; border-top:2px solid var(--line); }
+  .cg-fondo{ background:#F7F9FE; border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-top:8px; }
+  .cg-fondo-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .cg-fondo-top .fondo-name{ font-size:14.5px; font-weight:800; }
+  .cg-fondo-monto{ font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--navy); white-space:nowrap; }
+  .cg-fondo-por{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .cg-fondo-arg{ font-size:12.5px; line-height:1.45; margin:6px 0 0; }
+  .cg-liquidez{ font-size:11.5px; color:var(--muted); margin:8px 0 0; }
+  .cg-acciones{ margin-top:18px; padding-top:16px; border-top:1px solid var(--line); }
+  .cg-acciones .cup-totales{ margin:0 0 12px; }
+  .cg-botones{ display:flex; gap:8px; flex-wrap:wrap; }
+  @media (max-width:620px){
+    .cg-cab{ display:none; }
+    .cg-fila{ grid-template-columns:minmax(0, 1fr) auto; }
+    .cg-pista{ grid-column:1 / -1; grid-row:2; }
+    .cg-entrada{ grid-column:1 / -1; grid-row:3; display:flex; align-items:center; gap:10px; }
+    .cg-entrada .cup-input{ width:150px; }
+  }
+  /* --- Comparador: lineas de referencia --- */
+  .comp-ref{ display:flex; align-items:center; gap:6px 18px; flex-wrap:wrap; margin:10px 0 4px; }
+  .comp-ref .cup-check{ padding-bottom:0; }
+  .comp-ref-label{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
 </style>
 </head>
 <body>
@@ -1719,7 +1694,6 @@
       <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
       <button class="tab-btn" data-tab="puente" style="display:none;">Carteras Post-Elecciones</button>
       <button class="tab-btn" data-tab="cupones" style="display:none;">Reinversión de cupones</button>
-      <button class="tab-btn" data-tab="escenarios" style="display:none;">Escenarios 2027</button>
       <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
       <button class="tab-btn" data-tab="honorarios">Simulador de Ingresos</button>
     </div>
@@ -1883,7 +1857,7 @@
       <div class="hist-chart-wrap"><canvas id="histChart"></canvas></div>
     </section>
 
-    <div id="histBimonNote" class="pct-warning warn" style="display:none;margin:0 0 20px;">Esta cartera combina fondos en pesos y en dólares: no se muestra un rendimiento histórico consolidado porque sumaría retornos en dos monedas distintas. Abajo está el rendimiento de cada fondo en su moneda, y en la solapa Escenarios 2027 el resultado estimado de la cartera completa en pesos y en dólares.</div>
+    <div id="histBimonNote" class="pct-warning warn" style="display:none;margin:0 0 20px;">Esta cartera combina fondos en pesos y en dólares: no se muestra un rendimiento histórico consolidado porque sumaría retornos en dos monedas distintas. Abajo está el rendimiento de cada fondo en su moneda.</div>
 
     <section class="card" id="carteraFondosSection">
       <h2>Fondos de la cartera</h2>
@@ -1955,21 +1929,12 @@
         <h2 style="margin:0;">Termómetro de mercado</h2>
         <span class="termo-fecha" id="termoFecha"></span>
       </div>
-      <p class="sub">Dónde está el mercado hoy y qué descuenta hasta el 1 de enero de 2028, pasadas las elecciones, según la curva de futuros de dólar y las tasas break-even.</p>
-      <p class="semana-sub">Hoy</p>
-      <div class="termo-grid" id="termoHoy"></div>
-      <div id="termoFuturoWrap">
-        <p class="semana-sub" style="margin-top:16px;">Lo que descuenta el mercado al 1/1/2028</p>
-        <div class="termo-grid" id="termoFuturo"></div>
-      </div>
-      <div id="termoCurvaWrap" class="termo-curva">
-        <div>
-          <p class="semana-sub" style="margin-top:18px;">Camino del dólar oficial hasta el 1/1/2028</p>
-          <div class="termo-chart-wrap"><canvas id="termoChart"></canvas></div>
-        </div>
+      <p class="sub">Camino del dólar oficial hasta el 1 de enero de 2028, pasadas las elecciones: lo que descuentan los futuros, el dólar que solo acompañaría a la inflación y las bandas cambiarias.</p>
+      <div class="termo-curva">
+        <div class="termo-chart-wrap"><canvas id="termoChart"></canvas></div>
         <div style="overflow-x:auto;">
           <table class="termo-hitos">
-            <thead><tr><th>Fecha</th><th class="num">Dólar futuro</th><th class="num">Devaluación</th><th class="num">Inflación break-even</th><th class="num">Inflación REM</th></tr></thead>
+            <thead><tr><th>Fecha</th><th class="num">Devaluación</th><th class="num">Inflación break-even</th><th class="num">Inflación REM</th></tr></thead>
             <tbody id="termoHitosBody"></tbody>
           </table>
         </div>
@@ -2034,47 +1999,6 @@
 
     <div id="tab-cupones" class="tab-panel">
 
-    <section class="card">
-      <div class="pte-head">
-        <div>
-          <h2 class="pte-titulo">Reinversión de cupones</h2>
-          <p class="pte-bajada">Qué cobra el cliente cada semana y en qué fondo conviene reinvertirlo.</p>
-          <p class="pte-para" id="cupActualizado"></p>
-        </div>
-      </div>
-      <div class="cup-controles">
-        <div>
-          <span class="pte-control-label">Qué quiere hacer el cliente</span>
-          <div class="option-row" id="cupObjetivoOptions">
-            <button class="option-btn" data-objetivo="mantener"><strong>Mantener la exposición</strong></button>
-            <button class="option-btn" data-objetivo="liquidez"><strong>Manejar la liquidez</strong></button>
-          </div>
-        </div>
-        <div>
-          <span class="pte-control-label">Cobros en</span>
-          <div class="range-filters" id="cupMonedaBtns" style="display:inline-flex;">
-            <button class="range-btn" data-moneda="todas">Todo</button>
-            <button class="range-btn" data-moneda="Pesos">Pesos</button>
-            <button class="range-btn" data-moneda="Dólar">Dólares</button>
-          </div>
-        </div>
-        <label class="cup-check"><input type="checkbox" id="cupSoloDestacados" checked /> Solo los más operados</label>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Timeline de cobros</h2>
-      <p class="sub">Cupones, amortizaciones y vencimientos día por día: Lecap, Boncap, bonos CER, duales, TAMAR, dólar linked, soberanos y ON en dólares. Las semanas resaltadas son las de mayores ingresos. Elegí una semana para ver el detalle.</p>
-      <div class="tl-resumen" id="cupFuertes"></div>
-      <div class="tl-leyenda">
-        <span><i class="tl-chip ars capital">TICKER</i> paga pesos y devuelve capital</span>
-        <span><i class="tl-chip ars">TICKER</i> cupón en pesos</span>
-        <span><i class="tl-chip usd capital">TICKER</i> paga dólares y devuelve capital</span>
-        <span><i class="tl-chip usd">TICKER</i> cupón en dólares</span>
-      </div>
-      <div class="cup-semanas" id="cupSemanas"></div>
-    </section>
-
     <section class="card" id="cupGraficosCard">
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Cobros de la semana, día por día</h2>
@@ -2084,67 +2008,24 @@
           <button type="button" class="range-btn" id="cupNext" aria-label="Semana siguiente">Siguiente ›</button>
         </div>
       </div>
-      <p class="sub">Qué vence, amortiza o paga cupón cada día y cuánto paga cada 100 nominales, separado entre lo que paga pesos y lo que paga dólares.</p>
+      <p class="sub">Qué vence, amortiza o paga cupón cada día y cuánto paga cada 100 nominales. Cargá los nominales del cliente al lado de cada instrumento: abajo aparece el fondo sugerido para reinvertir.</p>
+      <div class="cg-opciones">
+        <label class="cup-check"><input type="checkbox" id="cupSoloDestacados" checked /> Solo los más operados</label>
+        <span class="termo-fecha" id="cupActualizado"></span>
+      </div>
+      <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
       <div class="cg-grid" id="cupGraficos"></div>
       <div class="tl-leyenda" style="margin:14px 0 0;">
         <span><i class="cg-muestra cap ars"></i><i class="cg-muestra cap usd"></i> capital que devuelve</span>
         <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
         <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
       </div>
-    </section>
-
-    <section class="card">
-      <h2>Nominales del cliente</h2>
-      <div class="cup-semana-head" style="margin-top:0;">
-        <h3 id="cupSemanaTitulo"></h3>
-        <button type="button" class="cup-link" id="cupLimpiar">Borrar nominales cargados</button>
-      </div>
-      <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
-      <table id="cupTable">
-        <thead>
-          <tr>
-            <th>Instrumento</th>
-            <th>Tipo</th>
-            <th>Evento</th>
-            <th class="num">Paga c/100 VN</th>
-            <th class="num">Nominales del cliente</th>
-            <th class="num">Cobra</th>
-          </tr>
-        </thead>
-        <tbody id="cupTableBody"></tbody>
-      </table>
-      <p class="cup-totales" id="cupTotales"></p>
-      <p class="foot-note">Los montos por cada 100 VN son estimativos y pueden diferir del aviso de pago del emisor; la acreditación puede demorar según el título y el agente. Las marcas “calculado” y “por ticker” indican datos que conviene confirmar (pasá el cursor para ver la fuente). ✓ = vencimiento verificado en vivo.</p>
-    </section>
-
-    <section class="card">
-      <h2>Dónde reinvertir</h2>
-      <p class="sub" id="cupRecoSub"></p>
-      <div class="cup-reco-grid" id="cupReco"></div>
-      <p class="foot-note">“Abrir en la calculadora” carga la cartera como personalizada: ahí se pueden ajustar los pesos, descargar el PDF con el nombre del cliente y verla en la solapa Escenarios 2027. El fondo sugerido para cada tipo de instrumento se edita en vencimientos.xlsx.</p>
+      <p class="foot-note">Los montos por cada 100 VN son estimativos y pueden diferir del aviso de pago del emisor. Las marcas “calculado” y “por ticker” indican datos que conviene confirmar (pasá el cursor para ver la fuente). En las ON en dólares el fondo se elige por la duration de la ON: menos de 2 años, fondo corto; 2 años o más, corporativo.</p>
+      <div class="cg-acciones" id="cupAcciones"></div>
     </section>
 
     <div class="page-disclaimer">
       <p class="disc-legal">Herramienta de uso interno para el asesor. El calendario de pagos es informativo y se arma con fuentes públicas; no reemplaza los avisos de pago de cada emisor. Los fondos sugeridos son una referencia y no contemplan la situación particular de cada cliente. No constituye una oferta, invitación ni recomendación de inversión.</p>
-    </div>
-
-    </div>
-
-    <div id="tab-escenarios" class="tab-panel">
-
-    <section class="card">
-      <h2>Escenarios 2027</h2>
-      <p class="sub">Qué le pasaría a la cartera armada en la calculadora bajo distintos escenarios, usando la TIR, la Duration y la base de tasa de cada fondo. Es un rango de resultados posibles, no una promesa de rentabilidad.</p>
-      <div class="esc-resumen">
-        <div class="esc-cartera" id="escCartera"></div>
-        <button type="button" class="btn-com sec" id="escIrCalculadora">Cambiar cartera</button>
-      </div>
-    </section>
-
-    <div id="escBloque"></div>
-
-    <div class="page-disclaimer">
-      <p class="disc-legal">Herramienta de uso interno para el asesor. Los escenarios son ejercicios de sensibilidad construidos sobre supuestos hipotéticos y sobre la TIR y la Duration informadas de cada fondo; no son pronósticos ni constituyen una promesa o garantía de rentabilidad. Los resultados reales pueden diferir significativamente. No constituye una oferta, invitación ni recomendación de inversión.</p>
     </div>
 
     </div>
@@ -2162,6 +2043,11 @@
 
       <div id="fundHistBody" style="display:none;">
         <div class="fund-chips" id="fundChipsRow"></div>
+        <div class="comp-ref" id="compRefRow">
+          <span class="comp-ref-label">Sumar al gráfico</span>
+          <label class="cup-check"><input type="checkbox" data-ref="mep" /> Dólar MEP</label>
+          <label class="cup-check"><input type="checkbox" data-ref="inflacion" /> Inflación</label>
+        </div>
 
         <div class="chart-header">
           <div class="hist-subtitle" id="fundHistSubtitle"></div>
@@ -2175,6 +2061,7 @@
         </div>
 
         <div class="hist-chart-wrap"><canvas id="fundHistChart"></canvas></div>
+        <p class="foot-note" id="compRefNota" style="display:none;"></p>
         <p class="foot-note">* Todas las líneas parten del mismo día: el primer día con datos disponibles del fondo incorporado más recientemente entre los seleccionados, dentro de la ventana elegida.</p>
       </div>
     </section>
@@ -3590,6 +3477,9 @@ function renderFundComparison(){
     };
   });
 
+  // Lineas de referencia opcionales: dolar MEP e inflacion
+  datasetsReferencia(isoDates).forEach(ds => datasets.push(ds));
+
   document.getElementById('fundHistSubtitle').innerHTML = `${fmtDateShort(DATES[baseIdx])} → ${fmtDateShort(DATES[endIdx])}`;
 
   const ctx = document.getElementById('fundHistChart').getContext('2d');
@@ -4473,8 +4363,8 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones),
 // factsheets.json (el índice de los PDF de /factsheets), tir_fondos.xlsx (TIR y Duration de
-// cada fondo), Honorarios.xlsx (honorarios de gerente por clase) y comercial.xlsx (argumento
-// de la semana, termómetro, carteras modelo y escenarios), todos junto a este archivo.
+// cada fondo), Honorarios.xlsx (honorarios de gerente por clase) y comercial.xlsx (termómetro
+// de mercado, carteras modelo y cobertura) y vencimientos.xlsx (cobros de cada semana), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -5082,14 +4972,15 @@ function activarHonorarios(){
 /* =====================================================================
    CAPA COMERCIAL (comercial.xlsx)
 
-   Un solo archivo alimenta las cuatro piezas comerciales de la pagina:
+   Un solo archivo alimenta las piezas comerciales de la pagina:
 
-     - Hoja "Semana"        -> Argumento de la semana (idea, guion, objecion)
-     - Hoja "Mercado"       -> Termometro de mercado
-     - Hojas "ModelosInfo"
-       y "Modelos"          -> Carteras modelo de un clic, por perfil
-     - Hojas "Escenarios"
-       y "Factores"         -> Solapa Escenarios 2027
+     - Hojas "Mercado"
+       y "Futuros"          -> Termometro de la solapa Carteras Post-Elecciones
+     - Hojas "ModelosInfo",
+       "Modelos" y
+       "ModelosTesis"       -> Carteras modelo por perfil
+     - Hojas "Cobertura"
+       y "Factores"         -> A que ajusta cada fondo y que cubre
 
    Igual que factsheets.json y tir_fondos.xlsx, si el archivo falta o esta
    mal armado la pagina NO se cae: se avisa por consola y esas piezas no se
@@ -5097,10 +4988,8 @@ function activarHonorarios(){
 ===================================================================== */
 let COMERCIAL = {
   ok: false,
-  semana: {}, guion: [],
   mercado: {},
   modelos: {}, ordenModelos: [],
-  escenarios: [],
   factores: {},
   futuros: [], futurosFecha: '', futurosVivo: false,
   cobertura: {},
@@ -5130,8 +5019,6 @@ const FACTOR_NOMBRE = {
   USD: 'Crédito USD',
   SOB: 'Soberano USD',
 };
-// Un color fijo por escenario (en el orden de las columnas del Excel)
-const ESC_COLORES = ['#1B3F8C', '#C98A1B', '#C43D3D', '#5B6785', '#0F8A5F'];
 
 function escHtml(s){
   return String(s == null ? '' : s)
@@ -5174,7 +5061,7 @@ function celdaNum(v){
 }
 
 function parseComercial(wb){
-  const out = { ok: true, semana: {}, guion: [], mercado: {}, modelos: {}, ordenModelos: [], escenarios: [], factores: {}, futuros: [], futurosFecha: '', futurosVivo: false, cobertura: {} };
+  const out = { ok: true, semana: {}, guion: [], mercado: {}, modelos: {}, ordenModelos: [], factores: {}, futuros: [], futurosFecha: '', futurosVivo: false, cobertura: {} };
 
   // --- Semana: pares Campo | Contenido
   hojaFilas(wb, 'Semana').forEach(f=>{
@@ -5255,33 +5142,6 @@ function parseComercial(wb){
     if(m && PERFILES_VALIDOS.includes(perfil)) m.tesis[perfil] = celdaTxt(f[2]);
   });
 
-  // --- Escenarios: una columna por escenario, una fila por supuesto
-  const filasEsc = hojaFilas(wb, 'Escenarios');
-  if(filasEsc.length){
-    const cab = filasEsc[0];
-    for(let c = 1; c < cab.length; c++){
-      const nombre = celdaTxt(cab[c]);
-      if(nombre) out.escenarios.push({ col: c, nombre, desc: '', inflA: { ancla: null, adj: 0 }, ofiA: { ancla: null, adj: 0 }, mepA: { ancla: 'OFI', adj: 0 }, delta: { ARS: 0, CER: 0, DL: 0, USD: 0, SOB: 0 } });
-    }
-    filasEsc.slice(1).forEach(f=>{
-      const k = claveTxt(f[0]);
-      if(!k) return;
-      out.escenarios.forEach(e=>{
-        const raw = f[e.col];
-        const n = celdaNum(raw) || 0;
-        if(k.includes('descrip'))       e.desc = celdaTxt(raw);
-        else if(k.includes('inflaci'))  e.inflA = parseAncla(raw);
-        else if(k.includes('oficial'))  e.ofiA = parseAncla(raw);
-        else if(k.includes('mep'))      e.mepA = parseAncla(raw);
-        else if(k.includes('linked'))   e.delta.DL = n;
-        else if(k.includes('cer'))      e.delta.CER = n;
-        else if(k.includes('soberan'))  e.delta.SOB = n;
-        else if(k.includes('usd'))      e.delta.USD = n;
-        else if(k.includes('pesos'))    e.delta.ARS = n;
-      });
-    });
-  }
-
   // --- Cobertura: Factor | Ajusta por | Ante salto del dolar | Ante suba de inflacion | Como cubre
   hojaFilas(wb, 'Cobertura').forEach(f=>{
     const factor = celdaTxt(f[0]).toUpperCase();
@@ -5314,21 +5174,6 @@ function fechaIsoDeCelda(v){
   return m ? `${m[1]}-${m[2]}-${m[3]}` : null;
 }
 
-/* Supuesto de inflacion o dolar de un escenario. Puede ser un numero fijo
-   (0,25 = 25% anual) o un ancla de mercado con un ajuste en puntos:
-   "REM", "BE +6pp", "FUT -10pp", "OFI +8pp". Devuelve { ancla, adj }. */
-const ANCLAS_VALIDAS = ['REM', 'BE', 'FUT', 'DL', 'OFI'];
-function parseAncla(raw){
-  if(typeof raw === 'number') return { ancla: null, adj: isFinite(raw) ? raw : 0 };
-  const s = String(raw == null ? '' : raw).trim().toUpperCase();
-  const m = s.match(/^([A-Z]+)\s*(?:([+\-−])\s*([\d.,]+)\s*(?:PP|P\.P\.|%)?)?$/);
-  if(m && ANCLAS_VALIDAS.includes(m[1])){
-    const mag = m[3] ? (parseFloat(m[3].replace(',', '.')) || 0) / 100 : 0;
-    return { ancla: m[1], adj: m[2] && m[2] !== '+' ? -mag : mag };
-  }
-  return { ancla: null, adj: celdaNum(raw) || 0 };
-}
-
 function cargarComercial(){
   if(typeof XLSX === 'undefined') return Promise.resolve();
   return fetch('comercial.xlsx')
@@ -5340,7 +5185,7 @@ function cargarComercial(){
       COMERCIAL = parseComercial(XLSX.read(buf, { type: 'array', cellDates: true }));
     })
     .catch(err=>{
-      console.warn('No se pudo cargar comercial.xlsx; la página queda sin argumento de la semana, termómetro, carteras modelo ni escenarios.', err);
+      console.warn('No se pudo cargar comercial.xlsx; la página queda sin la solapa Carteras Post-Elecciones ni las carteras modelo.', err);
     });
 }
 
@@ -5487,99 +5332,19 @@ function mercadoImplicitoA(iso){
   };
 }
 
+/* Termometro de mercado: camino del dolar oficial hasta el horizonte.
+   Lineas: lo que descuentan los futuros, el dolar que solo acompaña la
+   inflacion (break-even y REM) y las bandas cambiarias, que se proyectan
+   ajustadas por la inflacion break-even. Al lado, la tabla con los hitos. */
 function renderTermometro(){
   const sec = document.getElementById('termoSection');
-  if(!sec) return;
-  if(!COMERCIAL.ok || !Object.keys(COMERCIAL.mercado).length){ sec.style.display = 'none'; return; }
-  const d = termometroDerivados();
-  const h = mercadoImplicitoA(HORIZONTE_POST);
-  const fechaH = fechaCorta(HORIZONTE_POST);
-
-  const vivoTag = (clave)=>{
-    const m = merc(clave);
-    if(!m || !m.vivo) return '';
-    const t = `Dato en vivo${m.fuenteVivo ? ' de ' + m.fuenteVivo : ''}${m.validado ? ' · ' + m.validado : ''}`;
-    return `<span class="termo-vivo" title="${escHtml(t)}">EN VIVO${m.validado ? ' ✓' : ''}</span>`;
-  };
-  const tile = (label, valor, detalle, lectura)=> `
-    <div class="termo-item">
-      <div class="termo-label">${label}</div>
-      <div class="termo-valor">${valor}</div>
-      ${detalle ? `<div class="termo-detalle">${detalle}</div>` : ''}
-      ${lectura ? `<div class="termo-lectura">${lectura}</div>` : ''}
-    </div>`;
-
-  // --- Hoy
-  const hoy = [];
-  if(d.riesgo != null){
-    hoy.push(tile(`Riesgo país ${vivoTag('Riesgo país')}`, `${fmtNumCom(d.riesgo)}<small>pb</small>`,
-      `Sobretasa del soberano: <strong>${fmtPctCom(d.riesgo / 10000, 1)}</strong>`));
-  }
-  if(d.mep != null){
-    const canje = (d.mep && d.ccl) ? d.ccl / d.mep - 1 : null;
-    hoy.push(tile(`Dólar MEP ${vivoTag('Dólar MEP')}`, `$ ${fmtNumCom(d.mep, 0)}`,
-      `CCL <strong>$ ${fmtNumCom(d.ccl, 0)}</strong>${canje != null ? ` · canje <strong>${fmtPctCom(canje, 1)}</strong>` : ''}`));
-  }
-  if(d.brechaMep != null){
-    hoy.push(tile(`Brecha MEP vs. mayorista ${vivoTag('Dólar mayorista')}`, fmtPctCom(d.brechaMep, 1),
-      `Mayorista <strong>$ ${fmtNumCom(d.may, 0)}</strong>${d.brechaCcl != null ? ` · brecha CCL <strong>${fmtPctCom(d.brechaCcl, 1)}</strong>` : ''}`));
-  }
-  if(d.distTecho != null){
-    hoy.push(tile('Distancia al techo de banda', fmtPctCom(d.distTecho, 1), `Techo <strong>$ ${fmtNumCom(d.techo, 0)}</strong>`));
-  }
-  document.getElementById('termoHoy').innerHTML = hoy.join('');
-
-  // --- Lo que descuenta el mercado al horizonte
-  const fut = [];
-  if(h){
-    if(h.fut != null){
-      fut.push(tile(`Dólar oficial al ${fechaH} ${COMERCIAL.futurosVivo ? '<span class="termo-vivo" title="Curva de futuros de dólar de Matba Rofex">EN VIVO</span>' : ''}`,
-        `$ ${fmtNumCom(h.fut, 0)}`,
-        `Devaluación implícita <strong>${fmtPctCom(h.deval, 1, true)}</strong>`,
-        'Según la curva de futuros de dólar.'));
-    }
-    if(h.inflBE != null){
-      fut.push(tile(`Inflación break-even al ${fechaH}`, fmtPctCom(h.inflBE, 1, true),
-        `Tasa fija <strong>${fmtPctCom(d.lecap, 1)}</strong> vs. CER <strong>+${fmtPctCom(d.cer, 1)}</strong> · <strong>${fmtPctCom(d.breakeven, 1)}</strong> anual`,
-        'Inflación acumulada que iguala tasa fija y CER.'));
-    }
-    if(h.inflREM != null){
-      fut.push(tile(`Inflación esperada al ${fechaH} ${vivoTag('Inflación esperada 12m')}`, fmtPctCom(h.inflREM, 1, true),
-        `REM a 12 meses: <strong>${fmtPctCom(d.inflEsp, 1)}</strong> anual`,
-        (h.inflBE != null) ? (h.inflBE > h.inflREM + 0.005
-          ? 'El mercado descuenta más inflación que los analistas.'
-          : (h.inflBE < h.inflREM - 0.005 ? 'El mercado descuenta menos inflación que los analistas.' : 'Mercado y analistas esperan lo mismo.')) : ''));
-    }
-    if(h.real != null){
-      fut.push(tile('Dólar oficial contra la inflación', fmtPctCom(h.real, 1, true),
-        'Devaluación implícita vs. inflación break-even',
-        h.real >= 0
-          ? 'Los futuros descuentan que el dólar oficial sube más que los precios.'
-          : 'Los futuros descuentan que el dólar oficial sube menos que los precios.'));
-    }
-  }
-  document.getElementById('termoFuturo').innerHTML = fut.join('');
-  document.getElementById('termoFuturoWrap').style.display = fut.length ? '' : 'none';
-
-  const fechas = ['Dólar MEP', 'Dólar mayorista', 'Riesgo país'].map(c => (merc(c) && merc(c).fecha) || '').filter(Boolean);
-  const hayVivo = COMERCIAL.futurosVivo || Object.values(COMERCIAL.mercado).some(m => m.vivo);
-  document.getElementById('termoFecha').textContent =
-    hayVivo ? 'En vivo donde se indica (✓ = validado contra una segunda fuente) · el resto, carga manual'
-            : ('Datos ' + (fechas.length ? `al ${fechas[0]}` : 'cargados a mano'));
-
-  sec.style.display = (hoy.length || fut.length) ? '' : 'none';
-  renderTermoCurva(d, h);
-}
-
-/* Camino mes a mes hasta el horizonte: dolar oficial segun futuros contra el
-   dolar que solo acompaña la inflacion (break-even y REM). */
-function renderTermoCurva(d, h){
-  const wrap = document.getElementById('termoCurvaWrap');
   const canvas = document.getElementById('termoChart');
-  if(!wrap || !canvas || typeof Chart === 'undefined') return;
+  if(!sec || !canvas || typeof Chart === 'undefined') return;
   if(termoChart){ termoChart.destroy(); termoChart = null; }
-  if(!h || h.fut == null || !d.may){ wrap.style.display = 'none'; return; }
-  wrap.style.display = '';
+  const d = termometroDerivados();
+  const h = COMERCIAL.ok ? mercadoImplicitoA(HORIZONTE_POST) : null;
+  if(!h || h.fut == null || !d.may){ sec.style.display = 'none'; return; }
+  sec.style.display = '';
 
   // Puntos: hoy, cada fin de mes y el horizonte
   const fin = new Date(HORIZONTE_POST + 'T00:00:00');
@@ -5597,10 +5362,13 @@ function renderTermoCurva(d, h){
     const t = i === 0 ? 0 : aniosHasta(p.iso);
     const f = i === 0 ? d.may : precioFuturo(t);
     const acum = (tasa)=> (tasa != null && isFinite(tasa)) ? Math.pow(1 + tasa, t) - 1 : null;
+    const inflBE = acum(d.breakeven);
     return {
       iso: p.iso, label: p.label, fut: f,
       deval: f / d.may - 1,
-      inflBE: acum(d.breakeven), inflREM: acum(d.inflEsp),
+      inflBE, inflREM: acum(d.inflEsp),
+      // Las bandas ajustan por inflacion: se proyectan con la break-even (o el REM si falta)
+      banda: 1 + (inflBE != null ? inflBE : (acum(d.inflEsp) || 0)),
       extrapolado: !!(ultContrato && p.iso > ultContrato),
     };
   });
@@ -5611,12 +5379,15 @@ function renderTermoCurva(d, h){
   }, extra || {});
   const datasets = [
     linea('Dólar oficial según futuros', filas.map(f => +f.fut.toFixed(1)), '#1B3F8C', {
-      borderWidth: 2.5,
+      borderWidth: 2.75,
       segment: { borderDash: (c)=> filas[c.p1DataIndex].extrapolado ? [5, 4] : undefined },
     }),
   ];
   if(d.breakeven != null) datasets.push(linea('Dólar que acompaña la inflación break-even', filas.map(f => +(d.may * (1 + f.inflBE)).toFixed(1)), '#C98A1B'));
-  if(d.inflEsp != null) datasets.push(linea('Dólar que acompaña la inflación esperada (REM)', filas.map(f => +(d.may * (1 + f.inflREM)).toFixed(1)), '#8A91A8', { borderDash: [2, 3] }));
+  if(d.inflEsp != null) datasets.push(linea('Dólar que acompaña la inflación REM', filas.map(f => +(d.may * (1 + f.inflREM)).toFixed(1)), '#8A91A8', { borderDash: [2, 3] }));
+  const banda = { borderWidth: 1.5, pointRadius: 0, borderDash: [7, 4] };
+  if(d.techo) datasets.push(linea('Techo de la banda', filas.map(f => +(d.techo * f.banda).toFixed(1)), '#C43D3D', banda));
+  if(d.piso) datasets.push(linea('Piso de la banda', filas.map(f => +(d.piso * f.banda).toFixed(1)), '#0F8A5F', banda));
 
   termoChart = new Chart(canvas.getContext('2d'), {
     type: 'line',
@@ -5636,21 +5407,26 @@ function renderTermoCurva(d, h){
     },
   });
 
-  // Tabla con los hitos: fines de trimestre, el mes de las elecciones y el horizonte
+  // Tabla con los hitos: fines de trimestre, el mes de las elecciones y el horizonte.
+  // Debajo de cada % va el dolar que implica esa devaluacion o esa inflacion.
+  const celda = (v)=> (v == null)
+    ? '<td class="num">—</td>'
+    : `<td class="num">${fmtPctCom(v, 1, true)}<span class="termo-implicito">$ ${fmtNumCom(d.may * (1 + v), 0)}</span></td>`;
   const hitos = filas.filter((f, i)=> i > 0 && (i === filas.length - 1 || /-(03|06|09|10|12)-/.test(f.iso)));
   document.getElementById('termoHitosBody').innerHTML = hitos.map(f=> `
     <tr>
       <td>${escHtml(f.label)}${/-10-/.test(f.iso) ? ' <span class="termo-hito-nota">elecciones</span>' : ''}${f.extrapolado ? ' <span class="termo-hito-nota">proyectado</span>' : ''}</td>
-      <td class="num">$ ${fmtNumCom(f.fut, 0)}</td>
-      <td class="num">${fmtPctCom(f.deval, 1, true)}</td>
-      <td class="num">${fmtPctCom(f.inflBE, 1, true)}</td>
-      <td class="num">${fmtPctCom(f.inflREM, 1, true)}</td>
+      ${celda(f.deval)}${celda(f.inflBE)}${celda(f.inflREM)}
     </tr>`).join('');
 
+  const mMay = merc('Dólar mayorista');
+  document.getElementById('termoFecha').textContent =
+    `Dólar mayorista de hoy: $ ${fmtNumCom(d.may, 2)}${mMay && mMay.vivo ? ' (en vivo)' : (mMay && mMay.fecha ? ` (${mMay.fecha})` : '')}`;
   document.getElementById('termoNota').textContent =
-    `Curva de futuros de dólar ${COMERCIAL.futurosVivo ? 'en vivo de Matba Rofex' : 'cargada en comercial.xlsx'}${COMERCIAL.futurosFecha ? ` (${COMERCIAL.futurosFecha})` : ''}`
+    `Devaluación: curva de futuros de dólar ${COMERCIAL.futurosVivo ? 'en vivo de Matba Rofex' : 'cargada en comercial.xlsx'}${COMERCIAL.futurosFecha ? ` (${COMERCIAL.futurosFecha})` : ''}`
     + `${ultContrato ? `; el último contrato vence el ${fechaCorta(ultContrato)} y de ahí en adelante se proyecta con el ritmo del último tramo (línea punteada)` : ''}. `
-    + 'La inflación break-even y la del REM son tasas a 12 meses, proyectadas constantes. Son precios de mercado de hoy, no pronósticos.';
+    + `Inflación break-even (${fmtPctCom(d.breakeven, 1)} anual) y REM (${fmtPctCom(d.inflEsp, 1)} anual): tasas a 12 meses, proyectadas constantes. `
+    + 'Bandas: techo y piso de hoy, proyectados con la inflación break-even porque se ajustan por inflación con dos meses de rezago. Son precios de mercado de hoy, no pronósticos.';
 }
 
 /* ---------------------------------------------------------------------
@@ -6058,148 +5834,17 @@ document.getElementById('modeloOptions').addEventListener('click', (e)=>{
 });
 
 /* ---------------------------------------------------------------------
-   Escenarios 2027
-
-   Para cada fondo con TIR y Duration:
-
-     retorno en su base ≈ (1 + TIR)^plazo − 1 + cambio de tasa × (plazo − Duration)
-
-   El segundo termino junta dos efectos: si la tasa sube, lo que vence antes
-   del plazo se reinvierte mas arriba (suma) y lo que vence despues pierde
-   precio (resta). Con Duration = plazo los dos se compensan.
-
-   Despues se pasa a pesos segun el factor del fondo (ARS queda igual, CER
-   suma inflacion, dolar linked suma la variacion del oficial, USD y soberano
-   suman la variacion del MEP) y de ahi a dolares MEP y a terminos reales.
-
-   Los fondos sin TIR (renta variable) quedan afuera y se informa cobertura.
+   A que ajusta cada fondo y filas de una cartera modelo
 --------------------------------------------------------------------- */
-
-const ESC_PLAZOS = [['6M', '6 meses'], ['12M', '12 meses'], ['DIC27', 'A dic-2027']];
-// Hay dos bloques de escenarios con la misma logica: "esc" (solapa Escenarios
-// 2027, sobre la cartera de la calculadora) y "pte" (solapa del modelo bimonetario)
-const ESC_UI = {
-  esc: { plazo: '12M', vista: null, chart: null },
-  pte: { plazo: '12M', vista: null, chart: null },
-};
-
-function plazoAnios(plazo){
-  if(plazo === '6M') return 0.5;
-  if(plazo === 'DIC27'){
-    const dias = (new Date('2027-12-31T00:00:00').getTime() - Date.now()) / 86400000;
-    if(dias > 30) return dias / 365;
-  }
-  return 1;
-}
-function plazoTexto(plazo){
-  return plazo === '6M' ? '6 meses' : (plazo === 'DIC27' ? 'diciembre 2027' : '12 meses');
-}
-
+// Factor del fondo: la excepcion de la hoja "Factores" o, si no hay, su base de tasa
 function factorDeFondo(r){
   const f = COMERCIAL.factores[claveTxt(nombreFondoVisible(r.nombre))];
   if(f) return f;
   return FACTORES_VALIDOS.includes(r.base) ? r.base : null;
 }
 
-// Anclas de mercado, todas en variacion anual
-function anclasMercado(anios){
-  const d = termometroDerivados();
-  return {
-    REM: d.inflEsp,
-    BE: d.breakeven,
-    FUT: devalFuturosAnual(anios),
-    DL: devalDolarLinked(),
-  };
-}
-const ANCLA_NOMBRE = { REM: 'REM', BE: 'break-even', FUT: 'futuros', DL: 'dólar linked', OFI: 'oficial' };
-// Si falta un ancla se usa la siguiente disponible
-const ANCLA_RESPALDO = { REM: ['REM', 'BE'], BE: ['BE', 'REM'], FUT: ['FUT', 'DL', 'BE'], DL: ['DL', 'FUT', 'BE'] };
-
-/* Supuestos de un escenario llevados al plazo pedido. Cada uno devuelve la
-   variacion anual, la del plazo y de donde salio (para mostrarlo). */
-function escSupuestos(esc, anios){
-  const a = anclasMercado(anios);
-  const resolver = (p, extra)=>{
-    if(!p.ancla) return { anual: p.adj, origen: 'supuesto fijo' };
-    let base = null, usada = p.ancla;
-    if(extra && p.ancla in extra) base = extra[p.ancla];
-    else {
-      for(const k of (ANCLA_RESPALDO[p.ancla] || [])){
-        if(a[k] != null && isFinite(a[k])){ base = a[k]; usada = k; break; }
-      }
-    }
-    if(base == null) return { anual: p.adj, origen: 'sin dato de mercado' };
-    const adjTxt = p.adj ? ` ${p.adj > 0 ? '+' : '−'} ${fmtNumCom(Math.abs(p.adj) * 100, 0)} p.p.` : '';
-    return { anual: base + p.adj, origen: ANCLA_NOMBRE[usada] + adjTxt };
-  };
-  const infl = resolver(esc.inflA);
-  const ofi = resolver(esc.ofiA);
-  const mep = resolver(esc.mepA, { OFI: ofi.anual });
-  const alPlazo = (x)=> Math.pow(1 + Math.max(x, -0.9), anios) - 1;
-  return {
-    infl, ofi, mep,
-    inflH: alPlazo(infl.anual), ofiH: alPlazo(ofi.anual), mepH: alPlazo(mep.anual),
-  };
-}
-
-function calcEscenario(rows, esc, anios){
-  const sup = escSupuestos(esc, anios);
-  const { inflH, ofiH, mepH } = sup;
-
-  let pesoTotal = 0, pesoConDato = 0, acumArs = 0;
-  const detalle = [];
-
-  (rows || []).forEach(r=>{
-    const w = Number(r.pct) || 0;
-    if(w <= 0 || !r.found) return;
-    pesoTotal += w;
-
-    const factor = factorDeFondo(r);
-    if(r.tir == null || !isFinite(r.tir) || !factor){
-      detalle.push({ r, sinDato: true });
-      return;
-    }
-    const dur = (r.duration != null && isFinite(r.duration)) ? r.duration : 0;
-    const delta = esc.delta[factor] || 0;
-    const local = Math.max(-0.95, Math.pow(1 + r.tir, anios) - 1 + delta * (anios - dur));
-
-    let ars;
-    if(factor === 'ARS') ars = local;
-    else if(factor === 'CER') ars = (1 + local) * (1 + inflH) - 1;
-    else if(factor === 'DL') ars = (1 + local) * (1 + ofiH) - 1;
-    else ars = (1 + local) * (1 + mepH) - 1;
-
-    pesoConDato += w;
-    acumArs += w * ars;
-    detalle.push({ r, factor, w, ars, usd: (1 + ars) / (1 + mepH) - 1 });
-  });
-
-  if(!pesoConDato) return null;
-  const ars = acumArs / pesoConDato;
-  return {
-    esc, sup, ars,
-    usd: (1 + ars) / (1 + mepH) - 1,
-    real: (1 + ars) / (1 + inflH) - 1,
-    inflH, ofiH, mepH,
-    cobertura: pesoConDato / pesoTotal,
-    detalle,
-  };
-}
-
-function calcEscenarios(rows, anios){
-  return COMERCIAL.escenarios.map(e => calcEscenario(rows, e, anios)).filter(Boolean);
-}
-
-// "−4,9% y +12,3%"
-function rangoTexto(valores){
-  const v = valores.filter(x => x != null && isFinite(x));
-  if(!v.length) return 's/d';
-  const min = Math.min(...v), max = Math.max(...v);
-  return `${fmtPctCom(min, 1, true)} y ${fmtPctCom(max, 1, true)}`;
-}
-
 /* Filas de una cartera modelo armadas sin pasar por la calculadora: las usan
-   la solapa del modelo bimonetario y el argumento de la semana. Tienen los
+   la solapa Carteras Post-Elecciones. Tienen los
    mismos campos que buildCarteraRows. "moneda" es la del monto que se ingresa. */
 function rowsDeModelo(nombreModelo, perfil, moneda, monto){
   const monedaCartera = moneda === 'Dólar' ? 'Dólar' : 'Pesos';
@@ -6226,293 +5871,8 @@ function rowsDeModelo(nombreModelo, perfil, moneda, monto){
   });
 }
 
-function opcionesBarrasEscenarios(){
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: { padding: { top: 20 } },
-    plugins: {
-      legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#14182B' } },
-      tooltip: { callbacks: { label: (c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(1)}%` } },
-      datalabels: {
-        anchor: (c)=> c.dataset.data[c.dataIndex] >= 0 ? 'end' : 'start',
-        align:  (c)=> c.dataset.data[c.dataIndex] >= 0 ? 'top' : 'bottom',
-        offset: 2,
-        color: '#14182B',
-        font: { size: 10.5, weight: '700', family: "'JetBrains Mono', monospace" },
-        formatter: (v)=> `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`,
-      },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { color: '#14182B', font: { size: 11.5, weight: '700' } } },
-      y: {
-        grace: '12%',
-        ticks: { callback: (v)=> `${v >= 0 ? '+' : ''}${v}%`, color: '#6E7590', font: { size: 11 } },
-        grid: { color: (c)=> c.tick.value === 0 ? '#6E7590' : '#E4E8F1' },
-      },
-    },
-  };
-}
-
-function datasetsBarrasEscenarios(res){
-  const pct = (v)=> +(v * 100).toFixed(2);
-  return [
-    { label: 'En pesos',        data: res.map(x => pct(x.ars)),  backgroundColor: '#1B3F8C', borderRadius: 3, maxBarThickness: 46 },
-    { label: 'En dólares MEP',  data: res.map(x => pct(x.usd)),  backgroundColor: '#5E9AE6', borderRadius: 3, maxBarThickness: 46 },
-    { label: 'Real (vs. inflación)', data: res.map(x => pct(x.real)), backgroundColor: '#C3DEF8', borderRadius: 3, maxBarThickness: 46 },
-  ];
-}
-
-// Marcado de un bloque de escenarios; "p" es el prefijo de los ids (esc | pte)
-function escBloqueHtml(p){
-  return `
-    <div id="${p}Vacio" class="card esc-vacio" style="display:none;"></div>
-    <div id="${p}Contenido">
-      <section class="card">
-        <div class="chart-header" style="margin-bottom:6px;">
-          <h2 style="margin:0;">Rango de resultado</h2>
-          <div class="range-filters" data-rol="plazo">
-            ${ESC_PLAZOS.map(([k, l])=> `<button class="range-btn" data-plazo="${k}">${l}</button>`).join('')}
-          </div>
-        </div>
-        <p class="sub">Cada punto es un escenario. La franja marca entre qué valores quedaría la cartera. Es un rango de resultados posibles, no una promesa de rentabilidad.</p>
-        <div class="esc-rango-lista" id="${p}RangoLista"></div>
-        <div class="esc-leyenda" id="${p}Leyenda"></div>
-        <div id="${p}Cobertura" class="pct-warning warn" style="display:none;"></div>
-      </section>
-
-      <div class="esc-cards" id="${p}Cards"></div>
-
-      <section class="card">
-        <h2>Comparación entre escenarios</h2>
-        <p class="sub">Retorno estimado de la cartera en pesos, en dólares MEP y en términos reales.</p>
-        <div class="esc-chart-wrap"><canvas id="${p}Chart"></canvas></div>
-      </section>
-
-      <section class="card">
-        <h2>Qué aporta cada fondo</h2>
-        <div class="chart-header" style="margin-bottom:12px;">
-          <p class="sub" id="${p}DetalleSub" style="margin:0;"></p>
-          <div class="range-filters" data-rol="vista">
-            <button class="range-btn" data-vista="ars">En pesos</button>
-            <button class="range-btn" data-vista="usd">En dólares</button>
-          </div>
-        </div>
-        <div style="overflow-x:auto;">
-          <table class="esc-detalle-table">
-            <thead id="${p}DetalleHead"></thead>
-            <tbody id="${p}DetalleBody"></tbody>
-            <tfoot id="${p}DetalleFoot"></tfoot>
-          </table>
-        </div>
-        <p class="foot-note">Cómo se calcula: retorno de cada fondo ≈ (1 + TIR)^plazo − 1 + cambio de tasa del escenario × (plazo − Duration). Si la tasa sube, lo que vence antes del plazo se reinvierte más arriba y lo que vence después pierde precio. Después se convierte según a qué responde el fondo: los CER suman la inflación del escenario, los dólar linked la variación del oficial y los fondos en dólares la variación del MEP.</p>
-      </section>
-
-      <section class="card">
-        <h2>De dónde salen los supuestos</h2>
-        <p class="sub">La inflación y el dólar de cada escenario parten de lo que hoy descuenta el mercado, más un ajuste propio del escenario. Los cambios de tasa son supuestos del escenario.</p>
-        <div class="esc-anclas" id="${p}Anclas"></div>
-        <p class="foot-note" id="${p}Fuentes"></p>
-      </section>
-    </div>`;
-}
-
-// De donde sale la cartera de cada bloque
-function escContexto(p){
-  if(p === 'pte'){
-    const rows = puenteRows().filter(r => r.found && (Number(r.pct) || 0) > 0);
-    return { rows, valida: rows.length > 0, monto: PTE.monto, moneda: PTE.moneda };
-  }
-  const rows = buildCarteraRows().filter(r => r.found && (Number(r.pct) || 0) > 0);
-  return { rows, valida: carteraSuma100() && rows.length > 0, monto: parseMonto(document.getElementById('montoInput').value), moneda: selection.moneda };
-}
-
-function renderEscBloque(p){
-  const cont = document.getElementById(p + 'Contenido');
-  const vacio = document.getElementById(p + 'Vacio');
-  if(!cont) return;
-  const ui = ESC_UI[p];
-  const ctx = escContexto(p);
-  const rows = ctx.rows;
-  const anios = plazoAnios(ui.plazo);
-  const res = (COMERCIAL.ok && ctx.valida) ? calcEscenarios(rows, anios) : [];
-  const el = (id)=> document.getElementById(p + id);
-
-  if(!res.length){
-    cont.style.display = 'none';
-    vacio.style.display = '';
-    vacio.textContent = !COMERCIAL.escenarios.length
-      ? 'No hay escenarios cargados: revisá la hoja "Escenarios" de comercial.xlsx.'
-      : (!ctx.valida
-          ? 'Armá primero una cartera en la solapa Calculadora de Carteras (si es personalizada, los % tienen que sumar 100%).'
-          : 'Ningún fondo de esta cartera tiene TIR cargada: no se pueden calcular escenarios.');
-    return;
-  }
-  vacio.style.display = 'none';
-  cont.style.display = '';
-
-  const enUsd = esMonedaUSD(ctx.moneda);
-  const vista = ui.vista || (enUsd ? 'usd' : 'ars');
-  cont.querySelectorAll('[data-rol="plazo"] .range-btn').forEach(b => b.classList.toggle('active', b.dataset.plazo === ui.plazo));
-  cont.querySelectorAll('[data-rol="vista"] .range-btn').forEach(b => b.classList.toggle('active', b.dataset.vista === vista));
-
-  // --- Rango de resultado
-  const series = [
-    ['En pesos', 'retorno nominal', res.map(x => x.ars)],
-    ['En dólares MEP', 'después de la variación del dólar', res.map(x => x.usd)],
-    ['Real', 'por encima o por debajo de la inflación', res.map(x => x.real)],
-  ];
-  const todos = series.flatMap(s => s[2]).concat([0]);
-  const lo = Math.min(...todos), hi = Math.max(...todos);
-  const margen = (hi - lo) * 0.06 || 0.01;
-  const pos = (v)=> ((v - (lo - margen)) / ((hi + margen) - (lo - margen)) * 100).toFixed(2);
-
-  el('RangoLista').innerHTML = series.map(([nombre, sub, vals])=>{
-    const min = Math.min(...vals), max = Math.max(...vals);
-    const puntos = vals.map((v, i)=>
-      `<span class="esc-punto" style="left:${pos(v)}%;background:${ESC_COLORES[i % ESC_COLORES.length]}" title="${escHtml(res[i].esc.nombre)}: ${fmtPctCom(v, 1, true)}"></span>`
-    ).join('');
-    return `
-      <div class="esc-rango-fila">
-        <div class="esc-rango-nombre">${nombre}<span>${sub}</span></div>
-        <div>
-          <div class="esc-rango-valor">${fmtPctCom(min, 1, true)} a ${fmtPctCom(max, 1, true)}</div>
-          <div class="esc-pista">
-            <span class="esc-tramo" style="left:${pos(min)}%;width:${(pos(max) - pos(min)).toFixed(2)}%"></span>
-            <span class="esc-cero" style="left:${pos(0)}%"></span>
-            ${puntos}
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-
-  el('Leyenda').innerHTML = res.map((x, i)=>
-    `<span><i style="background:${ESC_COLORES[i % ESC_COLORES.length]}"></i>${escHtml(x.esc.nombre)}</span>`
-  ).join('');
-
-  const cobertura = res[0].cobertura;
-  const notaCob = el('Cobertura');
-  if(cobertura < 0.999){
-    notaCob.style.display = 'block';
-    notaCob.textContent = `⚠ El cálculo cubre el ${Math.round(cobertura * 100)}% de la cartera: los fondos sin TIR (renta variable) quedan afuera y el resultado se reescala sobre el resto.`;
-  } else {
-    notaCob.style.display = 'none';
-  }
-
-  // --- Una tarjeta por escenario
-  const pp = (v)=> `${v > 0 ? '+' : (v < 0 ? '−' : '')}${fmtNumCom(Math.abs(v) * 100, 1)} p.p.`;
-  el('Cards').innerHTML = res.map((x, i)=>{
-    const e = x.esc;
-    const ret = enUsd ? x.usd : x.ars;
-    const kpis = [
-      ['En pesos', x.ars, !enUsd],
-      ['En dólares MEP', x.usd, enUsd],
-      ['Real vs. inflación', x.real, false],
-    ];
-    return `
-      <div class="esc-card" style="border-top-color:${ESC_COLORES[i % ESC_COLORES.length]}">
-        <h3>${escHtml(e.nombre)}</h3>
-        <p class="esc-desc">${escHtml(e.desc)}</p>
-        <div class="esc-kpis">
-          ${kpis.map(([l, v, principal])=> `
-            <div class="esc-kpi${principal ? ' principal' : ''}"${principal ? ' style="grid-column:1 / -1"' : ''}>
-              <div class="k-label">${l}</div>
-              <div class="k-valor ${signoClase(v)}">${fmtPctCom(v, 1, true)}</div>
-            </div>`).join('')}
-        </div>
-        <p class="esc-final">${fmtMoney(ctx.monto, ctx.moneda)} → <strong>${fmtMoney(ctx.monto * (1 + ret), ctx.moneda)}</strong> ${ui.plazo === 'DIC27' ? 'a' : 'en'} ${plazoTexto(ui.plazo)}</p>
-        <div class="esc-supuestos">
-          <span>Inflación <em>${escHtml(x.sup.infl.origen)}</em></span><span>${fmtPctCom(x.inflH, 1, true)}</span>
-          <span>Dólar oficial <em>${escHtml(x.sup.ofi.origen)}</em></span><span>${fmtPctCom(x.ofiH, 1, true)}</span>
-          <span>Dólar MEP <em>${escHtml(x.sup.mep.origen)}</em></span><span>${fmtPctCom(x.mepH, 1, true)}</span>
-          <span>Tasa en pesos</span><span>${pp(e.delta.ARS)}</span>
-          <span>Tasa real CER</span><span>${pp(e.delta.CER)}</span>
-          <span>Tasa USD soberano</span><span>${pp(e.delta.SOB)}</span>
-        </div>
-      </div>`;
-  }).join('');
-
-  // --- Grafico
-  const canvas = el('Chart');
-  if(ui.chart) ui.chart.destroy();
-  ui.chart = new Chart(canvas.getContext('2d'), {
-    type: 'bar',
-    data: { labels: res.map(x => x.esc.nombre), datasets: datasetsBarrasEscenarios(res) },
-    options: opcionesBarrasEscenarios(),
-  });
-
-  // --- Detalle por fondo
-  el('DetalleHead').innerHTML =
-    `<tr><th>Fondo</th><th>Responde a</th><th class="num">% cartera</th>${res.map(x => `<th class="num">${escHtml(x.esc.nombre)}</th>`).join('')}</tr>`;
-  el('DetalleBody').innerHTML = rows.map((r, idx)=>{
-    const d0 = res[0].detalle[idx];
-    const celdas = res.map(x=>{
-      const d = x.detalle[idx];
-      return d.sinDato
-        ? '<td class="num"><span class="esc-ret" style="color:var(--muted)">s/d</span></td>'
-        : `<td class="num"><span class="esc-ret ${signoClase(d[vista])}">${fmtPctCom(d[vista], 1, true)}</span></td>`;
-    }).join('');
-    return `
-      <tr>
-        <td><div class="fondo-name">${fondoNameHtml(r.nombre)}</div></td>
-        <td>${d0.sinDato ? '<span style="color:var(--muted);font-size:12px;">Sin TIR</span>' : `<span class="base-chip base-chip-${d0.factor}" style="margin-left:0;cursor:default;">${FACTOR_NOMBRE[d0.factor]}</span>`}</td>
-        <td class="num">${r.pct}%</td>
-        ${celdas}
-      </tr>`;
-  }).join('');
-  el('DetalleFoot').innerHTML =
-    `<tr><td colspan="3">Cartera</td>${res.map(x => `<td class="num"><span class="esc-ret ${signoClase(x[vista])}">${fmtPctCom(x[vista], 1, true)}</span></td>`).join('')}</tr>`;
-  el('DetalleSub').textContent =
-    `Retorno estimado de cada fondo a ${plazoTexto(ui.plazo)}, expresado ${vista === 'usd' ? 'en dólares MEP' : 'en pesos'}.`;
-
-  // --- Anclas de mercado
-  const a = anclasMercado(anios);
-  const d = termometroDerivados();
-  const ancla = (titulo, valor, detalle)=> `
-    <div class="esc-ancla">
-      <div class="k-label">${titulo}</div>
-      <div class="k-valor">${valor == null ? 's/d' : fmtPctCom(valor, 1, true)}</div>
-      <div class="k-det">${detalle}</div>
-    </div>`;
-  el('Anclas').innerHTML = [
-    ancla('Inflación esperada (REM)', a.REM, 'Relevamiento del BCRA, próximos 12 meses'),
-    ancla('Inflación break-even', a.BE, `Tasa fija ${fmtPctCom(d.lecap, 1)} vs. CER +${fmtPctCom(d.cer, 1)}`),
-    ancla('Devaluación en futuros', a.FUT, `Curva de futuros de dólar, anualizada a ${plazoTexto(ui.plazo)}`),
-    ancla('Devaluación en dólar linked', a.DL, 'Tasa fija vs. TIR del fondo dólar linked'),
-  ].join('');
-  const mRem = merc('Inflación esperada 12m');
-  el('Fuentes').textContent =
-    `Fuentes: REM ${mRem && mRem.vivo ? 'en vivo de la API del BCRA' : 'cargado en comercial.xlsx'}${mRem && mRem.fecha ? ` (${mRem.fecha})` : ''} · `
-    + `futuros ${COMERCIAL.futurosVivo ? 'en vivo de Matba Rofex' : 'cargados en comercial.xlsx'}${COMERCIAL.futurosFecha ? ` (${COMERCIAL.futurosFecha})` : ''} · `
-    + 'tasas a 12 meses y cambios de tasa de cada escenario: comercial.xlsx.';
-}
-
-function renderEscenarios(){
-  const ctx = escContexto('esc');
-  const detallePerfil = isCustom() ? '' : ` · ${selection.perfil}${isModelo() ? '' : ` · ${HORIZONTE_LABELS[selection.horizonte] || ''}`}`;
-  const monedaLabel = esCable() ? 'Dólar Cable' : (esMonedaUSD(selection.moneda) ? 'Dólar MEP' : 'Pesos');
-  document.getElementById('escCartera').innerHTML =
-    `<strong>${escHtml(tituloCartera())}</strong>${escHtml(detallePerfil)}<br>${monedaLabel} · ${fmtMoney(ctx.monto, selection.moneda)} · ${ctx.rows.length} ${ctx.rows.length === 1 ? 'fondo' : 'fondos'}`;
-  renderEscBloque('esc');
-}
-
-// Los botones de plazo y vista se escuchan por delegacion en cada bloque
-['esc'].forEach(p=>{
-  const host = document.getElementById(p + 'Bloque');
-  host.innerHTML = escBloqueHtml(p);
-  host.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.range-btn');
-    if(!btn) return;
-    if(btn.dataset.plazo) ESC_UI[p].plazo = btn.dataset.plazo;
-    else if(btn.dataset.vista) ESC_UI[p].vista = btn.dataset.vista;
-    else return;
-    renderEscBloque(p);
-  });
-});
-document.getElementById('escIrCalculadora').addEventListener('click', ()=> activarTab('calculadora'));
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    if(btn.dataset.tab === 'escenarios') renderEscenarios();
     if(btn.dataset.tab === 'puente') renderPuente();
   });
 });
@@ -6658,7 +6018,7 @@ document.getElementById('pteMontoInput').addEventListener('input', (e)=>{
 /* PDF de la solapa del modelo: reusa el reporte de la calculadora. Mientras
    se genera se le presta al reporte el estado de esta solapa (cartera, moneda,
    monto y graficos) y al terminar se deja la calculadora como estaba. El PDF
-   lleva solo la cartera: los escenarios son material interno del asesor. */
+   lleva solo la cartera: el termometro y la cobertura son material del asesor. */
 let pdfDestino = 'calculadora';
 
 async function generarPdfPuente(clientName){
@@ -6703,8 +6063,6 @@ function initComercial(){
   const hayModelos = COMERCIAL.ok && COMERCIAL.ordenModelos.some(n => !COMERCIAL.modelos[n].enPestana);
   const btnModelo = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Modelo"]');
   if(btnModelo) btnModelo.dataset.disponible = hayModelos ? '1' : '0';
-  const tabEsc = document.querySelector('.tab-btn[data-tab="escenarios"]');
-  if(tabEsc) tabEsc.style.display = (COMERCIAL.ok && COMERCIAL.escenarios.length) ? '' : 'none';
 
   // Solapa propia del primer modelo con Ubicacion = "Pestaña"
   PTE.modelo = COMERCIAL.ordenModelos.find(n => COMERCIAL.modelos[n].enPestana) || null;
@@ -6720,26 +6078,28 @@ function initComercial(){
 /* =====================================================================
    REINVERSION DE CUPONES (vencimientos.xlsx)
 
-   Solapa con el calendario semanal de cobros (cupones, amortizaciones y
-   vencimientos) de los instrumentos mas operados, y la cartera de fondos
-   sugerida para reinvertirlos segun el perfil.
+   Solapa con los cobros de la semana (cupones, amortizaciones y
+   vencimientos) de los instrumentos mas operados, dia por dia, separados
+   entre lo que paga pesos y lo que paga dolares. El asesor carga los
+   nominales del cliente en el mismo cuadro y ahi mismo aparece el fondo
+   sugerido para reinvertir.
 
      - Hoja "Calendario" -> un renglon por pago
      - Hoja "Tipos"      -> argumento comercial por tipo de instrumento
-     - Hoja "Reglas"     -> fondos sugeridos por tipo y perfil
-     - Hoja "Config"     -> hasta que fecha el calendario esta completo
+     - Hoja "Reglas"     -> fondo sugerido por tipo de instrumento
+     - Hoja "Config"     -> hasta que fecha el calendario esta completo y
+                            corte de duration para las ON en dolares
 
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
-let REINV = { ok: false, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
-// objetivo: 'mantener' (fondo equivalente a lo que vencio) | 'liquidez' (fondo corto de la moneda)
-const CUP = { semana: 0, objetivo: 'mantener', moneda: 'todas', soloDestacados: true, montos: {} };
+let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
+const CUP = { semana: 0, soloDestacados: true, montos: {} };
 const CUP_SEMANAS = 10;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 function parseVencimientos(wb){
-  const out = { ok: true, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
+  const out = { ok: true, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
 
   hojaFilas(wb, 'Calendario').forEach(f=>{
     const fecha = fechaIsoDeCelda(f[0]);
@@ -6760,19 +6120,6 @@ function parseVencimientos(wb){
       duration: celdaNum(f[11]),
       durationOrigen: celdaTxt(f[12]),
       validado: false, tem: null,
-    });
-  });
-
-  // Flujos: total que paga el mercado por fecha, en millones de la moneda de cobro
-  hojaFilas(wb, 'Flujos').forEach(f=>{
-    const fecha = fechaIsoDeCelda(f[0]);
-    const monto = celdaNum(f[2]);
-    if(!fecha || !monto || monto <= 0) return;
-    const mon = claveTxt(f[1]);
-    out.flujos.push({
-      fecha, monto,
-      moneda: (mon.startsWith('p') || mon === 'ars') ? 'Pesos' : 'Dólar',
-      detalle: celdaTxt(f[3]), fuente: celdaTxt(f[4]),
     });
   });
 
@@ -6834,13 +6181,8 @@ function cupSemanas(){
   }
   return out;
 }
-function cupPasaFiltros(e){
-  if(CUP.soloDestacados && !e.destacado) return false;
-  if(CUP.moneda !== 'todas' && e.moneda !== CUP.moneda) return false;
-  return true;
-}
 function cupEventosDeSemana(s){
-  return REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && cupPasaFiltros(e));
+  return REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && (!CUP.soloDestacados || e.destacado));
 }
 function cupClave(e){
   return `${e.fecha}|${e.ticker}`;
@@ -6859,19 +6201,13 @@ function cupCobro(e){
   return pago == null ? v : v * pago / 100;
 }
 
-/* ---------------------------------------------------------------------
-   Fondo sugerido: uno por tipo de instrumento, segun el objetivo elegido.
-   Si el cliente cobra varios instrumentos, cada cobro va a su fondo y se
-   suma por fondo. Sin montos cargados se listan los fondos sin porcentajes.
---------------------------------------------------------------------- */
-/* Fondo para un cobro. En "mantener", los tipos que tienen un fondo corto
-   alternativo (hoy, las ON en dolares) se deciden por la duration del
-   instrumento: por debajo del corte va el fondo corto. Devuelve tambien la
-   clave del argumento a mostrar. */
+/* Fondo sugerido para un cobro: el equivalente a lo que vencio o pago cupon.
+   Los tipos que tienen un fondo corto alternativo (hoy, las ON en dolares)
+   se deciden por la duration del instrumento: por debajo del corte va el
+   fondo corto. Devuelve tambien la clave del argumento a mostrar. */
 function cupFondoDeEvento(e){
   const r = REINV.reglas[e.tipo];
   if(!r) return null;
-  if(CUP.objetivo === 'liquidez') return { fondo: resolverFondo(r.liquidez), arg: e.tipo };
   if(r.corto){
     if(e.duration == null) return { fondo: resolverFondo(r.mantener), arg: e.tipo, sinDuration: true };
     if(e.duration < REINV.corteDuration) return { fondo: resolverFondo(r.corto), arg: `${e.tipo} corta` };
@@ -6879,6 +6215,8 @@ function cupFondoDeEvento(e){
   return { fondo: resolverFondo(r.mantener), arg: e.tipo };
 }
 
+/* Fondos sugeridos para una moneda: cada cobro va a su fondo y se suma por
+   fondo. Sin nominales cargados se listan los fondos sin montos. */
 function cupCarteraSugerida(eventos, moneda){
   const evs = eventos.filter(e => e.moneda === moneda && cupFondoDeEvento(e));
   if(!evs.length) return null;
@@ -6925,152 +6263,15 @@ function cupRangoTexto(s){
 function cupTipoChip(tipo, moneda){
   return `<span class="cup-tipo ${moneda === 'Dólar' ? 'usd' : 'ars'}">${escHtml(tipo)}</span>`;
 }
-
-// "$ 37 billones" | "USD 1.200 M" (los montos de mercado vienen en millones)
-function cupMontoMercado(m, moneda){
-  if(moneda === 'Dólar') return `USD ${fmtNumCom(m, 0)} M`;
-  return m >= 1e6 ? `$ ${fmtNumCom(m / 1e6, 1)} billones` : `$ ${fmtNumCom(m, 0)} M`;
-}
-function cupFlujoSemana(s, moneda){
-  return REINV.flujos
-    .filter(f => f.moneda === moneda && f.fecha >= s.ini && f.fecha <= s.fin)
-    .reduce((a, f)=> a + f.monto, 0);
-}
-function cupOrdinal(n){
-  return `${n}.ª`;
-}
-
-/* Semanas fuertes: las tres con mas ingresos de cada moneda.
-   Si la moneda tiene montos de mercado cargados (hoja "Flujos") se ordena por
-   monto; si no, por cantidad de cobros, y cada vencimiento pesa triple porque
-   devuelve capital. Devuelve { idxSemana: [{ moneda, puesto, ... }] }. */
-function cupSemanasFuertes(semanas){
-  const out = {};
-  ['Pesos', 'Dólar'].forEach(moneda=>{
-    const porMonto = semanas.some(s => cupFlujoSemana(s, moneda) > 0);
-    semanas.map(s=>{
-      const evs = REINV.eventos.filter(e =>
-        e.fecha >= s.ini && e.fecha <= s.fin && e.moneda === moneda && (!CUP.soloDestacados || e.destacado));
-      const venc = evs.filter(e => /^venc/i.test(e.evento));
-      const flujo = cupFlujoSemana(s, moneda);
-      return {
-        idx: s.idx, semana: s, moneda, porMonto, flujo,
-        n: evs.length, venc: venc.map(e => e.ticker),
-        score: porMonto ? flujo : evs.length + 2 * venc.length,
-      };
-    })
-    .filter(x => x.score > 0)
-    .sort((a, b)=> (b.score - a.score) || (a.idx - b.idx))
-    .slice(0, 3)
-    .forEach((x, i)=>{
-      x.puesto = i + 1;
-      (out[x.idx] = out[x.idx] || []).push(x);
-    });
-  });
-  return out;
-}
-
 function cupTituloSemana(s){
   return s.idx === 0 ? 'Esta semana' : (s.idx === 1 ? 'Próxima semana' : `Semana del ${s.dIni.getDate()}/${s.dIni.getMonth() + 1}`);
 }
 
-/* Timeline: una fila por semana y una columna por dia habil. Cada cobro es
-   una etiqueta con el ticker: azul = paga pesos, verde = paga dolares; llena =
-   devuelve capital (vencimiento o amortizacion), contorno = solo cupon. */
-function renderCupSemanas(){
-  const semanas = cupSemanas();
-  const fuertes = cupSemanasFuertes(semanas);
-  const hoy = isoLocal(new Date());
-  const MAX_CHIPS = 16;
-
-  // Resumen de las semanas fuertes, pensado para leerlo en la call
-  const lista = (moneda)=>{
-    const items = Object.values(fuertes).flat().filter(x => x.moneda === moneda).sort((a, b)=> a.puesto - b.puesto);
-    if(!items.length) return '<p class="tl-res-vacio">Sin cobros cargados.</p>';
-    return '<ol>' + items.map(x=>{
-      const dato = x.porMonto
-        ? `≈ ${cupMontoMercado(x.flujo, moneda)}`
-        : `${x.n} ${x.n === 1 ? 'cobro' : 'cobros'}${x.venc.length ? ` · ${x.venc.length} ${x.venc.length === 1 ? 'vencimiento' : 'vencimientos'}` : ''}`;
-      return `<li><button type="button" class="cup-link" data-ir-semana="${x.idx}">${cupTituloSemana(x.semana)} (${cupRangoTexto(x.semana)})</button> <span class="tl-res-dato">${dato}</span>${x.venc.length ? `<span class="tl-res-venc">Vence: ${escHtml(x.venc.slice(0, 4).join(', '))}${x.venc.length > 4 ? ` +${x.venc.length - 4}` : ''}</span>` : ''}</li>`;
-    }).join('') + '</ol>';
-  };
-  const hayFlujo = (m)=> semanas.some(s => cupFlujoSemana(s, m) > 0);
-  document.getElementById('cupFuertes').innerHTML = `
-    <div class="tl-res ars">
-      <h3>Semanas fuertes en pesos</h3>
-      ${lista('Pesos')}
-      <p class="tl-res-nota">${hayFlujo('Pesos') ? 'Ordenadas por el total que vence en el mercado (estimaciones, incluyen tenencias del sector público).' : 'Ordenadas por cantidad de cobros; los vencimientos pesan triple.'}</p>
-    </div>
-    <div class="tl-res usd">
-      <h3>Semanas fuertes en dólares</h3>
-      ${lista('Dólar')}
-      <p class="tl-res-nota">${hayFlujo('Dólar') ? 'Ordenadas por el total que paga el mercado.' : 'Ordenadas por cantidad de cobros; los vencimientos pesan triple porque devuelven capital. No hay montos de mercado cargados.'}</p>
-    </div>`;
-
-  document.getElementById('cupSemanas').innerHTML = semanas.map(s=>{
-    const evs = cupEventosDeSemana(s);
-    const ars = evs.filter(e => e.moneda === 'Pesos').length;
-    const usd = evs.length - ars;
-    const sinDatos = !evs.length && REINV.completoHasta && s.fin > REINV.completoHasta;
-    const badges = (fuertes[s.idx] || [])
-      .filter(x => CUP.moneda === 'todas' || x.moneda === CUP.moneda)
-      .map(x => `<span class="tl-badge ${x.moneda === 'Dólar' ? 'usd' : 'ars'}">${cupOrdinal(x.puesto)} en ${x.moneda === 'Dólar' ? 'dólares' : 'pesos'}${x.porMonto ? ` · ≈ ${cupMontoMercado(x.flujo, x.moneda)}` : ''}</span>`)
-      .join('');
-
-    const dias = [];
-    for(let i = 0; i < 5; i++){
-      const d = new Date(s.dIni); d.setDate(s.dIni.getDate() + i);
-      const iso = isoLocal(d);
-      // Un cobro con fecha de fin de semana se muestra en el viernes
-      const delDia = evs.filter(e => e.fecha === iso || (i === 4 && e.fecha > iso));
-      const chips = delDia.slice(0, MAX_CHIPS).map(e=>{
-        const capital = (e.amort || 0) > 0 || /^venc/i.test(e.evento);
-        const pago = cupPagoCada100(e);
-        const tip = `${e.nombre} · ${e.evento}${pago != null ? ` · ${e.moneda === 'Dólar' ? 'USD' : '$'} ${fmtNumCom(pago, 2)} c/100 VN` : ''}`;
-        return `<span class="tl-chip ${e.moneda === 'Dólar' ? 'usd' : 'ars'}${capital ? ' capital' : ''}" title="${escHtml(tip)}">${escHtml(e.ticker)}</span>`;
-      }).join('');
-      const resto = delDia.length > MAX_CHIPS ? `<span class="tl-mas">+${delDia.length - MAX_CHIPS}</span>` : '';
-      const flujos = REINV.flujos.filter(f => f.fecha === iso && (CUP.moneda === 'todas' || f.moneda === CUP.moneda));
-      const flujoHtml = flujos.map(f => `<span class="tl-flujo" title="${escHtml(f.detalle + (f.fuente ? ' · ' + f.fuente : ''))}">≈ ${cupMontoMercado(f.monto, f.moneda)}</span>`).join('');
-      dias.push(`
-        <div class="tl-dia${iso === hoy ? ' hoy' : ''}${iso < hoy ? ' pasado' : ''}${delDia.length ? '' : ' vacio'}">
-          <span class="tl-dia-label">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${iso === hoy ? ' · hoy' : ''}</span>
-          ${flujoHtml}
-          <div class="tl-chips">${chips}${resto}</div>
-        </div>`);
-    }
-
-    return `
-      <div class="tl-fila cup-semana${s.idx === CUP.semana ? ' selected' : ''}${badges ? ' fuerte' : ''}" data-semana="${s.idx}" role="button" tabindex="0" aria-label="${cupTituloSemana(s)}, ${cupRangoTexto(s)}: ${evs.length} cobros">
-        <div class="tl-semana">
-          <strong>${cupTituloSemana(s)}</strong>
-          <span class="tl-rango">${cupRangoTexto(s)}</span>
-          <span class="tl-cuenta">${evs.length ? `${ars ? `Pesos ${ars}` : ''}${ars && usd ? ' · ' : ''}${usd ? `Dólares ${usd}` : ''}` : (sinDatos ? 'Sin datos cargados' : 'Sin cobros')}</span>
-          ${badges}
-        </div>
-        <div class="tl-dias">${dias.join('')}</div>
-      </div>`;
-  }).join('');
-}
-
-function cupElegirSemana(idx, irAlDetalle){
-  CUP.semana = idx;
-  renderCupSemanas();
-  renderCupTabla();
-  if(irAlDetalle){
-    const el = document.getElementById('cupGraficosCard');
-    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-
-/* ---------------------------------------------------------------------
-   Graficos de la semana: uno para lo que paga pesos y otro para lo que paga
-   dolares. Una barra por instrumento, agrupadas por dia; el largo es lo que
-   paga cada 100 nominales (escala logaritmica, para que un cupon de 0,50 y
-   un vencimiento de 130 se vean en el mismo grafico) y el tramo oscuro es
-   la parte que devuelve capital.
---------------------------------------------------------------------- */
-function cupGraficoHtml(evs, moneda){
+/* Un panel por moneda. Una fila por instrumento, agrupadas por dia: la barra
+   es lo que paga cada 100 nominales (escala logaritmica, para que un cupon de
+   0,50 y un vencimiento de 130 se vean juntos; el tramo oscuro es capital) y
+   al lado va el casillero para los nominales del cliente. */
+function cupPanelHtml(evs, moneda){
   const lista = evs.filter(e => e.moneda === moneda);
   const mon = moneda === 'Dólar' ? 'USD' : '$';
   const clase = moneda === 'Dólar' ? 'usd' : 'ars';
@@ -7082,15 +6283,17 @@ function cupGraficoHtml(evs, moneda){
   const piso = 0.1;
   const tope = Math.max(piso * 10, ...pagos);
   const ancho = (v)=> Math.max(3, Math.min(100, Math.log(v / piso) / Math.log(tope / piso) * 100));
-  const total = pagos.reduce((a, v)=> a + v, 0);
+  const hoy = isoLocal(new Date());
 
   let diaPrevio = null;
   const filas = lista.map(e=>{
     const d = fechaDeIso(e.fecha);
     const pago = cupPagoCada100(e);
+    const k = cupClave(e);
+    const cargado = CUP.montos[k] ? Number(CUP.montos[k]).toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
     let sep = '';
     if(e.fecha !== diaPrevio){
-      sep = `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}</div>`;
+      sep = `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${e.fecha === hoy ? ' · hoy' : (e.fecha < hoy ? ' · ya pagó' : '')}</div>`;
       diaPrevio = e.fecha;
     }
     let barra, valor;
@@ -7098,54 +6301,116 @@ function cupGraficoHtml(evs, moneda){
       barra = '<div class="cg-pista"><span class="cg-sin-dato"></span></div>';
       valor = '<span class="cg-valor sd">a confirmar</span>';
     } else {
-      const w = ancho(pago);
       const parteCapital = (e.amort || 0) / pago;
-      barra = `<div class="cg-pista"><span class="cg-barra" style="width:${w.toFixed(1)}%">`
+      barra = `<div class="cg-pista"><span class="cg-barra" style="width:${ancho(pago).toFixed(1)}%">`
         + (parteCapital > 0 ? `<i class="cap" style="width:${(parteCapital * 100).toFixed(1)}%"></i>` : '')
         + (parteCapital < 1 ? `<i class="ren" style="width:${((1 - parteCapital) * 100).toFixed(1)}%"></i>` : '')
         + '</span></div>';
       valor = `<span class="cg-valor">${mon} ${fmtNumCom(pago, 2)}</span>`
         + ((e.renta != null && e.amort) ? `<span class="cg-valor-det">renta ${fmtNumCom(e.renta, 2)} + capital ${fmtNumCom(e.amort, 2)}</span>` : '');
     }
+    const marca = e.validado
+      ? '<span class="cup-marca ok" title="Vencimiento verificado contra argentinadatos.com">✓</span>'
+      : (e.dato !== 'Publicado' ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '');
     return sep + `
       <div class="cg-fila">
         <div class="cg-inst">
-          <span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}
+          <span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}${marca}
           <span class="cg-nombre">${escHtml(e.nombre)} · ${escHtml(e.evento)}</span>
         </div>
         ${barra}
         <div class="cg-val">${valor}</div>
+        <div class="cg-entrada">
+          <input type="text" inputmode="numeric" class="cup-input" data-k="${escHtml(k)}" value="${cargado}"
+                 placeholder="${pago == null ? 'Monto ' + mon : 'Nominales'}" aria-label="${pago == null ? 'Monto que cobra' : 'Nominales del cliente'} ${escHtml(e.ticker)}" />
+          <span class="cg-cobro" data-cobro="${escHtml(k)}"></span>
+        </div>
       </div>`;
   }).join('');
 
   return `
     <div class="cg-panel ${clase}">
       <h3>${titulo}</h3>
-      <p class="cg-resumen">${lista.length} ${lista.length === 1 ? 'cobro' : 'cobros'}${total > 0 ? ` · suma de la semana: <strong>${mon} ${fmtNumCom(total, 2)}</strong> cada 100 VN de cada instrumento` : ''}</p>
+      <div class="cg-cab"><span>Instrumento</span><span></span><span>Paga c/100 VN</span><span>Nominales del cliente</span></div>
       ${filas}
+      <div class="cg-reco" data-reco="${moneda}"></div>
     </div>`;
 }
 
-function renderCupGraficos(){
+// Fondo o fondos sugeridos para lo que paga esa moneda en la semana
+function cupRecoHtml(evs, moneda){
+  const hayMontos = evs.some(e => e.moneda === moneda && cupCobro(e) > 0);
+  const c = cupCarteraSugerida(hayMontos ? evs.filter(e => cupCobro(e) > 0) : evs, moneda);
+  if(!c) return '';
+  const fondos = c.fondos.map(f=>{
+    const arg = f.args.map(a => (REINV.tipos[a] || REINV.tipos[a.replace(/ corta$/, '')] || {}).argumento || '').filter(Boolean)[0] || '';
+    const datos = [
+      (f.tir != null && isFinite(f.tir)) ? `TIR ${fmtTir(f.tir)}${f.base ? ' ' + f.base : ''}` : '',
+      (f.duration != null && isFinite(f.duration)) ? `duration ${fmtDuration(f.duration)}` : '',
+    ].filter(Boolean).join(' · ');
+    return `
+      <div class="cg-fondo">
+        <div class="cg-fondo-top">
+          <span class="fondo-name">${fondoNameHtml(f.nombre)}</span>
+          <span class="cg-fondo-monto">${c.conMonto ? fmtMoney(f.monto, c.moneda) : ''}</span>
+        </div>
+        <div class="cg-fondo-por">Por ${escHtml(f.tickers.slice(0, 5).join(', '))}${f.tickers.length > 5 ? ` +${f.tickers.length - 5}` : ''}${datos ? ` · ${datos}` : ''}</div>
+        ${arg ? `<p class="cg-fondo-arg">${escHtml(arg)}</p>` : ''}
+        ${f.sinDuration.length ? `<p class="cg-fondo-arg" style="color:#8A5A0F;">Sin duration cargada para ${escHtml(f.sinDuration.join(', '))}: se sugiere este fondo por defecto.</p>` : ''}
+        ${f.found ? '' : '<p class="cg-fondo-arg" style="color:var(--neg);">⚠ fondo no encontrado en los datos</p>'}
+      </div>`;
+  }).join('');
+  // Alternativa para quien prefiere manejar la liquidez del cobro
+  const sugeridos = new Set(c.fondos.map(f => f.nombre));
+  const liquidez = [...new Set(evs.filter(e => e.moneda === moneda && REINV.reglas[e.tipo]).map(e => resolverFondo(REINV.reglas[e.tipo].liquidez)))]
+    .filter(n => n && !sugeridos.has(n) && fundByName(n));
+  return `
+    <p class="semana-sub">${c.fondos.length === 1 ? 'Fondo sugerido' : 'Fondos sugeridos'} para reinvertir${c.conMonto ? ` · ${fmtMoney(c.total, c.moneda)}` : ''}</p>
+    ${fondos}
+    ${liquidez.length ? `<p class="cg-liquidez">Si el cliente prefiere manejar la liquidez del cobro: ${liquidez.map(n => escHtml(nombreFondoVisible(n))).join(' o ')}.</p>` : ''}`;
+}
+
+// Recalcula lo que depende de los nominales cargados, sin redibujar las filas
+function actualizarCup(){
+  const s = cupSemanas()[CUP.semana];
+  const evs = cupEventosDeSemana(s);
+  let ars = 0, usd = 0;
+  evs.forEach(e=>{
+    const c = cupCobro(e);
+    if(e.moneda === 'Dólar') usd += c; else ars += c;
+    const el = document.querySelector(`[data-cobro="${cupClave(e).replace(/"/g, '')}"]`);
+    if(el) el.textContent = c > 0 ? `cobra ${fmtMoney(c, e.moneda)}` : '';
+  });
+  document.querySelectorAll('#cupGraficos [data-reco]').forEach(el=>{
+    el.innerHTML = cupRecoHtml(evs, el.dataset.reco);
+  });
+
+  const monedas = ['Pesos', 'Dólar'].filter(m => cupCarteraSugerida(evs, m));
+  document.getElementById('cupAcciones').innerHTML = monedas.length ? `
+    <p class="cup-totales">${(ars > 0 || usd > 0)
+      ? `A reinvertir esta semana: ${ars > 0 ? `<strong>${fmtMoney(ars, 'Pesos')}</strong>` : ''}${ars > 0 && usd > 0 ? ' · ' : ''}${usd > 0 ? `<strong>${fmtMoney(usd, 'Dólar')}</strong>` : ''}`
+      : 'Cargá los nominales del cliente al lado de cada instrumento para ver cuánto cobra y cuánto va a cada fondo.'}</p>
+    <div class="cg-botones">
+      ${monedas.map(m => `<button type="button" class="btn-com" data-cup-abrir="${m}">Abrir en la calculadora · ${m === 'Dólar' ? 'dólares' : 'pesos'}</button>`).join('')}
+      ${Object.keys(CUP.montos).length ? '<button type="button" class="btn-com sec" id="cupLimpiar">Borrar nominales</button>' : ''}
+    </div>` : '';
+}
+
+function renderCupones(){
+  const panel = document.getElementById('tab-cupones');
+  if(!panel || !REINV.ok || !DATA.fondos.length) return;
   const semanas = cupSemanas();
   const s = semanas[CUP.semana];
   const evs = cupEventosDeSemana(s);
-  const sel = document.getElementById('cupSemanaSelect');
-  sel.innerHTML = semanas.map(x => `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${cupTituloSemana(x)} · ${cupRangoTexto(x)}</option>`).join('');
+
+  document.getElementById('cupSemanaSelect').innerHTML = semanas.map(x=>{
+    const n = cupEventosDeSemana(x).length;
+    return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
+  }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
-  const monedas = CUP.moneda === 'todas' ? ['Pesos', 'Dólar'] : [CUP.moneda];
-  document.getElementById('cupGraficos').innerHTML = monedas.map(m => cupGraficoHtml(evs, m)).join('');
-}
-
-function renderCupTabla(){
-  const s = cupSemanas()[CUP.semana];
-  const evs = cupEventosDeSemana(s);
-  const body = document.getElementById('cupTableBody');
-  const hoy = isoLocal(new Date());
-
-  document.getElementById('cupSemanaTitulo').textContent =
-    `${CUP.semana === 0 ? 'Esta semana' : (CUP.semana === 1 ? 'Próxima semana' : 'Semana')} · ${cupRangoTexto(s)} ${s.dFin.getFullYear()}`;
+  document.getElementById('cupSoloDestacados').checked = CUP.soloDestacados;
+  document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado}` : '';
 
   const aviso = document.getElementById('cupAvisoCobertura');
   const parcial = REINV.completoHasta && s.fin > REINV.completoHasta;
@@ -7154,142 +6419,21 @@ function renderCupTabla(){
     aviso.textContent = `El calendario está completo hasta el ${fechaCorta(REINV.completoHasta)}. ${s.ini > REINV.completoHasta ? 'Para esta semana' : 'Después de esa fecha'} solo figuran los vencimientos y cupones principales: puede haber otros pagos sin cargar.`;
   }
 
-  if(!evs.length){
-    body.innerHTML = `<tr><td colspan="6" class="cup-vacio">No hay cobros cargados para esta semana con los filtros elegidos.</td></tr>`;
-    renderCupGraficos();
-    actualizarCupCobros();
-    return;
-  }
-
-  let diaPrevio = null;
-  body.innerHTML = evs.map(e=>{
-    const d = fechaDeIso(e.fecha);
-    const pago = cupPagoCada100(e);
-    const mon = e.moneda === 'Dólar' ? 'USD' : '$';
-    const k = cupClave(e);
-    const valor = CUP.montos[k] ? Number(CUP.montos[k]).toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
-    const pasado = e.fecha < hoy;
-    let sep = '';
-    if(e.fecha !== diaPrevio){
-      sep = `<tr class="cup-dia"><td colspan="6">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${e.fecha === hoy ? ' · hoy' : (pasado ? ' · ya pagó' : '')}</td></tr>`;
-      diaPrevio = e.fecha;
-    }
-    const detallePago = pago == null
-      ? '<span class="cup-sd">a confirmar</span>'
-      : `<span class="cup-pago">${mon} ${fmtNumCom(pago, 2)}</span>${(e.renta != null && e.amort) ? `<span class="cup-pago-det">renta ${fmtNumCom(e.renta, 2)} + capital ${fmtNumCom(e.amort, 2)}</span>` : ''}`;
-    const marca = e.validado
-      ? '<span class="cup-marca ok" title="Vencimiento verificado contra argentinadatos.com">✓</span>'
-      : (e.dato !== 'Publicado' ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '');
-    return sep + `
-      <tr>
-        <td>
-          <div class="cup-ticker">${escHtml(e.ticker)} ${marca}</div>
-          <div class="cup-nombre">${escHtml(e.nombre)}${e.tem != null ? ` · TEM ${fmtNumCom(e.tem, 2)}%` : ''}${(e.duration != null && e.duration > 0) ? ` · <span title="${escHtml(e.durationOrigen)}">duration ${fmtNumCom(e.duration, 1)}${/^estim/i.test(e.durationOrigen) ? ' (est.)' : ''}</span>` : ''}</div>
-        </td>
-        <td data-label="Tipo">${cupTipoChip(e.tipo, e.moneda)}</td>
-        <td data-label="Evento">${escHtml(e.evento)}</td>
-        <td class="num" data-label="Paga c/100 VN">${detallePago}</td>
-        <td class="num" data-label="${pago == null ? 'Monto que cobra' : 'Nominales del cliente'}">
-          <input type="text" inputmode="numeric" class="cup-input" data-k="${escHtml(k)}" value="${valor}"
-                 placeholder="${pago == null ? 'Monto ' + mon : 'VN'}" aria-label="${pago == null ? 'Monto que cobra' : 'Nominales'} ${escHtml(e.ticker)}" />
-        </td>
-        <td class="num" data-label="Cobra"><span class="cup-cobro" data-cobro="${escHtml(k)}"></span></td>
-      </tr>`;
-  }).join('');
-  renderCupGraficos();
-  actualizarCupCobros();
+  document.getElementById('cupGraficos').innerHTML = ['Pesos', 'Dólar'].map(m => cupPanelHtml(evs, m)).join('');
+  actualizarCup();
 }
 
-// Recalcula lo que depende de los nominales cargados, sin redibujar la tabla
-function actualizarCupCobros(){
-  const s = cupSemanas()[CUP.semana];
-  const evs = cupEventosDeSemana(s);
-  let ars = 0, usd = 0;
-  evs.forEach(e=>{
-    const c = cupCobro(e);
-    if(e.moneda === 'Dólar') usd += c; else ars += c;
-    const el = document.querySelector(`[data-cobro="${cupClave(e).replace(/"/g, '')}"]`);
-    if(el) el.textContent = c > 0 ? fmtMoney(c, e.moneda) : '—';
-  });
-  document.getElementById('cupTotales').innerHTML = (ars > 0 || usd > 0)
-    ? `A reinvertir esta semana: ${ars > 0 ? `<strong>${fmtMoney(ars, 'Pesos')}</strong>` : ''}${ars > 0 && usd > 0 ? ' · ' : ''}${usd > 0 ? `<strong>${fmtMoney(usd, 'Dólar')}</strong>` : ''}`
-    : 'Cargá los nominales que tiene el cliente para ver cuánto cobra y cuánto va a cada fondo. Sin nominales se muestra el fondo sugerido para cada tipo de instrumento que paga en la semana.';
-  renderCupReco(evs);
+function cupElegirSemana(idx){
+  CUP.semana = Math.max(0, Math.min(CUP_SEMANAS - 1, idx));
+  renderCupones();
 }
 
-function renderCupReco(evs){
-  const cont = document.getElementById('cupReco');
-  const hayMontos = evs.some(e => cupCobro(e) > 0);
-  // Con montos cargados, la recomendacion es solo sobre lo que el cliente cobra
-  const base = hayMontos ? evs.filter(e => cupCobro(e) > 0) : evs;
-  const carteras = ['Pesos', 'Dólar'].map(m => cupCarteraSugerida(base, m)).filter(Boolean);
-  const liquidez = CUP.objetivo === 'liquidez';
-
-  document.getElementById('cupRecoSub').textContent = liquidez
-    ? 'Para manejar la liquidez del cobro: el fondo corto de la misma moneda, mientras el cliente decide el destino final.'
-    : `Para mantener la exposición: cada cobro va al fondo equivalente a lo que venció o pagó cupón. En las ON en dólares decide la duration de la ON: menos de ${fmtNumCom(REINV.corteDuration, REINV.corteDuration % 1 ? 1 : 0)} años va al fondo corto; ${fmtNumCom(REINV.corteDuration, REINV.corteDuration % 1 ? 1 : 0)} años o más, al corporativo.`;
-
-  if(!carteras.length){
-    cont.innerHTML = '<p class="cup-vacio">No hay cobros en la semana elegida para armar una recomendación.</p>';
-    return;
-  }
-
-  cont.innerHTML = carteras.map(c=>{
-    const filas = c.fondos.map(f=> `
-      <tr>
-        <td>
-          <div class="fondo-name">${fondoNameHtml(f.nombre)}</div>
-          <div class="cup-nombre">Por: ${escHtml(f.tipos.join(', '))} (${escHtml(f.tickers.slice(0, 4).join(', '))}${f.tickers.length > 4 ? ` +${f.tickers.length - 4}` : ''})</div>
-          ${f.sinDuration.length ? `<div class="cup-nombre" style="color:#8A5A0F;">Sin duration cargada: ${escHtml(f.sinDuration.join(', '))}</div>` : ''}
-          ${f.found ? '' : '<div style="font-size:11px;color:var(--neg);">⚠ fondo no encontrado en los datos</div>'}
-        </td>
-        <td class="num"><span class="cup-mono">${f.tir != null && isFinite(f.tir) ? fmtTir(f.tir) : '—'}</span>${f.base ? `<span class="base-chip base-chip-${f.base}" style="cursor:default;">${f.base}</span>` : ''}</td>
-        <td class="num"><span class="cup-mono">${f.duration != null && isFinite(f.duration) ? fmtDuration(f.duration) : '—'}</span></td>
-        <td class="num"><span class="cup-mono">${c.conMonto ? fmtMoney(f.monto, c.moneda) : '—'}</span></td>
-      </tr>`).join('');
-    // Argumentos: el de liquidez de la moneda, o el de cada tipo que cobra
-    const args = liquidez
-      ? [['Liquidez', (REINV.tipos[`Liquidez ${c.moneda}`] || {}).argumento || '']]
-      : [...new Set(c.fondos.flatMap(f => f.args))].map(t => [t, (REINV.tipos[t] || REINV.tipos[t.replace(/ corta$/, '')] || {}).argumento || '']);
-    const porque = args.filter(a => a[1]).map(([t, txt])=> `<li>${cupTipoChip(t, c.moneda)}<p>${escHtml(txt)}</p></li>`).join('');
-    return `
-      <div class="cup-reco-card">
-        <div class="cup-reco-head">
-          <div>
-            <h3>Cobros en ${c.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h3>
-            <p>${c.conMonto ? `${fmtMoney(c.total, c.moneda)} a reinvertir` : 'Sin nominales cargados: fondo sugerido por tipo de instrumento'}</p>
-          </div>
-          <button type="button" class="btn-com" data-cup-abrir="${c.moneda}">Abrir en la calculadora</button>
-        </div>
-        <div style="overflow-x:auto;">
-          <table class="cup-reco-table">
-            <thead><tr><th>Fondo sugerido</th><th class="num">TIR</th><th class="num">Duration</th><th class="num">Monto</th></tr></thead>
-            <tbody>${filas}</tbody>
-          </table>
-        </div>
-        ${porque ? `<p class="semana-sub" style="margin-top:14px;">Por qué</p><ul class="cup-porque">${porque}</ul>` : ''}
-      </div>`;
-  }).join('');
-}
-
-function renderCupones(){
-  const panel = document.getElementById('tab-cupones');
-  if(!panel || !REINV.ok || !DATA.fondos.length) return;
-  document.querySelectorAll('#cupObjetivoOptions .option-btn').forEach(b => b.classList.toggle('selected', b.dataset.objetivo === CUP.objetivo));
-  document.querySelectorAll('#cupMonedaBtns .range-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === CUP.moneda));
-  document.getElementById('cupSoloDestacados').checked = CUP.soloDestacados;
-  document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado}` : '';
-  renderCupSemanas();
-  renderCupTabla();
-}
-
-/* Lleva la cartera sugerida a la calculadora como cartera personalizada:
-   desde ahi el asesor la ajusta, baja el PDF con el nombre del cliente y
-   la ve en la solapa Escenarios 2027. */
+/* Lleva los fondos sugeridos a la calculadora como cartera personalizada:
+   desde ahi el asesor ajusta los pesos y baja el PDF con el nombre del cliente. */
 function cupAbrirEnCalculadora(moneda){
   const s = cupSemanas()[CUP.semana];
   const evs = cupEventosDeSemana(s);
-  const hayMontos = evs.some(e => cupCobro(e) > 0);
+  const hayMontos = evs.some(e => e.moneda === moneda && cupCobro(e) > 0);
   const c = cupCarteraSugerida(hayMontos ? evs.filter(e => cupCobro(e) > 0) : evs, moneda);
   if(!c) return;
   selection.moneda = moneda;
@@ -7345,56 +6489,166 @@ function initCupones(){
   CUP.semana = primera ? primera.idx : 0;
 }
 
-document.getElementById('cupSemanas').addEventListener('click', (e)=>{
-  const fila = e.target.closest('.cup-semana');
-  if(fila) cupElegirSemana(parseInt(fila.dataset.semana, 10) || 0, true);
-});
-document.getElementById('cupSemanas').addEventListener('keydown', (e)=>{
-  if(e.key !== 'Enter' && e.key !== ' ') return;
-  const fila = e.target.closest('.cup-semana');
-  if(!fila) return;
-  e.preventDefault();
-  cupElegirSemana(parseInt(fila.dataset.semana, 10) || 0, true);
-});
-document.getElementById('cupFuertes').addEventListener('click', (e)=>{
-  const btn = e.target.closest('[data-ir-semana]');
-  if(btn) cupElegirSemana(parseInt(btn.dataset.irSemana, 10) || 0, true);
-});
-document.querySelectorAll('#cupObjetivoOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ CUP.objetivo = btn.dataset.objetivo; renderCupones(); });
-});
-document.querySelectorAll('#cupMonedaBtns .range-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ CUP.moneda = btn.dataset.moneda; renderCupones(); });
-});
+document.getElementById('cupPrev').addEventListener('click', ()=> cupElegirSemana(CUP.semana - 1));
+document.getElementById('cupNext').addEventListener('click', ()=> cupElegirSemana(CUP.semana + 1));
+document.getElementById('cupSemanaSelect').addEventListener('change', (e)=> cupElegirSemana(parseInt(e.target.value, 10) || 0));
 document.getElementById('cupSoloDestacados').addEventListener('change', (e)=>{
   CUP.soloDestacados = e.target.checked;
   renderCupones();
 });
-document.getElementById('cupTableBody').addEventListener('input', (e)=>{
+document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   const inp = e.target.closest('.cup-input');
   if(!inp) return;
-  CUP.montos[inp.dataset.k] = formatMontoInput(inp);
-  actualizarCupCobros();
+  const v = formatMontoInput(inp);
+  if(v > 0) CUP.montos[inp.dataset.k] = v; else delete CUP.montos[inp.dataset.k];
+  actualizarCup();
 });
-document.getElementById('cupPrev').addEventListener('click', ()=>{
-  if(CUP.semana > 0) cupElegirSemana(CUP.semana - 1, false);
-});
-document.getElementById('cupNext').addEventListener('click', ()=>{
-  if(CUP.semana < CUP_SEMANAS - 1) cupElegirSemana(CUP.semana + 1, false);
-});
-document.getElementById('cupSemanaSelect').addEventListener('change', (e)=>{
-  cupElegirSemana(parseInt(e.target.value, 10) || 0, false);
-});
-document.getElementById('cupLimpiar').addEventListener('click', ()=>{
-  CUP.montos = {};
-  renderCupTabla();
-});
-document.getElementById('cupReco').addEventListener('click', (e)=>{
-  const btn = e.target.closest('[data-cup-abrir]');
-  if(btn) cupAbrirEnCalculadora(btn.dataset.cupAbrir);
+document.getElementById('cupAcciones').addEventListener('click', (e)=>{
+  const abrir = e.target.closest('[data-cup-abrir]');
+  if(abrir){ cupAbrirEnCalculadora(abrir.dataset.cupAbrir); return; }
+  if(e.target.closest('#cupLimpiar')){ CUP.montos = {}; renderCupones(); }
 });
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
+});
+
+/* =====================================================================
+   COMPARADOR DE FONDOS: lineas de referencia (dolar MEP e inflacion)
+
+   Se pueden sumar al grafico del comparador de fondos en pesos. Las series
+   se piden una sola vez, la primera vez que se tilda una opcion: primero al
+   proxy propio (/api/series) y, si no responde, directo a argentinadatos.com.
+     - Dolar MEP: cierre diario; la linea es su variacion desde el dia base.
+     - Inflacion: dato mensual del INDEC, repartido dia a dia dentro de cada
+       mes. Los meses todavia no publicados se estiman con el ultimo dato.
+===================================================================== */
+const API_SERIES = '/api/series';
+const API_MEP_HIST = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/bolsa';
+const API_INFLACION = 'https://api.argentinadatos.com/v1/finanzas/indices/inflacion';
+const COMP_REF = { mep: false, inflacion: false, estado: 'sin-cargar', series: null };
+
+function cargarSeriesReferencia(){
+  if(COMP_REF.estado === 'ok' || COMP_REF.estado === 'cargando') return Promise.resolve();
+  COMP_REF.estado = 'cargando';
+  const normalizar = (mep, infl)=>{
+    const out = { mep: [], inflacion: [] };
+    (Array.isArray(mep) ? mep : []).forEach(x=>{
+      const v = Number(x && (x.venta != null ? x.venta : x.valor));
+      if(x && x.fecha && v > 0) out.mep.push([String(x.fecha).slice(0, 10), v]);
+    });
+    (Array.isArray(infl) ? infl : []).forEach(x=>{
+      const v = Number(x && x.valor);
+      if(x && x.fecha && isFinite(v)) out.inflacion.push([String(x.fecha).slice(0, 10), v]);
+    });
+    out.mep.sort((a, b)=> a[0] < b[0] ? -1 : 1);
+    out.inflacion.sort((a, b)=> a[0] < b[0] ? -1 : 1);
+    return out;
+  };
+  return jsonConTimeout(API_SERIES, 12000)
+    .then(d=>{
+      if(d && Array.isArray(d.mep) && d.mep.length && Array.isArray(d.inflacion) && d.inflacion.length) return normalizar(d.mep, d.inflacion);
+      return Promise.all([jsonConTimeout(API_MEP_HIST, 15000), jsonConTimeout(API_INFLACION, 15000)])
+        .then(([mep, infl])=> normalizar(mep, infl));
+    })
+    .then(series=>{
+      COMP_REF.series = series;
+      COMP_REF.estado = (series.mep.length || series.inflacion.length) ? 'ok' : 'error';
+    })
+    .catch(()=>{ COMP_REF.estado = 'error'; });
+}
+
+// Variacion % del MEP desde el dia base, para cada fecha del grafico
+function serieMepComparador(isoDates){
+  const mep = COMP_REF.series ? COMP_REF.series.mep : [];
+  if(!mep.length) return null;
+  let j = 0, ultimo = null, base = null;
+  const out = isoDates.map(iso=>{
+    while(j < mep.length && mep[j][0] <= iso){ ultimo = mep[j][1]; j++; }
+    if(ultimo == null) return null;
+    if(base == null) base = ultimo;
+    return +((ultimo / base - 1) * 100).toFixed(3);
+  });
+  return out.some(v => v != null) ? out : null;
+}
+
+/* Inflacion acumulada desde el dia base. Cada dato mensual se reparte en
+   forma pareja entre los dias del mes; devuelve ademas desde que fecha la
+   linea es estimada (meses sin dato publicado). */
+function serieInflacionComparador(isoDates){
+  const infl = COMP_REF.series ? COMP_REF.series.inflacion : [];
+  if(!infl.length || !isoDates.length) return null;
+  const porMes = {};
+  infl.forEach(([fecha, v])=>{ porMes[fecha.slice(0, 7)] = v / 100; });
+  const ultimoMes = infl[infl.length - 1][0].slice(0, 7);
+  const ultimoValor = infl[infl.length - 1][1] / 100;
+  const diasDelMes = (ym)=> new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0).getDate();
+  // Logaritmo del indice de precios al cierre de un dia
+  const logIndice = (iso)=>{
+    const ym = iso.slice(0, 7);
+    let acum = 0;
+    // meses completos desde el primer mes del grafico hasta el anterior a "ym"
+    let cur = isoDates[0].slice(0, 7);
+    while(cur < ym){
+      acum += Math.log(1 + (porMes[cur] != null ? porMes[cur] : ultimoValor));
+      const y = Number(cur.slice(0, 4)), m = Number(cur.slice(5, 7));
+      cur = m === 12 ? `${y + 1}-01` : `${y}-${dosDigitos(m + 1)}`;
+    }
+    const tasa = porMes[ym] != null ? porMes[ym] : ultimoValor;
+    return acum + Math.log(1 + tasa) * (Number(iso.slice(8, 10)) / diasDelMes(ym));
+  };
+  const base = logIndice(isoDates[0]);
+  const desdeEstimado = isoDates.findIndex(iso => iso.slice(0, 7) > ultimoMes);
+  return {
+    data: isoDates.map(iso => +((Math.exp(logIndice(iso) - base) - 1) * 100).toFixed(3)),
+    desdeEstimado,
+    ultimoMes,
+  };
+}
+
+// Lineas extra para el grafico del comparador (se agregan despues de los fondos)
+function datasetsReferencia(isoDates){
+  const out = [];
+  const nota = document.getElementById('compRefNota');
+  const notas = [];
+  const disponible = fondosMoneda === 'Pesos';
+  document.getElementById('compRefRow').style.display = disponible ? '' : 'none';
+  if(disponible && COMP_REF.estado === 'ok'){
+    const base = { borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, fill: false, tension: 0.15 };
+    if(COMP_REF.mep){
+      const data = serieMepComparador(isoDates);
+      if(data) out.push(Object.assign({ label: 'Dólar MEP', data, borderColor: '#0F8A5F', backgroundColor: '#0F8A5F', borderDash: [6, 4] }, base));
+      else notas.push('No hay datos del dólar MEP para este período.');
+    }
+    if(COMP_REF.inflacion){
+      const r = serieInflacionComparador(isoDates);
+      if(r){
+        out.push(Object.assign({
+          label: 'Inflación', data: r.data, borderColor: '#C43D3D', backgroundColor: '#C43D3D', borderDash: [2, 3],
+        }, base));
+        if(r.desdeEstimado >= 0){
+          notas.push(`Inflación: último dato publicado, ${monthLabel(r.ultimoMes + '-01')}; desde el ${fmtDateShort(isoDates[r.desdeEstimado])} está estimada repitiendo ese dato mensual.`);
+        }
+      } else notas.push('No hay datos de inflación para este período.');
+    }
+  }
+  if(COMP_REF.estado === 'cargando') notas.push('Cargando series…');
+  if(COMP_REF.estado === 'error' && (COMP_REF.mep || COMP_REF.inflacion)) notas.push('No se pudieron cargar las series del dólar MEP y de la inflación. Probá de nuevo en unos minutos.');
+  if(nota){ nota.textContent = notas.join(' '); nota.style.display = notas.length ? '' : 'none'; }
+  return out;
+}
+
+document.querySelectorAll('#compRefRow input[type="checkbox"]').forEach(chk=>{
+  chk.addEventListener('change', ()=>{
+    COMP_REF[chk.dataset.ref] = chk.checked;
+    if(chk.checked && COMP_REF.estado !== 'ok'){
+      if(COMP_REF.estado === 'error') COMP_REF.estado = 'sin-cargar';
+      const p = cargarSeriesReferencia();
+      renderFundComparison();
+      p.then(renderFundComparison);
+    } else {
+      renderFundComparison();
+    }
+  });
 });
 
 /* ---------------------------------------------------------------------
