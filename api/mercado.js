@@ -6,7 +6,8 @@
      { generado, dolares:{ mep, ccl, mayorista, fecha, fechaMayorista },
        riesgoPais:{ valor, fecha },
        bcra:{ a3500, a3500Fecha, rem, remFecha },
-       futuros:{ fecha, contratos:[{ venc, precio }] } }
+       futuros:{ fecha, contratos:[{ venc, precio }] },
+       letras:[{ ticker, venc, tem }] }
 
    Asi el navegador no depende de que cada fuente permita pedidos desde otro
    dominio (CORS), y Vercel cachea la respuesta 15 minutos. Si una fuente
@@ -19,6 +20,7 @@ const FUENTES = {
   riesgoPais: 'https://api.argentinadatos.com/v1/finanzas/indices/riesgo-pais/ultimo',
   bcra: 'https://api.bcra.gob.ar/estadisticas/v4.0/monetarias',
   futuros: 'https://apicem.matbarofex.com.ar/api/v2/closing-prices',
+  letras: 'https://api.argentinadatos.com/v1/finanzas/letras',
 };
 
 async function traer(url, ms = 7000) {
@@ -50,8 +52,8 @@ module.exports = async (req, res) => {
   const urlFuturos = `${FUENTES.futuros}?product=DLR&segment=Monedas&type=FUT&excludeEmptyVol=false`
     + `&from=${iso(desde)}&to=${iso(hasta)}&page=1&pageSize=200&sortDir=DESC`;
 
-  const [dol, rp, bcra, fut] = await Promise.all([
-    traer(FUENTES.dolares), traer(FUENTES.riesgoPais), traer(FUENTES.bcra), traer(urlFuturos),
+  const [dol, rp, bcra, fut, letras] = await Promise.all([
+    traer(FUENTES.dolares), traer(FUENTES.riesgoPais), traer(FUENTES.bcra), traer(urlFuturos), traer(FUENTES.letras),
   ]);
 
   const out = { generado: new Date().toISOString() };
@@ -89,6 +91,13 @@ module.exports = async (req, res) => {
         .filter((x) => x.venc && x.precio > 0)
         .sort((a, b) => (a.venc < b.venc ? -1 : 1)),
     };
+  }
+
+  // Lecap y Boncap vigentes: la solapa Reinversion de cupones cruza sus vencimientos
+  if (letras && Array.isArray(letras.letras)) {
+    out.letras = letras.letras
+      .map((x) => ({ ticker: x.ticker, venc: x.fechaVencimiento, tem: Number(x.temPorcentaje) }))
+      .filter((x) => x.ticker && x.venc);
   }
 
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=3600');
