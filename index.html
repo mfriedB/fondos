@@ -1407,9 +1407,10 @@
   #pteTable tfoot td:last-child{ font-family:'JetBrains Mono',monospace; font-size:15px; }
 
   /* --- Termometro dentro de Carteras Post-Elecciones --- */
-  .termo-curva{ display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); gap:22px; align-items:end; }
+  .termo-curva{ display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); gap:22px; align-items:stretch; }
   @media (max-width:980px){ .termo-curva{ grid-template-columns:1fr; } }
-  .termo-chart-wrap{ position:relative; height:270px; }
+  .termo-chart-wrap{ position:relative; min-height:320px; height:100%; }
+  .termo-chart-wrap canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; }
   .termo-hitos{ width:100%; border-collapse:collapse; }
   .termo-hitos th{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); }
   .termo-hitos td{ padding:8px; border-bottom:1px solid #EBEFF9; font-size:12.5px; white-space:nowrap; }
