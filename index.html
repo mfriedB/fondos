@@ -6734,7 +6734,7 @@ function initComercial(){
 
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
-let REINV = { ok: false, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
+let REINV = { ok: false, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
 // objetivo: 'mantener' (fondo equivalente a lo que vencio) | 'liquidez' (fondo corto de la moneda)
 const CUP = { semana: 0, objetivo: 'mantener', moneda: 'todas', soloDestacados: true, montos: {} };
 const CUP_SEMANAS = 10;
@@ -6742,7 +6742,7 @@ const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 function parseVencimientos(wb){
-  const out = { ok: true, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
+  const out = { ok: true, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
 
   hojaFilas(wb, 'Calendario').forEach(f=>{
     const fecha = fechaIsoDeCelda(f[0]);
@@ -6760,6 +6760,8 @@ function parseVencimientos(wb){
       destacado: claveTxt(f[8]).startsWith('s'),
       dato: celdaTxt(f[9]) || 'Publicado',
       fuente: celdaTxt(f[10]),
+      duration: celdaNum(f[11]),
+      durationOrigen: celdaTxt(f[12]),
       validado: false, tem: null,
     });
   });
@@ -6788,13 +6790,14 @@ function parseVencimientos(wb){
     const tipo = celdaTxt(f[0]);
     const mantener = celdaTxt(f[1]);
     if(!tipo || claveTxt(tipo) === 'tipo' || !mantener) return;
-    out.reglas[tipo] = { mantener, liquidez: celdaTxt(f[2]) || mantener };
+    out.reglas[tipo] = { mantener, liquidez: celdaTxt(f[2]) || mantener, corto: celdaTxt(f[3]) || null };
   });
 
   hojaFilas(wb, 'Config').forEach(f=>{
     const k = claveTxt(f[0]);
     if(k.startsWith('calendario completo')) out.completoHasta = fechaIsoDeCelda(f[1]);
     else if(k.startsWith('actualizado')) out.actualizado = celdaTxt(f[1]);
+    else if(k.startsWith('corte de duration')){ const c = celdaNum(f[1]); if(c != null && c > 0) out.corteDuration = c; }
   });
 
   out.eventos.sort((a, b)=> a.fecha < b.fecha ? -1 : (a.fecha > b.fecha ? 1 : 0));
@@ -6864,13 +6867,23 @@ function cupCobro(e){
    Si el cliente cobra varios instrumentos, cada cobro va a su fondo y se
    suma por fondo. Sin montos cargados se listan los fondos sin porcentajes.
 --------------------------------------------------------------------- */
-function cupFondoDeTipo(tipo){
-  const r = REINV.reglas[tipo];
-  return r ? resolverFondo(CUP.objetivo === 'liquidez' ? r.liquidez : r.mantener) : null;
+/* Fondo para un cobro. En "mantener", los tipos que tienen un fondo corto
+   alternativo (hoy, las ON en dolares) se deciden por la duration del
+   instrumento: por debajo del corte va el fondo corto. Devuelve tambien la
+   clave del argumento a mostrar. */
+function cupFondoDeEvento(e){
+  const r = REINV.reglas[e.tipo];
+  if(!r) return null;
+  if(CUP.objetivo === 'liquidez') return { fondo: resolverFondo(r.liquidez), arg: e.tipo };
+  if(r.corto){
+    if(e.duration == null) return { fondo: resolverFondo(r.mantener), arg: e.tipo, sinDuration: true };
+    if(e.duration < REINV.corteDuration) return { fondo: resolverFondo(r.corto), arg: `${e.tipo} corta` };
+  }
+  return { fondo: resolverFondo(r.mantener), arg: e.tipo };
 }
 
 function cupCarteraSugerida(eventos, moneda){
-  const evs = eventos.filter(e => e.moneda === moneda && cupFondoDeTipo(e.tipo));
+  const evs = eventos.filter(e => e.moneda === moneda && cupFondoDeEvento(e));
   if(!evs.length) return null;
   const total = evs.reduce((a, e)=> a + cupCobro(e), 0);
   const conMonto = total > 0;
@@ -6878,9 +6891,12 @@ function cupCarteraSugerida(eventos, moneda){
   evs.forEach(e=>{
     const c = cupCobro(e);
     if(conMonto && c <= 0) return;
-    const nombre = cupFondoDeTipo(e.tipo);
-    const it = porFondo.get(nombre) || { nombre, monto: 0, tipos: [], tickers: [] };
+    const sug = cupFondoDeEvento(e);
+    const nombre = sug.fondo;
+    const it = porFondo.get(nombre) || { nombre, monto: 0, tipos: [], tickers: [], args: [], sinDuration: [] };
     it.monto += c;
+    if(!it.args.includes(sug.arg)) it.args.push(sug.arg);
+    if(sug.sinDuration && !it.sinDuration.includes(e.ticker)) it.sinDuration.push(e.ticker);
     if(!it.tipos.includes(e.tipo)) it.tipos.push(e.tipo);
     if(!it.tickers.includes(e.ticker)) it.tickers.push(e.ticker);
     porFondo.set(nombre, it);
@@ -7094,7 +7110,7 @@ function renderCupTabla(){
       <tr>
         <td>
           <div class="cup-ticker">${escHtml(e.ticker)} ${marca}</div>
-          <div class="cup-nombre">${escHtml(e.nombre)}${e.tem != null ? ` · TEM ${fmtNumCom(e.tem, 2)}%` : ''}</div>
+          <div class="cup-nombre">${escHtml(e.nombre)}${e.tem != null ? ` · TEM ${fmtNumCom(e.tem, 2)}%` : ''}${(e.duration != null && e.duration > 0) ? ` · <span title="${escHtml(e.durationOrigen)}">duration ${fmtNumCom(e.duration, 1)}${/^estim/i.test(e.durationOrigen) ? ' (est.)' : ''}</span>` : ''}</div>
         </td>
         <td data-label="Tipo">${cupTipoChip(e.tipo, e.moneda)}</td>
         <td data-label="Evento">${escHtml(e.evento)}</td>
@@ -7136,7 +7152,7 @@ function renderCupReco(evs){
 
   document.getElementById('cupRecoSub').textContent = liquidez
     ? 'Para manejar la liquidez del cobro: el fondo corto de la misma moneda, mientras el cliente decide el destino final.'
-    : 'Para mantener la exposición: cada cobro va al fondo equivalente a lo que venció o pagó cupón.';
+    : `Para mantener la exposición: cada cobro va al fondo equivalente a lo que venció o pagó cupón. En las ON en dólares decide la duration de la ON: menos de ${fmtNumCom(REINV.corteDuration, REINV.corteDuration % 1 ? 1 : 0)} años va al fondo corto; ${fmtNumCom(REINV.corteDuration, REINV.corteDuration % 1 ? 1 : 0)} años o más, al corporativo.`;
 
   if(!carteras.length){
     cont.innerHTML = '<p class="cup-vacio">No hay cobros en la semana elegida para armar una recomendación.</p>';
@@ -7149,6 +7165,7 @@ function renderCupReco(evs){
         <td>
           <div class="fondo-name">${fondoNameHtml(f.nombre)}</div>
           <div class="cup-nombre">Por: ${escHtml(f.tipos.join(', '))} (${escHtml(f.tickers.slice(0, 4).join(', '))}${f.tickers.length > 4 ? ` +${f.tickers.length - 4}` : ''})</div>
+          ${f.sinDuration.length ? `<div class="cup-nombre" style="color:#8A5A0F;">Sin duration cargada: ${escHtml(f.sinDuration.join(', '))}</div>` : ''}
           ${f.found ? '' : '<div style="font-size:11px;color:var(--neg);">⚠ fondo no encontrado en los datos</div>'}
         </td>
         <td class="num"><span class="cup-mono">${f.tir != null && isFinite(f.tir) ? fmtTir(f.tir) : '—'}</span>${f.base ? `<span class="base-chip base-chip-${f.base}" style="cursor:default;">${f.base}</span>` : ''}</td>
@@ -7158,7 +7175,7 @@ function renderCupReco(evs){
     // Argumentos: el de liquidez de la moneda, o el de cada tipo que cobra
     const args = liquidez
       ? [['Liquidez', (REINV.tipos[`Liquidez ${c.moneda}`] || {}).argumento || '']]
-      : [...new Set(c.fondos.flatMap(f => f.tipos))].map(t => [t, (REINV.tipos[t] || {}).argumento || '']);
+      : [...new Set(c.fondos.flatMap(f => f.args))].map(t => [t, (REINV.tipos[t] || REINV.tipos[t.replace(/ corta$/, '')] || {}).argumento || '']);
     const porque = args.filter(a => a[1]).map(([t, txt])=> `<li>${cupTipoChip(t, c.moneda)}<p>${escHtml(txt)}</p></li>`).join('');
     return `
       <div class="cup-reco-card">
