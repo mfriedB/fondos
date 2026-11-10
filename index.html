@@ -1291,8 +1291,8 @@
     letter-spacing:.06em; color:var(--navy);
   }
   .termo-fecha{ font-size:11px; color:var(--muted); }
-  .termo-grid{ display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px; }
-  @media (max-width:1180px){ .termo-grid{ grid-template-columns:repeat(3, minmax(0, 1fr)); } }
+  .termo-grid{ display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:10px; }
+  @media (max-width:1040px){ .termo-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
   @media (max-width:620px){ .termo-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); } }
   .termo-item{
     background:#FAFBFE;
@@ -1332,53 +1332,11 @@
   }
   .termo-banda-ext{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted); }
 
-  /* --- Argumento de la semana --- */
-  .semana{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-left:4px solid var(--accent);
-    border-radius:var(--radius);
-    padding:20px 24px 22px;
-    margin-bottom:20px;
-  }
-  .semana-top{
-    display:flex; justify-content:space-between; align-items:center; gap:12px;
-  }
-  .semana-kicker{
-    font-size:11px; font-weight:800; text-transform:uppercase;
-    letter-spacing:.06em; color:var(--accent);
-  }
-  .semana-toggle{
-    background:none; border:1px solid var(--line); border-radius:6px;
-    font-family:inherit; font-size:11.5px; font-weight:700; color:var(--muted);
-    padding:4px 10px; cursor:pointer;
-  }
-  .semana-toggle:hover{ color:var(--navy); border-color:#B9C4E8; }
-  .semana-idea{
-    font-size:23px; font-weight:800; letter-spacing:-0.015em; line-height:1.2;
-    color:var(--navy); margin:8px 0 0; text-wrap:balance;
-  }
-  .semana.colapsada .semana-idea{ font-size:16px; }
-  .semana.colapsada .semana-cuerpo{ display:none; }
-  .semana-cuerpo{
-    display:grid; grid-template-columns:minmax(0, 1.05fr) minmax(0, 1fr);
-    gap:26px; margin-top:10px;
-  }
-  @media (max-width:900px){ .semana-cuerpo{ grid-template-columns:1fr; } }
-  .semana-bajada{ font-size:14px; line-height:1.55; color:var(--text); margin:0 0 14px; }
+  /* --- Botones y subtitulos de la capa comercial --- */
   .semana-sub{
     font-size:10.5px; font-weight:800; text-transform:uppercase;
     letter-spacing:.05em; color:var(--muted); margin:0 0 6px;
   }
-  .semana-guion{ margin:0 0 16px; padding-left:20px; }
-  .semana-guion li{ font-size:13.5px; line-height:1.5; margin-bottom:6px; }
-  .semana-objecion{
-    background:#F7F9FE; border:1px solid var(--line); border-radius:8px;
-    padding:12px 14px; margin-bottom:16px;
-  }
-  .semana-objecion .obj{ font-size:13.5px; font-weight:600; font-style:italic; color:var(--navy); margin:0 0 6px; line-height:1.45; }
-  .semana-objecion .resp{ font-size:13px; line-height:1.5; margin:0; }
-  .semana-acciones{ display:flex; gap:8px; flex-wrap:wrap; }
   .btn-com{
     font-family:inherit; font-size:12.5px; font-weight:700;
     border-radius:7px; padding:9px 14px; cursor:pointer;
@@ -1387,9 +1345,6 @@
   .btn-com:hover{ background:var(--navy-2); border-color:var(--navy-2); }
   .btn-com.sec{ background:#fff; color:var(--navy); border-color:#C9D2EA; }
   .btn-com.sec:hover{ background:#EEF1FC; border-color:#B9C4E8; }
-  .semana-grafico-titulo{ font-size:12px; font-weight:700; color:var(--navy); margin:0 0 8px; }
-  .semana-grafico-wrap{ position:relative; height:270px; }
-  .semana-grafico-nota{ font-size:10.5px; color:var(--muted); margin:8px 0 0; line-height:1.45; }
 
   /* --- Carteras modelo --- */
   .modelo-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
@@ -1513,6 +1468,47 @@
   #pteTable tfoot td{ background:#E4EAF9; color:var(--navy); font-weight:800; padding:12px; border:none; font-size:12.5px; }
   #pteTable tfoot .tir-total, #pteTable tfoot .dur-total{ font-family:'JetBrains Mono',monospace; font-size:14px; white-space:nowrap; }
   #pteTable tfoot td:last-child{ font-family:'JetBrains Mono',monospace; font-size:15px; }
+
+  /* --- Termometro dentro de Carteras Post-Elecciones --- */
+  .termo-curva{ display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); gap:22px; align-items:end; }
+  @media (max-width:980px){ .termo-curva{ grid-template-columns:1fr; } }
+  .termo-chart-wrap{ position:relative; height:270px; }
+  .termo-hitos{ width:100%; border-collapse:collapse; }
+  .termo-hitos th{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); }
+  .termo-hitos td{ padding:8px; border-bottom:1px solid #EBEFF9; font-size:12.5px; white-space:nowrap; }
+  .termo-hitos th.num, .termo-hitos td.num{ text-align:right; }
+  .termo-hitos td.num{ font-family:'JetBrains Mono',monospace; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .termo-hitos tr:last-child td{ border-bottom:none; font-weight:700; background:#F4F6FC; }
+  .termo-hito-nota{ font-size:9.5px; font-weight:700; color:#8A5A0F; background:#FDF0DE; border-radius:3px; padding:1px 4px; margin-left:4px; }
+
+  /* --- Cobertura --- */
+  .cob-barras{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px 28px; margin:4px 0 20px; }
+  .cob-barra-titulo{ font-size:13px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+  .cob-barra{ display:flex; height:16px; border-radius:4px; overflow:hidden; gap:2px; background:#fff; }
+  .cob-seg.alta{ background:#1B3F8C; }
+  .cob-seg.parcial{ background:#8FB0EC; }
+  .cob-seg.baja{ background:#D5DAE6; }
+  .cob-barra-leyenda{ display:flex; gap:6px 14px; flex-wrap:wrap; margin-top:7px; font-size:11.5px; color:var(--text); }
+  .cob-barra-leyenda i{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+  .cob-barra-leyenda strong{ font-family:'JetBrains Mono',monospace; color:var(--navy); }
+  .cob-table{ width:100%; border-collapse:collapse; }
+  .cob-table th{ background:#EEF1FC; color:var(--navy); font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; text-align:left; padding:9px 12px; border-bottom:1px solid #DCE4F5; }
+  .cob-table td{ padding:10px 12px; border-bottom:1px solid #EBEFF9; font-size:13px; vertical-align:top; }
+  .cob-table th.num, .cob-table td.num{ text-align:right; }
+  .cob-table td.cob-como{ font-size:12.5px; line-height:1.45; color:var(--text); min-width:240px; }
+  .cob-pill{ display:inline-block; font-size:11px; font-weight:700; border-radius:4px; padding:2px 8px; }
+  .cob-pill.alta{ background:#1B3F8C; color:#fff; }
+  .cob-pill.parcial{ background:#DCE7FB; color:#1B3F8C; }
+  .cob-pill.baja{ background:#EEF0F5; color:#5B6785; }
+  @media (max-width:720px){
+    .cob-table thead{ display:none; }
+    .cob-table, .cob-table tbody, .cob-table tr, .cob-table td{ display:block; width:100%; }
+    .cob-table tr{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; padding:6px 0; }
+    .cob-table td{ border:none; padding:5px 12px; text-align:left !important; }
+    .cob-table td[data-label]{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .cob-table td[data-label]::before{ content:attr(data-label); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); flex:0 0 42%; }
+    .cob-table td.cob-como{ min-width:0; }
+  }
 
   /* --- Solapa Reinversion de cupones --- */
   .cup-controles{ display:flex; gap:18px 28px; flex-wrap:wrap; align-items:flex-end; margin-top:18px; }
@@ -1684,17 +1680,9 @@
 
   <main class="container">
 
-    <section class="termo" id="termoSection" style="display:none;" aria-label="Termómetro de mercado">
-      <div class="termo-head">
-        <span class="termo-title">Termómetro de mercado</span>
-        <span class="termo-fecha" id="termoFecha"></span>
-      </div>
-      <div class="termo-grid" id="termoGrid"></div>
-    </section>
-
     <div class="tabs-nav">
       <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
-      <button class="tab-btn" data-tab="puente" style="display:none;">Puente 2027</button>
+      <button class="tab-btn" data-tab="puente" style="display:none;">Carteras Post-Elecciones</button>
       <button class="tab-btn" data-tab="cupones" style="display:none;">Reinversión de cupones</button>
       <button class="tab-btn" data-tab="escenarios" style="display:none;">Escenarios 2027</button>
       <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
@@ -1702,34 +1690,6 @@
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
-
-    <section class="semana" id="semanaSection" style="display:none;">
-      <div class="semana-top">
-        <span class="semana-kicker" id="semanaKicker">Argumento de la semana</span>
-        <button type="button" class="semana-toggle" id="semanaToggle" aria-expanded="true">Ocultar</button>
-      </div>
-      <h2 class="semana-idea" id="semanaIdea"></h2>
-      <div class="semana-cuerpo">
-        <div>
-          <p class="semana-bajada" id="semanaBajada"></p>
-          <div id="semanaGuionWrap">
-            <p class="semana-sub">Guion para el cliente</p>
-            <ol class="semana-guion" id="semanaGuion"></ol>
-          </div>
-          <div class="semana-objecion" id="semanaObjecion"></div>
-          <div class="semana-acciones">
-            <button type="button" class="btn-com" id="semanaCargarBtn">Cargar esta cartera</button>
-            <button type="button" class="btn-com sec" id="semanaEscBtn">Ver escenarios</button>
-            <button type="button" class="btn-com sec" id="semanaCopiarBtn">Copiar guion</button>
-          </div>
-        </div>
-        <div id="semanaGraficoCol">
-          <p class="semana-grafico-titulo" id="semanaGraficoTitulo"></p>
-          <div class="semana-grafico-wrap"><canvas id="semanaChart"></canvas></div>
-          <p class="semana-grafico-nota" id="semanaGraficoNota"></p>
-        </div>
-      </div>
-    </section>
 
     <div class="tab-toolbar">
       <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
@@ -1923,11 +1883,11 @@
     <section class="card">
       <div class="pte-head">
         <div>
-          <h2 class="pte-titulo" id="pteTitulo"></h2>
+          <h2 class="pte-titulo">Carteras Post-Elecciones</h2>
           <p class="pte-bajada" id="pteBajada"></p>
           <p class="pte-para" id="ptePara"></p>
         </div>
-        <button id="ptePdfBtn" class="btn-pdf" title="Descargar el PDF de la cartera (sin escenarios)">
+        <button id="ptePdfBtn" class="btn-pdf" title="Descargar el PDF de la cartera">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
           Descargar PDF
         </button>
@@ -1953,6 +1913,33 @@
           <input type="text" inputmode="numeric" id="pteMontoInput" />
         </div>
       </div>
+    </section>
+
+    <section class="card" id="termoSection" style="display:none;">
+      <div class="chart-header" style="margin-bottom:6px;">
+        <h2 style="margin:0;">Termómetro de mercado</h2>
+        <span class="termo-fecha" id="termoFecha"></span>
+      </div>
+      <p class="sub">Dónde está el mercado hoy y qué descuenta hasta el 1 de enero de 2028, pasadas las elecciones, según la curva de futuros de dólar y las tasas break-even.</p>
+      <p class="semana-sub">Hoy</p>
+      <div class="termo-grid" id="termoHoy"></div>
+      <div id="termoFuturoWrap">
+        <p class="semana-sub" style="margin-top:16px;">Lo que descuenta el mercado al 1/1/2028</p>
+        <div class="termo-grid" id="termoFuturo"></div>
+      </div>
+      <div id="termoCurvaWrap" class="termo-curva">
+        <div>
+          <p class="semana-sub" style="margin-top:18px;">Camino del dólar oficial hasta el 1/1/2028</p>
+          <div class="termo-chart-wrap"><canvas id="termoChart"></canvas></div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="termo-hitos">
+            <thead><tr><th>Fecha</th><th class="num">Dólar futuro</th><th class="num">Devaluación</th><th class="num">Inflación break-even</th><th class="num">Inflación REM</th></tr></thead>
+            <tbody id="termoHitosBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <p class="foot-note" id="termoNota"></p>
     </section>
 
     <section class="card">
@@ -1989,10 +1976,23 @@
       </div>
     </section>
 
-    <div id="pteBloque"></div>
+    <section class="card" id="cobSection" style="display:none;">
+      <h2>Cobertura si se disparan el dólar y la inflación</h2>
+      <p class="sub" id="cobContexto"></p>
+      <div class="cob-barras" id="cobBarras"></div>
+      <div style="overflow-x:auto;">
+        <table class="cob-table">
+          <thead>
+            <tr><th>Fondo</th><th class="num">% cartera</th><th>Ajusta por</th><th>Si se dispara el dólar</th><th>Si se dispara la inflación</th><th>Cómo cubre</th></tr>
+          </thead>
+          <tbody id="cobTableBody"></tbody>
+        </table>
+      </div>
+      <p class="foot-note">La cobertura indica a qué variable ajusta cada fondo, no cuánto va a rendir. Alta: el fondo acompaña a esa variable. Parcial: la acompaña en parte o con rezago. Baja: no la acompaña. Los niveles se editan en comercial.xlsx.</p>
+    </section>
 
     <div class="page-disclaimer">
-      <p class="disc-legal">Herramienta de uso interno para el asesor. La cartera es una referencia por perfil y no contempla la situación particular de cada cliente. Los escenarios son ejercicios de sensibilidad construidos sobre supuestos hipotéticos y sobre la TIR y la Duration informadas de cada fondo; no son pronósticos ni constituyen una promesa o garantía de rentabilidad. Los resultados reales pueden diferir significativamente. No constituye una oferta, invitación ni recomendación de inversión.</p>
+      <p class="disc-legal">Herramienta de uso interno para el asesor. La cartera es una referencia por perfil y no contempla la situación particular de cada cliente. Los indicadores de mercado son precios y expectativas a la fecha, no pronósticos. La cobertura describe el mecanismo de ajuste de cada fondo y no constituye una promesa o garantía de rentabilidad. No constituye una oferta, invitación ni recomendación de inversión.</p>
     </div>
 
     </div>
@@ -5046,6 +5046,7 @@ let COMERCIAL = {
   escenarios: [],
   factores: {},
   futuros: [], futurosFecha: '', futurosVivo: false,
+  cobertura: {},
 };
 
 // Datos en vivo: si esta en true la pagina intenta refrescar el termometro
@@ -5116,7 +5117,7 @@ function celdaNum(v){
 }
 
 function parseComercial(wb){
-  const out = { ok: true, semana: {}, guion: [], mercado: {}, modelos: {}, ordenModelos: [], escenarios: [], factores: {}, futuros: [], futurosFecha: '', futurosVivo: false };
+  const out = { ok: true, semana: {}, guion: [], mercado: {}, modelos: {}, ordenModelos: [], escenarios: [], factores: {}, futuros: [], futurosFecha: '', futurosVivo: false, cobertura: {} };
 
   // --- Semana: pares Campo | Contenido
   hojaFilas(wb, 'Semana').forEach(f=>{
@@ -5223,6 +5224,13 @@ function parseComercial(wb){
       });
     });
   }
+
+  // --- Cobertura: Factor | Ajusta por | Ante salto del dolar | Ante suba de inflacion | Como cubre
+  hojaFilas(wb, 'Cobertura').forEach(f=>{
+    const factor = celdaTxt(f[0]).toUpperCase();
+    if(!FACTORES_VALIDOS.includes(factor)) return;
+    out.cobertura[factor] = { nombre: celdaTxt(f[1]), dolar: celdaTxt(f[2]), inflacion: celdaTxt(f[3]), como: celdaTxt(f[4]) };
+  });
 
   // --- Factores: Fondo | Factor (excepciones a la base de tir_fondos.xlsx)
   hojaFilas(wb, 'Factores').forEach(f=>{
@@ -5396,11 +5404,39 @@ function termometroDerivados(){
   };
 }
 
+// Fecha hasta la que se proyecta lo que descuenta el mercado (pasadas las elecciones de 2027)
+const HORIZONTE_POST = '2028-01-01';
+let termoChart = null;
+
+function aniosHasta(iso){
+  return (new Date(iso + 'T00:00:00').getTime() - Date.now()) / (365 * 86400000);
+}
+
+/* Lo que descuenta el mercado a una fecha: dolar oficial segun la curva de
+   futuros e inflacion acumulada segun el break-even y el REM (las dos tasas
+   son a 12 meses y se proyectan constantes). Todo puede venir en null. */
+function mercadoImplicitoA(iso){
+  const d = termometroDerivados();
+  const t = aniosHasta(iso);
+  if(!(t > 0)) return null;
+  const fut = precioFuturo(t);
+  const acum = (tasa)=> (tasa != null && isFinite(tasa)) ? Math.pow(1 + tasa, t) - 1 : null;
+  const deval = (fut && d.may) ? fut / d.may - 1 : null;
+  const inflBE = acum(d.breakeven);
+  return {
+    t, fut, deval, inflBE,
+    inflREM: acum(d.inflEsp),
+    real: (deval != null && inflBE != null) ? (1 + deval) / (1 + inflBE) - 1 : null,
+  };
+}
+
 function renderTermometro(){
   const sec = document.getElementById('termoSection');
   if(!sec) return;
   if(!COMERCIAL.ok || !Object.keys(COMERCIAL.mercado).length){ sec.style.display = 'none'; return; }
   const d = termometroDerivados();
+  const h = mercadoImplicitoA(HORIZONTE_POST);
+  const fechaH = fechaCorta(HORIZONTE_POST);
 
   const vivoTag = (clave)=>{
     const m = merc(clave);
@@ -5408,97 +5444,215 @@ function renderTermometro(){
     const t = `Dato en vivo${m.fuenteVivo ? ' de ' + m.fuenteVivo : ''}${m.validado ? ' · ' + m.validado : ''}`;
     return `<span class="termo-vivo" title="${escHtml(t)}">EN VIVO${m.validado ? ' ✓' : ''}</span>`;
   };
-  const fechaDe = (clave)=> (merc(clave) && merc(clave).fecha) ? merc(clave).fecha : '';
-  const lecturaDe = (clave)=> (merc(clave) && merc(clave).lectura) ? `<div class="termo-lectura">${escHtml(merc(clave).lectura)}</div>` : '';
+  const tile = (label, valor, detalle, lectura)=> `
+    <div class="termo-item">
+      <div class="termo-label">${label}</div>
+      <div class="termo-valor">${valor}</div>
+      ${detalle ? `<div class="termo-detalle">${detalle}</div>` : ''}
+      ${lectura ? `<div class="termo-lectura">${lectura}</div>` : ''}
+    </div>`;
 
-  const items = [];
-
+  // --- Hoy
+  const hoy = [];
   if(d.riesgo != null){
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Riesgo país ${vivoTag('Riesgo país')}</div>
-        <div class="termo-valor">${fmtNumCom(d.riesgo)}<small>pb</small></div>
-        <div class="termo-detalle">Sobretasa del soberano: <strong>${fmtPctCom(d.riesgo / 10000, 1)}</strong></div>
-        ${lecturaDe('Riesgo país')}
-      </div>`);
+    hoy.push(tile(`Riesgo país ${vivoTag('Riesgo país')}`, `${fmtNumCom(d.riesgo)}<small>pb</small>`,
+      `Sobretasa del soberano: <strong>${fmtPctCom(d.riesgo / 10000, 1)}</strong>`));
   }
-
-  if(d.mep != null || d.ccl != null){
+  if(d.mep != null){
     const canje = (d.mep && d.ccl) ? d.ccl / d.mep - 1 : null;
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Dólar MEP ${vivoTag('Dólar MEP')}</div>
-        <div class="termo-valor">$ ${fmtNumCom(d.mep, 0)}</div>
-        <div class="termo-detalle">CCL <strong>$ ${fmtNumCom(d.ccl, 0)}</strong>${canje != null ? ` · canje <strong>${fmtPctCom(canje, 1)}</strong>` : ''}</div>
-        ${lecturaDe('Dólar MEP')}
-      </div>`);
+    hoy.push(tile(`Dólar MEP ${vivoTag('Dólar MEP')}`, `$ ${fmtNumCom(d.mep, 0)}`,
+      `CCL <strong>$ ${fmtNumCom(d.ccl, 0)}</strong>${canje != null ? ` · canje <strong>${fmtPctCom(canje, 1)}</strong>` : ''}`));
   }
-
   if(d.brechaMep != null){
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Brecha MEP vs. mayorista ${vivoTag('Dólar mayorista')}</div>
-        <div class="termo-valor">${fmtPctCom(d.brechaMep, 1)}</div>
-        <div class="termo-detalle">Mayorista <strong>$ ${fmtNumCom(d.may, 0)}</strong>${d.brechaCcl != null ? ` · brecha CCL <strong>${fmtPctCom(d.brechaCcl, 1)}</strong>` : ''}</div>
-        ${lecturaDe('Dólar mayorista')}
-      </div>`);
+    hoy.push(tile(`Brecha MEP vs. mayorista ${vivoTag('Dólar mayorista')}`, fmtPctCom(d.brechaMep, 1),
+      `Mayorista <strong>$ ${fmtNumCom(d.may, 0)}</strong>${d.brechaCcl != null ? ` · brecha CCL <strong>${fmtPctCom(d.brechaCcl, 1)}</strong>` : ''}`));
   }
-
   if(d.distTecho != null){
-    const banda = d.posBanda != null
-      ? `<div class="termo-banda"><i style="left:${(d.posBanda * 100).toFixed(1)}%"></i></div>
-         <div class="termo-banda-ext"><span>Piso $ ${fmtNumCom(d.piso, 0)}</span><span>Techo $ ${fmtNumCom(d.techo, 0)}</span></div>`
-      : `<div class="termo-detalle">Techo <strong>$ ${fmtNumCom(d.techo, 0)}</strong></div>`;
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Distancia al techo de banda</div>
-        <div class="termo-valor">${fmtPctCom(d.distTecho, 1)}</div>
-        ${banda}
-      </div>`);
+    hoy.push(tile('Distancia al techo de banda', fmtPctCom(d.distTecho, 1), `Techo <strong>$ ${fmtNumCom(d.techo, 0)}</strong>`));
   }
+  document.getElementById('termoHoy').innerHTML = hoy.join('');
 
-  if(d.breakeven != null){
-    const vs = d.inflEsp != null
-      ? ` · esperada <strong>${fmtPctCom(d.inflEsp, 1)}</strong>`
-      : '';
-    let lectura = '';
-    if(d.inflEsp != null){
-      const dif = d.breakeven - d.inflEsp;
-      lectura = Math.abs(dif) < 0.01
-        ? 'Tasa fija y CER descuentan lo mismo que la inflación esperada.'
-        : (dif < 0
-            ? 'El mercado descuenta menos inflación que la esperada: el CER queda mejor parado que la tasa fija.'
-            : 'El mercado descuenta más inflación que la esperada: la tasa fija queda mejor parada que el CER.');
+  // --- Lo que descuenta el mercado al horizonte
+  const fut = [];
+  if(h){
+    if(h.fut != null){
+      fut.push(tile(`Dólar oficial al ${fechaH} ${COMERCIAL.futurosVivo ? '<span class="termo-vivo" title="Curva de futuros de dólar de Matba Rofex">EN VIVO</span>' : ''}`,
+        `$ ${fmtNumCom(h.fut, 0)}`,
+        `Devaluación implícita <strong>${fmtPctCom(h.deval, 1, true)}</strong>`,
+        'Según la curva de futuros de dólar.'));
     }
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Inflación break-even 12m</div>
-        <div class="termo-valor">${fmtPctCom(d.breakeven, 1)}</div>
-        <div class="termo-detalle">Tasa fija <strong>${fmtPctCom(d.lecap, 1)}</strong> vs. CER <strong>+${fmtPctCom(d.cer, 1)}</strong>${vs.replace('esperada', 'REM')}</div>
-        ${lectura ? `<div class="termo-lectura">${lectura}</div>` : ''}
-      </div>`);
+    if(h.inflBE != null){
+      fut.push(tile(`Inflación break-even al ${fechaH}`, fmtPctCom(h.inflBE, 1, true),
+        `Tasa fija <strong>${fmtPctCom(d.lecap, 1)}</strong> vs. CER <strong>+${fmtPctCom(d.cer, 1)}</strong> · <strong>${fmtPctCom(d.breakeven, 1)}</strong> anual`,
+        'Inflación acumulada que iguala tasa fija y CER.'));
+    }
+    if(h.inflREM != null){
+      fut.push(tile(`Inflación esperada al ${fechaH} ${vivoTag('Inflación esperada 12m')}`, fmtPctCom(h.inflREM, 1, true),
+        `REM a 12 meses: <strong>${fmtPctCom(d.inflEsp, 1)}</strong> anual`,
+        (h.inflBE != null) ? (h.inflBE > h.inflREM + 0.005
+          ? 'El mercado descuenta más inflación que los analistas.'
+          : (h.inflBE < h.inflREM - 0.005 ? 'El mercado descuenta menos inflación que los analistas.' : 'Mercado y analistas esperan lo mismo.')) : ''));
+    }
+    if(h.real != null){
+      fut.push(tile('Dólar oficial contra la inflación', fmtPctCom(h.real, 1, true),
+        'Devaluación implícita vs. inflación break-even',
+        h.real >= 0
+          ? 'Los futuros descuentan que el dólar oficial sube más que los precios.'
+          : 'Los futuros descuentan que el dólar oficial sube menos que los precios.'));
+    }
   }
+  document.getElementById('termoFuturo').innerHTML = fut.join('');
+  document.getElementById('termoFuturoWrap').style.display = fut.length ? '' : 'none';
 
-  if(d.devalFut12 != null){
-    const real = d.breakeven != null ? (1 + d.devalFut12) / (1 + d.breakeven) - 1 : null;
-    items.push(`
-      <div class="termo-item">
-        <div class="termo-label">Dólar futuro a 12 meses ${COMERCIAL.futurosVivo ? '<span class="termo-vivo" title="Curva de futuros de dólar de Matba Rofex">EN VIVO</span>' : ''}</div>
-        <div class="termo-valor">${fmtPctCom(d.devalFut12, 1, true)}</div>
-        <div class="termo-detalle">Implícito <strong>$ ${fmtNumCom(d.futuro12, 0)}</strong>${COMERCIAL.futurosFecha ? ` · curva al ${escHtml(COMERCIAL.futurosFecha)}` : ''}</div>
-        ${real != null ? `<div class="termo-lectura">Contra el break-even, el mercado descuenta ${real >= 0 ? 'una suba' : 'una caída'} real del dólar de ${fmtPctCom(Math.abs(real), 1)}.</div>` : ''}
-      </div>`);
-  }
-
-  if(!items.length){ sec.style.display = 'none'; return; }
-  document.getElementById('termoGrid').innerHTML = items.join('');
-
-  const fechas = ['Dólar MEP', 'Dólar mayorista', 'Riesgo país'].map(fechaDe).filter(Boolean);
-  const hayVivo = Object.values(COMERCIAL.mercado).some(m => m.vivo);
+  const fechas = ['Dólar MEP', 'Dólar mayorista', 'Riesgo país'].map(c => (merc(c) && merc(c).fecha) || '').filter(Boolean);
+  const hayVivo = COMERCIAL.futurosVivo || Object.values(COMERCIAL.mercado).some(m => m.vivo);
   document.getElementById('termoFecha').textContent =
     hayVivo ? 'En vivo donde se indica (✓ = validado contra una segunda fuente) · el resto, carga manual'
             : ('Datos ' + (fechas.length ? `al ${fechas[0]}` : 'cargados a mano'));
+
+  sec.style.display = (hoy.length || fut.length) ? '' : 'none';
+  renderTermoCurva(d, h);
+}
+
+/* Camino mes a mes hasta el horizonte: dolar oficial segun futuros contra el
+   dolar que solo acompaña la inflacion (break-even y REM). */
+function renderTermoCurva(d, h){
+  const wrap = document.getElementById('termoCurvaWrap');
+  const canvas = document.getElementById('termoChart');
+  if(!wrap || !canvas || typeof Chart === 'undefined') return;
+  if(termoChart){ termoChart.destroy(); termoChart = null; }
+  if(!h || h.fut == null || !d.may){ wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+
+  // Puntos: hoy, cada fin de mes y el horizonte
+  const fin = new Date(HORIZONTE_POST + 'T00:00:00');
+  const hoy = new Date();
+  const puntos = [{ iso: isoLocal(hoy), label: 'Hoy' }];
+  const cur = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  while(cur < fin){
+    if(cur > hoy) puntos.push({ iso: isoLocal(cur), label: `${CUP_MESES[cur.getMonth()]}-${String(cur.getFullYear()).slice(2)}` });
+    cur.setMonth(cur.getMonth() + 2, 0);
+  }
+  puntos.push({ iso: HORIZONTE_POST, label: fechaCorta(HORIZONTE_POST) });
+
+  const ultContrato = COMERCIAL.futuros.length ? COMERCIAL.futuros[COMERCIAL.futuros.length - 1].venc : null;
+  const filas = puntos.map((p, i)=>{
+    const t = i === 0 ? 0 : aniosHasta(p.iso);
+    const f = i === 0 ? d.may : precioFuturo(t);
+    const acum = (tasa)=> (tasa != null && isFinite(tasa)) ? Math.pow(1 + tasa, t) - 1 : null;
+    return {
+      iso: p.iso, label: p.label, fut: f,
+      deval: f / d.may - 1,
+      inflBE: acum(d.breakeven), inflREM: acum(d.inflEsp),
+      extrapolado: !!(ultContrato && p.iso > ultContrato),
+    };
+  });
+
+  const linea = (label, data, color, extra)=> Object.assign({
+    label, data, borderColor: color, backgroundColor: color,
+    borderWidth: 2, pointRadius: 2.5, pointHoverRadius: 4, tension: 0.15,
+  }, extra || {});
+  const datasets = [
+    linea('Dólar oficial según futuros', filas.map(f => +f.fut.toFixed(1)), '#1B3F8C', {
+      borderWidth: 2.5,
+      segment: { borderDash: (c)=> filas[c.p1DataIndex].extrapolado ? [5, 4] : undefined },
+    }),
+  ];
+  if(d.breakeven != null) datasets.push(linea('Dólar que acompaña la inflación break-even', filas.map(f => +(d.may * (1 + f.inflBE)).toFixed(1)), '#C98A1B'));
+  if(d.inflEsp != null) datasets.push(linea('Dólar que acompaña la inflación esperada (REM)', filas.map(f => +(d.may * (1 + f.inflREM)).toFixed(1)), '#8A91A8', { borderDash: [2, 3] }));
+
+  termoChart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: { labels: filas.map(f => f.label), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#14182B' } },
+        datalabels: { display: false },
+        tooltip: { callbacks: { label: (c)=> ` ${c.dataset.label}: $ ${fmtNumCom(c.parsed.y, 0)}` } },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#6E7590', font: { size: 11 }, maxRotation: 0, autoSkip: true } },
+        y: { ticks: { callback: (v)=> `$ ${fmtNumCom(v, 0)}`, color: '#6E7590', font: { size: 11 } }, grid: { color: '#E4E8F1' } },
+      },
+    },
+  });
+
+  // Tabla con los hitos: fines de trimestre, el mes de las elecciones y el horizonte
+  const hitos = filas.filter((f, i)=> i > 0 && (i === filas.length - 1 || /-(03|06|09|10|12)-/.test(f.iso)));
+  document.getElementById('termoHitosBody').innerHTML = hitos.map(f=> `
+    <tr>
+      <td>${escHtml(f.label)}${/-10-/.test(f.iso) ? ' <span class="termo-hito-nota">elecciones</span>' : ''}${f.extrapolado ? ' <span class="termo-hito-nota">proyectado</span>' : ''}</td>
+      <td class="num">$ ${fmtNumCom(f.fut, 0)}</td>
+      <td class="num">${fmtPctCom(f.deval, 1, true)}</td>
+      <td class="num">${fmtPctCom(f.inflBE, 1, true)}</td>
+      <td class="num">${fmtPctCom(f.inflREM, 1, true)}</td>
+    </tr>`).join('');
+
+  document.getElementById('termoNota').textContent =
+    `Curva de futuros de dólar ${COMERCIAL.futurosVivo ? 'en vivo de Matba Rofex' : 'cargada en comercial.xlsx'}${COMERCIAL.futurosFecha ? ` (${COMERCIAL.futurosFecha})` : ''}`
+    + `${ultContrato ? `; el último contrato vence el ${fechaCorta(ultContrato)} y de ahí en adelante se proyecta con el ritmo del último tramo (línea punteada)` : ''}. `
+    + 'La inflación break-even y la del REM son tasas a 12 meses, proyectadas constantes. Son precios de mercado de hoy, no pronósticos.';
+}
+
+/* ---------------------------------------------------------------------
+   Cobertura de la cartera ante un salto del dolar o de la inflacion.
+   No estima rendimientos: muestra a que ajusta cada fondo (factor) y que
+   parte de la cartera queda cubierta, segun la hoja "Cobertura".
+--------------------------------------------------------------------- */
+const COB_NIVELES = [['alta', 'Alta'], ['parcial', 'Parcial'], ['baja', 'Baja']];
+function nivelCobertura(txt){
+  const k = claveTxt(txt);
+  return k.startsWith('a') ? 'alta' : (k.startsWith('p') ? 'parcial' : 'baja');
+}
+
+function renderCobertura(rows){
+  const sec = document.getElementById('cobSection');
+  if(!sec) return;
+  const filas = (rows || []).filter(r => r.found && (Number(r.pct) || 0) > 0).map(r=>{
+    const factor = factorDeFondo(r);
+    const c = (factor && COMERCIAL.cobertura[factor]) || null;
+    return {
+      r, factor,
+      ajusta: c ? c.nombre : 'Sin vínculo directo',
+      dolar: c ? nivelCobertura(c.dolar) : 'baja',
+      inflacion: c ? nivelCobertura(c.inflacion) : 'baja',
+      como: c ? c.como : 'No ajusta por dólar ni por inflación: su resultado depende del precio de los activos.',
+    };
+  });
+  if(!filas.length || !Object.keys(COMERCIAL.cobertura).length){ sec.style.display = 'none'; return; }
   sec.style.display = '';
+
+  const total = filas.reduce((a, f)=> a + f.r.pct, 0) || 1;
+  const barra = (campo, titulo)=>{
+    const pct = (nivel)=> filas.filter(f => f[campo] === nivel).reduce((a, f)=> a + f.r.pct, 0) / total * 100;
+    const partes = COB_NIVELES.map(([k, txt])=> ({ k, txt, v: pct(k) })).filter(p => p.v > 0);
+    return `
+      <div class="cob-barra-bloque">
+        <div class="cob-barra-titulo">${titulo}</div>
+        <div class="cob-barra">${partes.map(p => `<span class="cob-seg ${p.k}" style="width:${p.v.toFixed(2)}%" title="${p.txt}: ${fmtNumCom(p.v, 0)}%"></span>`).join('')}</div>
+        <div class="cob-barra-leyenda">${partes.map(p => `<span><i class="cob-seg ${p.k}"></i>Cobertura ${p.txt.toLowerCase()} <strong>${fmtNumCom(p.v, 0)}%</strong></span>`).join('')}</div>
+      </div>`;
+  };
+  document.getElementById('cobBarras').innerHTML =
+    barra('dolar', 'Si se dispara el dólar') + barra('inflacion', 'Si se dispara la inflación');
+
+  const pill = (nivel)=> `<span class="cob-pill ${nivel}">${COB_NIVELES.find(n => n[0] === nivel)[1]}</span>`;
+  document.getElementById('cobTableBody').innerHTML = filas.map(f=> `
+    <tr>
+      <td><div class="fondo-name">${fondoNameHtml(f.r.nombre)}</div></td>
+      <td class="num" data-label="% cartera">${f.r.pct}%</td>
+      <td data-label="Ajusta por">${escHtml(f.ajusta)}</td>
+      <td data-label="Si se dispara el dólar">${pill(f.dolar)}</td>
+      <td data-label="Si se dispara la inflación">${pill(f.inflacion)}</td>
+      <td class="cob-como" data-label="Cómo cubre">${escHtml(f.como)}</td>
+    </tr>`).join('');
+
+  const h = mercadoImplicitoA(HORIZONTE_POST);
+  document.getElementById('cobContexto').textContent = (h && h.deval != null && h.inflBE != null)
+    ? `Hoy el mercado ya descuenta, al ${fechaCorta(HORIZONTE_POST)}, un dólar oficial ${fmtPctCom(h.deval, 0)} arriba y una inflación acumulada de ${fmtPctCom(h.inflBE, 0)}. La cobertura es lo que protege al cliente si después de las elecciones el dólar o los precios suben más que eso.`
+    : 'La cobertura es lo que protege al cliente si después de las elecciones el dólar o los precios suben más de lo que hoy descuenta el mercado.';
 }
 
 /* ---------------------------------------------------------------------
@@ -5693,8 +5847,6 @@ function refrescarMercadoEnVivo(){
     .then(d=>{
       if(aplicarLetrasVivas(d && d.letras) && document.getElementById('tab-cupones').classList.contains('active')) renderCupones();
       if(!aplicarDatosVivos(d)) return;
-      renderTermometro();
-      renderSemana();
       renderPuente();
       if(DATA.fondos.length) renderCartera();
     })
@@ -5865,7 +6017,6 @@ document.getElementById('modeloOptions').addEventListener('click', (e)=>{
 
    Los fondos sin TIR (renta variable) quedan afuera y se informa cobertura.
 --------------------------------------------------------------------- */
-let semanaChartInstance = null;
 
 const ESC_PLAZOS = [['6M', '6 meses'], ['12M', '12 meses'], ['DIC27', 'A dic-2027']];
 // Hay dos bloques de escenarios con la misma logica: "esc" (solapa Escenarios
@@ -6289,7 +6440,7 @@ function renderEscenarios(){
 }
 
 // Los botones de plazo y vista se escuchan por delegacion en cada bloque
-['esc', 'pte'].forEach(p=>{
+['esc'].forEach(p=>{
   const host = document.getElementById(p + 'Bloque');
   host.innerHTML = escBloqueHtml(p);
   host.addEventListener('click', (e)=>{
@@ -6310,12 +6461,13 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 });
 
 /* ---------------------------------------------------------------------
-   Solapa del modelo bimonetario (Puente 2027)
+   Solapa Carteras Post-Elecciones (modelo bimonetario)
 
    Es el primer modelo de comercial.xlsx con Ubicacion = "Pestaña". Vive
    aparte de la calculadora porque mezcla fondos en pesos y en dolares: el
    monto se ingresa en una moneda y los fondos de la otra se convierten al
-   dolar MEP del termometro. Abajo lleva su propio bloque de escenarios.
+   dolar MEP del termometro. Lleva adentro el termometro de mercado y la
+   cobertura de la cartera; no estima rendimientos.
 --------------------------------------------------------------------- */
 const PTE = { modelo: null, perfil: 'Moderado', moneda: 'Pesos', monto: 10000000 };
 let pteChartFondo = null;
@@ -6334,7 +6486,6 @@ function renderPuente(){
   if(!m) return;
   if(!m.perfiles[PTE.perfil]) PTE.perfil = Object.keys(m.perfiles)[0];
 
-  document.getElementById('pteTitulo').textContent = m.nombre;
   document.getElementById('pteBajada').textContent = m.bajada;
   document.getElementById('ptePara').textContent = m.para ? `Para: ${m.para}` : '';
   document.querySelectorAll('#ptePerfilOptions .option-btn').forEach(b=>{
@@ -6419,7 +6570,8 @@ function renderPuente(){
     options: donut((c)=> ` ${c.label}: ${c.parsed}%`),
   });
 
-  renderEscBloque('pte');
+  renderTermometro();
+  renderCobertura(rows);
 }
 
 document.querySelectorAll('#ptePerfilOptions .option-btn').forEach(btn=>{
@@ -6489,211 +6641,6 @@ document.getElementById('ptePdfBtn').addEventListener('click', ()=>{
   openClientModal();
 });
 
-/* ---------------------------------------------------------------------
-   Argumento de la semana
---------------------------------------------------------------------- */
-const SEMANA_COLAPSADA_KEY = 'semanaColapsada';
-
-function semanaModeloPerfil(){
-  const s = COMERCIAL.semana;
-  const modelo = COMERCIAL.ordenModelos.find(n => claveTxt(n) === claveTxt(s['modelo'])) || null;
-  const perfil = PERFILES_VALIDOS.find(p => claveTxt(p) === claveTxt(s['perfil'])) || 'Moderado';
-  return { modelo, perfil };
-}
-
-// Reemplaza {riesgo_pais}, {brecha}, {rango_usd}... por el dato del dia
-function semanaTokens(){
-  const d = termometroDerivados();
-  const { modelo, perfil } = semanaModeloPerfil();
-  const res = (modelo && DATA.fondos.length) ? calcEscenarios(rowsDeModelo(modelo, perfil, 'Pesos', 0), 1) : [];
-  return {
-    riesgo_pais: d.riesgo != null ? `${fmtNumCom(d.riesgo)} pb` : 's/d',
-    mep: d.mep != null ? `$ ${fmtNumCom(d.mep, 0)}` : 's/d',
-    ccl: d.ccl != null ? `$ ${fmtNumCom(d.ccl, 0)}` : 's/d',
-    mayorista: d.may != null ? `$ ${fmtNumCom(d.may, 0)}` : 's/d',
-    brecha: fmtPctCom(d.brechaMep, 1),
-    dist_techo: fmtPctCom(d.distTecho, 1),
-    breakeven: fmtPctCom(d.breakeven, 1),
-    deval_fut: fmtPctCom(d.devalFut12, 1),
-    rem: fmtPctCom(d.inflEsp, 1),
-    rango_usd: rangoTexto(res.map(x => x.usd)),
-    rango_ars: rangoTexto(res.map(x => x.ars)),
-  };
-}
-function conTokens(txt, tokens){
-  return String(txt || '').replace(/\{([a-z_]+)\}/gi, (m, k)=>{
-    const v = tokens[k.toLowerCase()];
-    return v == null ? m : v;
-  });
-}
-
-function semanaTextoPlano(){
-  const s = COMERCIAL.semana;
-  const t = semanaTokens();
-  const lineas = [conTokens(s['idea'], t), ''];
-  if(s['bajada']) lineas.push(conTokens(s['bajada'], t), '');
-  COMERCIAL.guion.forEach(g => lineas.push('• ' + conTokens(g, t)));
-  if(s['objecion']){
-    lineas.push('', 'Objeción: ' + conTokens(s['objecion'], t));
-    if(s['respuesta']) lineas.push('Respuesta: ' + conTokens(s['respuesta'], t));
-  }
-  return lineas.join('\n').trim();
-}
-
-function renderSemana(){
-  const sec = document.getElementById('semanaSection');
-  if(!sec) return;
-  const s = COMERCIAL.semana;
-  if(!COMERCIAL.ok || !s['idea']){ sec.style.display = 'none'; return; }
-  const t = semanaTokens();
-  const { modelo, perfil } = semanaModeloPerfil();
-
-  document.getElementById('semanaKicker').textContent =
-    'Argumento de la semana' + (s['fecha'] ? ` · call del ${s['fecha']}` : '');
-  document.getElementById('semanaIdea').textContent = conTokens(s['idea'], t);
-  document.getElementById('semanaBajada').textContent = conTokens(s['bajada'], t);
-  document.getElementById('semanaBajada').style.display = s['bajada'] ? '' : 'none';
-
-  document.getElementById('semanaGuion').innerHTML = COMERCIAL.guion.map(g => `<li>${escHtml(conTokens(g, t))}</li>`).join('');
-  document.getElementById('semanaGuionWrap').style.display = COMERCIAL.guion.length ? '' : 'none';
-
-  const obj = document.getElementById('semanaObjecion');
-  obj.style.display = s['objecion'] ? '' : 'none';
-  obj.innerHTML = s['objecion']
-    ? `<p class="semana-sub">La objeción más frecuente</p>
-       <p class="obj">${escHtml(conTokens(s['objecion'], t))}</p>
-       <p class="resp">${escHtml(conTokens(s['respuesta'], t))}</p>`
-    : '';
-
-  const btnCargar = document.getElementById('semanaCargarBtn');
-  btnCargar.style.display = modelo ? '' : 'none';
-  if(modelo) btnCargar.textContent = COMERCIAL.modelos[modelo].enPestana ? `Abrir ${modelo} · ${perfil}` : `Cargar ${modelo} · ${perfil}`;
-  document.getElementById('semanaEscBtn').style.display = (modelo && COMERCIAL.escenarios.length) ? '' : 'none';
-
-  sec.style.display = '';
-  renderSemanaChart();
-}
-
-function renderSemanaChart(){
-  const s = COMERCIAL.semana;
-  const wrap = document.getElementById('semanaGraficoCol');
-  const canvas = document.getElementById('semanaChart');
-  if(!wrap || !canvas || typeof Chart === 'undefined') return;
-  if(semanaChartInstance){ semanaChartInstance.destroy(); semanaChartInstance = null; }
-
-  const tipo = claveTxt(s['grafico']);
-  const { modelo, perfil } = semanaModeloPerfil();
-  const nota = document.getElementById('semanaGraficoNota');
-  let config = null;
-
-  if(tipo === 'escenarios' && modelo){
-    const res = calcEscenarios(rowsDeModelo(modelo, perfil, 'Pesos', 0), 1);
-    if(res.length){
-      config = {
-        type: 'bar',
-        data: { labels: res.map(x => x.esc.nombre), datasets: datasetsBarrasEscenarios(res).slice(0, 2) },
-        options: opcionesBarrasEscenarios(),
-      };
-      nota.textContent = 'Retorno estimado a 12 meses según los supuestos de cada escenario (solapa Escenarios 2027). Muestra un rango de resultados posibles, no una promesa de rentabilidad.';
-    }
-  } else if(tipo === 'fondos'){
-    const nombres = String(s['grafico fondos'] || '').split(',').map(x => resolverFondo(x.trim())).filter(n => HIST_FILLED[n]);
-    const rango = String(s['grafico rango'] || '6M').toUpperCase();
-    if(nombres.length){
-      const filas = nombres.map(n => ({ nombre: n, pct: 100, found: true }));
-      const endIdx = DATES.length - 1;
-      const startIdx = Math.max(commonStartIdx(filas), dateIdxOnOrAfter(subtractPeriod(DATES[endIdx], rango)));
-      const isoDates = DATES.slice(startIdx, endIdx + 1);
-      const esInicioMes = isoDates.map((iso, i)=> i > 0 && iso.slice(0, 7) !== isoDates[i - 1].slice(0, 7));
-      config = {
-        type: 'line',
-        data: {
-          labels: isoDates.map(fmtDateShort),
-          datasets: nombres.map((n, i)=>({
-            label: nombreFondoVisible(n),
-            data: isoDates.map((_, k)=> +((HIST_FILLED[n][startIdx + k] / HIST_FILLED[n][startIdx] - 1) * 100).toFixed(3)),
-            borderColor: fundColor(i), backgroundColor: fundColor(i),
-            borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.15,
-          })),
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#14182B' } },
-            datalabels: { display: false },
-            tooltip: { callbacks: { label: (c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } },
-          },
-          scales: {
-            x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, color: '#6E7590', font: { size: 11 }, callback: (v, i)=> esInicioMes[i] ? monthLabel(isoDates[i]) : null } },
-            y: { ticks: { callback: (v)=> `${v >= 0 ? '+' : ''}${v}%`, color: '#6E7590', font: { size: 11 } }, grid: { color: '#E4E8F1' } },
-          },
-        },
-      };
-      nota.textContent = `Rendimiento acumulado de cada fondo en su moneda, del ${fmtDateShort(DATES[startIdx])} al ${fmtDateShort(DATES[endIdx])}. Rentabilidades pasadas no garantizan rentabilidades futuras.`;
-    }
-  }
-
-  if(!config){ wrap.style.display = 'none'; return; }
-  wrap.style.display = '';
-  document.getElementById('semanaGraficoTitulo').textContent = s['grafico titulo'] || '';
-  semanaChartInstance = new Chart(canvas.getContext('2d'), config);
-}
-
-function setSemanaColapsada(colapsada){
-  const sec = document.getElementById('semanaSection');
-  sec.classList.toggle('colapsada', colapsada);
-  document.getElementById('semanaToggle').textContent = colapsada ? 'Ver argumento' : 'Ocultar';
-  document.getElementById('semanaToggle').setAttribute('aria-expanded', String(!colapsada));
-  try{ localStorage.setItem(SEMANA_COLAPSADA_KEY, colapsada ? '1' : '0'); }catch(e){}
-  if(!colapsada && semanaChartInstance) requestAnimationFrame(()=> semanaChartInstance.resize());
-}
-
-document.getElementById('semanaToggle').addEventListener('click', ()=>{
-  setSemanaColapsada(!document.getElementById('semanaSection').classList.contains('colapsada'));
-});
-document.getElementById('semanaCargarBtn').addEventListener('click', ()=>{
-  const { modelo, perfil } = semanaModeloPerfil();
-  if(modelo) aplicarModelo(modelo, perfil, true);
-});
-document.getElementById('semanaEscBtn').addEventListener('click', ()=>{
-  const { modelo, perfil } = semanaModeloPerfil();
-  if(!modelo) return;
-  // Un modelo con solapa propia tiene sus escenarios ahi mismo
-  if(COMERCIAL.modelos[modelo].enPestana){
-    aplicarModelo(modelo, perfil, true);
-    requestAnimationFrame(()=>{
-      const el = document.getElementById('pteBloque');
-      if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    return;
-  }
-  aplicarModelo(modelo, perfil, false);
-  activarTab('escenarios');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-document.getElementById('semanaCopiarBtn').addEventListener('click', (e)=>{
-  const btn = e.currentTarget;
-  const txt = semanaTextoPlano();
-  const listo = ()=>{
-    const previo = btn.textContent;
-    btn.textContent = '✓ Guion copiado';
-    setTimeout(()=>{ btn.textContent = previo; }, 1800);
-  };
-  const plan = ()=>{
-    const ta = document.createElement('textarea');
-    ta.value = txt; ta.style.position = 'fixed'; ta.style.left = '-9999px';
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); listo(); }catch(err){}
-    ta.remove();
-  };
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(listo).catch(plan);
-  } else {
-    plan();
-  }
-});
-
 // Se llama una vez que estan cargados data.xlsx y comercial.xlsx
 function initComercial(){
   const hayModelos = COMERCIAL.ok && COMERCIAL.ordenModelos.some(n => !COMERCIAL.modelos[n].enPestana);
@@ -6707,16 +6654,9 @@ function initComercial(){
   const tabPte = document.querySelector('.tab-btn[data-tab="puente"]');
   if(tabPte){
     tabPte.style.display = PTE.modelo ? '' : 'none';
-    if(PTE.modelo) tabPte.textContent = PTE.modelo;
   }
   document.getElementById('pteMontoInput').value = PTE.monto.toLocaleString('es-AR', { maximumFractionDigits: 0 });
 
-  let colapsada = false;
-  try{ colapsada = localStorage.getItem(SEMANA_COLAPSADA_KEY) === '1'; }catch(e){}
-  setSemanaColapsada(colapsada);
-
-  renderTermometro();
-  renderSemana();
   refrescarMercadoEnVivo();
 }
 
