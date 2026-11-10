@@ -1268,6 +1268,217 @@
     #honTable tfoot td{ border-radius:0 !important; }
     #honTable tfoot td.hon-tfoot-label{ display:block; padding-bottom:4px; }
   }
+
+  /* ============================================================
+     CAPA COMERCIAL (comercial.xlsx): termometro de mercado,
+     argumento de la semana, carteras modelo y Escenarios 2027
+     ============================================================ */
+
+  /* --- Termometro de mercado: franja compacta arriba de las solapas --- */
+  .termo{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 18px 16px;
+    margin-bottom:18px;
+  }
+  .termo-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:12px; flex-wrap:wrap; margin-bottom:12px;
+  }
+  .termo-title{
+    font-size:11.5px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--navy);
+  }
+  .termo-fecha{ font-size:11px; color:var(--muted); }
+  .termo-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; }
+  @media (max-width:1040px){ .termo-grid{ grid-template-columns:repeat(3, 1fr); } }
+  @media (max-width:620px){ .termo-grid{ grid-template-columns:repeat(2, 1fr); } }
+  .termo-item{
+    background:#FAFBFE;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 12px 10px;
+    min-width:0;
+  }
+  .termo-label{
+    font-size:10px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--muted);
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  }
+  .termo-vivo{
+    font-size:8.5px; font-weight:800; letter-spacing:.05em;
+    color:var(--pos); background:var(--pos-bg);
+    border-radius:3px; padding:1px 4px;
+  }
+  .termo-valor{
+    font-family:'JetBrains Mono',monospace;
+    font-size:19px; font-weight:600; color:var(--navy);
+    margin:5px 0 2px; white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+  .termo-valor small{ font-size:11px; font-weight:500; color:var(--muted); margin-left:3px; }
+  .termo-detalle{ font-size:11px; color:var(--text); line-height:1.4; }
+  .termo-detalle strong{ font-family:'JetBrains Mono',monospace; font-weight:600; }
+  .termo-lectura{ font-size:11px; color:var(--muted); line-height:1.4; margin-top:5px; }
+  /* Posicion del mayorista dentro de la banda (piso a la izquierda, techo a la derecha) */
+  .termo-banda{
+    position:relative; height:6px; border-radius:3px;
+    background:#E4E8F1; margin:8px 0 3px;
+  }
+  .termo-banda i{
+    position:absolute; top:-3px; width:4px; height:12px; margin-left:-2px;
+    border-radius:2px; background:var(--accent);
+  }
+  .termo-banda-ext{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted); }
+
+  /* --- Argumento de la semana --- */
+  .semana{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent);
+    border-radius:var(--radius);
+    padding:20px 24px 22px;
+    margin-bottom:20px;
+  }
+  .semana-top{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .semana-kicker{
+    font-size:11px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--accent);
+  }
+  .semana-toggle{
+    background:none; border:1px solid var(--line); border-radius:6px;
+    font-family:inherit; font-size:11.5px; font-weight:700; color:var(--muted);
+    padding:4px 10px; cursor:pointer;
+  }
+  .semana-toggle:hover{ color:var(--navy); border-color:#B9C4E8; }
+  .semana-idea{
+    font-size:23px; font-weight:800; letter-spacing:-0.015em; line-height:1.2;
+    color:var(--navy); margin:8px 0 0; text-wrap:balance;
+  }
+  .semana.colapsada .semana-idea{ font-size:16px; }
+  .semana.colapsada .semana-cuerpo{ display:none; }
+  .semana-cuerpo{
+    display:grid; grid-template-columns:minmax(0, 1.05fr) minmax(0, 1fr);
+    gap:26px; margin-top:10px;
+  }
+  @media (max-width:900px){ .semana-cuerpo{ grid-template-columns:1fr; } }
+  .semana-bajada{ font-size:14px; line-height:1.55; color:var(--text); margin:0 0 14px; }
+  .semana-sub{
+    font-size:10.5px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.05em; color:var(--muted); margin:0 0 6px;
+  }
+  .semana-guion{ margin:0 0 16px; padding-left:20px; }
+  .semana-guion li{ font-size:13.5px; line-height:1.5; margin-bottom:6px; }
+  .semana-objecion{
+    background:#F7F9FE; border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px; margin-bottom:16px;
+  }
+  .semana-objecion .obj{ font-size:13.5px; font-weight:600; font-style:italic; color:var(--navy); margin:0 0 6px; line-height:1.45; }
+  .semana-objecion .resp{ font-size:13px; line-height:1.5; margin:0; }
+  .semana-acciones{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn-com{
+    font-family:inherit; font-size:12.5px; font-weight:700;
+    border-radius:7px; padding:9px 14px; cursor:pointer;
+    border:1.5px solid var(--navy); background:var(--navy); color:#fff;
+  }
+  .btn-com:hover{ background:var(--navy-2); border-color:var(--navy-2); }
+  .btn-com.sec{ background:#fff; color:var(--navy); border-color:#C9D2EA; }
+  .btn-com.sec:hover{ background:#EEF1FC; border-color:#B9C4E8; }
+  .semana-grafico-titulo{ font-size:12px; font-weight:700; color:var(--navy); margin:0 0 8px; }
+  .semana-grafico-wrap{ position:relative; height:270px; }
+  .semana-grafico-nota{ font-size:10.5px; color:var(--muted); margin:8px 0 0; line-height:1.45; }
+
+  /* --- Carteras modelo --- */
+  .modelo-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:12px; }
+  .option-btn.modelo-card{ min-width:0; gap:5px; }
+  .modelo-card .modelo-head{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .modelo-badge{
+    font-size:9.5px !important; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+    color:#5B6785 !important; background:#EEF1FC; border:1px solid #DCE4F5;
+    border-radius:4px; padding:1px 5px;
+  }
+  .modelo-card .modelo-para{ font-size:11.5px; color:var(--text); opacity:.8; }
+  #carteraTable tbody tr.bloque-row td{
+    background:#E9EEFA; color:var(--navy);
+    font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+    padding-top:7px; padding-bottom:7px;
+  }
+  #carteraTable tbody tr.bloque-row:hover{ background:#E9EEFA; }
+  .bloque-row .bloque-pct{ font-family:'JetBrains Mono',monospace; font-weight:600; opacity:.7; margin-left:8px; }
+  .base-chip-DL{ background:#FDF0DE; color:#8A5A0F; border-color:#F3E1BD; }
+  /* Fondo en otra moneda que la de la cartera: monto en su moneda + equivalente */
+  .inv-equiv{
+    display:block; font-size:10.5px; font-weight:500; color:var(--muted);
+    font-family:'JetBrains Mono',monospace; margin-top:1px;
+  }
+  @media (max-width:720px){
+    #carteraTable tbody tr.bloque-row{ border:none; border-radius:6px; margin-bottom:6px; }
+    #carteraTable tbody td .inv-wrap{ text-align:right; }
+  }
+
+  /* --- Escenarios 2027 --- */
+  .esc-resumen{ display:flex; gap:10px 28px; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; }
+  .esc-cartera{ font-size:13px; color:var(--text); line-height:1.5; }
+  .esc-cartera strong{ color:var(--navy); }
+  .esc-controles{ display:flex; gap:18px; flex-wrap:wrap; align-items:center; }
+  .esc-control-label{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-right:6px; }
+  .esc-rango-lista{ display:flex; flex-direction:column; gap:18px; margin-top:6px; }
+  .esc-rango-fila{ display:grid; grid-template-columns:190px minmax(0, 1fr); gap:16px; align-items:center; }
+  @media (max-width:720px){ .esc-rango-fila{ grid-template-columns:1fr; gap:6px; } }
+  .esc-rango-nombre{ font-size:13px; font-weight:700; color:var(--navy); }
+  .esc-rango-nombre span{ display:block; font-size:11px; font-weight:500; color:var(--muted); margin-top:1px; }
+  .esc-rango-valor{ font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--navy); font-variant-numeric:tabular-nums; }
+  .esc-pista{ position:relative; height:34px; margin-top:4px; }
+  .esc-pista::before{
+    content:''; position:absolute; left:0; right:0; top:14px; height:6px;
+    border-radius:3px; background:#E4E8F1;
+  }
+  .esc-tramo{ position:absolute; top:14px; height:6px; border-radius:3px; background:#9DB4EA; }
+  .esc-cero{ position:absolute; top:6px; width:1px; height:22px; background:#6E7590; }
+  .esc-cero::after{
+    content:'0%'; position:absolute; top:22px; left:-10px; width:20px; text-align:center;
+    font-size:9.5px; color:var(--muted);
+  }
+  .esc-punto{
+    position:absolute; top:9px; width:16px; height:16px; margin-left:-8px;
+    border-radius:50%; border:2px solid #fff;
+    box-shadow:0 0 0 1px rgba(19,30,66,.25);
+  }
+  .esc-leyenda{ display:flex; gap:16px; flex-wrap:wrap; margin-top:16px; font-size:11.5px; color:var(--text); }
+  .esc-leyenda i{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+  .esc-cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:14px; margin-bottom:20px; }
+  .esc-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    border-top:4px solid var(--navy); padding:18px 18px 16px;
+  }
+  .esc-card h3{ font-size:15px; font-weight:800; color:var(--navy); margin:0 0 6px; }
+  .esc-card .esc-desc{ font-size:12.5px; line-height:1.5; color:var(--muted); margin:0 0 14px; min-height:56px; }
+  .esc-kpis{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+  .esc-kpi{ background:#FAFBFE; border:1px solid var(--line); border-radius:8px; padding:9px 10px; }
+  .esc-kpi.principal{ background:#EEF1FC; border-color:#D5DEF6; }
+  .esc-kpi .k-label{ font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+  .esc-kpi .k-valor{ font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums; }
+  .esc-kpi .k-valor.pos{ color:var(--pos); }
+  .esc-kpi .k-valor.neg{ color:var(--neg); }
+  .esc-final{ font-size:12px; color:var(--text); margin:0 0 12px; }
+  .esc-final strong{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--navy); }
+  .esc-supuestos{ border-top:1px solid var(--line); padding-top:10px; display:grid; grid-template-columns:1fr auto; gap:4px 10px; font-size:11.5px; }
+  .esc-supuestos span:nth-child(odd){ color:var(--muted); }
+  .esc-supuestos span:nth-child(even){ font-family:'JetBrains Mono',monospace; text-align:right; color:var(--navy); }
+  .esc-chart-wrap{ position:relative; height:280px; }
+  #escDetalleTable td.num, #escDetalleTable th.num{ text-align:right; }
+  #escDetalleTable .esc-ret{ font-family:'JetBrains Mono',monospace; font-size:13px; font-variant-numeric:tabular-nums; }
+  #escDetalleTable .esc-ret.pos{ color:var(--pos); }
+  #escDetalleTable .esc-ret.neg{ color:var(--neg); }
+  #escDetalleTable tfoot td{ background:#E4EAF9; font-weight:800; color:var(--navy); border:none; padding:12px 14px; }
+  .esc-vacio{ text-align:center; color:var(--muted); font-size:13.5px; padding:26px 10px; }
+  .print-table tr.print-bloque td{
+    background:#F1F4FB; font-size:8.5px; font-weight:800; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--navy); padding:3px 8px;
+  }
 </style>
 </head>
 <body>
@@ -1315,13 +1526,50 @@
 
   <main class="container">
 
+    <section class="termo" id="termoSection" style="display:none;" aria-label="Termómetro de mercado">
+      <div class="termo-head">
+        <span class="termo-title">Termómetro de mercado</span>
+        <span class="termo-fecha" id="termoFecha"></span>
+      </div>
+      <div class="termo-grid" id="termoGrid"></div>
+    </section>
+
     <div class="tabs-nav">
       <button class="tab-btn active" data-tab="calculadora">Calculadora de Carteras</button>
+      <button class="tab-btn" data-tab="escenarios" style="display:none;">Escenarios 2027</button>
       <button class="tab-btn" data-tab="fondos">Comparador de Fondos</button>
       <button class="tab-btn" data-tab="honorarios">Simulador de Ingresos</button>
     </div>
 
     <div id="tab-calculadora" class="tab-panel active">
+
+    <section class="semana" id="semanaSection" style="display:none;">
+      <div class="semana-top">
+        <span class="semana-kicker" id="semanaKicker">Argumento de la semana</span>
+        <button type="button" class="semana-toggle" id="semanaToggle" aria-expanded="true">Ocultar</button>
+      </div>
+      <h2 class="semana-idea" id="semanaIdea"></h2>
+      <div class="semana-cuerpo">
+        <div>
+          <p class="semana-bajada" id="semanaBajada"></p>
+          <div id="semanaGuionWrap">
+            <p class="semana-sub">Guion para el cliente</p>
+            <ol class="semana-guion" id="semanaGuion"></ol>
+          </div>
+          <div class="semana-objecion" id="semanaObjecion"></div>
+          <div class="semana-acciones">
+            <button type="button" class="btn-com" id="semanaCargarBtn">Cargar esta cartera</button>
+            <button type="button" class="btn-com sec" id="semanaEscBtn">Ver escenarios</button>
+            <button type="button" class="btn-com sec" id="semanaCopiarBtn">Copiar guion</button>
+          </div>
+        </div>
+        <div id="semanaGraficoCol">
+          <p class="semana-grafico-titulo" id="semanaGraficoTitulo"></p>
+          <div class="semana-grafico-wrap"><canvas id="semanaChart"></canvas></div>
+          <p class="semana-grafico-nota" id="semanaGraficoNota"></p>
+        </div>
+      </div>
+    </section>
 
     <div class="tab-toolbar">
       <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
@@ -1351,7 +1599,7 @@
 
     <section class="card" id="tipoCarteraSection">
       <h2>2 · Tipo de Cartera</h2>
-      <p class="sub">Usá una cartera armada según perfil y horizonte, o elegí vos mismo los fondos y el peso de cada uno.</p>
+      <p class="sub">Usá una cartera armada según perfil y horizonte, elegí vos mismo los fondos y el peso de cada uno, o partí de una cartera modelo.</p>
       <div class="option-row" id="tipoCarteraOptions">
         <button class="option-btn selected" data-tipo="Sugerida">
           <strong>Cartera Sugerida</strong>
@@ -1361,7 +1609,18 @@
           <strong>Cartera Personalizada</strong>
           <span>Elegí los fondos y el % de cada uno</span>
         </button>
+        <button class="option-btn" data-tipo="Modelo" style="display:none;">
+          <strong>Carteras Modelo</strong>
+          <span>Ideas armadas para un objetivo puntual, por perfil</span>
+        </button>
       </div>
+    </section>
+
+    <section class="card" id="modeloSection" style="display:none;">
+      <h2>3 · Cartera modelo</h2>
+      <p class="sub">Un clic carga la cartera completa. Después elegí el perfil y descargá el PDF con el nombre del cliente.</p>
+      <div class="modelo-row" id="modeloOptions"></div>
+      <p class="foot-note" id="modeloVacio" style="display:none;margin-top:0;">No hay carteras modelo para esta moneda.</p>
     </section>
 
     <section class="card" id="perfilSection">
@@ -1443,7 +1702,7 @@
           <div class="chart-wrap"><canvas id="chartFondo"></canvas></div>
         </div>
         <div class="chart-box">
-          <div class="mini-title">Composición por categoría</div>
+          <div class="mini-title" id="chartCategoriaTitle">Composición por categoría</div>
           <div class="chart-wrap"><canvas id="chartCategoria"></canvas></div>
         </div>
       </div>
@@ -1469,6 +1728,8 @@
       <div class="hist-chart-wrap"><canvas id="histChart"></canvas></div>
     </section>
 
+    <div id="histBimonNote" class="pct-warning warn" style="display:none;margin:0 0 20px;">Esta cartera combina fondos en pesos y en dólares: no se muestra un rendimiento histórico consolidado porque sumaría retornos en dos monedas distintas. Abajo está el rendimiento de cada fondo en su moneda, y en la solapa Escenarios 2027 el resultado estimado de la cartera completa en pesos y en dólares.</div>
+
     <section class="card" id="carteraFondosSection">
       <h2>Fondos de la cartera</h2>
       <p class="sub">Rentabilidad de los fondos incluidos en la cartera sugerida, sobre el VCP más reciente comparado contra distintas ventanas de tiempo.</p>
@@ -1493,6 +1754,74 @@
     <div class="page-disclaimer">
       <p>Este informe (el “Informe”) ha sido elaborado con información accesible al público en general, sin ninguna verificación independiente. No existe obligación de actualizarlo. El presente informe no podrá divulgarse, distribuirse ni reproducirse públicamente (ya sea en todo y/o en parte) sin consentimiento previo y por escrito. El destinatario de este Informe deberá consultar a sus asesores legales, contables y/o impositivos sobre la conveniencia de realizar la presente inversión. No se asume responsabilidad alguna por las conclusiones, las interpretaciones y/o los cálculos resultantes de la lectura del presente Informe. No se otorgan garantías ni se aseguran rentabilidades. El anuncio de rentabilidad pasada no es garantía o promesa de rentabilidad futura.</p>
       <p class="disc-legal">Documento de uso interno, de carácter meramente informativo. No constituye una oferta, invitación ni recomendación de inversión. Las cifras son estimativas y están sujetas a variaciones de mercado.</p>
+    </div>
+
+    </div>
+
+    <div id="tab-escenarios" class="tab-panel">
+
+    <section class="card">
+      <h2>Escenarios 2027</h2>
+      <p class="sub">Qué le pasaría a la cartera armada en la calculadora bajo distintos escenarios, usando la TIR, la Duration y la base de tasa de cada fondo. Es un rango de resultados posibles, no una promesa de rentabilidad.</p>
+      <div class="esc-resumen">
+        <div class="esc-cartera" id="escCartera"></div>
+        <div class="esc-controles">
+          <div>
+            <span class="esc-control-label">Plazo</span>
+            <span class="range-filters" id="escPlazoBtns" style="display:inline-flex;">
+              <button class="range-btn" data-plazo="6M">6 meses</button>
+              <button class="range-btn active" data-plazo="12M">12 meses</button>
+              <button class="range-btn" data-plazo="DIC27">A dic-2027</button>
+            </span>
+          </div>
+          <button type="button" class="btn-com sec" id="escIrCalculadora">Cambiar cartera</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="escVacio" class="card esc-vacio" style="display:none;"></div>
+
+    <div id="escContenido">
+
+    <section class="card">
+      <h2>Rango de resultado</h2>
+      <p class="sub">Cada punto es un escenario. La franja marca entre qué valores quedaría la cartera.</p>
+      <div class="esc-rango-lista" id="escRangoLista"></div>
+      <div class="esc-leyenda" id="escLeyenda"></div>
+      <div id="escCobertura" class="pct-warning warn" style="display:none;"></div>
+    </section>
+
+    <div class="esc-cards" id="escCards"></div>
+
+    <section class="card">
+      <h2>Comparación entre escenarios</h2>
+      <p class="sub">Retorno estimado de la cartera en pesos, en dólares MEP y en términos reales.</p>
+      <div class="esc-chart-wrap"><canvas id="escChart"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>Qué aporta cada fondo</h2>
+      <div class="chart-header" style="margin-bottom:12px;">
+        <p class="sub" id="escDetalleSub" style="margin:0;"></p>
+        <div class="range-filters" id="escVistaBtns">
+          <button class="range-btn" data-vista="ars">En pesos</button>
+          <button class="range-btn" data-vista="usd">En dólares</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="escDetalleTable">
+          <thead id="escDetalleHead"></thead>
+          <tbody id="escDetalleBody"></tbody>
+          <tfoot id="escDetalleFoot"></tfoot>
+        </table>
+      </div>
+      <p class="foot-note">Cómo se calcula: retorno de cada fondo ≈ (1 + TIR)^plazo − 1 + cambio de tasa del escenario × (plazo − Duration). Si la tasa sube, lo que vence antes del plazo se reinvierte más arriba y lo que vence después pierde precio. Después se convierte según a qué responde el fondo: los CER suman la inflación del escenario, los dólar linked la variación del oficial y los fondos en dólares la variación del MEP. Los supuestos de cada escenario se editan en comercial.xlsx.</p>
+    </section>
+
+    </div>
+
+    <div class="page-disclaimer">
+      <p class="disc-legal">Herramienta de uso interno para el asesor. Los escenarios son ejercicios de sensibilidad construidos sobre supuestos hipotéticos y sobre la TIR y la Duration informadas de cada fondo; no son pronósticos ni constituyen una promesa o garantía de rentabilidad. Los resultados reales pueden diferir significativamente. No constituye una oferta, invitación ni recomendación de inversión.</p>
     </div>
 
     </div>
@@ -1735,12 +2064,12 @@
         <img id="printChartFondo" alt="Composición por fondo" />
       </div>
       <div>
-        <h4>Composición por categoría</h4>
+        <h4 id="printChartCategoriaTitle">Composición por categoría</h4>
         <img id="printChartCategoria" alt="Composición por categoría" />
       </div>
     </div>
 
-    <div class="print-section">
+    <div class="print-section" id="printHistSection">
       <h3>Rendimiento histórico de la cartera</h3>
       <div class="print-perf-grid" id="printPerfGrid"></div>
       <img id="printHistChart" class="print-hist-img" alt="Rendimiento histórico de la cartera" />
@@ -2250,8 +2579,9 @@ function fondoNameHtml(nombre){
   return `<a href="${fs.url}" target="_blank" rel="noopener" class="fondo-link" title="${title}">${visible}</a>`;
 }
 
-// tipo: 'Sugerida' usa la matriz PORTFOLIOS; 'Personalizada' usa customPortfolio
-const selection = { moneda: 'Pesos', tipo: 'Sugerida', perfil: 'Moderado', horizonte: '<12m' };
+// tipo: 'Sugerida' usa la matriz PORTFOLIOS; 'Personalizada' usa customPortfolio;
+// 'Modelo' usa una cartera modelo de comercial.xlsx (selection.modelo)
+const selection = { moneda: 'Pesos', tipo: 'Sugerida', perfil: 'Moderado', horizonte: '<12m', modelo: null };
 
 // Cartera armada a mano: [{ nombre, pct }]
 let customPortfolio = [];
@@ -2660,10 +2990,14 @@ function renderCompositionCharts(rows){
   const fondoLabels = foundRows.map(r=>nombreFondoVisible(r.nombre));
   const fondoData = foundRows.map(r=>r.pct);
 
+  // En las carteras modelo la segunda torta agrupa por bloque (el armado
+  // comercial de la cartera) en lugar de por categoria del fondo
+  const porBloque = foundRows.length > 0 && foundRows.every(r => r.bloque);
+  document.getElementById('chartCategoriaTitle').textContent = porBloque ? 'Composición por bloque' : 'Composición por categoría';
   const catMap = {};
   foundRows.forEach(r=>{
     const f = fundByName(r.nombre);
-    const cat = f ? f.categoria : 'Otros';
+    const cat = porBloque ? r.bloque : (f ? f.categoria : 'Otros');
     catMap[cat] = (catMap[cat] || 0) + r.pct;
   });
   const catLabels = Object.keys(catMap);
@@ -3106,9 +3440,21 @@ function updateVisibility(){
   // ocupa todo el ancho
   const btnSugerida = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Sugerida"]');
   if(btnSugerida) btnSugerida.style.display = cable ? 'none' : '';
+  // Las carteras modelo tampoco existen en Dolar Cable, ni si comercial.xlsx no trajo ninguna
+  const btnModelo = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Modelo"]');
+  if(btnModelo) btnModelo.style.display = (cable || btnModelo.dataset.disponible !== '1') ? 'none' : '';
 
   const custom = isCustom();
   sanitizeCustomPortfolio();
+
+  // Cartera modelo: si el modelo elegido no aplica a la moneda se toma el primero que si
+  const modelo = isModelo();
+  if(modelo){
+    const disponibles = modelosDisponibles();
+    if(!disponibles.includes(selection.modelo)) selection.modelo = disponibles[0] || null;
+    renderModeloCards();
+  }
+  document.getElementById('modeloSection').style.display = modelo ? '' : 'none';
 
   // Con Dolar Cable y la cartera vacia, se carga el fondo cable al 100%
   if(cable && !customPortfolio.length){
@@ -3116,9 +3462,11 @@ function updateVisibility(){
     repartirEnPartesIguales();
   }
 
-  // En cartera personalizada no se usan perfil ni horizonte
+  // En cartera personalizada no se usan perfil ni horizonte; en cartera
+  // modelo el horizonte lo define el modelo, asi que solo se elige el perfil
   document.getElementById('perfilSection').style.display = custom ? 'none' : '';
-  document.getElementById('horizonteSection').style.display = custom ? 'none' : '';
+  document.getElementById('horizonteSection').style.display = (custom || modelo) ? 'none' : '';
+  document.getElementById('perfilTitle').textContent = `${modelo ? 4 : 3} · Perfil de inversión`;
   document.getElementById('montoTitle').textContent = `${custom ? 3 : 5} · Monto a invertir`;
 
   document.getElementById('montoLabel').textContent =
@@ -3134,19 +3482,32 @@ function buildCarteraRows(){
   const monto = parseMonto(document.getElementById('montoInput').value);
   const entries = isCustom()
     ? customPortfolio.map(it => [it.nombre, Number(it.pct) || 0])
-    : Object.entries(
-        ((PORTFOLIOS[selection.moneda] || {})[selection.perfil] || {})[selection.horizonte] || {}
-      );
+    : (isModelo()
+        ? modeloEntries(selection.modelo, selection.perfil)
+        : Object.entries(
+            ((PORTFOLIOS[selection.moneda] || {})[selection.perfil] || {})[selection.horizonte] || {}
+          ));
 
-  return entries.map(([nombre, pct])=>{
+  const monedaCartera = monedaCarteraBase();
+  const tc = tcMep();
+
+  return entries.map(([nombre, pct, bloque])=>{
     const fund = fundByName(nombre);
+    // "costo" siempre esta en la moneda de la cartera. Si el fondo es de la
+    // otra moneda (cartera bimonetaria) "costoFondo" es ese monto convertido
+    // al dolar MEP del termometro; sin tipo de cambio queda en null.
     const costo = monto * pct / 100;
+    const monedaFondo = fund ? fund.moneda : monedaCartera;
+    const cruzada = !!fund && monedaFondo !== monedaCartera;
+    const costoFondo = !cruzada ? costo : (tc ? (monedaFondo === 'Dólar' ? costo / tc : costo * tc) : null);
     const vcp = fund ? fund.ultimoVCP : null;
-    const nominales = vcp ? Math.floor(costo / vcp) : null;
+    const nominales = (vcp && costoFondo != null) ? Math.floor(costoFondo / vcp) : null;
     // TIR y Duration salen de tir_fondos.xlsx, cruzando por nombre de fondo
     const td = tirDurationDeFondo(nombre);
     return {
       nombre, pct, vcp, costo, nominales,
+      bloque: bloque || null,
+      monedaFondo, cruzada, costoFondo,
       found: !!fund,
       riesgo: fund ? fund.riesgo : null,
       horizonte: fund ? fund.horizonte : null,
@@ -3217,7 +3578,7 @@ function carteraRowHtml(r, i, custom, mostrarBase){
       <td data-label="Horizonte">${r.horizonte || '—'}</td>
       <td class="num" data-label="TIR">${tirCellHtml(r, mostrarBase)}</td>
       <td class="num" data-label="Duration">${durCellHtml(r)}</td>
-      <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
+      <td class="num vcp-value" data-label="Inversión">${excede ? '—' : inversionHtml(r)}</td>
     </tr>`;
 }
 
@@ -3279,12 +3640,26 @@ function renderCartera(){
   const custom = isCustom();
   const rows = buildCarteraRows();
 
-  document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
+  const modelo = isModelo();
+  document.getElementById('resultTitle').textContent = tituloCartera();
   document.getElementById('resultFootNote').textContent = custom
     ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
-    : 'Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
+    : (modelo
+        ? 'Cartera modelo: las ponderaciones son una referencia por perfil y se pueden ajustar pasando a Cartera Personalizada. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila se ponderan por separado para cada base de tasa (CER, ARS, USD).'
+        : 'Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.');
 
-  let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayQueMostrarBase(rows))).join('');
+  // En las carteras modelo los fondos van agrupados por bloque (liquidez,
+  // cobertura, etc.), con una fila separadora que muestra el peso del bloque
+  const pesosBloque = pesoPorBloque(rows);
+  let bloquePrevio = null;
+  let body = rows.map((r, i)=>{
+    let sep = '';
+    if(r.bloque && r.bloque !== bloquePrevio){
+      sep = bloqueRowHtml(r.bloque, pesosBloque.get(r.bloque));
+      bloquePrevio = r.bloque;
+    }
+    return sep + carteraRowHtml(r, i, custom, hayQueMostrarBase(rows));
+  }).join('');
   if(custom){
     body += addFondoRowHtml();
   } else if(!rows.length){
@@ -3373,6 +3748,26 @@ function renderCarteraTotals(rows, custom){
 
   // En cartera sugerida los % vienen del Excel: si esa combinacion no suma
   // 100% hay que avisarlo, porque es un error de carga y no del usuario.
+  if(isModelo()){
+    const bim = esBimonetaria(rows);
+    if(rows.length && totalPct !== 100){
+      warn.style.display = 'block';
+      warn.className = 'pct-warning err';
+      warn.textContent = `⚠ En comercial.xlsx este modelo suma ${totalPct}% para el perfil ${selection.perfil} en lugar de 100%. `
+        + 'Los montos que se muestran abajo están calculados sobre esos porcentajes.';
+    } else if(bim){
+      const tc = tcMep();
+      warn.style.display = 'block';
+      warn.className = 'pct-warning warn';
+      warn.textContent = tc
+        ? `Cartera bimonetaria: combina fondos en pesos y en dólares. Los montos de los fondos de la otra moneda se convierten a un dólar MEP de $ ${fmtNumCom(tc, 2)} (termómetro de mercado).`
+        : 'Cartera bimonetaria: combina fondos en pesos y en dólares. Falta el dólar MEP en comercial.xlsx para convertir los montos de los fondos de la otra moneda.';
+    } else {
+      warn.style.display = 'none';
+    }
+    return;
+  }
+
   if(!custom){
     const desvio = CARTERAS_INCONSISTENTES[
       claveCartera(selection.moneda, selection.perfil, selection.horizonte)
@@ -3421,12 +3816,20 @@ function renderCarteraDerived(rows, custom){
     if(el) el.style.display = hasRows ? '' : 'none';
   });
 
+  // Cartera bimonetaria: no hay rendimiento historico consolidado (sumaria
+  // retornos en pesos con retornos en dolares), asi que se oculta esa seccion
+  const bim = hasRows && esBimonetaria(rows);
+  document.getElementById('histSection').style.display = (hasRows && !bim) ? '' : 'none';
+  document.getElementById('histBimonNote').style.display = bim ? '' : 'none';
+
   lastRows = rows;
   if(!hasRows) return;
 
   renderCompositionCharts(rows);
-  renderPerfGrid(rows);
-  renderHistChart(rows);
+  if(!bim){
+    renderPerfGrid(rows);
+    renderHistChart(rows);
+  }
   renderCarteraFondosTable(rows);
 
   // Si las secciones venian ocultas, los canvas se crearon sin ancho
@@ -3742,7 +4145,8 @@ document.getElementById('loginForm').addEventListener('submit', (e)=>{
 
 // Carga inicial: trae data.xlsx (los VCP), carteras.xlsx (las ponderaciones),
 // factsheets.json (el índice de los PDF de /factsheets), tir_fondos.xlsx (TIR y Duration de
-// cada fondo) y Honorarios.xlsx (honorarios de gerente por clase), todos junto a este archivo.
+// cada fondo), Honorarios.xlsx (honorarios de gerente por clase) y comercial.xlsx (argumento
+// de la semana, termómetro, carteras modelo y escenarios), todos junto a este archivo.
 Promise.all([
   fetch('data.xlsx')
     .then(r=>{
@@ -3758,10 +4162,12 @@ Promise.all([
   cargarFactsheets(),   // si falla, los fondos quedan sin link y no bloquea el resto
   cargarTirFondos(),    // si falla, la cartera queda con TIR y Duration en "s/d"
   cargarHonorarios(),   // si falla, la solapa de honorarios avisa el error y no bloquea el resto
+  cargarComercial(),    // si falla, la pagina queda sin la capa comercial y no bloquea el resto
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
     hideLoadingOverlay();
+    initComercial();
     initUI();
   })
   .catch(err=>{
@@ -4242,7 +4648,7 @@ function importarCarteraCalculadora(){
   honCartera = rows.map(r => ({
     nombre: r.nombre,
     clase: prevClase.get(r.nombre) || claseInicial(r.nombre),
-    saldo: Math.round(r.costo || 0),
+    saldo: Math.round((r.costoFondo != null ? r.costoFondo : r.costo) || 0),
   }));
 
   renderHonorarios();
@@ -4342,6 +4748,1077 @@ function activarHonorarios(){
   });
 })();
 
+
+/* =====================================================================
+   CAPA COMERCIAL (comercial.xlsx)
+
+   Un solo archivo alimenta las cuatro piezas comerciales de la pagina:
+
+     - Hoja "Semana"        -> Argumento de la semana (idea, guion, objecion)
+     - Hoja "Mercado"       -> Termometro de mercado
+     - Hojas "ModelosInfo"
+       y "Modelos"          -> Carteras modelo de un clic, por perfil
+     - Hojas "Escenarios"
+       y "Factores"         -> Solapa Escenarios 2027
+
+   Igual que factsheets.json y tir_fondos.xlsx, si el archivo falta o esta
+   mal armado la pagina NO se cae: se avisa por consola y esas piezas no se
+   muestran. La calculadora de siempre sigue funcionando igual.
+===================================================================== */
+let COMERCIAL = {
+  ok: false,
+  semana: {}, guion: [],
+  mercado: {},
+  modelos: {}, ordenModelos: [],
+  escenarios: [],
+  factores: {},
+};
+
+// Cotizaciones en vivo: si esta en true la pagina intenta refrescar MEP, CCL,
+// mayorista y riesgo pais contra dos APIs publicas. Si no responden se usa
+// lo cargado en la hoja "Mercado" y no se muestra ningun error.
+const TERMOMETRO_EN_VIVO = true;
+const API_DOLARES = 'https://dolarapi.com/v1/dolares';
+const API_RIESGO_PAIS = 'https://api.argentinadatos.com/v1/finanzas/indices/riesgo-pais/ultimo';
+
+const FACTORES_VALIDOS = ['ARS', 'CER', 'DL', 'USD', 'SOB'];
+const FACTOR_NOMBRE = {
+  ARS: 'Tasa en pesos',
+  CER: 'CER',
+  DL:  'Dólar linked',
+  USD: 'Crédito USD',
+  SOB: 'Soberano USD',
+};
+// Un color fijo por escenario (en el orden de las columnas del Excel)
+const ESC_COLORES = ['#1B3F8C', '#C98A1B', '#C43D3D', '#5B6785', '#0F8A5F'];
+
+function escHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Clave de comparacion: sin acentos, sin mayusculas, sin espacios de mas
+function claveTxt(s){
+  return normalizarNombreFondo(s);
+}
+
+function hojaFilas(wb, nombre){
+  const ws = wb.Sheets[nombre];
+  return ws ? XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null }) : [];
+}
+
+function celdaTxt(v){
+  if(v == null) return '';
+  if(v instanceof Date){
+    // Fecha de Excel: se muestra dd/mm/aaaa (se suma medio dia para no caer
+    // en el dia anterior por redondeo de zona horaria)
+    const d = new Date(v.getTime() + 12 * 3600 * 1000);
+    return `${dosDigitos(d.getUTCDate())}/${dosDigitos(d.getUTCMonth() + 1)}/${d.getUTCFullYear()}`;
+  }
+  return String(v).trim();
+}
+
+// 0.2 | "20%" | "1.545,50" | "20,5" -> numero (los % en texto pasan a decimal)
+function celdaNum(v){
+  if(v == null || v === '') return null;
+  if(typeof v === 'number') return isFinite(v) ? v : null;
+  let s = String(v).trim();
+  if(!s) return null;
+  const esPct = /%\s*$/.test(s);
+  s = s.replace(/%/g, '').replace(/\s/g, '');
+  if(s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  const n = parseFloat(s);
+  if(!isFinite(n)) return null;
+  return esPct ? n / 100 : n;
+}
+
+function parseComercial(wb){
+  const out = { ok: true, semana: {}, guion: [], mercado: {}, modelos: {}, ordenModelos: [], escenarios: [], factores: {} };
+
+  // --- Semana: pares Campo | Contenido
+  hojaFilas(wb, 'Semana').forEach(f=>{
+    const k = claveTxt(f[0]);
+    const v = celdaTxt(f[1]);
+    if(!k || k === 'campo' || !v) return;
+    if(/^guion/.test(k)) out.guion.push(v);
+    else out.semana[k] = v;
+  });
+
+  // --- Mercado: Indicador | Valor | Fecha | Lectura
+  hojaFilas(wb, 'Mercado').forEach(f=>{
+    const k = claveTxt(f[0]);
+    if(!k || k === 'indicador') return;
+    out.mercado[k] = { valor: celdaNum(f[1]), fecha: celdaTxt(f[2]), lectura: celdaTxt(f[3]), vivo: false };
+  });
+
+  // --- ModelosInfo: Modelo | Moneda | Bajada | Para que cliente
+  hojaFilas(wb, 'ModelosInfo').forEach(f=>{
+    const nombre = celdaTxt(f[0]);
+    if(!nombre || claveTxt(nombre) === 'modelo') return;
+    const m = claveTxt(f[1]);
+    const moneda = m.startsWith('p') ? 'Pesos' : (m.startsWith('d') ? 'Dólar' : 'Ambas');
+    out.modelos[nombre] = { nombre, moneda, bajada: celdaTxt(f[2]), para: celdaTxt(f[3]), perfiles: {} };
+    out.ordenModelos.push(nombre);
+  });
+
+  // --- Modelos: Modelo | Perfil | Bloque | Fondo | %
+  hojaFilas(wb, 'Modelos').forEach((f, i)=>{
+    const nombre = celdaTxt(f[0]);
+    if(!nombre || claveTxt(nombre) === 'modelo') return;
+    const perfil = celdaTxt(f[1]);
+    const fondo = celdaTxt(f[3]);
+    let pct = celdaNum(f[4]);
+    if(!PERFILES_VALIDOS.includes(perfil) || !fondo || pct == null){
+      console.warn(`comercial.xlsx: fila ${i + 1} de "Modelos" ignorada (perfil, fondo o % no válido).`);
+      return;
+    }
+    // Las celdas vienen como porcentaje (0,2 = 20%); si alguien escribe 20 a secas tambien vale
+    pct = pct <= 1 ? pct * 100 : pct;
+    pct = Math.round(pct * 100) / 100;
+    if(!out.modelos[nombre]){
+      // Modelo sin fila en ModelosInfo: se muestra igual, como bimonetario
+      out.modelos[nombre] = { nombre, moneda: 'Ambas', bajada: '', para: '', perfiles: {} };
+      out.ordenModelos.push(nombre);
+    }
+    const m = out.modelos[nombre];
+    (m.perfiles[perfil] = m.perfiles[perfil] || []).push({ fondo, bloque: celdaTxt(f[2]), pct });
+  });
+  // Los fondos de un mismo bloque quedan juntos, respetando el orden de aparicion
+  Object.values(out.modelos).forEach(m=>{
+    Object.keys(m.perfiles).forEach(p=>{
+      const orden = [];
+      m.perfiles[p].forEach(it=>{ if(!orden.includes(it.bloque)) orden.push(it.bloque); });
+      m.perfiles[p] = m.perfiles[p]
+        .map((it, i)=> ({ it, i }))
+        .sort((a, b)=> (orden.indexOf(a.it.bloque) - orden.indexOf(b.it.bloque)) || (a.i - b.i))
+        .map(x => x.it);
+    });
+  });
+  out.ordenModelos = out.ordenModelos.filter(n => Object.keys(out.modelos[n].perfiles).length);
+
+  // --- Escenarios: una columna por escenario, una fila por supuesto
+  const filasEsc = hojaFilas(wb, 'Escenarios');
+  if(filasEsc.length){
+    const cab = filasEsc[0];
+    for(let c = 1; c < cab.length; c++){
+      const nombre = celdaTxt(cab[c]);
+      if(nombre) out.escenarios.push({ col: c, nombre, desc: '', infl: 0, ofi: 0, mep: 0, delta: { ARS: 0, CER: 0, DL: 0, USD: 0, SOB: 0 } });
+    }
+    filasEsc.slice(1).forEach(f=>{
+      const k = claveTxt(f[0]);
+      if(!k) return;
+      out.escenarios.forEach(e=>{
+        const raw = f[e.col];
+        const n = celdaNum(raw) || 0;
+        if(k.includes('descrip'))       e.desc = celdaTxt(raw);
+        else if(k.includes('inflaci'))  e.infl = n;
+        else if(k.includes('oficial'))  e.ofi = n;
+        else if(k.includes('mep'))      e.mep = n;
+        else if(k.includes('linked'))   e.delta.DL = n;
+        else if(k.includes('cer'))      e.delta.CER = n;
+        else if(k.includes('soberan'))  e.delta.SOB = n;
+        else if(k.includes('usd'))      e.delta.USD = n;
+        else if(k.includes('pesos'))    e.delta.ARS = n;
+      });
+    });
+  }
+
+  // --- Factores: Fondo | Factor (excepciones a la base de tir_fondos.xlsx)
+  hojaFilas(wb, 'Factores').forEach(f=>{
+    const fondo = celdaTxt(f[0]);
+    const factor = celdaTxt(f[1]).toUpperCase();
+    if(!fondo || claveTxt(fondo) === 'fondo') return;
+    if(FACTORES_VALIDOS.includes(factor)) out.factores[claveTxt(nombreFondoVisible(fondo))] = factor;
+  });
+
+  return out;
+}
+
+function cargarComercial(){
+  if(typeof XLSX === 'undefined') return Promise.resolve();
+  return fetch('comercial.xlsx')
+    .then(r=>{
+      if(!r.ok) throw new Error(`No se encontró comercial.xlsx junto al HTML (HTTP ${r.status}).`);
+      return r.arrayBuffer();
+    })
+    .then(buf=>{
+      COMERCIAL = parseComercial(XLSX.read(buf, { type: 'array', cellDates: true }));
+    })
+    .catch(err=>{
+      console.warn('No se pudo cargar comercial.xlsx; la página queda sin argumento de la semana, termómetro, carteras modelo ni escenarios.', err);
+    });
+}
+
+/* ---------------------------------------------------------------------
+   Formatos de la capa comercial
+--------------------------------------------------------------------- */
+// 0.1234 -> "12,3%"  |  con signo: "+12,3%"
+function fmtPctCom(v, dec, conSigno){
+  if(v == null || !isFinite(v)) return 's/d';
+  const d = dec == null ? 1 : dec;
+  const txt = Math.abs(v * 100).toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+  if(v < 0 && Math.abs(v * 100) >= Math.pow(10, -d) / 2) return '−' + txt;
+  return (conSigno ? '+' : '') + txt;
+}
+function fmtNumCom(v, dec){
+  if(v == null || !isFinite(v)) return 's/d';
+  const d = dec == null ? 0 : dec;
+  return v.toLocaleString('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function signoClase(v){
+  return (v == null || !isFinite(v)) ? '' : (v >= 0 ? 'pos' : 'neg');
+}
+
+/* ---------------------------------------------------------------------
+   Termometro de mercado
+--------------------------------------------------------------------- */
+function merc(clave){
+  return COMERCIAL.mercado[claveTxt(clave)] || null;
+}
+function mercValor(clave){
+  const m = merc(clave);
+  return (m && m.valor != null && isFinite(m.valor)) ? m.valor : null;
+}
+
+// Tipo de cambio MEP: el que convierte los fondos en dolares de una cartera
+// bimonetaria. Sale del termometro (vivo si hay, si no el de la hoja).
+function tcMep(){
+  const v = mercValor('Dólar MEP');
+  return v && v > 0 ? v : null;
+}
+
+// Tasas para el break-even: las de la hoja, o la TIR de los fondos si estan vacias
+function tasaLecap(){
+  const v = mercValor('Tasa Lecap (TEA)');
+  if(v != null) return v;
+  const td = tirDurationDeFondo('Lecaps');
+  return td && isFinite(td.tir) ? td.tir : null;
+}
+function tasaCer(){
+  const v = mercValor('Tasa CER (real)');
+  if(v != null) return v;
+  const td = tirDurationDeFondo('Inflation linked');
+  return td && isFinite(td.tir) ? td.tir : null;
+}
+
+// Indicadores derivados: todos pueden ser null si falta algun dato
+function termometroDerivados(){
+  const may = mercValor('Dólar mayorista');
+  const mep = mercValor('Dólar MEP');
+  const ccl = mercValor('Dólar CCL');
+  const techo = mercValor('Techo de banda');
+  const piso = mercValor('Piso de banda');
+  const lecap = tasaLecap();
+  const cer = tasaCer();
+  const inflEsp = mercValor('Inflación esperada 12m');
+  return {
+    riesgo: mercValor('Riesgo país'),
+    may, mep, ccl, techo, piso, lecap, cer, inflEsp,
+    brechaMep: (may && mep) ? mep / may - 1 : null,
+    brechaCcl: (may && ccl) ? ccl / may - 1 : null,
+    distTecho: (may && techo) ? techo / may - 1 : null,
+    posBanda: (may && techo && piso && techo > piso) ? Math.min(1, Math.max(0, (may - piso) / (techo - piso))) : null,
+    breakeven: (lecap != null && cer != null) ? (1 + lecap) / (1 + cer) - 1 : null,
+  };
+}
+
+function renderTermometro(){
+  const sec = document.getElementById('termoSection');
+  if(!sec) return;
+  if(!COMERCIAL.ok || !Object.keys(COMERCIAL.mercado).length){ sec.style.display = 'none'; return; }
+  const d = termometroDerivados();
+
+  const vivoTag = (clave)=> (merc(clave) && merc(clave).vivo) ? '<span class="termo-vivo">EN VIVO</span>' : '';
+  const fechaDe = (clave)=> (merc(clave) && merc(clave).fecha) ? merc(clave).fecha : '';
+  const lecturaDe = (clave)=> (merc(clave) && merc(clave).lectura) ? `<div class="termo-lectura">${escHtml(merc(clave).lectura)}</div>` : '';
+
+  const items = [];
+
+  if(d.riesgo != null){
+    items.push(`
+      <div class="termo-item">
+        <div class="termo-label">Riesgo país ${vivoTag('Riesgo país')}</div>
+        <div class="termo-valor">${fmtNumCom(d.riesgo)}<small>pb</small></div>
+        <div class="termo-detalle">Sobretasa del soberano: <strong>${fmtPctCom(d.riesgo / 10000, 1)}</strong></div>
+        ${lecturaDe('Riesgo país')}
+      </div>`);
+  }
+
+  if(d.mep != null || d.ccl != null){
+    const canje = (d.mep && d.ccl) ? d.ccl / d.mep - 1 : null;
+    items.push(`
+      <div class="termo-item">
+        <div class="termo-label">Dólar MEP ${vivoTag('Dólar MEP')}</div>
+        <div class="termo-valor">$ ${fmtNumCom(d.mep, 0)}</div>
+        <div class="termo-detalle">CCL <strong>$ ${fmtNumCom(d.ccl, 0)}</strong>${canje != null ? ` · canje <strong>${fmtPctCom(canje, 1)}</strong>` : ''}</div>
+        ${lecturaDe('Dólar MEP')}
+      </div>`);
+  }
+
+  if(d.brechaMep != null){
+    items.push(`
+      <div class="termo-item">
+        <div class="termo-label">Brecha MEP vs. mayorista</div>
+        <div class="termo-valor">${fmtPctCom(d.brechaMep, 1)}</div>
+        <div class="termo-detalle">Mayorista <strong>$ ${fmtNumCom(d.may, 0)}</strong>${d.brechaCcl != null ? ` · brecha CCL <strong>${fmtPctCom(d.brechaCcl, 1)}</strong>` : ''}</div>
+        ${lecturaDe('Dólar mayorista')}
+      </div>`);
+  }
+
+  if(d.distTecho != null){
+    const banda = d.posBanda != null
+      ? `<div class="termo-banda"><i style="left:${(d.posBanda * 100).toFixed(1)}%"></i></div>
+         <div class="termo-banda-ext"><span>Piso $ ${fmtNumCom(d.piso, 0)}</span><span>Techo $ ${fmtNumCom(d.techo, 0)}</span></div>`
+      : `<div class="termo-detalle">Techo <strong>$ ${fmtNumCom(d.techo, 0)}</strong></div>`;
+    items.push(`
+      <div class="termo-item">
+        <div class="termo-label">Distancia al techo de banda</div>
+        <div class="termo-valor">${fmtPctCom(d.distTecho, 1)}</div>
+        ${banda}
+      </div>`);
+  }
+
+  if(d.breakeven != null){
+    const vs = d.inflEsp != null
+      ? ` · esperada <strong>${fmtPctCom(d.inflEsp, 1)}</strong>`
+      : '';
+    let lectura = '';
+    if(d.inflEsp != null){
+      const dif = d.breakeven - d.inflEsp;
+      lectura = Math.abs(dif) < 0.01
+        ? 'Tasa fija y CER descuentan lo mismo que la inflación esperada.'
+        : (dif < 0
+            ? 'El mercado descuenta menos inflación que la esperada: el CER queda mejor parado que la tasa fija.'
+            : 'El mercado descuenta más inflación que la esperada: la tasa fija queda mejor parada que el CER.');
+    }
+    items.push(`
+      <div class="termo-item">
+        <div class="termo-label">Inflación break-even 12m</div>
+        <div class="termo-valor">${fmtPctCom(d.breakeven, 1)}</div>
+        <div class="termo-detalle">Lecap <strong>${fmtPctCom(d.lecap, 1)}</strong> vs. CER <strong>+${fmtPctCom(d.cer, 1)}</strong>${vs}</div>
+        ${lectura ? `<div class="termo-lectura">${lectura}</div>` : ''}
+      </div>`);
+  }
+
+  if(!items.length){ sec.style.display = 'none'; return; }
+  document.getElementById('termoGrid').innerHTML = items.join('');
+
+  const fechas = ['Dólar MEP', 'Dólar mayorista', 'Riesgo país'].map(fechaDe).filter(Boolean);
+  const hayVivo = Object.values(COMERCIAL.mercado).some(m => m.vivo);
+  document.getElementById('termoFecha').textContent =
+    (hayVivo ? 'Cotizaciones en vivo donde se indica · resto ' : 'Datos ') + (fechas.length ? `al ${fechas[0]}` : 'cargados a mano');
+  sec.style.display = '';
+}
+
+// Refresco opcional contra APIs publicas. Cualquier falla se ignora.
+function refrescarMercadoEnVivo(){
+  if(!TERMOMETRO_EN_VIVO || !COMERCIAL.ok || typeof fetch !== 'function') return;
+  const hoy = new Date().toLocaleDateString('es-AR');
+  const pisar = (clave, valor)=>{
+    if(valor == null || !isFinite(valor) || valor <= 0) return false;
+    const k = claveTxt(clave);
+    const previo = COMERCIAL.mercado[k] || { lectura: '' };
+    COMERCIAL.mercado[k] = { valor, fecha: hoy, lectura: previo.lectura || '', vivo: true };
+    return true;
+  };
+  const conTimeout = (url)=>{
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const t = setTimeout(()=>{ if(ctrl) ctrl.abort(); }, 6000);
+    return fetch(url, ctrl ? { signal: ctrl.signal } : undefined)
+      .then(r => r.ok ? r.json() : null)
+      .finally(()=> clearTimeout(t));
+  };
+
+  const pDolares = conTimeout(API_DOLARES).then(lista=>{
+    if(!Array.isArray(lista)) return false;
+    const venta = (casa)=>{
+      const it = lista.find(x => x && x.casa === casa);
+      return it ? Number(it.venta) : null;
+    };
+    const a = pisar('Dólar MEP', venta('bolsa'));
+    const b = pisar('Dólar CCL', venta('contadoconliqui'));
+    const c = pisar('Dólar mayorista', venta('mayorista'));
+    return a || b || c;
+  }).catch(()=> false);
+
+  const pRiesgo = conTimeout(API_RIESGO_PAIS).then(d=>{
+    return d ? pisar('Riesgo país', Number(d.valor)) : false;
+  }).catch(()=> false);
+
+  Promise.all([pDolares, pRiesgo]).then(([a, b])=>{
+    if(!a && !b) return;
+    renderTermometro();
+    renderSemana();
+    // El MEP convierte los fondos en dolares de las carteras bimonetarias
+    if(a && DATA.fondos.length) renderCartera();
+  });
+}
+
+/* ---------------------------------------------------------------------
+   Carteras modelo
+--------------------------------------------------------------------- */
+function isModelo(){
+  return selection.tipo === 'Modelo';
+}
+
+// Modelos que aplican a la moneda elegida ("Ambas" = bimonetario, va con las dos)
+function modelosDisponibles(){
+  if(esCable()) return [];
+  return COMERCIAL.ordenModelos.filter(n=>{
+    const m = COMERCIAL.modelos[n].moneda;
+    return m === 'Ambas' || m === selection.moneda;
+  });
+}
+
+function modeloActual(){
+  return COMERCIAL.modelos[selection.modelo] || null;
+}
+
+// El Excel puede traer el fondo con o sin prefijo de marca: se cruza por el
+// nombre visible y se devuelve el nombre original de data.xlsx.
+function resolverFondo(nombre){
+  const k = claveTxt(nombreFondoVisible(nombre));
+  const f = DATA.fondos.find(x => claveTxt(nombreFondoVisible(x.fondo)) === k);
+  return f ? f.fondo : nombre;
+}
+
+// [[fondo, pct, bloque], ...] del modelo y perfil elegidos
+function modeloEntries(nombreModelo, perfil){
+  const m = COMERCIAL.modelos[nombreModelo];
+  const filas = (m && m.perfiles[perfil]) || [];
+  return filas.map(it => [resolverFondo(it.fondo), it.pct, it.bloque]);
+}
+
+// ¿La cartera mezcla fondos en pesos con fondos en dolares?
+function esBimonetaria(rows){
+  const monedas = new Set();
+  (rows || []).forEach(r=>{
+    if(r.found && (Number(r.pct) || 0) > 0 && r.monedaFondo) monedas.add(r.monedaFondo);
+  });
+  return monedas.size > 1;
+}
+
+// Moneda de la cartera expresada como la de data.xlsx (Cable tambien es Dolar)
+function monedaCarteraBase(){
+  return esMonedaUSD(selection.moneda) ? 'Dólar' : 'Pesos';
+}
+
+// Celda "Inversion": si el fondo es de otra moneda que la cartera se muestra
+// el monto en la moneda del fondo y, abajo, el equivalente en la de la cartera.
+function inversionHtml(r){
+  if(!r.cruzada) return fmtMoney(r.costo, selection.moneda);
+  if(r.costoFondo == null) return fmtMoney(r.costo, selection.moneda);
+  return `<span class="inv-wrap">${fmtMoney(r.costoFondo, r.monedaFondo)}<span class="inv-equiv">≈ ${fmtMoney(r.costo, selection.moneda)}</span></span>`;
+}
+function inversionTexto(r){
+  if(!r.cruzada || r.costoFondo == null) return fmtMoney(r.costo, selection.moneda);
+  return `${fmtMoney(r.costoFondo, r.monedaFondo)} (≈ ${fmtMoney(r.costo, selection.moneda)})`;
+}
+
+// Fila separadora con el nombre del bloque y su peso dentro de la cartera
+function bloqueRowHtml(bloque, pct){
+  return `<tr class="bloque-row"><td colspan="7">${escHtml(bloque)}<span class="bloque-pct">${fmtNumCom(pct, pct % 1 ? 1 : 0)}%</span></td></tr>`;
+}
+
+function pesoPorBloque(rows){
+  const mapa = new Map();
+  rows.forEach(r=>{
+    if(!r.bloque) return;
+    mapa.set(r.bloque, (mapa.get(r.bloque) || 0) + (Number(r.pct) || 0));
+  });
+  return mapa;
+}
+
+function tituloCartera(){
+  if(isCustom()) return 'Cartera personalizada';
+  if(isModelo()) return `Cartera modelo · ${selection.modelo || ''}`;
+  return 'Cartera sugerida';
+}
+
+function renderModeloCards(){
+  const cont = document.getElementById('modeloOptions');
+  if(!cont) return;
+  const lista = modelosDisponibles();
+  const vacio = document.getElementById('modeloVacio');
+  vacio.style.display = lista.length ? 'none' : '';
+  cont.innerHTML = lista.map(n=>{
+    const m = COMERCIAL.modelos[n];
+    const badge = m.moneda === 'Ambas' ? 'Pesos + Dólar' : (m.moneda === 'Dólar' ? 'Dólar MEP' : 'Pesos');
+    return `
+      <button class="option-btn modelo-card${n === selection.modelo ? ' selected' : ''}" data-modelo="${escHtml(n)}">
+        <span class="modelo-head"><strong>${escHtml(n)}</strong><span class="modelo-badge">${badge}</span></span>
+        ${m.bajada ? `<span>${escHtml(m.bajada)}</span>` : ''}
+        ${m.para ? `<span class="modelo-para">Para: ${escHtml(m.para)}</span>` : ''}
+      </button>`;
+  }).join('');
+}
+
+// Deja los botones de moneda / tipo / perfil marcados segun "selection"
+function marcarOpciones(){
+  [['monedaOptions', 'moneda'], ['tipoCarteraOptions', 'tipo'], ['perfilOptions', 'perfil']].forEach(([grupo, attr])=>{
+    document.querySelectorAll(`#${grupo} .option-btn`).forEach(btn=>{
+      btn.classList.toggle('selected', btn.dataset[attr] === selection[attr]);
+    });
+  });
+}
+
+// "Un clic": carga un modelo con su perfil en la calculadora
+function aplicarModelo(nombre, perfil, irAResultado){
+  const m = COMERCIAL.modelos[nombre];
+  if(!m) return;
+  if(m.moneda !== 'Ambas') selection.moneda = m.moneda;
+  else if(esCable()) selection.moneda = 'Pesos';
+  selection.tipo = 'Modelo';
+  selection.modelo = nombre;
+  if(perfil && PERFILES_VALIDOS.includes(perfil) && m.perfiles[perfil]) selection.perfil = perfil;
+  marcarOpciones();
+  updateVisibility();
+  if(irAResultado){
+    activarTab('calculadora');
+    const el = document.getElementById('resultSection');
+    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function activarTab(nombre){
+  const btn = document.querySelector(`.tab-btn[data-tab="${nombre}"]`);
+  if(btn && !btn.classList.contains('active')) btn.click();
+}
+
+document.getElementById('modeloOptions').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.modelo-card');
+  if(!btn) return;
+  selection.modelo = btn.dataset.modelo;
+  updateVisibility();
+});
+
+/* ---------------------------------------------------------------------
+   Escenarios 2027
+
+   Para cada fondo con TIR y Duration:
+
+     retorno en su base ≈ (1 + TIR)^plazo − 1 + cambio de tasa × (plazo − Duration)
+
+   El segundo termino junta dos efectos: si la tasa sube, lo que vence antes
+   del plazo se reinvierte mas arriba (suma) y lo que vence despues pierde
+   precio (resta). Con Duration = plazo los dos se compensan.
+
+   Despues se pasa a pesos segun el factor del fondo (ARS queda igual, CER
+   suma inflacion, dolar linked suma la variacion del oficial, USD y soberano
+   suman la variacion del MEP) y de ahi a dolares MEP y a terminos reales.
+
+   Los fondos sin TIR (renta variable) quedan afuera y se informa cobertura.
+--------------------------------------------------------------------- */
+let escPlazo = '12M';
+let escVista = null;          // 'ars' | 'usd'; null = la moneda de la cartera
+let escChartInstance = null;
+let semanaChartInstance = null;
+
+const ESC_PLAZOS = [['6M', '6 meses'], ['12M', '12 meses'], ['DIC27', 'A dic-2027']];
+
+function escPlazoAnios(){
+  if(escPlazo === '6M') return 0.5;
+  if(escPlazo === 'DIC27' && DATA.asOfDate){
+    const dias = (new Date('2027-12-31T00:00:00') - new Date(DATA.asOfDate + 'T00:00:00')) / 86400000;
+    if(dias > 30) return dias / 365;
+  }
+  return 1;
+}
+function escPlazoTexto(){
+  const it = ESC_PLAZOS.find(p => p[0] === escPlazo);
+  return it ? it[1].toLowerCase() : '12 meses';
+}
+
+function factorDeFondo(r){
+  const f = COMERCIAL.factores[claveTxt(nombreFondoVisible(r.nombre))];
+  if(f) return f;
+  return FACTORES_VALIDOS.includes(r.base) ? r.base : null;
+}
+
+function calcEscenario(rows, esc, anios){
+  const inflH = Math.pow(1 + esc.infl, anios) - 1;
+  const ofiH  = Math.pow(1 + esc.ofi, anios) - 1;
+  const mepH  = Math.pow(1 + esc.mep, anios) - 1;
+
+  let pesoTotal = 0, pesoConDato = 0, acumArs = 0;
+  const detalle = [];
+
+  (rows || []).forEach(r=>{
+    const w = Number(r.pct) || 0;
+    if(w <= 0 || !r.found) return;
+    pesoTotal += w;
+
+    const factor = factorDeFondo(r);
+    if(r.tir == null || !isFinite(r.tir) || !factor){
+      detalle.push({ r, sinDato: true });
+      return;
+    }
+    const dur = (r.duration != null && isFinite(r.duration)) ? r.duration : 0;
+    const delta = esc.delta[factor] || 0;
+    const local = Math.max(-0.95, Math.pow(1 + r.tir, anios) - 1 + delta * (anios - dur));
+
+    let ars;
+    if(factor === 'ARS') ars = local;
+    else if(factor === 'CER') ars = (1 + local) * (1 + inflH) - 1;
+    else if(factor === 'DL') ars = (1 + local) * (1 + ofiH) - 1;
+    else ars = (1 + local) * (1 + mepH) - 1;
+
+    pesoConDato += w;
+    acumArs += w * ars;
+    detalle.push({ r, factor, w, ars, usd: (1 + ars) / (1 + mepH) - 1 });
+  });
+
+  if(!pesoConDato) return null;
+  const ars = acumArs / pesoConDato;
+  return {
+    esc, ars,
+    usd: (1 + ars) / (1 + mepH) - 1,
+    real: (1 + ars) / (1 + inflH) - 1,
+    inflH, ofiH, mepH,
+    cobertura: pesoConDato / pesoTotal,
+    detalle,
+  };
+}
+
+function calcEscenarios(rows, anios){
+  return COMERCIAL.escenarios.map(e => calcEscenario(rows, e, anios)).filter(Boolean);
+}
+
+// "entre −4,9% y +12,3%"
+function rangoTexto(valores){
+  const v = valores.filter(x => x != null && isFinite(x));
+  if(!v.length) return 's/d';
+  const min = Math.min(...v), max = Math.max(...v);
+  return `${fmtPctCom(min, 1, true)} y ${fmtPctCom(max, 1, true)}`;
+}
+
+// Filas de una cartera modelo sin pasar por la calculadora (para el
+// argumento de la semana, que no depende de lo que este elegido abajo)
+function rowsDeModelo(nombreModelo, perfil){
+  return modeloEntries(nombreModelo, perfil).map(([nombre, pct, bloque])=>{
+    const fund = fundByName(nombre);
+    const td = tirDurationDeFondo(nombre);
+    return {
+      nombre, pct, bloque, found: !!fund,
+      monedaFondo: fund ? fund.moneda : null,
+      tir: td ? td.tir : null,
+      duration: td ? td.duration : null,
+      base: td ? normalizarBase(td.base) : null,
+    };
+  });
+}
+
+function escMonedaVista(){
+  if(escVista) return escVista;
+  return esMonedaUSD(selection.moneda) ? 'usd' : 'ars';
+}
+
+function opcionesBarrasEscenarios(){
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 20 } },
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#14182B' } },
+      tooltip: { callbacks: { label: (c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(1)}%` } },
+      datalabels: {
+        anchor: (c)=> c.dataset.data[c.dataIndex] >= 0 ? 'end' : 'start',
+        align:  (c)=> c.dataset.data[c.dataIndex] >= 0 ? 'top' : 'bottom',
+        offset: 2,
+        color: '#14182B',
+        font: { size: 10.5, weight: '700', family: "'JetBrains Mono', monospace" },
+        formatter: (v)=> `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`,
+      },
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#14182B', font: { size: 11.5, weight: '700' } } },
+      y: {
+        grace: '12%',
+        ticks: { callback: (v)=> `${v >= 0 ? '+' : ''}${v}%`, color: '#6E7590', font: { size: 11 } },
+        grid: { color: (c)=> c.tick.value === 0 ? '#6E7590' : '#E4E8F1' },
+      },
+    },
+  };
+}
+
+function datasetsBarrasEscenarios(res){
+  const pct = (v)=> +(v * 100).toFixed(2);
+  return [
+    { label: 'En pesos',        data: res.map(x => pct(x.ars)),  backgroundColor: '#1B3F8C', borderRadius: 3, maxBarThickness: 46 },
+    { label: 'En dólares MEP',  data: res.map(x => pct(x.usd)),  backgroundColor: '#5E9AE6', borderRadius: 3, maxBarThickness: 46 },
+    { label: 'Real (vs. inflación)', data: res.map(x => pct(x.real)), backgroundColor: '#C3DEF8', borderRadius: 3, maxBarThickness: 46 },
+  ];
+}
+
+function renderEscenarios(){
+  const cont = document.getElementById('escContenido');
+  const vacio = document.getElementById('escVacio');
+  if(!cont) return;
+
+  const rows = buildCarteraRows().filter(r => r.found && (Number(r.pct) || 0) > 0);
+  const valida = carteraSuma100() && rows.length > 0;
+  const anios = escPlazoAnios();
+  const res = (COMERCIAL.ok && valida) ? calcEscenarios(rows, anios) : [];
+
+  if(!res.length){
+    cont.style.display = 'none';
+    vacio.style.display = '';
+    vacio.textContent = !COMERCIAL.escenarios.length
+      ? 'No hay escenarios cargados: revisá la hoja "Escenarios" de comercial.xlsx.'
+      : (!valida
+          ? 'Armá primero una cartera en la solapa Calculadora de Carteras (si es personalizada, los % tienen que sumar 100%).'
+          : 'Ningún fondo de esta cartera tiene TIR cargada: no se pueden calcular escenarios.');
+    return;
+  }
+  vacio.style.display = 'none';
+  cont.style.display = '';
+
+  const monto = parseMonto(document.getElementById('montoInput').value);
+  const enUsd = esMonedaUSD(selection.moneda);
+  const vista = escMonedaVista();
+  const monedaLabel = esCable() ? 'Dólar Cable' : (enUsd ? 'Dólar MEP' : 'Pesos');
+  const detallePerfil = isCustom() ? '' : ` · ${selection.perfil}${isModelo() ? '' : ` · ${HORIZONTE_LABELS[selection.horizonte] || ''}`}`;
+
+  document.getElementById('escCartera').innerHTML =
+    `<strong>${escHtml(tituloCartera())}</strong>${escHtml(detallePerfil)}<br>${monedaLabel} · ${fmtMoney(monto, selection.moneda)} · ${rows.length} ${rows.length === 1 ? 'fondo' : 'fondos'}`;
+
+  document.querySelectorAll('#escPlazoBtns .range-btn').forEach(b => b.classList.toggle('active', b.dataset.plazo === escPlazo));
+  document.querySelectorAll('#escVistaBtns .range-btn').forEach(b => b.classList.toggle('active', b.dataset.vista === vista));
+
+  // --- Rango de resultado
+  const series = [
+    ['En pesos', 'retorno nominal', res.map(x => x.ars)],
+    ['En dólares MEP', 'después de la variación del dólar', res.map(x => x.usd)],
+    ['Real', 'por encima o por debajo de la inflación', res.map(x => x.real)],
+  ];
+  const todos = series.flatMap(s => s[2]).concat([0]);
+  const lo = Math.min(...todos), hi = Math.max(...todos);
+  const margen = (hi - lo) * 0.06 || 0.01;
+  const pos = (v)=> ((v - (lo - margen)) / ((hi + margen) - (lo - margen)) * 100).toFixed(2);
+
+  document.getElementById('escRangoLista').innerHTML = series.map(([nombre, sub, vals])=>{
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const puntos = vals.map((v, i)=>
+      `<span class="esc-punto" style="left:${pos(v)}%;background:${ESC_COLORES[i % ESC_COLORES.length]}" title="${escHtml(res[i].esc.nombre)}: ${fmtPctCom(v, 1, true)}"></span>`
+    ).join('');
+    return `
+      <div class="esc-rango-fila">
+        <div class="esc-rango-nombre">${nombre}<span>${sub}</span></div>
+        <div>
+          <div class="esc-rango-valor">${fmtPctCom(min, 1, true)} a ${fmtPctCom(max, 1, true)}</div>
+          <div class="esc-pista">
+            <span class="esc-tramo" style="left:${pos(min)}%;width:${(pos(max) - pos(min)).toFixed(2)}%"></span>
+            <span class="esc-cero" style="left:${pos(0)}%"></span>
+            ${puntos}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('escLeyenda').innerHTML = res.map((x, i)=>
+    `<span><i style="background:${ESC_COLORES[i % ESC_COLORES.length]}"></i>${escHtml(x.esc.nombre)}</span>`
+  ).join('');
+
+  const cobertura = res[0].cobertura;
+  const notaCob = document.getElementById('escCobertura');
+  if(cobertura < 0.999){
+    notaCob.style.display = 'block';
+    notaCob.textContent = `⚠ El cálculo cubre el ${Math.round(cobertura * 100)}% de la cartera: los fondos sin TIR (renta variable) quedan afuera y el resultado se reescala sobre el resto.`;
+  } else {
+    notaCob.style.display = 'none';
+  }
+
+  // --- Una tarjeta por escenario
+  document.getElementById('escCards').innerHTML = res.map((x, i)=>{
+    const e = x.esc;
+    const ret = enUsd ? x.usd : x.ars;
+    const kpis = [
+      ['En pesos', x.ars, !enUsd],
+      ['En dólares MEP', x.usd, enUsd],
+      ['Real vs. inflación', x.real, false],
+    ];
+    const pp = (v)=> `${v > 0 ? '+' : (v < 0 ? '−' : '')}${fmtNumCom(Math.abs(v) * 100, 1)} p.p.`;
+    return `
+      <div class="esc-card" style="border-top-color:${ESC_COLORES[i % ESC_COLORES.length]}">
+        <h3>${escHtml(e.nombre)}</h3>
+        <p class="esc-desc">${escHtml(e.desc)}</p>
+        <div class="esc-kpis">
+          ${kpis.map(([l, v, principal])=> `
+            <div class="esc-kpi${principal ? ' principal' : ''}"${principal ? ' style="grid-column:1 / -1"' : ''}>
+              <div class="k-label">${l}</div>
+              <div class="k-valor ${signoClase(v)}">${fmtPctCom(v, 1, true)}</div>
+            </div>`).join('')}
+        </div>
+        <p class="esc-final">${fmtMoney(monto, selection.moneda)} → <strong>${fmtMoney(monto * (1 + ret), selection.moneda)}</strong> en ${escPlazoTexto().replace('a dic-2027', 'diciembre 2027')}</p>
+        <div class="esc-supuestos">
+          <span>Inflación</span><span>${fmtPctCom(x.inflH, 1, true)}</span>
+          <span>Dólar oficial</span><span>${fmtPctCom(x.ofiH, 1, true)}</span>
+          <span>Dólar MEP</span><span>${fmtPctCom(x.mepH, 1, true)}</span>
+          <span>Tasa en pesos</span><span>${pp(e.delta.ARS)}</span>
+          <span>Tasa real CER</span><span>${pp(e.delta.CER)}</span>
+          <span>Tasa USD soberano</span><span>${pp(e.delta.SOB)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  // --- Grafico
+  const ctx = document.getElementById('escChart').getContext('2d');
+  if(escChartInstance) escChartInstance.destroy();
+  escChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: res.map(x => x.esc.nombre), datasets: datasetsBarrasEscenarios(res) },
+    options: opcionesBarrasEscenarios(),
+  });
+
+  // --- Detalle por fondo
+  const campo = vista;
+  document.getElementById('escDetalleHead').innerHTML =
+    `<tr><th>Fondo</th><th>Responde a</th><th class="num">% cartera</th>${res.map(x => `<th class="num">${escHtml(x.esc.nombre)}</th>`).join('')}</tr>`;
+  document.getElementById('escDetalleBody').innerHTML = rows.map((r, idx)=>{
+    const d0 = res[0].detalle[idx];
+    const celdas = res.map(x=>{
+      const d = x.detalle[idx];
+      return d.sinDato
+        ? '<td class="num" data-label=""><span class="esc-ret" style="color:var(--muted)">s/d</span></td>'
+        : `<td class="num"><span class="esc-ret ${signoClase(d[campo])}">${fmtPctCom(d[campo], 1, true)}</span></td>`;
+    }).join('');
+    return `
+      <tr>
+        <td><div class="fondo-name">${fondoNameHtml(r.nombre)}</div></td>
+        <td>${d0.sinDato ? '<span style="color:var(--muted);font-size:12px;">Sin TIR</span>' : `<span class="base-chip base-chip-${d0.factor}" style="margin-left:0;cursor:default;">${FACTOR_NOMBRE[d0.factor]}</span>`}</td>
+        <td class="num">${r.pct}%</td>
+        ${celdas}
+      </tr>`;
+  }).join('');
+  document.getElementById('escDetalleFoot').innerHTML =
+    `<tr><td colspan="3">Cartera</td>${res.map(x => `<td class="num"><span class="esc-ret ${signoClase(x[campo])}">${fmtPctCom(x[campo], 1, true)}</span></td>`).join('')}</tr>`;
+  document.getElementById('escDetalleSub').textContent =
+    `Retorno estimado de cada fondo a ${escPlazoTexto().replace('a dic-2027', 'diciembre 2027')}, expresado ${campo === 'usd' ? 'en dólares MEP' : 'en pesos'}.`;
+}
+
+document.querySelectorAll('#escPlazoBtns .range-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ escPlazo = btn.dataset.plazo; renderEscenarios(); });
+});
+document.querySelectorAll('#escVistaBtns .range-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ escVista = btn.dataset.vista; renderEscenarios(); });
+});
+document.getElementById('escIrCalculadora').addEventListener('click', ()=> activarTab('calculadora'));
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.dataset.tab === 'escenarios') renderEscenarios();
+  });
+});
+
+/* ---------------------------------------------------------------------
+   Argumento de la semana
+--------------------------------------------------------------------- */
+const SEMANA_COLAPSADA_KEY = 'semanaColapsada';
+
+function semanaModeloPerfil(){
+  const s = COMERCIAL.semana;
+  const modelo = COMERCIAL.ordenModelos.find(n => claveTxt(n) === claveTxt(s['modelo'])) || null;
+  const perfil = PERFILES_VALIDOS.find(p => claveTxt(p) === claveTxt(s['perfil'])) || 'Moderado';
+  return { modelo, perfil };
+}
+
+// Reemplaza {riesgo_pais}, {brecha}, {rango_usd}... por el dato del dia
+function semanaTokens(){
+  const d = termometroDerivados();
+  const { modelo, perfil } = semanaModeloPerfil();
+  const res = (modelo && DATA.fondos.length) ? calcEscenarios(rowsDeModelo(modelo, perfil), 1) : [];
+  return {
+    riesgo_pais: d.riesgo != null ? `${fmtNumCom(d.riesgo)} pb` : 's/d',
+    mep: d.mep != null ? `$ ${fmtNumCom(d.mep, 0)}` : 's/d',
+    ccl: d.ccl != null ? `$ ${fmtNumCom(d.ccl, 0)}` : 's/d',
+    mayorista: d.may != null ? `$ ${fmtNumCom(d.may, 0)}` : 's/d',
+    brecha: fmtPctCom(d.brechaMep, 1),
+    dist_techo: fmtPctCom(d.distTecho, 1),
+    breakeven: fmtPctCom(d.breakeven, 1),
+    rango_usd: rangoTexto(res.map(x => x.usd)),
+    rango_ars: rangoTexto(res.map(x => x.ars)),
+  };
+}
+function conTokens(txt, tokens){
+  return String(txt || '').replace(/\{([a-z_]+)\}/gi, (m, k)=>{
+    const v = tokens[k.toLowerCase()];
+    return v == null ? m : v;
+  });
+}
+
+function semanaTextoPlano(){
+  const s = COMERCIAL.semana;
+  const t = semanaTokens();
+  const lineas = [conTokens(s['idea'], t), ''];
+  if(s['bajada']) lineas.push(conTokens(s['bajada'], t), '');
+  COMERCIAL.guion.forEach(g => lineas.push('• ' + conTokens(g, t)));
+  if(s['objecion']){
+    lineas.push('', 'Objeción: ' + conTokens(s['objecion'], t));
+    if(s['respuesta']) lineas.push('Respuesta: ' + conTokens(s['respuesta'], t));
+  }
+  return lineas.join('\n').trim();
+}
+
+function renderSemana(){
+  const sec = document.getElementById('semanaSection');
+  if(!sec) return;
+  const s = COMERCIAL.semana;
+  if(!COMERCIAL.ok || !s['idea']){ sec.style.display = 'none'; return; }
+  const t = semanaTokens();
+  const { modelo, perfil } = semanaModeloPerfil();
+
+  document.getElementById('semanaKicker').textContent =
+    'Argumento de la semana' + (s['fecha'] ? ` · call del ${s['fecha']}` : '');
+  document.getElementById('semanaIdea').textContent = conTokens(s['idea'], t);
+  document.getElementById('semanaBajada').textContent = conTokens(s['bajada'], t);
+  document.getElementById('semanaBajada').style.display = s['bajada'] ? '' : 'none';
+
+  document.getElementById('semanaGuion').innerHTML = COMERCIAL.guion.map(g => `<li>${escHtml(conTokens(g, t))}</li>`).join('');
+  document.getElementById('semanaGuionWrap').style.display = COMERCIAL.guion.length ? '' : 'none';
+
+  const obj = document.getElementById('semanaObjecion');
+  obj.style.display = s['objecion'] ? '' : 'none';
+  obj.innerHTML = s['objecion']
+    ? `<p class="semana-sub">La objeción más frecuente</p>
+       <p class="obj">${escHtml(conTokens(s['objecion'], t))}</p>
+       <p class="resp">${escHtml(conTokens(s['respuesta'], t))}</p>`
+    : '';
+
+  const btnCargar = document.getElementById('semanaCargarBtn');
+  btnCargar.style.display = modelo ? '' : 'none';
+  if(modelo) btnCargar.textContent = `Cargar ${modelo} · ${perfil}`;
+  document.getElementById('semanaEscBtn').style.display = (modelo && COMERCIAL.escenarios.length) ? '' : 'none';
+
+  sec.style.display = '';
+  renderSemanaChart();
+}
+
+function renderSemanaChart(){
+  const s = COMERCIAL.semana;
+  const wrap = document.getElementById('semanaGraficoCol');
+  const canvas = document.getElementById('semanaChart');
+  if(!wrap || !canvas || typeof Chart === 'undefined') return;
+  if(semanaChartInstance){ semanaChartInstance.destroy(); semanaChartInstance = null; }
+
+  const tipo = claveTxt(s['grafico']);
+  const { modelo, perfil } = semanaModeloPerfil();
+  const nota = document.getElementById('semanaGraficoNota');
+  let config = null;
+
+  if(tipo === 'escenarios' && modelo){
+    const res = calcEscenarios(rowsDeModelo(modelo, perfil), 1);
+    if(res.length){
+      config = {
+        type: 'bar',
+        data: { labels: res.map(x => x.esc.nombre), datasets: datasetsBarrasEscenarios(res).slice(0, 2) },
+        options: opcionesBarrasEscenarios(),
+      };
+      nota.textContent = 'Retorno estimado a 12 meses según los supuestos de cada escenario (solapa Escenarios 2027). Muestra un rango de resultados posibles, no una promesa de rentabilidad.';
+    }
+  } else if(tipo === 'fondos'){
+    const nombres = String(s['grafico fondos'] || '').split(',').map(x => resolverFondo(x.trim())).filter(n => HIST_FILLED[n]);
+    const rango = String(s['grafico rango'] || '6M').toUpperCase();
+    if(nombres.length){
+      const filas = nombres.map(n => ({ nombre: n, pct: 100, found: true }));
+      const endIdx = DATES.length - 1;
+      const startIdx = Math.max(commonStartIdx(filas), dateIdxOnOrAfter(subtractPeriod(DATES[endIdx], rango)));
+      const isoDates = DATES.slice(startIdx, endIdx + 1);
+      const esInicioMes = isoDates.map((iso, i)=> i > 0 && iso.slice(0, 7) !== isoDates[i - 1].slice(0, 7));
+      config = {
+        type: 'line',
+        data: {
+          labels: isoDates.map(fmtDateShort),
+          datasets: nombres.map((n, i)=>({
+            label: nombreFondoVisible(n),
+            data: isoDates.map((_, k)=> +((HIST_FILLED[n][startIdx + k] / HIST_FILLED[n][startIdx] - 1) * 100).toFixed(3)),
+            borderColor: fundColor(i), backgroundColor: fundColor(i),
+            borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.15,
+          })),
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#14182B' } },
+            datalabels: { display: false },
+            tooltip: { callbacks: { label: (c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } },
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, color: '#6E7590', font: { size: 11 }, callback: (v, i)=> esInicioMes[i] ? monthLabel(isoDates[i]) : null } },
+            y: { ticks: { callback: (v)=> `${v >= 0 ? '+' : ''}${v}%`, color: '#6E7590', font: { size: 11 } }, grid: { color: '#E4E8F1' } },
+          },
+        },
+      };
+      nota.textContent = `Rendimiento acumulado de cada fondo en su moneda, del ${fmtDateShort(DATES[startIdx])} al ${fmtDateShort(DATES[endIdx])}. Rentabilidades pasadas no garantizan rentabilidades futuras.`;
+    }
+  }
+
+  if(!config){ wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  document.getElementById('semanaGraficoTitulo').textContent = s['grafico titulo'] || '';
+  semanaChartInstance = new Chart(canvas.getContext('2d'), config);
+}
+
+function setSemanaColapsada(colapsada){
+  const sec = document.getElementById('semanaSection');
+  sec.classList.toggle('colapsada', colapsada);
+  document.getElementById('semanaToggle').textContent = colapsada ? 'Ver argumento' : 'Ocultar';
+  document.getElementById('semanaToggle').setAttribute('aria-expanded', String(!colapsada));
+  try{ localStorage.setItem(SEMANA_COLAPSADA_KEY, colapsada ? '1' : '0'); }catch(e){}
+  if(!colapsada && semanaChartInstance) requestAnimationFrame(()=> semanaChartInstance.resize());
+}
+
+document.getElementById('semanaToggle').addEventListener('click', ()=>{
+  setSemanaColapsada(!document.getElementById('semanaSection').classList.contains('colapsada'));
+});
+document.getElementById('semanaCargarBtn').addEventListener('click', ()=>{
+  const { modelo, perfil } = semanaModeloPerfil();
+  if(modelo) aplicarModelo(modelo, perfil, true);
+});
+document.getElementById('semanaEscBtn').addEventListener('click', ()=>{
+  const { modelo, perfil } = semanaModeloPerfil();
+  if(modelo) aplicarModelo(modelo, perfil, false);
+  activarTab('escenarios');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('semanaCopiarBtn').addEventListener('click', (e)=>{
+  const btn = e.currentTarget;
+  const txt = semanaTextoPlano();
+  const listo = ()=>{
+    const previo = btn.textContent;
+    btn.textContent = '✓ Guion copiado';
+    setTimeout(()=>{ btn.textContent = previo; }, 1800);
+  };
+  const plan = ()=>{
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); listo(); }catch(err){}
+    ta.remove();
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(listo).catch(plan);
+  } else {
+    plan();
+  }
+});
+
+// Se llama una vez que estan cargados data.xlsx y comercial.xlsx
+function initComercial(){
+  const hayModelos = COMERCIAL.ok && COMERCIAL.ordenModelos.length > 0;
+  const btnModelo = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Modelo"]');
+  if(btnModelo) btnModelo.dataset.disponible = hayModelos ? '1' : '0';
+  const tabEsc = document.querySelector('.tab-btn[data-tab="escenarios"]');
+  if(tabEsc) tabEsc.style.display = (COMERCIAL.ok && COMERCIAL.escenarios.length) ? '' : 'none';
+
+  let colapsada = false;
+  try{ colapsada = localStorage.getItem(SEMANA_COLAPSADA_KEY) === '1'; }catch(e){}
+  setSemanaColapsada(colapsada);
+
+  renderTermometro();
+  renderSemana();
+  refrescarMercadoEnVivo();
+}
+
 /* ---------------------------------------------------------------------
    Descargar PDF: arma un reporte imprimible con la cartera actual
    (tabla, graficos de composicion y rendimiento historico) y abre
@@ -4363,9 +5840,11 @@ function buildPrintReport(clientName){
   `;
 
   const custom = isCustom();
+  const modelo = isModelo();
+  const bim = esBimonetaria(rows);
   document.getElementById('printTitleText').textContent = custom
     ? 'Cartera Personalizada para el cliente:'
-    : 'Cartera Sugerida para el cliente:';
+    : (modelo ? `Cartera Modelo “${selection.modelo}” para el cliente:` : 'Cartera Sugerida para el cliente:');
 
   const paramMoneda = `<div class="param-item"><div class="param-label">Moneda</div><div class="param-value">${monedaLabel}</div></div>`;
   const paramMonto = `<div class="param-item"><div class="param-label">Monto a invertir</div><div class="param-value">${montoTexto}</div></div>`;
@@ -4376,6 +5855,14 @@ function buildPrintReport(clientName){
       <div class="param-item"><div class="param-label">Tipo de cartera</div><div class="param-value">Personalizada</div></div>
       ${paramMonto}
     `
+    : modelo
+    ? `
+      ${paramMoneda}
+      <div class="param-item"><div class="param-label">Cartera modelo</div><div class="param-value">${escHtml(selection.modelo)}</div></div>
+      <div class="param-item"><div class="param-label">Perfil</div><div class="param-value">${selection.perfil}</div></div>
+      ${paramMonto}
+      ${(bim && tcMep()) ? `<div class="param-item"><div class="param-label">Dólar MEP de conversión</div><div class="param-value">$ ${fmtNumCom(tcMep(), 2)}</div></div>` : ''}
+    `
     : `
       ${paramMoneda}
       <div class="param-item"><div class="param-label">Perfil</div><div class="param-value">${selection.perfil}</div></div>
@@ -4385,10 +5872,17 @@ function buildPrintReport(clientName){
 
   let totalCosto = 0;
   const mostrarBasePdf = hayQueMostrarBase(rows);
+  const pesosBloquePdf = pesoPorBloque(rows);
+  let bloquePrevioPdf = null;
   const bodyRows = rows.map(r=>{
     totalCosto += r.costo;
     const tirTxt = fmtTir(r.tir);
-    return `
+    let sep = '';
+    if(r.bloque && r.bloque !== bloquePrevioPdf){
+      sep = `<tr class="print-bloque"><td colspan="7">${escHtml(r.bloque)} · ${fmtNumCom(pesosBloquePdf.get(r.bloque), pesosBloquePdf.get(r.bloque) % 1 ? 1 : 0)}%</td></tr>`;
+      bloquePrevioPdf = r.bloque;
+    }
+    return `${sep}
       <tr>
         <td>${nombreFondoVisible(r.nombre)}</td>
         <td>${r.pct}%</td>
@@ -4396,7 +5890,7 @@ function buildPrintReport(clientName){
         <td>${r.horizonte || '—'}</td>
         <td style="text-align:right;">${tirTxt ? tirTxt + (mostrarBasePdf && r.base ? ' ' + r.base : '') : 's/d'}</td>
         <td style="text-align:right;">${fmtDuration(r.duration) || 's/d'}</td>
-        <td style="text-align:right;">${fmtMoney(r.costo, selection.moneda)}</td>
+        <td style="text-align:right;">${inversionTexto(r)}</td>
       </tr>`;
   }).join('');
 
@@ -4430,6 +5924,10 @@ function buildPrintReport(clientName){
   if(chartFondoInstance) document.getElementById('printChartFondo').src = chartFondoInstance.toBase64Image();
   if(chartCategoriaInstance) document.getElementById('printChartCategoria').src = chartCategoriaInstance.toBase64Image();
   if(histChartInstance) document.getElementById('printHistChart').src = histChartInstance.toBase64Image();
+  // Mismo criterio que la web: por bloque en carteras modelo, y sin
+  // rendimiento historico consolidado en carteras bimonetarias
+  document.getElementById('printChartCategoriaTitle').textContent = document.getElementById('chartCategoriaTitle').textContent;
+  document.getElementById('printHistSection').style.display = bim ? 'none' : '';
 
   const perfGridEl = document.getElementById('perfGrid');
   document.getElementById('printPerfGrid').innerHTML = perfGridEl ? perfGridEl.innerHTML : '';
@@ -4569,7 +6067,7 @@ async function generarPdf(clientName){
 
     const monedaSlug = esCable() ? 'usd-cable' : (selection.moneda === 'Dólar' ? 'usd' : 'ars');
     const fechaSlug = DATA.asOfDate || '';
-    const tipoSlug = isCustom() ? 'personalizada' : 'sugerida';
+    const tipoSlug = isCustom() ? 'personalizada' : (isModelo() ? (slugNombreArchivo(selection.modelo) || 'modelo') : 'sugerida');
     const clienteSlug = slugNombreArchivo(clientName);
     pdf.save(`cartera-${tipoSlug}${clienteSlug ? '-' + clienteSlug : ''}-${monedaSlug}-${fechaSlug}.pdf`);
   } catch(err){
