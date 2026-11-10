@@ -1450,20 +1450,6 @@
   .termo-implicito{ display:block; font-size:10.5px; font-weight:500; color:#8A91A8; margin-top:1px; }
   .termo-hitos td{ vertical-align:top; }
 
-  .termo-fondos-box{ margin:4px 0 16px; padding:12px 14px; background:#FAFBFE; border:1px solid var(--line); border-radius:12px; }
-  .termo-fondos-fila{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
-  .termo-fondos-fila + .termo-fondos-fila{ margin-top:10px; }
-  .termo-fondos-fila .comp-ref-label{ flex:0 0 132px; }
-  .termo-chip{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:12px; font-weight:600; color:var(--text); background:#fff; border:1px solid var(--line); border-radius:999px; padding:5px 11px; cursor:pointer; }
-  .termo-chip:hover{ border-color:var(--accent); }
-  .termo-chip.on{ background:#EEF1FC; font-weight:700; border-width:1.5px; }
-  .termo-chip:disabled{ opacity:.45; cursor:not-allowed; }
-  .termo-chip i, .termo-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; flex-shrink:0; }
-  .termo-dot{ margin-right:7px; }
-  .termo-fondos-tabla td{ white-space:normal; }
-  .termo-fondos-tabla tr:last-child td{ font-weight:400; background:none; }
-  .termo-fondos-tabla td.pos{ color:var(--pos); } .termo-fondos-tabla td.neg{ color:var(--neg); }
-  @media (max-width:640px){ .termo-fondos-fila .comp-ref-label{ flex-basis:100%; } }
 
   /* --- Solapa Reinversion de cupones --- */
   .cup-controles{ display:flex; gap:18px 28px; flex-wrap:wrap; align-items:flex-end; margin-top:18px; }
@@ -1941,9 +1927,6 @@
         <span class="termo-fecha" id="termoFecha"></span>
       </div>
       <p class="sub">Camino del dólar oficial hasta el 1 de enero de 2028, pasadas las elecciones: lo que descuentan los futuros, el dólar que solo acompañaría a la inflación y las bandas cambiarias.</p>
-      <div class="termo-fondos-box">
-        <div id="termoFondos"></div>
-      </div>
       <div class="termo-curva">
         <div class="termo-chart-wrap"><canvas id="termoChart"></canvas></div>
         <div style="overflow-x:auto;">
@@ -1953,7 +1936,6 @@
           </table>
         </div>
       </div>
-      <div id="termoFondosRes" style="margin-top:16px;"></div>
       <p class="foot-note" id="termoNota"></p>
     </section>
 
@@ -5347,92 +5329,6 @@ function mercadoImplicitoA(iso){
    Lineas: lo que descuentan los futuros, el dolar que solo acompaña la
    inflacion (break-even y REM) y las bandas cambiarias, que se proyectan
    ajustadas por la inflacion break-even. Al lado, la tabla con los hitos. */
-/* Fondos sobre el grafico del termometro. Para cada fondo elegido se dibuja
-   su "dolar de equilibrio": el dolar oficial al que el fondo rinde lo mismo
-   que haber comprado dolares hoy, si su TIR actual se mantuviera constante.
-     - Tasa en pesos (ARS):   mayorista de hoy x (1 + TIR)^t
-     - CER:                   idem, sumando la inflacion break-even
-     - Dolar linked y fondos en dolares: dolar de los futuros x (1 + TIR)^t
-   Es una cuenta mecanica con la TIR de tir_fondos.xlsx, no un pronostico. */
-const TERMO_FONDOS = new Set();
-const TERMO_MAX_FONDOS = 6;
-const TERMO_COLORES = ['#7A3FB5', '#00838F', '#D9480F', '#2B8A3E', '#C2255C', '#5C4B1B'];
-
-function termoFondosDisponibles(){
-  return (DATA.fondos || [])
-    .filter(f => f.moneda === 'Pesos' || f.moneda === 'Dólar')
-    .map(f=>{
-      const td = tirDurationDeFondo(f.fondo);
-      if(!td || td.tir == null || !isFinite(td.tir)) return null;
-      const visible = nombreFondoVisible(f.fondo);
-      const base = normalizarBase(td.base);
-      const factor = COMERCIAL.factores[claveTxt(visible)] || (FACTORES_VALIDOS.includes(base) ? base : null);
-      if(!factor) return null;
-      return { fondo: f.fondo, visible, moneda: f.moneda, tir: td.tir, base, factor };
-    })
-    .filter(Boolean)
-    .sort((a, b)=> a.visible.localeCompare(b.visible, 'es'));
-}
-
-function termoEquilibrioFondo(x, fila, d){
-  const carry = Math.pow(1 + x.tir, fila.t);
-  if(x.factor === 'ARS') return d.may * carry;
-  if(x.factor === 'CER') return fila.inflBE == null ? null : d.may * carry * (1 + fila.inflBE);
-  return fila.fut * carry;   // DL, USD, SOB: acompañan al dolar y suman su TIR
-}
-
-function renderTermoFondos(res, filaFin, d){
-  const cont = document.getElementById('termoFondos');
-  const out = document.getElementById('termoFondosRes');
-  if(!cont || !out) return;
-  const lista = termoFondosDisponibles();
-  if(!lista.length){ cont.parentElement.style.display = 'none'; out.innerHTML = ''; return; }
-  cont.parentElement.style.display = '';
-  const colorDe = {};
-  res.forEach(r => { colorDe[r.x.fondo] = r.color; });
-  const lleno = TERMO_FONDOS.size >= TERMO_MAX_FONDOS;
-  cont.innerHTML = [['Pesos', 'Fondos en pesos'], ['Dólar', 'Fondos en dólares']].map(([mon, titulo])=>{
-    const fs = lista.filter(x => x.moneda === mon);
-    if(!fs.length) return '';
-    return `<div class="termo-fondos-fila"><span class="comp-ref-label">${titulo}</span>${fs.map(x=>{
-      const on = TERMO_FONDOS.has(x.fondo);
-      return `<button type="button" class="termo-chip${on ? ' on' : ''}" data-fondo="${escHtml(x.fondo)}"${(!on && lleno) ? ' disabled' : ''}${on && colorDe[x.fondo] ? ` style="border-color:${colorDe[x.fondo]};"` : ''}>`
-        + `${on && colorDe[x.fondo] ? `<i style="background:${colorDe[x.fondo]}"></i>` : ''}${escHtml(x.visible)}</button>`;
-    }).join('')}</div>`;
-  }).join('');
-  if(!res.length){
-    out.innerHTML = '<p class="foot-note" style="margin:0;">Elegí hasta ' + TERMO_MAX_FONDOS + ' fondos para ver dónde quedaría cada uno al ' + fechaCorta(HORIZONTE_POST) + ' frente al dólar que descuentan los futuros.</p>';
-    return;
-  }
-  const baseTxt = { ARS: 'tasa en pesos', CER: 'CER + inflación break-even', DL: 'dólar oficial + tasa', USD: 'dólar + tasa', SOB: 'dólar + tasa' };
-  out.innerHTML = `
-    <div style="overflow-x:auto;">
-    <table class="termo-hitos termo-fondos-tabla">
-      <thead><tr><th>Fondo</th><th class="num">TIR</th><th>Cómo se proyecta</th><th class="num">Dólar de equilibrio al ${fechaCorta(HORIZONTE_POST)}</th><th class="num">Contra el dólar de los futuros</th></tr></thead>
-      <tbody>${res.map(r=>{
-        const dif = r.fin / filaFin.fut - 1;
-        return `<tr>
-          <td><i class="termo-dot" style="background:${r.color}"></i>${escHtml(r.x.visible)}</td>
-          <td class="num">${fmtPctCom(r.x.tir, 2)} ${escHtml(r.x.base || '')}</td>
-          <td>${baseTxt[r.x.factor] || ''}</td>
-          <td class="num">$ ${fmtNumCom(r.fin, 0)}</td>
-          <td class="num ${signoClase(dif)}">${fmtPctCom(dif, 1, true)}</td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>
-    </div>
-    <p class="foot-note">Dólar de equilibrio: el dólar oficial al que el fondo rinde lo mismo que haber comprado dólares hoy a $ ${fmtNumCom(d.may, 2)}, si su TIR actual se mantuviera constante hasta el ${fechaCorta(HORIZONTE_POST)}. Si queda por encima del dólar de los futuros ($ ${fmtNumCom(filaFin.fut, 0)}), el fondo le gana a la devaluación que hoy descuenta el mercado; si queda por debajo, pierde contra ella. Los fondos que ajustan por dólar quedan siempre por encima porque suman su tasa a la devaluación. Es una cuenta mecánica con la TIR cargada en tir_fondos.xlsx: no contempla cambios de tasas ni de precios, y no es una proyección de rendimiento ni una promesa.</p>`;
-}
-
-document.addEventListener('click', (e)=>{
-  const chip = e.target.closest ? e.target.closest('.termo-chip') : null;
-  if(!chip || chip.disabled) return;
-  const f = chip.dataset.fondo;
-  if(TERMO_FONDOS.has(f)) TERMO_FONDOS.delete(f);
-  else if(TERMO_FONDOS.size < TERMO_MAX_FONDOS) TERMO_FONDOS.add(f);
-  renderTermometro();
-});
-
 function renderTermometro(){
   const sec = document.getElementById('termoSection');
   const canvas = document.getElementById('termoChart');
@@ -5461,7 +5357,7 @@ function renderTermometro(){
     const acum = (tasa)=> (tasa != null && isFinite(tasa)) ? Math.pow(1 + tasa, t) - 1 : null;
     const inflBE = acum(d.breakeven);
     return {
-      iso: p.iso, label: p.label, fut: f, t,
+      iso: p.iso, label: p.label, fut: f,
       deval: f / d.may - 1,
       inflBE, inflREM: acum(d.inflEsp),
       // Bandas: el techo sube y el piso baja al ritmo de la inflacion (BCRA); se proyectan con la break-even (o el REM si falta)
@@ -5485,18 +5381,6 @@ function renderTermometro(){
   const banda = { borderWidth: 1.5, pointRadius: 0, borderDash: [7, 4] };
   if(d.techo) datasets.push(linea('Techo de la banda', filas.map(f => +(d.techo * f.banda).toFixed(1)), '#C43D3D', banda));
   if(d.piso) datasets.push(linea('Piso de la banda', filas.map(f => +(d.piso / f.banda).toFixed(1)), '#0F8A5F', banda));
-
-  // Fondos elegidos: dolar de equilibrio de cada uno, proyectando su TIR constante
-  const fondosSel = termoFondosDisponibles().filter(x => TERMO_FONDOS.has(x.fondo));
-  const resFondos = [];
-  fondosSel.forEach((x, i)=>{
-    const color = TERMO_COLORES[i % TERMO_COLORES.length];
-    const data = filas.map(f => termoEquilibrioFondo(x, f, d));
-    if(data.some(v => v == null)) return;
-    datasets.push(linea(x.visible, data.map(v => +v.toFixed(1)), color, { borderWidth: 2, pointRadius: 0, borderDash: [3, 3] }));
-    resFondos.push({ x, color, fin: data[data.length - 1] });
-  });
-  renderTermoFondos(resFondos, filas[filas.length - 1], d);
 
   termoChart = new Chart(canvas.getContext('2d'), {
     type: 'line',
