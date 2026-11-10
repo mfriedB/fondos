@@ -1521,24 +1521,62 @@
   .cup-controles .option-btn strong{ font-size:13.5px; }
   .cup-check{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); cursor:pointer; padding-bottom:8px; }
   .cup-check input{ width:16px; height:16px; accent-color:var(--accent); }
-  .cup-semanas{ display:flex; gap:10px; overflow-x:auto; padding:2px 2px 10px; scroll-snap-type:x proximity; }
-  .cup-semana{
-    flex:0 0 172px; scroll-snap-align:start; text-align:left; cursor:pointer;
-    font-family:inherit; color:var(--text);
-    background:#FAFBFE; border:1.5px solid var(--line); border-radius:10px;
-    padding:12px 13px; display:flex; flex-direction:column; gap:3px; min-height:118px;
+  .tl-resumen{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:12px; margin-bottom:16px; }
+  .tl-res{ border:1px solid var(--line); border-left:4px solid #33437A; border-radius:8px; padding:12px 14px; background:#FAFBFE; min-width:0; }
+  .tl-res.usd{ border-left-color:#17694A; }
+  .tl-res h3{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--navy); margin:0 0 8px; }
+  .tl-res ol{ margin:0; padding-left:20px; }
+  .tl-res li{ font-size:13px; line-height:1.45; margin-bottom:6px; }
+  .tl-res li .cup-link{ font-size:13px; text-align:left; }
+  .tl-res-dato{ font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--navy); margin-left:6px; white-space:nowrap; }
+  .tl-res-venc{ display:block; font-size:11.5px; color:var(--muted); }
+  .tl-res-nota, .tl-res-vacio{ font-size:11px; color:var(--muted); line-height:1.4; margin:8px 0 0; }
+  .tl-leyenda{ display:flex; gap:8px 16px; flex-wrap:wrap; align-items:center; font-size:11.5px; color:var(--text); margin-bottom:10px; }
+  .tl-leyenda span{ display:inline-flex; align-items:center; gap:6px; }
+  .cup-semanas{ display:flex; flex-direction:column; gap:6px; }
+  .tl-fila{
+    display:grid; grid-template-columns:176px minmax(0, 1fr); gap:10px;
+    border:1.5px solid var(--line); border-radius:10px; background:#fff;
+    padding:8px; cursor:pointer;
   }
-  .cup-semana:hover{ border-color:#B9C4E8; }
-  .cup-semana.selected{ background:#EEF1FC; border-color:var(--accent); }
-  .cup-semana.vacia{ opacity:.6; }
-  .cup-semana strong{ font-size:13.5px; color:var(--navy); }
-  .cup-semana-rango{ font-size:11.5px; color:var(--muted); }
-  .cup-semana-cuenta{ font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; color:var(--navy); margin-top:5px; }
-  .cup-semana-monedas{ display:flex; gap:5px; flex-wrap:wrap; }
-  .cup-semana-monedas i{ font-style:normal; font-size:10px; font-weight:700; border-radius:4px; padding:1px 5px; }
-  .cup-semana-monedas i.ars, .cup-tipo.ars{ background:#EEF1FC; color:#33437A; border:1px solid #DCE4F5; }
-  .cup-semana-monedas i.usd, .cup-tipo.usd{ background:#E5F4EC; color:#17694A; border:1px solid #CDE8DA; }
-  .cup-semana-venc{ font-size:10.5px; color:var(--muted); margin-top:auto; line-height:1.35; }
+  .tl-fila:hover{ border-color:#B9C4E8; }
+  .tl-fila:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .tl-fila.fuerte{ background:#FFFBF0; border-color:#EAD9A6; }
+  .tl-fila.selected{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .tl-semana{ display:flex; flex-direction:column; gap:2px; padding:2px 4px; min-width:0; }
+  .tl-semana strong{ font-size:13px; color:var(--navy); }
+  .tl-rango{ font-size:11.5px; color:var(--muted); }
+  .tl-cuenta{ font-size:11.5px; color:var(--text); margin-top:2px; }
+  .tl-badge{ align-self:flex-start; font-size:10px; font-weight:800; border-radius:4px; padding:2px 6px; margin-top:4px; line-height:1.35; }
+  .tl-badge.ars{ background:#33437A; color:#fff; }
+  .tl-badge.usd{ background:#17694A; color:#fff; }
+  .tl-dias{ display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:6px; }
+  .tl-dia{ background:#F7F9FE; border-radius:6px; padding:6px 7px 7px; min-height:58px; min-width:0; }
+  .tl-fila.fuerte .tl-dia{ background:#FFF6DE; }
+  .tl-dia.vacio{ background:transparent; }
+  .tl-dia.pasado{ opacity:.55; }
+  .tl-dia.hoy{ box-shadow:inset 0 0 0 1.5px var(--accent); }
+  .tl-dia-label{ display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:4px; }
+  .tl-flujo{ display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:var(--navy); margin-bottom:4px; cursor:help; }
+  .tl-chips{ display:flex; flex-wrap:wrap; gap:3px; }
+  .tl-chip{
+    font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; line-height:1.3;
+    border-radius:3px; padding:1px 4px; border:1px solid; white-space:nowrap;
+  }
+  .tl-chip.ars{ color:#33437A; border-color:#B9C4E8; background:#fff; }
+  .tl-chip.usd{ color:#17694A; border-color:#A9D8C0; background:#fff; }
+  .tl-chip.ars.capital{ background:#33437A; border-color:#33437A; color:#fff; }
+  .tl-chip.usd.capital{ background:#17694A; border-color:#17694A; color:#fff; }
+  .tl-mas{ font-size:10px; color:var(--muted); align-self:center; }
+  @media (max-width:820px){
+    .tl-fila{ grid-template-columns:1fr; }
+    .tl-semana{ flex-direction:row; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
+    .tl-badge{ margin-top:0; }
+    .tl-dias{ grid-template-columns:1fr; gap:4px; }
+    .tl-dia{ min-height:0; display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; }
+    .tl-dia.vacio{ display:none; }
+    .tl-dia-label, .tl-flujo{ margin-bottom:0; }
+  }
   .cup-tipo{ display:inline-block; font-size:10.5px; font-weight:700; border-radius:4px; padding:2px 7px; white-space:nowrap; }
   .cup-semana-head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin:18px 0 10px; }
   .cup-semana-head h3{ font-size:15px; font-weight:800; color:var(--navy); margin:0; }
@@ -1595,6 +1633,10 @@
     #cupTable tbody td[data-label]::before{ content:attr(data-label); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
     .cup-pago-det{ text-align:right; }
   }
+  .tl-leyenda i{ font-style:normal; }
+  .cup-tipo.ars{ background:#EEF1FC; color:#33437A; border:1px solid #DCE4F5; }
+  .cup-tipo.usd{ background:#E5F4EC; color:#17694A; border:1px solid #CDE8DA; }
+  .tl-fila.fuerte .tl-dia.vacio{ background:transparent; }
 </style>
 </head>
 <body>
@@ -1987,8 +2029,15 @@
     </section>
 
     <section class="card">
-      <h2>Calendario de cobros</h2>
-      <p class="sub">Cupones, amortizaciones y vencimientos de Lecap, Boncap, bonos CER, duales, TAMAR, dólar linked, soberanos y ON en dólares. Elegí una semana.</p>
+      <h2>Timeline de cobros</h2>
+      <p class="sub">Cupones, amortizaciones y vencimientos día por día: Lecap, Boncap, bonos CER, duales, TAMAR, dólar linked, soberanos y ON en dólares. Las semanas resaltadas son las de mayores ingresos. Elegí una semana para ver el detalle.</p>
+      <div class="tl-resumen" id="cupFuertes"></div>
+      <div class="tl-leyenda">
+        <span><i class="tl-chip ars capital">TICKER</i> paga pesos y devuelve capital</span>
+        <span><i class="tl-chip ars">TICKER</i> cupón en pesos</span>
+        <span><i class="tl-chip usd capital">TICKER</i> paga dólares y devuelve capital</span>
+        <span><i class="tl-chip usd">TICKER</i> cupón en dólares</span>
+      </div>
       <div class="cup-semanas" id="cupSemanas"></div>
       <div class="cup-semana-head">
         <h3 id="cupSemanaTitulo"></h3>
@@ -6686,14 +6735,14 @@ function initComercial(){
 
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
-let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
+let REINV = { ok: false, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
 const CUP = { semana: 0, perfil: 'Moderado', moneda: 'todas', soloDestacados: true, montos: {} };
 const CUP_SEMANAS = 10;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 function parseVencimientos(wb){
-  const out = { ok: true, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
+  const out = { ok: true, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
 
   hojaFilas(wb, 'Calendario').forEach(f=>{
     const fecha = fechaIsoDeCelda(f[0]);
@@ -6712,6 +6761,19 @@ function parseVencimientos(wb){
       dato: celdaTxt(f[9]) || 'Publicado',
       fuente: celdaTxt(f[10]),
       validado: false, tem: null,
+    });
+  });
+
+  // Flujos: total que paga el mercado por fecha, en millones de la moneda de cobro
+  hojaFilas(wb, 'Flujos').forEach(f=>{
+    const fecha = fechaIsoDeCelda(f[0]);
+    const monto = celdaNum(f[2]);
+    if(!fecha || !monto || monto <= 0) return;
+    const mon = claveTxt(f[1]);
+    out.flujos.push({
+      fecha, monto,
+      moneda: (mon.startsWith('p') || mon === 'ars') ? 'Pesos' : 'Dólar',
+      detalle: celdaTxt(f[3]), fuente: celdaTxt(f[4]),
     });
   });
 
@@ -6853,23 +6915,141 @@ function cupTipoChip(tipo, moneda){
   return `<span class="cup-tipo ${moneda === 'Dólar' ? 'usd' : 'ars'}">${escHtml(tipo)}</span>`;
 }
 
+// "$ 37 billones" | "USD 1.200 M" (los montos de mercado vienen en millones)
+function cupMontoMercado(m, moneda){
+  if(moneda === 'Dólar') return `USD ${fmtNumCom(m, 0)} M`;
+  return m >= 1e6 ? `$ ${fmtNumCom(m / 1e6, 1)} billones` : `$ ${fmtNumCom(m, 0)} M`;
+}
+function cupFlujoSemana(s, moneda){
+  return REINV.flujos
+    .filter(f => f.moneda === moneda && f.fecha >= s.ini && f.fecha <= s.fin)
+    .reduce((a, f)=> a + f.monto, 0);
+}
+function cupOrdinal(n){
+  return `${n}.ª`;
+}
+
+/* Semanas fuertes: las tres con mas ingresos de cada moneda.
+   Si la moneda tiene montos de mercado cargados (hoja "Flujos") se ordena por
+   monto; si no, por cantidad de cobros, y cada vencimiento pesa triple porque
+   devuelve capital. Devuelve { idxSemana: [{ moneda, puesto, ... }] }. */
+function cupSemanasFuertes(semanas){
+  const out = {};
+  ['Pesos', 'Dólar'].forEach(moneda=>{
+    const porMonto = semanas.some(s => cupFlujoSemana(s, moneda) > 0);
+    semanas.map(s=>{
+      const evs = REINV.eventos.filter(e =>
+        e.fecha >= s.ini && e.fecha <= s.fin && e.moneda === moneda && (!CUP.soloDestacados || e.destacado));
+      const venc = evs.filter(e => /^venc/i.test(e.evento));
+      const flujo = cupFlujoSemana(s, moneda);
+      return {
+        idx: s.idx, semana: s, moneda, porMonto, flujo,
+        n: evs.length, venc: venc.map(e => e.ticker),
+        score: porMonto ? flujo : evs.length + 2 * venc.length,
+      };
+    })
+    .filter(x => x.score > 0)
+    .sort((a, b)=> (b.score - a.score) || (a.idx - b.idx))
+    .slice(0, 3)
+    .forEach((x, i)=>{
+      x.puesto = i + 1;
+      (out[x.idx] = out[x.idx] || []).push(x);
+    });
+  });
+  return out;
+}
+
+function cupTituloSemana(s){
+  return s.idx === 0 ? 'Esta semana' : (s.idx === 1 ? 'Próxima semana' : `Semana del ${s.dIni.getDate()}/${s.dIni.getMonth() + 1}`);
+}
+
+/* Timeline: una fila por semana y una columna por dia habil. Cada cobro es
+   una etiqueta con el ticker: azul = paga pesos, verde = paga dolares; llena =
+   devuelve capital (vencimiento o amortizacion), contorno = solo cupon. */
 function renderCupSemanas(){
   const semanas = cupSemanas();
+  const fuertes = cupSemanasFuertes(semanas);
+  const hoy = isoLocal(new Date());
+  const MAX_CHIPS = 16;
+
+  // Resumen de las semanas fuertes, pensado para leerlo en la call
+  const lista = (moneda)=>{
+    const items = Object.values(fuertes).flat().filter(x => x.moneda === moneda).sort((a, b)=> a.puesto - b.puesto);
+    if(!items.length) return '<p class="tl-res-vacio">Sin cobros cargados.</p>';
+    return '<ol>' + items.map(x=>{
+      const dato = x.porMonto
+        ? `≈ ${cupMontoMercado(x.flujo, moneda)}`
+        : `${x.n} ${x.n === 1 ? 'cobro' : 'cobros'}${x.venc.length ? ` · ${x.venc.length} ${x.venc.length === 1 ? 'vencimiento' : 'vencimientos'}` : ''}`;
+      return `<li><button type="button" class="cup-link" data-ir-semana="${x.idx}">${cupTituloSemana(x.semana)} (${cupRangoTexto(x.semana)})</button> <span class="tl-res-dato">${dato}</span>${x.venc.length ? `<span class="tl-res-venc">Vence: ${escHtml(x.venc.slice(0, 4).join(', '))}${x.venc.length > 4 ? ` +${x.venc.length - 4}` : ''}</span>` : ''}</li>`;
+    }).join('') + '</ol>';
+  };
+  const hayFlujo = (m)=> semanas.some(s => cupFlujoSemana(s, m) > 0);
+  document.getElementById('cupFuertes').innerHTML = `
+    <div class="tl-res ars">
+      <h3>Semanas fuertes en pesos</h3>
+      ${lista('Pesos')}
+      <p class="tl-res-nota">${hayFlujo('Pesos') ? 'Ordenadas por el total que vence en el mercado (estimaciones, incluyen tenencias del sector público).' : 'Ordenadas por cantidad de cobros; los vencimientos pesan triple.'}</p>
+    </div>
+    <div class="tl-res usd">
+      <h3>Semanas fuertes en dólares</h3>
+      ${lista('Dólar')}
+      <p class="tl-res-nota">${hayFlujo('Dólar') ? 'Ordenadas por el total que paga el mercado.' : 'Ordenadas por cantidad de cobros; los vencimientos pesan triple porque devuelven capital. No hay montos de mercado cargados.'}</p>
+    </div>`;
+
   document.getElementById('cupSemanas').innerHTML = semanas.map(s=>{
     const evs = cupEventosDeSemana(s);
     const ars = evs.filter(e => e.moneda === 'Pesos').length;
     const usd = evs.length - ars;
-    const venc = evs.filter(e => /^venc/i.test(e.evento)).map(e => e.ticker);
-    const titulo = s.idx === 0 ? 'Esta semana' : (s.idx === 1 ? 'Próxima semana' : `Semana del ${s.dIni.getDate()}/${s.dIni.getMonth() + 1}`);
+    const sinDatos = !evs.length && REINV.completoHasta && s.fin > REINV.completoHasta;
+    const badges = (fuertes[s.idx] || [])
+      .filter(x => CUP.moneda === 'todas' || x.moneda === CUP.moneda)
+      .map(x => `<span class="tl-badge ${x.moneda === 'Dólar' ? 'usd' : 'ars'}">${cupOrdinal(x.puesto)} en ${x.moneda === 'Dólar' ? 'dólares' : 'pesos'}${x.porMonto ? ` · ≈ ${cupMontoMercado(x.flujo, x.moneda)}` : ''}</span>`)
+      .join('');
+
+    const dias = [];
+    for(let i = 0; i < 5; i++){
+      const d = new Date(s.dIni); d.setDate(s.dIni.getDate() + i);
+      const iso = isoLocal(d);
+      // Un cobro con fecha de fin de semana se muestra en el viernes
+      const delDia = evs.filter(e => e.fecha === iso || (i === 4 && e.fecha > iso));
+      const chips = delDia.slice(0, MAX_CHIPS).map(e=>{
+        const capital = (e.amort || 0) > 0 || /^venc/i.test(e.evento);
+        const pago = cupPagoCada100(e);
+        const tip = `${e.nombre} · ${e.evento}${pago != null ? ` · ${e.moneda === 'Dólar' ? 'USD' : '$'} ${fmtNumCom(pago, 2)} c/100 VN` : ''}`;
+        return `<span class="tl-chip ${e.moneda === 'Dólar' ? 'usd' : 'ars'}${capital ? ' capital' : ''}" title="${escHtml(tip)}">${escHtml(e.ticker)}</span>`;
+      }).join('');
+      const resto = delDia.length > MAX_CHIPS ? `<span class="tl-mas">+${delDia.length - MAX_CHIPS}</span>` : '';
+      const flujos = REINV.flujos.filter(f => f.fecha === iso && (CUP.moneda === 'todas' || f.moneda === CUP.moneda));
+      const flujoHtml = flujos.map(f => `<span class="tl-flujo" title="${escHtml(f.detalle + (f.fuente ? ' · ' + f.fuente : ''))}">≈ ${cupMontoMercado(f.monto, f.moneda)}</span>`).join('');
+      dias.push(`
+        <div class="tl-dia${iso === hoy ? ' hoy' : ''}${iso < hoy ? ' pasado' : ''}${delDia.length ? '' : ' vacio'}">
+          <span class="tl-dia-label">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${iso === hoy ? ' · hoy' : ''}</span>
+          ${flujoHtml}
+          <div class="tl-chips">${chips}${resto}</div>
+        </div>`);
+    }
+
     return `
-      <button type="button" class="cup-semana${s.idx === CUP.semana ? ' selected' : ''}${evs.length ? '' : ' vacia'}" data-semana="${s.idx}">
-        <strong>${titulo}</strong>
-        <span class="cup-semana-rango">${cupRangoTexto(s)}</span>
-        <span class="cup-semana-cuenta">${evs.length ? `${evs.length} ${evs.length === 1 ? 'cobro' : 'cobros'}` : ((REINV.completoHasta && s.fin > REINV.completoHasta) ? 'Sin datos' : 'Sin cobros')}</span>
-        <span class="cup-semana-monedas">${ars ? `<i class="ars">Pesos ${ars}</i>` : ''}${usd ? `<i class="usd">Dólares ${usd}</i>` : ''}</span>
-        ${venc.length ? `<span class="cup-semana-venc">Vence: ${escHtml(venc.slice(0, 3).join(', '))}${venc.length > 3 ? ` +${venc.length - 3}` : ''}</span>` : ''}
-      </button>`;
+      <div class="tl-fila cup-semana${s.idx === CUP.semana ? ' selected' : ''}${badges ? ' fuerte' : ''}" data-semana="${s.idx}" role="button" tabindex="0" aria-label="${cupTituloSemana(s)}, ${cupRangoTexto(s)}: ${evs.length} cobros">
+        <div class="tl-semana">
+          <strong>${cupTituloSemana(s)}</strong>
+          <span class="tl-rango">${cupRangoTexto(s)}</span>
+          <span class="tl-cuenta">${evs.length ? `${ars ? `Pesos ${ars}` : ''}${ars && usd ? ' · ' : ''}${usd ? `Dólares ${usd}` : ''}` : (sinDatos ? 'Sin datos cargados' : 'Sin cobros')}</span>
+          ${badges}
+        </div>
+        <div class="tl-dias">${dias.join('')}</div>
+      </div>`;
   }).join('');
+}
+
+function cupElegirSemana(idx, irAlDetalle){
+  CUP.semana = idx;
+  renderCupSemanas();
+  renderCupTabla();
+  if(irAlDetalle){
+    const el = document.getElementById('cupSemanaTitulo');
+    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function renderCupTabla(){
@@ -7072,11 +7252,19 @@ function initCupones(){
 }
 
 document.getElementById('cupSemanas').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.cup-semana');
-  if(!btn) return;
-  CUP.semana = parseInt(btn.dataset.semana, 10) || 0;
-  renderCupSemanas();
-  renderCupTabla();
+  const fila = e.target.closest('.cup-semana');
+  if(fila) cupElegirSemana(parseInt(fila.dataset.semana, 10) || 0, true);
+});
+document.getElementById('cupSemanas').addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const fila = e.target.closest('.cup-semana');
+  if(!fila) return;
+  e.preventDefault();
+  cupElegirSemana(parseInt(fila.dataset.semana, 10) || 0, true);
+});
+document.getElementById('cupFuertes').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-ir-semana]');
+  if(btn) cupElegirSemana(parseInt(btn.dataset.irSemana, 10) || 0, true);
 });
 document.querySelectorAll('#cupPerfilOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ CUP.perfil = btn.dataset.perfil; renderCupones(); });
