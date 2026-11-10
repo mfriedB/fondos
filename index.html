@@ -1633,6 +1633,41 @@
   .cup-tipo.ars{ background:#EEF1FC; color:#33437A; border:1px solid #DCE4F5; }
   .cup-tipo.usd{ background:#E5F4EC; color:#17694A; border:1px solid #CDE8DA; }
   .tl-fila.fuerte .tl-dia.vacio{ background:transparent; }
+
+  /* --- Graficos de cobros por semana --- */
+  .cg-nav{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  .cg-nav select{ font-family:inherit; font-size:12.5px; font-weight:600; color:var(--navy); border:1.5px solid var(--line); border-radius:6px; padding:6px 8px; background:#fff; max-width:100%; }
+  .cg-nav .range-btn:disabled{ opacity:.4; cursor:default; }
+  .cg-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:16px; }
+  @media (max-width:520px){ .cg-grid{ grid-template-columns:1fr; } }
+  .cg-panel{ border:1px solid var(--line); border-top:4px solid #33437A; border-radius:10px; padding:14px 16px 12px; min-width:0; background:#fff; }
+  .cg-panel.usd{ border-top-color:#17694A; }
+  .cg-panel h3{ font-size:14px; font-weight:800; color:var(--navy); margin:0 0 2px; }
+  .cg-resumen{ font-size:12px; color:var(--muted); margin:0 0 6px; }
+  .cg-resumen strong{ font-family:'JetBrains Mono',monospace; color:var(--navy); }
+  .cg-dia{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--navy); background:#F4F6FC; border-radius:4px; padding:4px 8px; margin:10px 0 4px; }
+  .cg-fila{ display:grid; grid-template-columns:minmax(0, 190px) minmax(60px, 1fr) minmax(0, 132px); gap:10px; align-items:center; padding:5px 0; border-bottom:1px solid #F0F2F8; }
+  .cg-fila:last-child{ border-bottom:none; }
+  .cg-inst{ min-width:0; }
+  .cg-ticker{ font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--navy); margin-right:6px; }
+  .cg-nombre{ display:block; font-size:11px; color:var(--muted); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cg-pista{ height:14px; background:#F1F3F9; border-radius:3px; overflow:hidden; }
+  .cg-barra{ display:flex; height:100%; min-width:4px; }
+  .cg-barra i{ display:block; height:100%; }
+  .cg-panel.ars .cg-barra i.cap, .cg-muestra.cap.ars{ background:#33437A; }
+  .cg-panel.ars .cg-barra i.ren, .cg-muestra.ren.ars{ background:#9DB0E6; }
+  .cg-panel.usd .cg-barra i.cap, .cg-muestra.cap.usd{ background:#17694A; }
+  .cg-panel.usd .cg-barra i.ren, .cg-muestra.ren.usd{ background:#8CCFAE; }
+  .cg-muestra{ display:inline-block; width:14px; height:10px; border-radius:2px; }
+  .cg-sin-dato{ display:block; height:100%; background:repeating-linear-gradient(135deg, #E4E8F1 0 4px, #F1F3F9 4px 8px); }
+  .cg-val{ text-align:right; min-width:0; }
+  .cg-valor{ font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600; color:var(--navy); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .cg-valor.sd{ font-family:inherit; font-weight:500; color:var(--muted); font-size:11.5px; }
+  .cg-valor-det{ display:block; font-size:10px; color:var(--muted); white-space:nowrap; }
+  @media (max-width:520px){
+    .cg-fila{ grid-template-columns:minmax(0, 1fr) auto; }
+    .cg-pista{ grid-column:1 / -1; grid-row:2; }
+  }
 </style>
 </head>
 <body>
@@ -2038,7 +2073,29 @@
         <span><i class="tl-chip usd">TICKER</i> cupón en dólares</span>
       </div>
       <div class="cup-semanas" id="cupSemanas"></div>
-      <div class="cup-semana-head">
+    </section>
+
+    <section class="card" id="cupGraficosCard">
+      <div class="chart-header" style="margin-bottom:6px;">
+        <h2 style="margin:0;">Cobros de la semana, día por día</h2>
+        <div class="cg-nav">
+          <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
+          <select id="cupSemanaSelect" aria-label="Semana"></select>
+          <button type="button" class="range-btn" id="cupNext" aria-label="Semana siguiente">Siguiente ›</button>
+        </div>
+      </div>
+      <p class="sub">Qué vence, amortiza o paga cupón cada día y cuánto paga cada 100 nominales, separado entre lo que paga pesos y lo que paga dólares.</p>
+      <div class="cg-grid" id="cupGraficos"></div>
+      <div class="tl-leyenda" style="margin:14px 0 0;">
+        <span><i class="cg-muestra cap ars"></i><i class="cg-muestra cap usd"></i> capital que devuelve</span>
+        <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
+        <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Nominales del cliente</h2>
+      <div class="cup-semana-head" style="margin-top:0;">
         <h3 id="cupSemanaTitulo"></h3>
         <button type="button" class="cup-link" id="cupLimpiar">Borrar nominales cargados</button>
       </div>
@@ -7001,9 +7058,84 @@ function cupElegirSemana(idx, irAlDetalle){
   renderCupSemanas();
   renderCupTabla();
   if(irAlDetalle){
-    const el = document.getElementById('cupSemanaTitulo');
+    const el = document.getElementById('cupGraficosCard');
     if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+/* ---------------------------------------------------------------------
+   Graficos de la semana: uno para lo que paga pesos y otro para lo que paga
+   dolares. Una barra por instrumento, agrupadas por dia; el largo es lo que
+   paga cada 100 nominales (escala logaritmica, para que un cupon de 0,50 y
+   un vencimiento de 130 se vean en el mismo grafico) y el tramo oscuro es
+   la parte que devuelve capital.
+--------------------------------------------------------------------- */
+function cupGraficoHtml(evs, moneda){
+  const lista = evs.filter(e => e.moneda === moneda);
+  const mon = moneda === 'Dólar' ? 'USD' : '$';
+  const clase = moneda === 'Dólar' ? 'usd' : 'ars';
+  const titulo = moneda === 'Dólar' ? 'Bonos y ON que pagan dólares' : 'Bonos que pagan pesos';
+  if(!lista.length){
+    return `<div class="cg-panel ${clase}"><h3>${titulo}</h3><p class="cup-vacio">Sin cobros en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} esta semana${CUP.soloDestacados ? ' entre los más operados' : ''}.</p></div>`;
+  }
+  const pagos = lista.map(cupPagoCada100).filter(v => v != null && v > 0);
+  const piso = 0.1;
+  const tope = Math.max(piso * 10, ...pagos);
+  const ancho = (v)=> Math.max(3, Math.min(100, Math.log(v / piso) / Math.log(tope / piso) * 100));
+  const total = pagos.reduce((a, v)=> a + v, 0);
+
+  let diaPrevio = null;
+  const filas = lista.map(e=>{
+    const d = fechaDeIso(e.fecha);
+    const pago = cupPagoCada100(e);
+    let sep = '';
+    if(e.fecha !== diaPrevio){
+      sep = `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}</div>`;
+      diaPrevio = e.fecha;
+    }
+    let barra, valor;
+    if(pago == null || pago <= 0){
+      barra = '<div class="cg-pista"><span class="cg-sin-dato"></span></div>';
+      valor = '<span class="cg-valor sd">a confirmar</span>';
+    } else {
+      const w = ancho(pago);
+      const parteCapital = (e.amort || 0) / pago;
+      barra = `<div class="cg-pista"><span class="cg-barra" style="width:${w.toFixed(1)}%">`
+        + (parteCapital > 0 ? `<i class="cap" style="width:${(parteCapital * 100).toFixed(1)}%"></i>` : '')
+        + (parteCapital < 1 ? `<i class="ren" style="width:${((1 - parteCapital) * 100).toFixed(1)}%"></i>` : '')
+        + '</span></div>';
+      valor = `<span class="cg-valor">${mon} ${fmtNumCom(pago, 2)}</span>`
+        + ((e.renta != null && e.amort) ? `<span class="cg-valor-det">renta ${fmtNumCom(e.renta, 2)} + capital ${fmtNumCom(e.amort, 2)}</span>` : '');
+    }
+    return sep + `
+      <div class="cg-fila">
+        <div class="cg-inst">
+          <span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}
+          <span class="cg-nombre">${escHtml(e.nombre)} · ${escHtml(e.evento)}</span>
+        </div>
+        ${barra}
+        <div class="cg-val">${valor}</div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="cg-panel ${clase}">
+      <h3>${titulo}</h3>
+      <p class="cg-resumen">${lista.length} ${lista.length === 1 ? 'cobro' : 'cobros'}${total > 0 ? ` · suma de la semana: <strong>${mon} ${fmtNumCom(total, 2)}</strong> cada 100 VN de cada instrumento` : ''}</p>
+      ${filas}
+    </div>`;
+}
+
+function renderCupGraficos(){
+  const semanas = cupSemanas();
+  const s = semanas[CUP.semana];
+  const evs = cupEventosDeSemana(s);
+  const sel = document.getElementById('cupSemanaSelect');
+  sel.innerHTML = semanas.map(x => `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${cupTituloSemana(x)} · ${cupRangoTexto(x)}</option>`).join('');
+  document.getElementById('cupPrev').disabled = CUP.semana <= 0;
+  document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
+  const monedas = CUP.moneda === 'todas' ? ['Pesos', 'Dólar'] : [CUP.moneda];
+  document.getElementById('cupGraficos').innerHTML = monedas.map(m => cupGraficoHtml(evs, m)).join('');
 }
 
 function renderCupTabla(){
@@ -7024,6 +7156,8 @@ function renderCupTabla(){
 
   if(!evs.length){
     body.innerHTML = `<tr><td colspan="6" class="cup-vacio">No hay cobros cargados para esta semana con los filtros elegidos.</td></tr>`;
+    renderCupGraficos();
+    actualizarCupCobros();
     return;
   }
 
@@ -7062,6 +7196,7 @@ function renderCupTabla(){
         <td class="num" data-label="Cobra"><span class="cup-cobro" data-cobro="${escHtml(k)}"></span></td>
       </tr>`;
   }).join('');
+  renderCupGraficos();
   actualizarCupCobros();
 }
 
@@ -7240,6 +7375,15 @@ document.getElementById('cupTableBody').addEventListener('input', (e)=>{
   if(!inp) return;
   CUP.montos[inp.dataset.k] = formatMontoInput(inp);
   actualizarCupCobros();
+});
+document.getElementById('cupPrev').addEventListener('click', ()=>{
+  if(CUP.semana > 0) cupElegirSemana(CUP.semana - 1, false);
+});
+document.getElementById('cupNext').addEventListener('click', ()=>{
+  if(CUP.semana < CUP_SEMANAS - 1) cupElegirSemana(CUP.semana + 1, false);
+});
+document.getElementById('cupSemanaSelect').addEventListener('change', (e)=>{
+  cupElegirSemana(parseInt(e.target.value, 10) || 0, false);
 });
 document.getElementById('cupLimpiar').addEventListener('click', ()=>{
   CUP.montos = {};
