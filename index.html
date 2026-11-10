@@ -1728,7 +1728,7 @@
 
     <section class="card" id="tipoCarteraSection">
       <h2>2 · Tipo de Cartera</h2>
-      <p class="sub">Usá una cartera armada según perfil y horizonte, elegí vos mismo los fondos y el peso de cada uno, o partí de una cartera modelo.</p>
+      <p class="sub">Usá una cartera armada según perfil y horizonte, o elegí vos mismo los fondos y el peso de cada uno.</p>
       <div class="option-row" id="tipoCarteraOptions">
         <button class="option-btn selected" data-tipo="Sugerida">
           <strong>Cartera Sugerida</strong>
@@ -1738,18 +1738,7 @@
           <strong>Cartera Personalizada</strong>
           <span>Elegí los fondos y el % de cada uno</span>
         </button>
-        <button class="option-btn" data-tipo="Modelo" style="display:none;">
-          <strong>Carteras Modelo</strong>
-          <span>Ideas armadas para un objetivo puntual, por perfil</span>
-        </button>
       </div>
-    </section>
-
-    <section class="card" id="modeloSection" style="display:none;">
-      <h2>3 · Cartera modelo</h2>
-      <p class="sub">Un clic carga la cartera completa. Después elegí el perfil y descargá el PDF con el nombre del cliente.</p>
-      <div class="modelo-row" id="modeloOptions"></div>
-      <p class="foot-note" id="modeloVacio" style="display:none;margin-top:0;">No hay carteras modelo para esta moneda.</p>
     </section>
 
     <section class="card" id="perfilSection">
@@ -1854,7 +1843,13 @@
         </div>
       </div>
 
+      <div class="comp-ref" id="histRefRow">
+        <span class="comp-ref-label">Sumar al gráfico</span>
+        <label class="cup-check"><input type="checkbox" data-ref="mep" /> Dólar MEP</label>
+        <label class="cup-check"><input type="checkbox" data-ref="inflacion" /> Inflación</label>
+      </div>
       <div class="hist-chart-wrap"><canvas id="histChart"></canvas></div>
+      <p class="foot-note" id="histRefNota" style="display:none;"></p>
     </section>
 
     <div id="histBimonNote" class="pct-warning warn" style="display:none;margin:0 0 20px;">Esta cartera combina fondos en pesos y en dólares: no se muestra un rendimiento histórico consolidado porque sumaría retornos en dos monedas distintas. Abajo está el rendimiento de cada fondo en su moneda.</div>
@@ -2020,7 +2015,7 @@
         <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
         <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
       </div>
-      <p class="foot-note">Los montos por cada 100 VN son estimativos y pueden diferir del aviso de pago del emisor. Las marcas “calculado” y “por ticker” indican datos que conviene confirmar (pasá el cursor para ver la fuente). En las ON en dólares el fondo se elige por la duration de la ON: menos de 2 años, fondo corto; 2 años o más, corporativo.</p>
+      <p class="foot-note">Los montos por cada 100 VN pueden diferir del aviso de pago del emisor. Salen de calendarios de pago públicos (Rava y bonistas.com). Las marcas “estimado” (ajusta por CER), “a confirmar” (las fuentes no coinciden) y “sin monto” indican datos a revisar: pasá el cursor para ver el detalle. En las ON en dólares el fondo se elige por la duration de la ON: menos de 2 años, fondo corto; 2 años o más, corporativo.</p>
       <div class="cg-acciones" id="cupAcciones"></div>
     </section>
 
@@ -3309,6 +3304,10 @@ function renderHistChart(rows){
   document.getElementById('histSubtitle').innerHTML =
     `${fmtDateShort(DATES[startIdx])} → ${fmtDateShort(DATES[endIdx])} · Retorno cartera: <strong class="${retClass(totalRet)}">${fmtPct(totalRet)}</strong>`;
 
+  // Lineas de referencia opcionales: dolar MEP e inflacion (solo carteras en pesos)
+  const refHist = lineasReferencia(isoDates, HIST_REF, selection.moneda === 'Pesos', 'histRefRow', 'histRefNota')
+    .map(ds => Object.assign({ datalabels: { display: false } }, ds));
+
   const ctx = document.getElementById('histChart').getContext('2d');
   if(histChartInstance) histChartInstance.destroy();
   histChartInstance = new Chart(ctx, {
@@ -3316,6 +3315,7 @@ function renderHistChart(rows){
     data:{
       labels,
       datasets:[{
+        label:'Cartera',
         data: dataPoints,
         borderColor:'#131E42',
         backgroundColor:'rgba(19,30,66,0.08)',
@@ -3336,7 +3336,7 @@ function renderHistChart(rows){
           font:{ size:10.5, weight:'700', family:"'JetBrains Mono', monospace" },
           formatter:(value)=> `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`,
         }
-      }]
+      }].concat(refHist)
     },
     options:{
       responsive:true,
@@ -3344,8 +3344,8 @@ function renderHistChart(rows){
       layout:{ padding:{ top:22 } },
       interaction:{ mode:'index', intersect:false },
       plugins:{
-        legend:{ display:false },
-        tooltip:{ callbacks:{ label:(c)=> `Cartera: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } }
+        legend:{ display: refHist.length > 0, position:'bottom', labels:{ boxWidth:10, padding:12, font:{ size:11 }, color:'#14182B' } },
+        tooltip:{ callbacks:{ label:(c)=> c.parsed.y == null ? null : `${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } }
       },
       scales:{
         x:{
@@ -3478,7 +3478,7 @@ function renderFundComparison(){
   });
 
   // Lineas de referencia opcionales: dolar MEP e inflacion
-  datasetsReferencia(isoDates).forEach(ds => datasets.push(ds));
+  lineasReferencia(isoDates, COMP_REF, fondosMoneda === 'Pesos', 'compRefRow', 'compRefNota').forEach(ds => datasets.push(ds));
 
   document.getElementById('fundHistSubtitle').innerHTML = `${fmtDateShort(DATES[baseIdx])} → ${fmtDateShort(DATES[endIdx])}`;
 
@@ -3653,26 +3653,10 @@ function updateVisibility(){
   // ocupa todo el ancho
   const btnSugerida = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Sugerida"]');
   if(btnSugerida) btnSugerida.style.display = cable ? 'none' : '';
-  // Las carteras modelo tampoco existen en Dolar Cable, ni si comercial.xlsx no trajo ninguna
-  const btnModelo = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Modelo"]');
-  const hayModelosMoneda = !cable && btnModelo && btnModelo.dataset.disponible === '1' && modelosDisponibles().length > 0;
-  if(btnModelo) btnModelo.style.display = hayModelosMoneda ? '' : 'none';
-  if(isModelo() && !hayModelosMoneda){
-    selection.tipo = 'Sugerida';
-    marcarOpciones();
-  }
 
   const custom = isCustom();
   sanitizeCustomPortfolio();
-
-  // Cartera modelo: si el modelo elegido no aplica a la moneda se toma el primero que si
-  const modelo = isModelo();
-  if(modelo){
-    const disponibles = modelosDisponibles();
-    if(!disponibles.includes(selection.modelo)) selection.modelo = disponibles[0] || null;
-    renderModeloCards();
-  }
-  document.getElementById('modeloSection').style.display = modelo ? '' : 'none';
+  const modelo = isModelo();   // siempre false: la calculadora ya no ofrece carteras modelo
 
   // Con Dolar Cable y la cartera vacia, se carga el fondo cable al 100%
   if(cable && !customPortfolio.length){
@@ -5234,6 +5218,14 @@ function mercPorPrefijo(prefijos){
   return (m && m.valor != null && isFinite(m.valor)) ? m.valor : null;
 }
 
+// De donde sale el break-even, para la nota del termometro
+function notaBreakeven(){
+  const k = Object.keys(COMERCIAL.mercado).find(key => key.startsWith('tasa fija') || key.startsWith('tasa lecap'));
+  const m = k ? COMERCIAL.mercado[k] : null;
+  if(m && m.valor != null && isFinite(m.valor)) return `tasa fija contra tasa CER cargadas en comercial.xlsx${m.fecha ? ` (${m.fecha})` : ''}`;
+  return 'TIR del fondo Lecaps contra TIR del fondo Inflation linked';
+}
+
 // Tasas para el break-even: las de la hoja, o la TIR de los fondos si estan vacias
 function tasaLecap(){
   const v = mercPorPrefijo(['tasa fija', 'tasa lecap']);
@@ -5367,7 +5359,7 @@ function renderTermometro(){
       iso: p.iso, label: p.label, fut: f,
       deval: f / d.may - 1,
       inflBE, inflREM: acum(d.inflEsp),
-      // Las bandas ajustan por inflacion: se proyectan con la break-even (o el REM si falta)
+      // Bandas: el techo sube y el piso baja al ritmo de la inflacion (BCRA); se proyectan con la break-even (o el REM si falta)
       banda: 1 + (inflBE != null ? inflBE : (acum(d.inflEsp) || 0)),
       extrapolado: !!(ultContrato && p.iso > ultContrato),
     };
@@ -5387,7 +5379,7 @@ function renderTermometro(){
   if(d.inflEsp != null) datasets.push(linea('Dólar que acompaña la inflación REM', filas.map(f => +(d.may * (1 + f.inflREM)).toFixed(1)), '#8A91A8', { borderDash: [2, 3] }));
   const banda = { borderWidth: 1.5, pointRadius: 0, borderDash: [7, 4] };
   if(d.techo) datasets.push(linea('Techo de la banda', filas.map(f => +(d.techo * f.banda).toFixed(1)), '#C43D3D', banda));
-  if(d.piso) datasets.push(linea('Piso de la banda', filas.map(f => +(d.piso * f.banda).toFixed(1)), '#0F8A5F', banda));
+  if(d.piso) datasets.push(linea('Piso de la banda', filas.map(f => +(d.piso / f.banda).toFixed(1)), '#0F8A5F', banda));
 
   termoChart = new Chart(canvas.getContext('2d'), {
     type: 'line',
@@ -5420,13 +5412,14 @@ function renderTermometro(){
     </tr>`).join('');
 
   const mMay = merc('Dólar mayorista');
+  const mTecho = merc('Techo de banda');
   document.getElementById('termoFecha').textContent =
     `Dólar mayorista de hoy: $ ${fmtNumCom(d.may, 2)}${mMay && mMay.vivo ? ' (en vivo)' : (mMay && mMay.fecha ? ` (${mMay.fecha})` : '')}`;
   document.getElementById('termoNota').textContent =
     `Devaluación: curva de futuros de dólar ${COMERCIAL.futurosVivo ? 'en vivo de Matba Rofex' : 'cargada en comercial.xlsx'}${COMERCIAL.futurosFecha ? ` (${COMERCIAL.futurosFecha})` : ''}`
     + `${ultContrato ? `; el último contrato vence el ${fechaCorta(ultContrato)} y de ahí en adelante se proyecta con el ritmo del último tramo (línea punteada)` : ''}. `
-    + `Inflación break-even (${fmtPctCom(d.breakeven, 1)} anual) y REM (${fmtPctCom(d.inflEsp, 1)} anual): tasas a 12 meses, proyectadas constantes. `
-    + 'Bandas: techo y piso de hoy, proyectados con la inflación break-even porque se ajustan por inflación con dos meses de rezago. Son precios de mercado de hoy, no pronósticos.';
+    + `Inflación break-even (${fmtPctCom(d.breakeven, 1)} anual): ${notaBreakeven()}, proyectada constante. Inflación REM (${fmtPctCom(d.inflEsp, 1)} anual): expectativa a 12 meses del relevamiento del BCRA, proyectada constante. `
+    + `Bandas: valores publicados por el BCRA${mTecho && mTecho.fecha ? ` (${mTecho.fecha})` : ''}; hacia adelante el techo sube y el piso baja al ritmo de la inflación, y acá se proyectan con la break-even (el BCRA usa la inflación mensual del INDEC de dos meses atrás). Son precios de mercado y proyecciones mecánicas, no pronósticos.`;
 }
 
 /* ---------------------------------------------------------------------
@@ -5769,24 +5762,6 @@ function tituloCartera(){
   return 'Cartera sugerida';
 }
 
-function renderModeloCards(){
-  const cont = document.getElementById('modeloOptions');
-  if(!cont) return;
-  const lista = modelosDisponibles();
-  const vacio = document.getElementById('modeloVacio');
-  vacio.style.display = lista.length ? 'none' : '';
-  cont.innerHTML = lista.map(n=>{
-    const m = COMERCIAL.modelos[n];
-    const badge = m.moneda === 'Ambas' ? 'Pesos + Dólar' : (m.moneda === 'Dólar' ? 'Dólar MEP' : 'Pesos');
-    return `
-      <button class="option-btn modelo-card${n === selection.modelo ? ' selected' : ''}" data-modelo="${escHtml(n)}">
-        <span class="modelo-head"><strong>${escHtml(n)}</strong><span class="modelo-badge">${badge}</span></span>
-        ${m.bajada ? `<span>${escHtml(m.bajada)}</span>` : ''}
-        ${m.para ? `<span class="modelo-para">Para: ${escHtml(m.para)}</span>` : ''}
-      </button>`;
-  }).join('');
-}
-
 // Deja los botones de moneda / tipo / perfil marcados segun "selection"
 function marcarOpciones(){
   [['monedaOptions', 'moneda'], ['tipoCarteraOptions', 'tipo'], ['perfilOptions', 'perfil']].forEach(([grupo, attr])=>{
@@ -5796,42 +5771,11 @@ function marcarOpciones(){
   });
 }
 
-// "Un clic": carga un modelo con su perfil en la calculadora
-function aplicarModelo(nombre, perfil, irAResultado){
-  const m = COMERCIAL.modelos[nombre];
-  if(!m) return;
-  // Los modelos con solapa propia se abren ahi, no en la calculadora
-  if(m.enPestana){
-    if(perfil && m.perfiles[perfil]) PTE.perfil = perfil;
-    renderPuente();
-    if(irAResultado) activarTab('puente');
-    return;
-  }
-  if(m.moneda !== 'Ambas') selection.moneda = m.moneda;
-  else if(esCable()) selection.moneda = 'Pesos';
-  selection.tipo = 'Modelo';
-  selection.modelo = nombre;
-  if(perfil && PERFILES_VALIDOS.includes(perfil) && m.perfiles[perfil]) selection.perfil = perfil;
-  marcarOpciones();
-  updateVisibility();
-  if(irAResultado){
-    activarTab('calculadora');
-    const el = document.getElementById('resultSection');
-    if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-
 function activarTab(nombre){
   const btn = document.querySelector(`.tab-btn[data-tab="${nombre}"]`);
   if(btn && !btn.classList.contains('active')) btn.click();
 }
 
-document.getElementById('modeloOptions').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.modelo-card');
-  if(!btn) return;
-  selection.modelo = btn.dataset.modelo;
-  updateVisibility();
-});
 
 /* ---------------------------------------------------------------------
    A que ajusta cada fondo y filas de una cartera modelo
@@ -6060,10 +6004,6 @@ document.getElementById('ptePdfBtn').addEventListener('click', ()=>{
 
 // Se llama una vez que estan cargados data.xlsx y comercial.xlsx
 function initComercial(){
-  const hayModelos = COMERCIAL.ok && COMERCIAL.ordenModelos.some(n => !COMERCIAL.modelos[n].enPestana);
-  const btnModelo = document.querySelector('#tipoCarteraOptions .option-btn[data-tipo="Modelo"]');
-  if(btnModelo) btnModelo.dataset.disponible = hayModelos ? '1' : '0';
-
   // Solapa propia del primer modelo con Ubicacion = "Pestaña"
   PTE.modelo = COMERCIAL.ordenModelos.find(n => COMERCIAL.modelos[n].enPestana) || null;
   const tabPte = document.querySelector('.tab-btn[data-tab="puente"]');
@@ -6309,7 +6249,7 @@ function cupPanelHtml(evs, moneda){
       valor = `<span class="cg-valor">${mon} ${fmtNumCom(pago, 2)}</span>`
         + ((e.renta != null && e.amort) ? `<span class="cg-valor-det">renta ${fmtNumCom(e.renta, 2)} + capital ${fmtNumCom(e.amort, 2)}</span>` : '');
     }
-    const marca = e.validado
+    const marca = (e.validado && e.dato === 'Publicado')
       ? '<span class="cup-marca ok" title="Vencimiento verificado contra argentinadatos.com">✓</span>'
       : (e.dato !== 'Publicado' ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '');
     return sep + `
@@ -6416,7 +6356,7 @@ function renderCupones(){
   const parcial = REINV.completoHasta && s.fin > REINV.completoHasta;
   aviso.style.display = parcial ? 'block' : 'none';
   if(parcial){
-    aviso.textContent = `El calendario está completo hasta el ${fechaCorta(REINV.completoHasta)}. ${s.ini > REINV.completoHasta ? 'Para esta semana' : 'Después de esa fecha'} solo figuran los vencimientos y cupones principales: puede haber otros pagos sin cargar.`;
+    aviso.textContent = `Hasta el ${fechaCorta(REINV.completoHasta)} están cargados todos los pagos relevados en las fuentes (Tesoro, soberanos y ON en dólares). ${s.ini > REINV.completoHasta ? 'Para esta semana' : 'Después de esa fecha'} solo figuran los vencimientos y cupones principales: puede haber otros pagos sin cargar.`;
   }
 
   document.getElementById('cupGraficos').innerHTML = ['Pesos', 'Dólar'].map(m => cupPanelHtml(evs, m)).join('');
@@ -6513,14 +6453,15 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 });
 
 /* =====================================================================
-   COMPARADOR DE FONDOS: lineas de referencia (dolar MEP e inflacion)
+   LINEAS DE REFERENCIA (dolar MEP e inflacion)
 
-   Se pueden sumar al grafico del comparador de fondos en pesos. Las series
+   Se pueden sumar al grafico del comparador de fondos y al de rendimiento
+   historico de la cartera, cuando son en pesos. Las series
    se piden una sola vez, la primera vez que se tilda una opcion: primero al
    proxy propio (/api/series) y, si no responde, directo a argentinadatos.com.
      - Dolar MEP: cierre diario; la linea es su variacion desde el dia base.
      - Inflacion: dato mensual del INDEC, repartido dia a dia dentro de cada
-       mes. Los meses todavia no publicados se estiman con el ultimo dato.
+       mes. La linea llega hasta el ultimo mes publicado.
 ===================================================================== */
 const API_SERIES = '/api/series';
 const API_MEP_HIST = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/bolsa';
@@ -6571,85 +6512,94 @@ function serieMepComparador(isoDates){
   return out.some(v => v != null) ? out : null;
 }
 
-/* Inflacion acumulada desde el dia base. Cada dato mensual se reparte en
-   forma pareja entre los dias del mes; devuelve ademas desde que fecha la
-   linea es estimada (meses sin dato publicado). */
+/* Inflacion acumulada desde el dia base, con el dato mensual del INDEC
+   repartido en forma pareja entre los dias del mes. La linea llega hasta el
+   ultimo mes publicado: no se estiman los meses sin dato. */
 function serieInflacionComparador(isoDates){
   const infl = COMP_REF.series ? COMP_REF.series.inflacion : [];
   if(!infl.length || !isoDates.length) return null;
   const porMes = {};
   infl.forEach(([fecha, v])=>{ porMes[fecha.slice(0, 7)] = v / 100; });
   const ultimoMes = infl[infl.length - 1][0].slice(0, 7);
-  const ultimoValor = infl[infl.length - 1][1] / 100;
   const diasDelMes = (ym)=> new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0).getDate();
-  // Logaritmo del indice de precios al cierre de un dia
+  // Logaritmo del indice de precios al cierre de un dia; null si falta el dato de algun mes
   const logIndice = (iso)=>{
     const ym = iso.slice(0, 7);
+    if(ym > ultimoMes) return null;
     let acum = 0;
-    // meses completos desde el primer mes del grafico hasta el anterior a "ym"
     let cur = isoDates[0].slice(0, 7);
     while(cur < ym){
-      acum += Math.log(1 + (porMes[cur] != null ? porMes[cur] : ultimoValor));
+      if(porMes[cur] == null) return null;
+      acum += Math.log(1 + porMes[cur]);
       const y = Number(cur.slice(0, 4)), m = Number(cur.slice(5, 7));
       cur = m === 12 ? `${y + 1}-01` : `${y}-${dosDigitos(m + 1)}`;
     }
-    const tasa = porMes[ym] != null ? porMes[ym] : ultimoValor;
-    return acum + Math.log(1 + tasa) * (Number(iso.slice(8, 10)) / diasDelMes(ym));
+    if(porMes[ym] == null) return null;
+    return acum + Math.log(1 + porMes[ym]) * (Number(iso.slice(8, 10)) / diasDelMes(ym));
   };
   const base = logIndice(isoDates[0]);
-  const desdeEstimado = isoDates.findIndex(iso => iso.slice(0, 7) > ultimoMes);
-  return {
-    data: isoDates.map(iso => +((Math.exp(logIndice(iso) - base) - 1) * 100).toFixed(3)),
-    desdeEstimado,
-    ultimoMes,
-  };
+  if(base == null) return null;
+  const data = isoDates.map(iso=>{
+    const v = logIndice(iso);
+    return v == null ? null : +((Math.exp(v - base) - 1) * 100).toFixed(3);
+  });
+  return { data, ultimoMes, incompleta: data[data.length - 1] == null };
 }
 
-// Lineas extra para el grafico del comparador (se agregan despues de los fondos)
-function datasetsReferencia(isoDates){
+/* Lineas extra (dolar MEP e inflacion) para un grafico de rendimiento en pesos.
+   "flags" dice cuales estan tildadas; "rowId" y "notaId" son la fila de
+   opciones y la nota al pie de ese grafico. */
+function lineasReferencia(isoDates, flags, disponible, rowId, notaId){
   const out = [];
-  const nota = document.getElementById('compRefNota');
   const notas = [];
-  const disponible = fondosMoneda === 'Pesos';
-  document.getElementById('compRefRow').style.display = disponible ? '' : 'none';
-  if(disponible && COMP_REF.estado === 'ok'){
+  const row = document.getElementById(rowId);
+  if(row) row.style.display = disponible ? '' : 'none';
+  const pedidas = disponible && (flags.mep || flags.inflacion);
+  if(pedidas && COMP_REF.estado === 'ok'){
     const base = { borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, fill: false, tension: 0.15 };
-    if(COMP_REF.mep){
+    if(flags.mep){
       const data = serieMepComparador(isoDates);
-      if(data) out.push(Object.assign({ label: 'Dólar MEP', data, borderColor: '#0F8A5F', backgroundColor: '#0F8A5F', borderDash: [6, 4] }, base));
-      else notas.push('No hay datos del dólar MEP para este período.');
+      if(data){
+        out.push(Object.assign({ label: 'Dólar MEP', data, borderColor: '#0F8A5F', backgroundColor: '#0F8A5F', borderDash: [6, 4] }, base));
+        notas.push('Dólar MEP: cierre diario (argentinadatos.com).');
+      } else notas.push('No hay datos del dólar MEP para este período.');
     }
-    if(COMP_REF.inflacion){
+    if(flags.inflacion){
       const r = serieInflacionComparador(isoDates);
       if(r){
-        out.push(Object.assign({
-          label: 'Inflación', data: r.data, borderColor: '#C43D3D', backgroundColor: '#C43D3D', borderDash: [2, 3],
-        }, base));
-        if(r.desdeEstimado >= 0){
-          notas.push(`Inflación: último dato publicado, ${monthLabel(r.ultimoMes + '-01')}; desde el ${fmtDateShort(isoDates[r.desdeEstimado])} está estimada repitiendo ese dato mensual.`);
-        }
+        out.push(Object.assign({ label: 'Inflación', data: r.data, borderColor: '#C43D3D', backgroundColor: '#C43D3D', borderDash: [2, 3] }, base));
+        notas.push('Inflación: dato mensual del INDEC (argentinadatos.com), repartido parejo entre los días de cada mes'
+          + (r.incompleta ? `; la línea llega hasta ${monthLabel(r.ultimoMes + '-01')}, el último mes publicado.` : '.'));
       } else notas.push('No hay datos de inflación para este período.');
     }
   }
-  if(COMP_REF.estado === 'cargando') notas.push('Cargando series…');
-  if(COMP_REF.estado === 'error' && (COMP_REF.mep || COMP_REF.inflacion)) notas.push('No se pudieron cargar las series del dólar MEP y de la inflación. Probá de nuevo en unos minutos.');
+  if(pedidas && COMP_REF.estado === 'cargando') notas.push('Cargando series…');
+  if(pedidas && COMP_REF.estado === 'error') notas.push('No se pudieron cargar las series del dólar MEP y de la inflación. Probá de nuevo en unos minutos.');
+  const nota = document.getElementById(notaId);
   if(nota){ nota.textContent = notas.join(' '); nota.style.display = notas.length ? '' : 'none'; }
   return out;
 }
 
-document.querySelectorAll('#compRefRow input[type="checkbox"]').forEach(chk=>{
-  chk.addEventListener('change', ()=>{
-    COMP_REF[chk.dataset.ref] = chk.checked;
-    if(chk.checked && COMP_REF.estado !== 'ok'){
-      if(COMP_REF.estado === 'error') COMP_REF.estado = 'sin-cargar';
-      const p = cargarSeriesReferencia();
-      renderFundComparison();
-      p.then(renderFundComparison);
-    } else {
-      renderFundComparison();
-    }
+// Opciones tildadas en el grafico de rendimiento historico de la cartera
+const HIST_REF = { mep: false, inflacion: false };
+
+function conectarOpcionesReferencia(rowId, flags, redibujar){
+  document.querySelectorAll(`#${rowId} input[type="checkbox"]`).forEach(chk=>{
+    chk.addEventListener('change', ()=>{
+      flags[chk.dataset.ref] = chk.checked;
+      if(chk.checked && COMP_REF.estado !== 'ok'){
+        if(COMP_REF.estado === 'error') COMP_REF.estado = 'sin-cargar';
+        const p = cargarSeriesReferencia();
+        redibujar();
+        p.then(redibujar);
+      } else {
+        redibujar();
+      }
+    });
   });
-});
+}
+conectarOpcionesReferencia('compRefRow', COMP_REF, ()=> renderFundComparison());
+conectarOpcionesReferencia('histRefRow', HIST_REF, ()=>{ if(lastRows.length) renderHistChart(lastRows); });
 
 /* ---------------------------------------------------------------------
    Descargar PDF: arma un reporte imprimible con la cartera actual
