@@ -2005,7 +2005,6 @@
       </div>
       <p class="sub">Qué vence, amortiza o paga cupón cada día y cuánto paga cada 100 nominales. Cargá los nominales del cliente al lado de cada instrumento: abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <label class="cup-check"><input type="checkbox" id="cupSoloDestacados" checked /> Solo los más operados</label>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
@@ -6033,7 +6032,7 @@ function initComercial(){
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
 let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
-const CUP = { semana: 0, soloDestacados: true, montos: {} };
+const CUP = { semana: 0, soloDestacados: false, montos: {} };
 const CUP_SEMANAS = 10;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -6212,7 +6211,11 @@ function cupTituloSemana(s){
    0,50 y un vencimiento de 130 se vean juntos; el tramo oscuro es capital) y
    al lado va el casillero para los nominales del cliente. */
 function cupPanelHtml(evs, moneda){
-  const lista = evs.filter(e => e.moneda === moneda);
+  // Dentro de cada dia, de mayor a menor monto a cobrar cada 100 nominales (sin monto, al final)
+  const lista = evs.filter(e => e.moneda === moneda).sort((a, b)=>{
+    if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
+    return (cupPagoCada100(b) || 0) - (cupPagoCada100(a) || 0);
+  });
   const mon = moneda === 'Dólar' ? 'USD' : '$';
   const clase = moneda === 'Dólar' ? 'usd' : 'ars';
   const titulo = moneda === 'Dólar' ? 'Bonos y ON que pagan dólares' : 'Bonos que pagan pesos';
@@ -6349,7 +6352,6 @@ function renderCupones(){
   }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
-  document.getElementById('cupSoloDestacados').checked = CUP.soloDestacados;
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado}` : '';
 
   const aviso = document.getElementById('cupAvisoCobertura');
@@ -6432,10 +6434,6 @@ function initCupones(){
 document.getElementById('cupPrev').addEventListener('click', ()=> cupElegirSemana(CUP.semana - 1));
 document.getElementById('cupNext').addEventListener('click', ()=> cupElegirSemana(CUP.semana + 1));
 document.getElementById('cupSemanaSelect').addEventListener('change', (e)=> cupElegirSemana(parseInt(e.target.value, 10) || 0));
-document.getElementById('cupSoloDestacados').addEventListener('change', (e)=>{
-  CUP.soloDestacados = e.target.checked;
-  renderCupones();
-});
 document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   const inp = e.target.closest('.cup-input');
   if(!inp) return;
