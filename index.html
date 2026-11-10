@@ -2003,17 +2003,16 @@
       <div class="pte-head">
         <div>
           <h2 class="pte-titulo">Reinversión de cupones</h2>
-          <p class="pte-bajada">Qué cobra el cliente cada semana y en qué fondos conviene reinvertirlo.</p>
+          <p class="pte-bajada">Qué cobra el cliente cada semana y en qué fondo conviene reinvertirlo.</p>
           <p class="pte-para" id="cupActualizado"></p>
         </div>
       </div>
       <div class="cup-controles">
         <div>
-          <span class="pte-control-label">Perfil del cliente</span>
-          <div class="option-row" id="cupPerfilOptions">
-            <button class="option-btn" data-perfil="Conservador"><strong>Conservador</strong></button>
-            <button class="option-btn" data-perfil="Moderado"><strong>Moderado</strong></button>
-            <button class="option-btn" data-perfil="Audaz"><strong>Audaz</strong></button>
+          <span class="pte-control-label">Qué quiere hacer el cliente</span>
+          <div class="option-row" id="cupObjetivoOptions">
+            <button class="option-btn" data-objetivo="mantener"><strong>Mantener la exposición</strong></button>
+            <button class="option-btn" data-objetivo="liquidez"><strong>Manejar la liquidez</strong></button>
           </div>
         </div>
         <div>
@@ -2065,11 +2064,11 @@
       <h2>Dónde reinvertir</h2>
       <p class="sub" id="cupRecoSub"></p>
       <div class="cup-reco-grid" id="cupReco"></div>
-      <p class="foot-note">“Abrir en la calculadora” carga la cartera como personalizada: ahí se pueden ajustar los pesos, descargar el PDF con el nombre del cliente y verla en la solapa Escenarios 2027. Las reglas de reinversión por tipo de instrumento y perfil se editan en vencimientos.xlsx.</p>
+      <p class="foot-note">“Abrir en la calculadora” carga la cartera como personalizada: ahí se pueden ajustar los pesos, descargar el PDF con el nombre del cliente y verla en la solapa Escenarios 2027. El fondo sugerido para cada tipo de instrumento se edita en vencimientos.xlsx.</p>
     </section>
 
     <div class="page-disclaimer">
-      <p class="disc-legal">Herramienta de uso interno para el asesor. El calendario de pagos es informativo y se arma con fuentes públicas; no reemplaza los avisos de pago de cada emisor. Las carteras sugeridas son una referencia por perfil y no contemplan la situación particular de cada cliente. No constituye una oferta, invitación ni recomendación de inversión.</p>
+      <p class="disc-legal">Herramienta de uso interno para el asesor. El calendario de pagos es informativo y se arma con fuentes públicas; no reemplaza los avisos de pago de cada emisor. Los fondos sugeridos son una referencia y no contemplan la situación particular de cada cliente. No constituye una oferta, invitación ni recomendación de inversión.</p>
     </div>
 
     </div>
@@ -6736,7 +6735,8 @@ function initComercial(){
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
 let REINV = { ok: false, eventos: [], flujos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '' };
-const CUP = { semana: 0, perfil: 'Moderado', moneda: 'todas', soloDestacados: true, montos: {} };
+// objetivo: 'mantener' (fondo equivalente a lo que vencio) | 'liquidez' (fondo corto de la moneda)
+const CUP = { semana: 0, objetivo: 'mantener', moneda: 'todas', soloDestacados: true, montos: {} };
 const CUP_SEMANAS = 10;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -6783,15 +6783,12 @@ function parseVencimientos(wb){
     out.tipos[tipo] = { cobra: celdaTxt(f[1]), argumento: celdaTxt(f[2]) };
   });
 
+  // Reglas: Tipo | fondo para mantener la exposicion | fondo para manejar la liquidez
   hojaFilas(wb, 'Reglas').forEach(f=>{
     const tipo = celdaTxt(f[0]);
-    const perfil = celdaTxt(f[1]);
-    const fondo = celdaTxt(f[2]);
-    let pct = celdaNum(f[3]);
-    if(!tipo || !PERFILES_VALIDOS.includes(perfil) || !fondo || pct == null) return;
-    pct = pct <= 1 ? pct * 100 : pct;
-    const t = (out.reglas[tipo] = out.reglas[tipo] || {});
-    (t[perfil] = t[perfil] || []).push({ fondo, pct });
+    const mantener = celdaTxt(f[1]);
+    if(!tipo || claveTxt(tipo) === 'tipo' || !mantener) return;
+    out.reglas[tipo] = { mantener, liquidez: celdaTxt(f[2]) || mantener };
   });
 
   hojaFilas(wb, 'Config').forEach(f=>{
@@ -6863,42 +6860,43 @@ function cupCobro(e){
 }
 
 /* ---------------------------------------------------------------------
-   Cartera sugerida para una moneda: se combinan las reglas de cada tipo
-   de instrumento que cobra el cliente, ponderadas por el monto de cada
-   uno. Sin montos cargados, cada tipo que paga en la semana pesa igual.
+   Fondo sugerido: uno por tipo de instrumento, segun el objetivo elegido.
+   Si el cliente cobra varios instrumentos, cada cobro va a su fondo y se
+   suma por fondo. Sin montos cargados se listan los fondos sin porcentajes.
 --------------------------------------------------------------------- */
+function cupFondoDeTipo(tipo){
+  const r = REINV.reglas[tipo];
+  return r ? resolverFondo(CUP.objetivo === 'liquidez' ? r.liquidez : r.mantener) : null;
+}
+
 function cupCarteraSugerida(eventos, moneda){
-  const evs = eventos.filter(e => e.moneda === moneda && REINV.reglas[e.tipo] && REINV.reglas[e.tipo][CUP.perfil]);
+  const evs = eventos.filter(e => e.moneda === moneda && cupFondoDeTipo(e.tipo));
+  if(!evs.length) return null;
   const total = evs.reduce((a, e)=> a + cupCobro(e), 0);
   const conMonto = total > 0;
-  const pesoTipo = new Map();
+  const porFondo = new Map();
   evs.forEach(e=>{
-    const w = conMonto ? cupCobro(e) : 1;
-    if(w <= 0) return;
-    pesoTipo.set(e.tipo, conMonto ? (pesoTipo.get(e.tipo) || 0) + w : 1);
+    const c = cupCobro(e);
+    if(conMonto && c <= 0) return;
+    const nombre = cupFondoDeTipo(e.tipo);
+    const it = porFondo.get(nombre) || { nombre, monto: 0, tipos: [], tickers: [] };
+    it.monto += c;
+    if(!it.tipos.includes(e.tipo)) it.tipos.push(e.tipo);
+    if(!it.tickers.includes(e.ticker)) it.tickers.push(e.ticker);
+    porFondo.set(nombre, it);
   });
-  if(!pesoTipo.size) return null;
-
-  const sumaTipos = [...pesoTipo.values()].reduce((a, v)=> a + v, 0);
-  const pesoFondo = new Map();
-  pesoTipo.forEach((w, tipo)=>{
-    REINV.reglas[tipo][CUP.perfil].forEach(r=>{
-      const fondo = resolverFondo(r.fondo);
-      pesoFondo.set(fondo, (pesoFondo.get(fondo) || 0) + (w / sumaTipos) * r.pct);
-    });
-  });
-  const fondos = [...pesoFondo.entries()].sort((a, b)=> b[1] - a[1]);
-  const pcts = repartirEntero(100, fondos.map(f => f[1]));
+  const lista = [...porFondo.values()].sort((a, b)=> b.monto - a.monto);
+  // Con montos, el % es la parte de cada fondo; sin montos, partes iguales
+  const pcts = repartirEntero(100, lista.map(f => conMonto ? f.monto : 1));
   return {
     moneda, total, conMonto,
-    tipos: [...pesoTipo.entries()].sort((a, b)=> b[1] - a[1]).map(([tipo, w])=> ({ tipo, peso: w / sumaTipos })),
-    fondos: fondos.map(([nombre], i)=>{
-      const td = tirDurationDeFondo(nombre);
-      return {
-        nombre, pct: pcts[i], found: !!fundByName(nombre),
+    fondos: lista.map((f, i)=>{
+      const td = tirDurationDeFondo(f.nombre);
+      return Object.assign(f, {
+        pct: pcts[i], found: !!fundByName(f.nombre),
         tir: td ? td.tir : null, duration: td ? td.duration : null, base: td ? normalizarBase(td.base) : null,
-      };
-    }).filter(f => f.pct > 0),
+      });
+    }),
   };
 }
 
@@ -7124,7 +7122,7 @@ function actualizarCupCobros(){
   });
   document.getElementById('cupTotales').innerHTML = (ars > 0 || usd > 0)
     ? `A reinvertir esta semana: ${ars > 0 ? `<strong>${fmtMoney(ars, 'Pesos')}</strong>` : ''}${ars > 0 && usd > 0 ? ' · ' : ''}${usd > 0 ? `<strong>${fmtMoney(usd, 'Dólar')}</strong>` : ''}`
-    : 'Cargá los nominales que tiene el cliente para ver cuánto cobra y la cartera en montos. Sin nominales, la recomendación se arma en porcentajes para todo lo que paga en la semana.';
+    : 'Cargá los nominales que tiene el cliente para ver cuánto cobra y cuánto va a cada fondo. Sin nominales se muestra el fondo sugerido para cada tipo de instrumento que paga en la semana.';
   renderCupReco(evs);
 }
 
@@ -7134,10 +7132,11 @@ function renderCupReco(evs){
   // Con montos cargados, la recomendacion es solo sobre lo que el cliente cobra
   const base = hayMontos ? evs.filter(e => cupCobro(e) > 0) : evs;
   const carteras = ['Pesos', 'Dólar'].map(m => cupCarteraSugerida(base, m)).filter(Boolean);
+  const liquidez = CUP.objetivo === 'liquidez';
 
-  document.getElementById('cupRecoSub').textContent = hayMontos
-    ? `Cartera de fondos para reinvertir lo que cobra el cliente, perfil ${CUP.perfil}. Los cobros en pesos van a fondos en pesos y los cobros en dólares a fondos en dólares.`
-    : `Cartera de fondos para todo lo que paga en la semana, perfil ${CUP.perfil}, en porcentajes. Los cobros en pesos van a fondos en pesos y los cobros en dólares a fondos en dólares.`;
+  document.getElementById('cupRecoSub').textContent = liquidez
+    ? 'Para manejar la liquidez del cobro: el fondo corto de la misma moneda, mientras el cliente decide el destino final.'
+    : 'Para mantener la exposición: cada cobro va al fondo equivalente a lo que venció o pagó cupón.';
 
   if(!carteras.length){
     cont.innerHTML = '<p class="cup-vacio">No hay cobros en la semana elegida para armar una recomendación.</p>';
@@ -7147,33 +7146,36 @@ function renderCupReco(evs){
   cont.innerHTML = carteras.map(c=>{
     const filas = c.fondos.map(f=> `
       <tr>
-        <td><div class="fondo-name">${fondoNameHtml(f.nombre)}</div>${f.found ? '' : '<div style="font-size:11px;color:var(--neg);">⚠ fondo no encontrado en los datos</div>'}</td>
-        <td class="num">${f.pct}%</td>
+        <td>
+          <div class="fondo-name">${fondoNameHtml(f.nombre)}</div>
+          <div class="cup-nombre">Por: ${escHtml(f.tipos.join(', '))} (${escHtml(f.tickers.slice(0, 4).join(', '))}${f.tickers.length > 4 ? ` +${f.tickers.length - 4}` : ''})</div>
+          ${f.found ? '' : '<div style="font-size:11px;color:var(--neg);">⚠ fondo no encontrado en los datos</div>'}
+        </td>
         <td class="num"><span class="cup-mono">${f.tir != null && isFinite(f.tir) ? fmtTir(f.tir) : '—'}</span>${f.base ? `<span class="base-chip base-chip-${f.base}" style="cursor:default;">${f.base}</span>` : ''}</td>
         <td class="num"><span class="cup-mono">${f.duration != null && isFinite(f.duration) ? fmtDuration(f.duration) : '—'}</span></td>
-        <td class="num"><span class="cup-mono">${c.conMonto ? fmtMoney(c.total * f.pct / 100, c.moneda) : '—'}</span></td>
+        <td class="num"><span class="cup-mono">${c.conMonto ? fmtMoney(f.monto, c.moneda) : '—'}</span></td>
       </tr>`).join('');
-    const porque = c.tipos.map(t=>{
-      const info = REINV.tipos[t.tipo];
-      return `<li>${cupTipoChip(t.tipo, c.moneda)}${c.tipos.length > 1 ? ` <span class="cup-peso">${Math.round(t.peso * 100)}% de lo que cobra</span>` : ''}<p>${escHtml(info ? info.argumento : '')}</p></li>`;
-    }).join('');
+    // Argumentos: el de liquidez de la moneda, o el de cada tipo que cobra
+    const args = liquidez
+      ? [['Liquidez', (REINV.tipos[`Liquidez ${c.moneda}`] || {}).argumento || '']]
+      : [...new Set(c.fondos.flatMap(f => f.tipos))].map(t => [t, (REINV.tipos[t] || {}).argumento || '']);
+    const porque = args.filter(a => a[1]).map(([t, txt])=> `<li>${cupTipoChip(t, c.moneda)}<p>${escHtml(txt)}</p></li>`).join('');
     return `
       <div class="cup-reco-card">
         <div class="cup-reco-head">
           <div>
             <h3>Cobros en ${c.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h3>
-            <p>${c.conMonto ? `${fmtMoney(c.total, c.moneda)} a reinvertir` : 'Cartera en % (sin nominales cargados)'}</p>
+            <p>${c.conMonto ? `${fmtMoney(c.total, c.moneda)} a reinvertir` : 'Sin nominales cargados: fondo sugerido por tipo de instrumento'}</p>
           </div>
           <button type="button" class="btn-com" data-cup-abrir="${c.moneda}">Abrir en la calculadora</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="cup-reco-table">
-            <thead><tr><th>Fondo</th><th class="num">%</th><th class="num">TIR</th><th class="num">Duration</th><th class="num">Monto</th></tr></thead>
+            <thead><tr><th>Fondo sugerido</th><th class="num">TIR</th><th class="num">Duration</th><th class="num">Monto</th></tr></thead>
             <tbody>${filas}</tbody>
           </table>
         </div>
-        <p class="semana-sub" style="margin-top:14px;">Por qué</p>
-        <ul class="cup-porque">${porque}</ul>
+        ${porque ? `<p class="semana-sub" style="margin-top:14px;">Por qué</p><ul class="cup-porque">${porque}</ul>` : ''}
       </div>`;
   }).join('');
 }
@@ -7181,7 +7183,7 @@ function renderCupReco(evs){
 function renderCupones(){
   const panel = document.getElementById('tab-cupones');
   if(!panel || !REINV.ok || !DATA.fondos.length) return;
-  document.querySelectorAll('#cupPerfilOptions .option-btn').forEach(b => b.classList.toggle('selected', b.dataset.perfil === CUP.perfil));
+  document.querySelectorAll('#cupObjetivoOptions .option-btn').forEach(b => b.classList.toggle('selected', b.dataset.objetivo === CUP.objetivo));
   document.querySelectorAll('#cupMonedaBtns .range-btn').forEach(b => b.classList.toggle('active', b.dataset.moneda === CUP.moneda));
   document.getElementById('cupSoloDestacados').checked = CUP.soloDestacados;
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado}` : '';
@@ -7266,8 +7268,8 @@ document.getElementById('cupFuertes').addEventListener('click', (e)=>{
   const btn = e.target.closest('[data-ir-semana]');
   if(btn) cupElegirSemana(parseInt(btn.dataset.irSemana, 10) || 0, true);
 });
-document.querySelectorAll('#cupPerfilOptions .option-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{ CUP.perfil = btn.dataset.perfil; renderCupones(); });
+document.querySelectorAll('#cupObjetivoOptions .option-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ CUP.objetivo = btn.dataset.objetivo; renderCupones(); });
 });
 document.querySelectorAll('#cupMonedaBtns .range-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ CUP.moneda = btn.dataset.moneda; renderCupones(); });
