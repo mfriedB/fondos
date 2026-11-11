@@ -1677,6 +1677,8 @@
   .cg-grupo.resto{ background:#8A93AD; margin-top:22px; }
   .cg-grupo span{ font-weight:600; opacity:.8; }
   .cg-panel.usd .cg-grupo:not(.resto){ background:#0F6B4A; }
+
+  .cg-reco.abajo{ margin:14px 0 0; padding:12px 0 0; border-bottom:none; border-top:2px solid var(--line); }
 </style>
 </head>
 <body>
@@ -6501,6 +6503,7 @@ function cupPanelHtml(evs, moneda){
       <div class="cg-reco" data-reco="${moneda}"></div>
       <div class="cg-cab"><span>Instrumento</span><span></span><span>Paga c/100 VN</span><span>Nominales del cliente</span></div>
       ${filas}
+      <div class="cg-reco abajo" data-reco="${moneda}"></div>
     </div>`;
 }
 
@@ -6559,7 +6562,8 @@ function cupRecoHtml(evs, moneda){
     <p class="semana-sub">${c.fondos.length === 1 ? 'Fondo sugerido' : 'Fondos sugeridos'} para reinvertir${c.conMonto ? ` · ${fmtMoney(c.total, c.moneda)}` : ''}</p>
     ${fondos}
     ${alerta}
-    ${liquidez.length ? `<p class="cg-liquidez">Si el cliente prefiere manejar la liquidez del cobro: ${liquidez.map(n => escHtml(nombreFondoVisible(n))).join(' o ')}.</p>` : ''}`;
+    ${liquidez.length ? `<p class="cg-liquidez">Si el cliente prefiere manejar la liquidez del cobro: ${liquidez.map(n => escHtml(nombreFondoVisible(n))).join(' o ')}.</p>` : ''}
+    <div class="cg-botones" style="margin-top:12px;"><button type="button" class="btn-com" data-cup-abrir="${moneda}">Abrir en la calculadora · ${moneda === 'Dólar' ? 'dólares' : 'pesos'}</button></div>`;
 }
 
 // Recalcula lo que depende de los nominales cargados, sin redibujar las filas
@@ -6574,7 +6578,9 @@ function actualizarCup(){
     if(el) el.textContent = c > 0 ? `cobra ${fmtMoney(c, e.moneda)}` : '';
   });
   document.querySelectorAll('#cupGraficos [data-reco]').forEach(el=>{
-    el.innerHTML = cupRecoHtml(evs, el.dataset.reco);
+    // Al pie se repite solo cuando hay fondos sugeridos (el texto guia va una sola vez, arriba)
+    const hay = evs.some(e => e.moneda === el.dataset.reco && cupCobro(e) > 0);
+    el.innerHTML = (el.classList.contains('abajo') && !hay) ? '' : cupRecoHtml(evs, el.dataset.reco);
   });
 
   const monedas = ['Pesos', 'Dólar'].filter(m => evs.some(e => e.moneda === m && cupCobro(e) > 0) && cupCarteraSugerida(evs.filter(e => cupCobro(e) > 0), m));
@@ -6662,6 +6668,10 @@ document.getElementById('cupBuscar').addEventListener('input', (e)=>{
   const evs = cupEventosVisibles();
   document.getElementById('cupGraficos').innerHTML = cupPanelHtml(evs, 'Pesos') + cupPanelHtml(evs, 'Dólar');
   actualizarCup();
+});
+document.getElementById('cupGraficos').addEventListener('click', (e)=>{
+  const abrir = e.target.closest('[data-cup-abrir]');
+  if(abrir) cupAbrirEnCalculadora(abrir.dataset.cupAbrir);
 });
 document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   const inp = e.target.closest('.cup-input');
