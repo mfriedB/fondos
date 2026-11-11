@@ -1666,6 +1666,10 @@
   .cg-opciones{ justify-content:space-between; }
   .cg-resumen{ font-size:12px; color:var(--muted); margin:0 0 10px; }
   .cg-resumen strong{ color:var(--text); }
+
+  .cg-fondo-nombre{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .cg-tag{ font-size:11px; font-weight:700; color:var(--navy); background:#E8ECFA; border-radius:999px; padding:2px 8px; white-space:nowrap; }
+  .cg-o{ text-align:center; font-size:14px; font-weight:800; color:var(--navy); margin:8px 0 0; text-transform:uppercase; }
 </style>
 </head>
 <body>
@@ -2030,7 +2034,7 @@
           <button type="button" class="range-btn" id="cupNext" aria-label="Semana siguiente">Siguiente ›</button>
         </div>
       </div>
-      <p class="sub">Qué vence, amortiza o paga cupón cada día y cuánto paga cada 100 nominales. Cargá los nominales del cliente al lado de cada instrumento: abajo aparece el fondo sugerido para reinvertir.</p>
+      <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
         <input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor" aria-label="Buscar instrumento" autocomplete="off" />
         <span class="termo-fecha" id="cupActualizado"></span>
@@ -2042,7 +2046,6 @@
         <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
         <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
       </div>
-      <p class="foot-note">Fechas, montos por cada 100 VN y totales salen del calendario de pagos de 1816; pueden diferir del aviso de pago del emisor. La marca “estimado” indica instrumentos que ajustan por CER, UVA o dólar oficial: 1816 calcula el monto con el índice o el tipo de cambio de hoy y el final se conoce al pago (pasá el cursor para ver el detalle). En los dólar linked los nominales son en dólares. Los cupones a tasa variable son el cálculo de 1816 con la tasa vigente.</p>
       <div class="cg-acciones" id="cupAcciones"></div>
     </section>
 
@@ -6243,7 +6246,7 @@ function parseVencimientos(wb){
     const tipo = celdaTxt(f[0]);
     const mantener = celdaTxt(f[1]);
     if(!tipo || claveTxt(tipo) === 'tipo' || !mantener) return;
-    out.reglas[tipo] = { mantener, liquidez: celdaTxt(f[2]) || mantener, corto: celdaTxt(f[3]) || null };
+    out.reglas[tipo] = { mantener, liquidez: celdaTxt(f[2]) || mantener, corto: celdaTxt(f[3]) || null, cable: celdaTxt(f[4]) || null };
   });
 
   hojaFilas(wb, 'Config').forEach(f=>{
@@ -6340,8 +6343,15 @@ function cupCarteraSugerida(eventos, moneda){
     if(conMonto && c <= 0) return;
     const sug = cupFondoDeEvento(e);
     const nombre = sug.fondo;
-    const it = porFondo.get(nombre) || { nombre, monto: 0, tipos: [], tickers: [], args: [], sinDuration: [] };
+    const it = porFondo.get(nombre) || { nombre, monto: 0, tipos: [], tickers: [], args: [], sinDuration: [], cable: null };
     it.monto += c;
+    // Cobros en dolar cable: fondo alternativo que se suscribe directo en cable
+    const alt = REINV.reglas[e.tipo].cable ? resolverFondo(REINV.reglas[e.tipo].cable) : null;
+    if(alt && alt !== nombre){
+      it.cable = it.cable || { nombre: alt, monto: 0, tickers: [] };
+      it.cable.monto += c;
+      if(!it.cable.tickers.includes(e.ticker)) it.cable.tickers.push(e.ticker);
+    }
     if(!it.args.includes(sug.arg)) it.args.push(sug.arg);
     if(sug.sinDuration && !it.sinDuration.includes(e.ticker)) it.sinDuration.push(e.ticker);
     if(!it.tipos.includes(e.tipo)) it.tipos.push(e.tipo);
@@ -6472,24 +6482,42 @@ function cupRecoHtml(evs, moneda){
   }
   const c = cupCarteraSugerida(evs.filter(e => cupCobro(e) > 0), moneda);
   if(!c) return '';
-  const fondos = c.fondos.map(f=>{
-    const arg = f.args.map(a => (REINV.tipos[a] || REINV.tipos[a.replace(/ corta$/, '')] || {}).argumento || '').filter(Boolean)[0] || '';
-    const datos = [
-      (f.tir != null && isFinite(f.tir)) ? `TIR ${fmtTir(f.tir)}${f.base ? ' ' + f.base : ''}` : '',
-      (f.duration != null && isFinite(f.duration)) ? `duration ${fmtDuration(f.duration)}` : '',
-    ].filter(Boolean).join(' · ');
-    return `
+  const tags = (nombre)=>{
+    const td = tirDurationDeFondo(nombre);
+    if(!td) return '';
+    const base = normalizarBase(td.base);
+    return ((td.tir != null && isFinite(td.tir)) ? `<span class="cg-tag">TIR ${fmtTir(td.tir)}${base ? ' ' + base : ''}</span>` : '')
+      + ((td.duration != null && isFinite(td.duration)) ? `<span class="cg-tag">Duration ${fmtDuration(td.duration)}</span>` : '');
+  };
+  const porTickers = (ts)=> `Por ${escHtml(ts.slice(0, 5).join(', '))}${ts.length > 5 ? ` +${ts.length - 5}` : ''}`;
+  const tarjeta = (nombre, monto, tickers, extra)=> `
       <div class="cg-fondo">
         <div class="cg-fondo-top">
-          <span class="fondo-name">${fondoNameHtml(f.nombre)}</span>
-          <span class="cg-fondo-monto">${c.conMonto ? fmtMoney(f.monto, c.moneda) : ''}</span>
+          <span class="cg-fondo-nombre"><span class="fondo-name">${fondoNameHtml(nombre)}</span>${tags(nombre)}</span>
+          <span class="cg-fondo-monto">${c.conMonto ? fmtMoney(monto, c.moneda) : ''}</span>
         </div>
-        <div class="cg-fondo-por">Por ${escHtml(f.tickers.slice(0, 5).join(', '))}${f.tickers.length > 5 ? ` +${f.tickers.length - 5}` : ''}${datos ? ` · ${datos}` : ''}</div>
-        ${arg ? `<p class="cg-fondo-arg">${escHtml(arg)}</p>` : ''}
-        ${f.sinDuration.length ? `<p class="cg-fondo-arg" style="color:#8A5A0F;">Sin duration cargada para ${escHtml(f.sinDuration.join(', '))}: se sugiere este fondo por defecto.</p>` : ''}
-        ${f.found ? '' : '<p class="cg-fondo-arg" style="color:var(--neg);">⚠ fondo no encontrado en los datos</p>'}
+        <div class="cg-fondo-por">${porTickers(tickers)}</div>
+        ${extra || ''}
+        ${fundByName(nombre) ? '' : '<p class="cg-fondo-arg" style="color:var(--neg);">⚠ fondo no encontrado en los datos</p>'}
       </div>`;
+  // Minimo de suscripcion de los fondos
+  const minimo = moneda === 'Dólar' ? 100 : 1000;
+  const bajoMinimo = [];
+  const fondos = c.fondos.map(f=>{
+    if(c.conMonto && f.monto > 0 && f.monto < minimo) bajoMinimo.push(`${nombreFondoVisible(f.nombre)} (${fmtMoney(f.monto, c.moneda)})`);
+    const sinDur = f.sinDuration.length ? `<p class="cg-fondo-arg" style="color:#8A5A0F;">Sin duration en 1816 para ${escHtml(f.sinDuration.join(', '))}: se sugiere este fondo por defecto.</p>` : '';
+    let html = tarjeta(f.nombre, f.monto, f.tickers, sinDur);
+    if(f.cable){
+      if(c.conMonto && f.cable.monto > 0 && f.cable.monto < minimo && f.cable.monto !== f.monto) bajoMinimo.push(`${nombreFondoVisible(f.cable.nombre)} (${fmtMoney(f.cable.monto, c.moneda)})`);
+      html += '<div class="cg-o">Ó</div>'
+        + tarjeta(f.cable.nombre, f.cable.monto, f.cable.tickers,
+          `<p class="cg-fondo-arg">${escHtml(f.cable.tickers.join(', '))} ${f.cable.tickers.length === 1 ? 'paga' : 'pagan'} en dólar cable. Para suscribir ${escHtml(nombreFondoVisible(f.nombre))} primero hay que convertir el dólar cable del cobro a dólar MEP; ${escHtml(nombreFondoVisible(f.cable.nombre))} se puede suscribir directamente en dólar cable.</p>`);
+    }
+    return html;
   }).join('');
+  const alerta = bajoMinimo.length
+    ? `<div class="pct-warning warn" style="display:block;margin:10px 0 0;">El mínimo de suscripción en los fondos es de $ 1.000 o USD 100. No lo alcanza: ${escHtml(bajoMinimo.join(', '))}.</div>`
+    : '';
   // Alternativa para quien prefiere manejar la liquidez del cobro
   const sugeridos = new Set(c.fondos.map(f => f.nombre));
   const liquidez = [...new Set(evs.filter(e => e.moneda === moneda && REINV.reglas[e.tipo]).map(e => resolverFondo(REINV.reglas[e.tipo].liquidez)))]
@@ -6497,6 +6525,7 @@ function cupRecoHtml(evs, moneda){
   return `
     <p class="semana-sub">${c.fondos.length === 1 ? 'Fondo sugerido' : 'Fondos sugeridos'} para reinvertir${c.conMonto ? ` · ${fmtMoney(c.total, c.moneda)}` : ''}</p>
     ${fondos}
+    ${alerta}
     ${liquidez.length ? `<p class="cg-liquidez">Si el cliente prefiere manejar la liquidez del cobro: ${liquidez.map(n => escHtml(nombreFondoVisible(n))).join(' o ')}.</p>` : ''}`;
 }
 
@@ -6539,7 +6568,7 @@ function renderCupones(){
   }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
-  document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Fuente: calendario de pagos de 1816, consultado el ${REINV.actualizado}` : '';
+  document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado} · Fuente: 1816` : 'Fuente: 1816';
 
   const aviso = document.getElementById('cupAvisoCobertura');
   const parcial = REINV.completoHasta && s.fin > REINV.completoHasta;
