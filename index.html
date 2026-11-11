@@ -6547,7 +6547,7 @@ function cupRecoHtml(evs, moneda){
     return html;
   }).join('');
   const alerta = bajoMinimo.length
-    ? `<div class="pct-warning warn" style="display:block;margin:10px 0 0;">El mínimo de suscripción en los fondos es de $ 1.000 o USD 100. No lo alcanza: ${escHtml(bajoMinimo.join(', '))}.</div>`
+    ? `<div class="pct-warning warn" style="display:block;margin:10px 0 0;">El mínimo de suscripción en los fondos en ${moneda === 'Dólar' ? 'dólares es de USD 100' : 'pesos es de $ 1.000'}.<br>No lo alcanza: ${escHtml(bajoMinimo.join(', '))}.</div>`
     : '';
   // Alternativa para quien prefiere manejar la liquidez del cobro
   const sugeridos = new Set(c.fondos.map(f => f.nombre));
