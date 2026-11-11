@@ -6567,7 +6567,7 @@ function cupRecoHtml(evs, moneda){
   const conCobro = evs.filter(e => e.moneda === moneda && cupCobro(e) > 0);
   const tickersCable = [...new Set(conCobro.filter(e => /CABLE$/.test(e.tipo)).map(e => e.ticker))];
   const primera = tarjeta(mm, c.total, [...new Set(conCobro.map(e => e.ticker))],
-    `<p class="cg-fondo-arg">El cobro queda invertido con liquidez inmediata mientras se define el destino.</p>`
+    `<p class="cg-fondo-arg">El cobro queda invertido con liquidez inmediata.</p>`
     + (tickersCable.length ? nota('Convertir Dólar Cable a Dólar MEP para suscribir') : ''));
   if(c.total > 0 && c.total < minimo) bajoMinimo.unshift(`${nombreFondoVisible(mm)} (${fmtMoney(c.total, c.moneda)})`);
   const alerta = bajoMinimo.length
