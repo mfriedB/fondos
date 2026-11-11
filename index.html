@@ -2239,7 +2239,7 @@
     </section>
 
     <div class="page-disclaimer">
-      <p class="disc-legal">El simulador de ingresos es una herramienta de uso interno, destinada exclusivamente a la consulta por parte del asesor y no para su distribución a clientes ni terceros. Las cifras que arroja son estimativas y se calculan sobre un saldo constante, sin considerar variaciones de saldo ni de tipo de cambio. Los valores obtenidos son meramente orientativos y no constituyen un compromiso de pago ni generan obligación alguna para Balanz.</p>
+      <p class="disc-legal">El simulador de ingresos es una herramienta de uso interno, destinada exclusivamente a la consulta por parte del asesor y no para su distribución a clientes ni terceros. Las cifras que arroja son estimativas y se calculan sobre un saldo constante, sin considerar variaciones de saldo ni de tipo de cambio. Los valores obtenidos son meramente orientativos y no constituyen un compromiso de pago ni generan obligación alguna.</p>
     </div>
 
     </div>
@@ -3495,7 +3495,7 @@ function renderFundComparison(){
       return idxVal == null ? null : +((idxVal - 1) * 100).toFixed(3);
     });
     return {
-      label: fondo,
+      label: nombreFondoVisible(fondo),
       data,
       borderColor: color,
       backgroundColor: color,
@@ -5017,10 +5017,8 @@ let COMERCIAL = {
 const TERMOMETRO_EN_VIVO = true;
 const API_PROXY = '/api/mercado';
 const API_DOLARES = 'https://dolarapi.com/v1/dolares';
-const API_RIESGO_PAIS = 'https://api.argentinadatos.com/v1/finanzas/indices/riesgo-pais/ultimo';
 const API_BCRA = 'https://api.bcra.gob.ar/estadisticas/v4.0/monetarias';
 const API_FUTUROS = 'https://apicem.matbarofex.com.ar/api/v2/closing-prices';
-const API_LETRAS = 'https://api.argentinadatos.com/v1/finanzas/letras';
 // Un dato en vivo se descarta si se aleja mas que esto del cargado a mano
 const TOLERANCIA_VS_HOJA = 0.25;
 const DIAS_MAX_DATO = 7;
@@ -5316,7 +5314,6 @@ function termometroDerivados(){
   const cer = tasaCer();
   const inflEsp = mercValor('Inflación esperada 12m');
   return {
-    riesgo: mercValor('Riesgo país'),
     may, mep, ccl, techo, piso, lecap, cer, inflEsp,
     brechaMep: (may && mep) ? mep / may - 1 : null,
     brechaCcl: (may && ccl) ? ccl / may - 1 : null,
@@ -5656,7 +5653,7 @@ function renderCobertura(rows){
    Datos en vivo
 
    Todas las fuentes se llevan a una misma forma:
-     { dolares:{ mep, ccl, mayorista, fecha }, riesgoPais:{ valor, fecha },
+     { dolares:{ mep, ccl, mayorista, fecha },
        bcra:{ a3500, a3500Fecha, rem, remFecha },
        futuros:{ fecha, contratos:[{ venc, precio }] } }
    El proxy /api/mercado ya la devuelve armada; si no esta disponible, se
@@ -5688,15 +5685,10 @@ function fuentesDirectas(){
 
   return Promise.all([
     jsonConTimeout(API_DOLARES),
-    jsonConTimeout(API_RIESGO_PAIS),
     jsonConTimeout(API_BCRA),
     jsonConTimeout(urlFut),
-    jsonConTimeout(API_LETRAS),
-  ]).then(([dol, rp, bcra, fut, let_])=>{
+  ]).then(([dol, bcra, fut])=>{
     const out = {};
-    if(let_ && Array.isArray(let_.letras)){
-      out.letras = let_.letras.map(x => ({ ticker: x.ticker, venc: x.fechaVencimiento, tem: Number(x.temPorcentaje) }));
-    }
     if(Array.isArray(dol)){
       const casa = (c)=> dol.find(x => x && x.casa === c) || {};
       out.dolares = {
@@ -5706,7 +5698,6 @@ function fuentesDirectas(){
         fechaMayorista: casa('mayorista').fechaActualizacion || null,
       };
     }
-    if(rp && rp.valor != null) out.riesgoPais = { valor: Number(rp.valor), fecha: rp.fecha || null };
     if(bcra && Array.isArray(bcra.results)){
       const v = (id)=> bcra.results.find(x => x && x.idVariable === id) || {};
       out.bcra = {
@@ -5800,7 +5791,6 @@ function aplicarDatosVivos(d){
     } else rechazos.push(`Dólar CCL: ${dol.ccl} fuera de rango contra el MEP (${mep})`);
   }
 
-  if(d.riesgoPais) pisar('Riesgo país', d.riesgoPais.valor, d.riesgoPais.fecha, 'argentinadatos.com', '', 0.5);
 
   // El REM es mensual: se acepta hasta 75 dias de antiguedad
   if(bcra.rem > 0 && bcra.rem < 300){
@@ -5840,9 +5830,8 @@ function aplicarDatosVivos(d){
 function refrescarMercadoEnVivo(){
   if(!TERMOMETRO_EN_VIVO || !COMERCIAL.ok || typeof fetch !== 'function') return;
   jsonConTimeout(API_PROXY, 9000)
-    .then(d => (d && (d.dolares || d.futuros || d.bcra || d.letras)) ? d : fuentesDirectas())
+    .then(d => (d && (d.dolares || d.futuros || d.bcra)) ? d : fuentesDirectas())
     .then(d=>{
-      if(aplicarLetrasVivas(d && d.letras) && document.getElementById('tab-cupones').classList.contains('active')) renderCupones();
       if(!aplicarDatosVivos(d)) return;
       renderPuente();
       if(DATA.fondos.length) renderCartera();
@@ -6399,16 +6388,16 @@ function cupTituloSemana(s){
    0,50 y un vencimiento de 130 se vean juntos; el tramo oscuro es capital) y
    al lado va el casillero para los nominales del cliente. */
 function cupPanelHtml(evs, moneda){
-  // Dentro de cada dia, de mayor a menor monto a cobrar cada 100 nominales (sin monto, al final)
+  // Dentro de cada dia, por ticker de la A a la Z
   const todos = evs.filter(e => e.moneda === moneda);
   const q = claveTxt(CUP.busca);
   const lista = todos.filter(e => !q || claveTxt(e.ticker).includes(q) || claveTxt(e.nombre).includes(q) || CUP.montos[cupClave(e)]).sort((a, b)=>{
     if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
-    return (cupPagoCada100(b) || 0) - (cupPagoCada100(a) || 0);
+    return a.ticker.localeCompare(b.ticker, 'es', { numeric: true });
   });
   const mon = moneda === 'Dólar' ? 'USD' : '$';
   const clase = moneda === 'Dólar' ? 'usd' : 'ars';
-  const titulo = moneda === 'Dólar' ? 'Bonos y ON que pagan dólares' : 'Bonos que pagan pesos';
+  const titulo = moneda === 'Dólar' ? 'Instrumentos que pagan dólares' : 'Instrumentos que pagan pesos';
   // Cuanto paga el mercado en la semana, segun el total de cada pago en 1816
   const totalM = todos.reduce((a, e) => a + (e.total || 0), 0);
   const resumen = `<p class="cg-resumen">${todos.length} ${todos.length === 1 ? 'pago' : 'pagos'} en la semana${totalM > 0 ? ` · el mercado cobra <strong>${mon} ${cupMillones(totalM)}</strong>` : ''}${q ? ` · ${lista.length} ${lista.length === 1 ? 'coincide' : 'coinciden'} con la búsqueda` : ''}</p>`;
@@ -6445,7 +6434,8 @@ function cupPanelHtml(evs, moneda){
       valor = `<span class="cg-valor">${mon} ${fmtNumCom(pago, 2)}</span>`
         + ((e.renta != null && e.amort) ? `<span class="cg-valor-det">renta ${fmtNumCom(e.renta, 2)} + capital ${fmtNumCom(e.amort, 2)}</span>` : '');
     }
-    const marca = e.dato !== 'Publicado' ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '';
+    // "Estimado" solo aplica a pagos futuros: para lo que paga hoy el indice ya esta fijado
+    const marca = (e.dato !== 'Publicado' && e.fecha > hoy) ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '';
     return sep + `
       <div class="cg-fila">
         <div class="cg-inst">
@@ -6572,11 +6562,13 @@ function renderCupones(){
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado} · Fuente: 1816` : 'Fuente: 1816';
 
   const aviso = document.getElementById('cupAvisoCobertura');
-  const parcial = REINV.completoHasta && s.fin > REINV.completoHasta;
-  aviso.style.display = parcial ? 'block' : 'none';
-  if(parcial){
-    aviso.textContent = `El calendario de 1816 cargado llega hasta el ${fechaCorta(REINV.completoHasta)}: esta semana puede estar incompleta.`;
-  }
+  const avisos = [];
+  const act = fechaIsoDeCelda(REINV.actualizado);
+  const dias = act ? Math.floor((new Date() - fechaDeIso(act)) / 864e5) : 0;
+  if(dias > 7) avisos.push(`El calendario se bajó de 1816 hace ${dias} días: conviene actualizarlo, porque cambian los índices, las tasas variables y los instrumentos nuevos.`);
+  if(REINV.completoHasta && s.fin > REINV.completoHasta) avisos.push(`El calendario cargado llega hasta el ${fechaCorta(REINV.completoHasta)}: esta semana puede estar incompleta.`);
+  aviso.style.display = avisos.length ? 'block' : 'none';
+  aviso.textContent = avisos.join(' ');
 
   document.getElementById('cupGraficos').innerHTML = ['Pesos', 'Dólar'].map(m => cupPanelHtml(evs, m)).join('');
   actualizarCup();
@@ -6610,38 +6602,6 @@ function cupAbrirEnCalculadora(moneda){
 
 /* Cruce en vivo de Lecap y Boncap contra argentinadatos.com: confirma la
    fecha de las que ya estan cargadas y agrega las que falten. */
-function aplicarLetrasVivas(letras){
-  // Desactivado: el calendario sale solo de 1816, no se le agregan ni se le marcan datos de otra fuente
-  return false;
-  // eslint-disable-next-line no-unreachable
-  if(!REINV.ok || !Array.isArray(letras)) return false;
-  const hoy = isoLocal(new Date());
-  let cambio = false;
-  letras.forEach(l=>{
-    if(!l || !l.ticker || !/^\d{4}-\d{2}-\d{2}$/.test(String(l.venc || '')) || l.venc < hoy) return;
-    const ev = REINV.eventos.find(e => e.ticker === l.ticker && /^venc/i.test(e.evento));
-    if(ev){
-      if(ev.fecha === l.venc) ev.validado = true;
-      else console.warn(`Reinversión de cupones: ${l.ticker} figura con vencimiento ${ev.fecha} en vencimientos.xlsx y ${l.venc} en argentinadatos.com.`);
-      if(isFinite(l.tem) && l.tem > 0 && l.tem < 15) ev.tem = l.tem;
-      cambio = true;
-    } else if(/^[ST]\d{2}[A-Z]\d$/.test(l.ticker)){
-      const esLecap = l.ticker[0] === 'S';
-      REINV.eventos.push({
-        fecha: l.venc, ticker: l.ticker,
-        nombre: `${esLecap ? 'Lecap' : 'Boncap'} ${fechaCorta(l.venc)}`,
-        tipo: esLecap ? 'Lecap' : 'Boncap', evento: 'Vencimiento', moneda: 'Pesos',
-        renta: null, amort: null, destacado: true,
-        dato: 'En vivo', fuente: 'argentinadatos.com', validado: true,
-        tem: (isFinite(l.tem) && l.tem > 0 && l.tem < 15) ? l.tem : null,
-      });
-      cambio = true;
-    }
-  });
-  if(cambio) REINV.eventos.sort((a, b)=> a.fecha < b.fecha ? -1 : (a.fecha > b.fecha ? 1 : 0));
-  return cambio;
-}
-
 function initCupones(){
   const tab = document.querySelector('.tab-btn[data-tab="cupones"]');
   if(tab) tab.style.display = (REINV.ok && REINV.eventos.length) ? '' : 'none';
