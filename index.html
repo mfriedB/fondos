@@ -1679,6 +1679,9 @@
   .cg-panel.usd .cg-grupo:not(.resto){ background:#0F6B4A; }
 
   .cg-reco.abajo{ margin:14px 0 0; padding:12px 0 0; border-bottom:none; border-top:2px solid var(--line); }
+
+  .cup-buscar-fila{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .cup-buscar-fila .btn-com{ padding:7px 14px; font-size:13px; }
 </style>
 </head>
 <body>
@@ -2045,7 +2048,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" />
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
@@ -2055,7 +2058,6 @@
         <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
         <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
       </div>
-      <div class="cg-acciones" id="cupAcciones"></div>
     </section>
 
     <div class="page-disclaimer">
@@ -6583,15 +6585,7 @@ function actualizarCup(){
     el.innerHTML = (el.classList.contains('abajo') && !hay) ? '' : cupRecoHtml(evs, el.dataset.reco);
   });
 
-  const monedas = ['Pesos', 'Dólar'].filter(m => evs.some(e => e.moneda === m && cupCobro(e) > 0) && cupCarteraSugerida(evs.filter(e => cupCobro(e) > 0), m));
-  document.getElementById('cupAcciones').innerHTML = (monedas.length || evs.length) ? `
-    <p class="cup-totales">${(ars > 0 || usd > 0)
-      ? `A reinvertir esta semana: ${ars > 0 ? `<strong>${fmtMoney(ars, 'Pesos')}</strong>` : ''}${ars > 0 && usd > 0 ? ' · ' : ''}${usd > 0 ? `<strong>${fmtMoney(usd, 'Dólar')}</strong>` : ''}`
-      : 'Cargá los nominales del cliente al lado de cada instrumento para ver cuánto cobra y cuánto va a cada fondo.'}</p>
-    <div class="cg-botones">
-      ${monedas.map(m => `<button type="button" class="btn-com" data-cup-abrir="${m}">Abrir en la calculadora · ${m === 'Dólar' ? 'dólares' : 'pesos'}</button>`).join('')}
-      ${Object.keys(CUP.montos).length ? '<button type="button" class="btn-com sec" id="cupLimpiar">Borrar nominales</button>' : ''}
-    </div>` : '';
+  document.getElementById('cupLimpiar').style.display = Object.keys(CUP.montos).length ? '' : 'none';
 }
 
 function renderCupones(){
@@ -6680,11 +6674,7 @@ document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   if(v > 0) CUP.montos[inp.dataset.k] = v; else delete CUP.montos[inp.dataset.k];
   actualizarCup();
 });
-document.getElementById('cupAcciones').addEventListener('click', (e)=>{
-  const abrir = e.target.closest('[data-cup-abrir]');
-  if(abrir){ cupAbrirEnCalculadora(abrir.dataset.cupAbrir); return; }
-  if(e.target.closest('#cupLimpiar')){ CUP.montos = {}; renderCupones(); }
-});
+document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; renderCupones(); });
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
 });
