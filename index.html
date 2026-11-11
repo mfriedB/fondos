@@ -1682,6 +1682,17 @@
 
   .cup-buscar-fila{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .cup-buscar-fila .btn-com{ padding:7px 14px; font-size:13px; }
+
+  .tab-toolbar{ gap:10px; }
+  .btn-cupones{ background:#fff; color:var(--navy); border:1.5px solid var(--navy); }
+  .btn-cupones:hover{ background:#EEF1FC; }
+  .cup-volver{ font:inherit; font-size:12.5px; font-weight:700; color:var(--accent); background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; }
+  .cup-volver:hover{ text-decoration:underline; }
+  .cg-estrella{ color:#D99A00; font-size:13px; margin-right:4px; font-weight:400; }
+  .cg-fila.rel{ background:linear-gradient(90deg, #FFF8E1 0, #FFF8E1 3px, transparent 3px); padding-left:8px; }
+  .cg-fila.rel .cg-ticker{ font-weight:800; }
+  .cg-nota{ margin-top:8px; background:#FFF4CC; border:1px solid #F0D777; color:#6B5200; border-radius:6px; padding:6px 10px; font-size:12px; font-weight:700; }
+  .cg-alt{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:14px 0 0; }
 </style>
 </head>
 <body>
@@ -1740,6 +1751,9 @@
     <div id="tab-calculadora" class="tab-panel active">
 
     <div class="tab-toolbar">
+      <button id="abrirCuponesBtn" class="btn-pdf btn-cupones" type="button" style="display:none;" title="Ver los cobros de cupones y vencimientos de la semana y en qué fondo reinvertirlos">
+        Reinversión de cupones
+      </button>
       <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
         Descargar PDF
@@ -2038,8 +2052,9 @@
     <div id="tab-cupones" class="tab-panel">
 
     <section class="card" id="cupGraficosCard">
+      <button type="button" class="cup-volver" id="cupVolver">‹ Volver a la Calculadora de Carteras</button>
       <div class="chart-header" style="margin-bottom:6px;">
-        <h2 style="margin:0;">Cobros de la semana, día por día</h2>
+        <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
@@ -2056,6 +2071,7 @@
       <div class="tl-leyenda" style="margin:14px 0 0;">
         <span><i class="cg-muestra cap ars"></i><i class="cg-muestra cap usd"></i> capital que devuelve</span>
         <span><i class="cg-muestra ren ars"></i><i class="cg-muestra ren usd"></i> renta (cupón)</span>
+        <span><b class="cg-estrella">★</b> entre los más relevantes del mercado</span>
         <span>Largo de la barra en escala logarítmica, para que cupones y vencimientos se vean juntos.</span>
       </div>
     </section>
@@ -6416,7 +6432,6 @@ function cupPanelHtml(evs, moneda){
   const q = claveTxt(CUP.busca);
   // Con busqueda: resultados de todo el calendario, en orden de fecha y separados por semana
   const lista = todos.slice().sort((a, b)=>{
-    if(!q && a.destacado !== b.destacado) return a.destacado ? -1 : 1;
     if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
     return a.ticker.localeCompare(b.ticker, 'es', { numeric: true });
   });
@@ -6441,7 +6456,6 @@ function cupPanelHtml(evs, moneda){
   let diaPrevio = null;
   let grupoPrevio = null;
   const semanasTodas = cupSemanas();
-  const nRel = lista.filter(e => e.destacado).length;
   const filas = lista.map(e=>{
     const d = fechaDeIso(e.fecha);
     const pago = cupPagoCada100(e);
@@ -6456,12 +6470,6 @@ function cupPanelHtml(evs, moneda){
         grupoPrevio = idSem;
         diaPrevio = null;
       }
-    } else if(e.destacado !== grupoPrevio){
-      sep = e.destacado
-        ? `<div class="cg-grupo">Más relevantes <span>${nRel}</span></div>`
-        : `<div class="cg-grupo resto">Resto <span>${lista.length - nRel}</span></div>`;
-      grupoPrevio = e.destacado;
-      diaPrevio = null;
     }
     if(e.fecha !== diaPrevio){
       sep += `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${e.fecha === hoy ? ' · hoy' : (e.fecha < hoy ? ' · ya pagó' : '')}</div>`;
@@ -6483,9 +6491,9 @@ function cupPanelHtml(evs, moneda){
     // "Estimado" solo aplica a pagos futuros: para lo que paga hoy el indice ya esta fijado
     const marca = (e.dato !== 'Publicado' && e.fecha > hoy) ? `<span class="cup-marca" title="${escHtml(e.fuente)}">${escHtml(e.dato.toLowerCase())}</span>` : '';
     return sep + `
-      <div class="cg-fila">
+      <div class="cg-fila${e.destacado ? ' rel' : ''}">
         <div class="cg-inst">
-          <span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}${marca}
+          ${e.destacado ? '<span class="cg-estrella" title="Entre los más relevantes: operó en los últimos días y tiene un monto en circulación alto">★</span>' : ''}<span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}${marca}
           <span class="cg-nombre">${escHtml(e.nombre)} · ${escHtml(e.evento)}</span>
         </div>
         ${barra}
@@ -6527,6 +6535,7 @@ function cupRecoHtml(evs, moneda){
       + ((td.duration != null && isFinite(td.duration)) ? `<span class="cg-tag">Duration ${fmtDuration(td.duration)}</span>` : '');
   };
   const porTickers = (ts)=> `Por ${escHtml(ts.slice(0, 5).join(', '))}${ts.length > 5 ? ` +${ts.length - 5}` : ''}`;
+  const nota = (txt)=> `<div class="cg-nota">${txt}</div>`;
   const tarjeta = (nombre, monto, tickers, extra)=> `
       <div class="cg-fondo">
         <div class="cg-fondo-top">
@@ -6544,29 +6553,35 @@ function cupRecoHtml(evs, moneda){
     if(c.conMonto && f.monto > 0 && f.monto < minimo) bajoMinimo.push(`${nombreFondoVisible(f.nombre)} (${fmtMoney(f.monto, c.moneda)})`);
     const sinDur = f.sinDuration.length ? `<p class="cg-fondo-arg" style="color:#8A5A0F;">Sin duration en 1816 para ${escHtml(f.sinDuration.join(', '))}: se sugiere este fondo por defecto.</p>` : '';
     const arg = f.args.map(a => (REINV.tipos[a] || REINV.tipos[a.replace(/ corta$/, '')] || {}).argumento || '').filter(Boolean)[0] || '';
-    let html = tarjeta(f.nombre, f.monto, f.tickers, (arg ? `<p class="cg-fondo-arg">${escHtml(arg)}</p>` : '') + sinDur);
+    let html = tarjeta(f.nombre, f.monto, f.tickers, (arg ? `<p class="cg-fondo-arg">${escHtml(arg)}</p>` : '') + (f.cable ? nota('Convertir Dólar Cable a Dólar MEP para suscribir') : '') + sinDur);
     if(f.cable){
       if(c.conMonto && f.cable.monto > 0 && f.cable.monto < minimo && f.cable.monto !== f.monto) bajoMinimo.push(`${nombreFondoVisible(f.cable.nombre)} (${fmtMoney(f.cable.monto, c.moneda)})`);
       html += '<div class="cg-o">Ó</div>'
         + tarjeta(f.cable.nombre, f.cable.monto, f.cable.tickers,
-          `<p class="cg-fondo-arg">${escHtml(f.cable.tickers.join(', '))} ${f.cable.tickers.length === 1 ? 'paga' : 'pagan'} en dólar cable. Para suscribir ${escHtml(nombreFondoVisible(f.nombre))} primero hay que convertir el dólar cable del cobro a dólar MEP; ${escHtml(nombreFondoVisible(f.cable.nombre))} se puede suscribir directamente en dólar cable.</p>`);
+          `<p class="cg-fondo-arg">${escHtml(f.cable.tickers.join(', '))} ${f.cable.tickers.length === 1 ? 'paga' : 'pagan'} en dólar cable. ${escHtml(nombreFondoVisible(f.cable.nombre))} se puede suscribir directamente en dólar cable.</p>` + nota('Suscribir directo en Dólar Cable'));
     }
     return html;
   }).join('');
+  // Primera opcion: el money market de la moneda, con todo lo que se cobra
+  const mm = resolverFondo(moneda === 'Dólar' ? 'Money Market USD' : 'Money Market');
+  const conCobro = evs.filter(e => e.moneda === moneda && cupCobro(e) > 0);
+  const tickersCable = [...new Set(conCobro.filter(e => /CABLE$/.test(e.tipo)).map(e => e.ticker))];
+  const primera = tarjeta(mm, c.total, [...new Set(conCobro.map(e => e.ticker))],
+    `<p class="cg-fondo-arg">El cobro queda invertido con liquidez inmediata mientras se define el destino.</p>`
+    + (tickersCable.length ? nota('Convertir Dólar Cable a Dólar MEP para suscribir') : ''));
+  if(c.total > 0 && c.total < minimo) bajoMinimo.unshift(`${nombreFondoVisible(mm)} (${fmtMoney(c.total, c.moneda)})`);
   const alerta = bajoMinimo.length
     ? `<div class="pct-warning warn" style="display:block;margin:10px 0 0;">El mínimo de suscripción en los fondos en ${moneda === 'Dólar' ? 'dólares es de USD 100' : 'pesos es de $ 1.000'}.<br>No lo alcanza: ${escHtml(bajoMinimo.join(', '))}.</div>`
     : '';
-  // Alternativa para quien prefiere manejar la liquidez del cobro
-  const sugeridos = new Set(c.fondos.map(f => f.nombre));
-  const liquidez = [...new Set(evs.filter(e => e.moneda === moneda && REINV.reglas[e.tipo]).map(e => resolverFondo(REINV.reglas[e.tipo].liquidez)))]
-    .filter(n => n && !sugeridos.has(n) && fundByName(n));
   return `
-    <p class="semana-sub">${c.fondos.length === 1 ? 'Fondo sugerido' : 'Fondos sugeridos'} para reinvertir${c.conMonto ? ` · ${fmtMoney(c.total, c.moneda)}` : ''}</p>
+    <p class="semana-sub">Fondos sugeridos para reinvertir${c.conMonto ? ` · ${fmtMoney(c.total, c.moneda)}` : ''}</p>
+    ${primera}
+    <p class="cg-alt">Alternativa</p>
     ${fondos}
     ${alerta}
-    ${liquidez.length ? `<p class="cg-liquidez">Si el cliente prefiere manejar la liquidez del cobro: ${liquidez.map(n => escHtml(nombreFondoVisible(n))).join(' o ')}.</p>` : ''}
-    <div class="cg-botones" style="margin-top:12px;"><button type="button" class="btn-com" data-cup-abrir="${moneda}">Abrir en la calculadora · ${moneda === 'Dólar' ? 'dólares' : 'pesos'}</button></div>`;
+    <div class="cg-botones" style="margin-top:12px;"><button type="button" class="btn-com" data-cup-abrir="${moneda}">Abrir la alternativa en la calculadora · ${moneda === 'Dólar' ? 'dólares' : 'pesos'}</button></div>`;
 }
+
 
 // Recalcula lo que depende de los nominales cargados, sin redibujar las filas
 function actualizarCup(){
@@ -6646,7 +6661,10 @@ function cupAbrirEnCalculadora(moneda){
    fecha de las que ya estan cargadas y agrega las que falten. */
 function initCupones(){
   const tab = document.querySelector('.tab-btn[data-tab="cupones"]');
-  if(tab) tab.style.display = (REINV.ok && REINV.eventos.length) ? '' : 'none';
+  // La solapa queda oculta: se entra desde el boton de la Calculadora de Carteras
+  if(tab) tab.style.display = 'none';
+  const boton = document.getElementById('abrirCuponesBtn');
+  if(boton) boton.style.display = (REINV.ok && REINV.eventos.length) ? '' : 'none';
   if(!REINV.ok) return;
   // Se arranca en la primera semana que tenga cobros
   const primera = cupSemanas().find(s => cupEventosDeSemana(s).length);
@@ -6678,6 +6696,9 @@ document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
 });
+
+document.getElementById('abrirCuponesBtn').addEventListener('click', ()=> activarTab('cupones'));
+document.getElementById('cupVolver').addEventListener('click', ()=> activarTab('calculadora'));
 
 /* =====================================================================
    LINEAS DE REFERENCIA (dolar MEP e inflacion)
