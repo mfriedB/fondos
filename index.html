@@ -6506,7 +6506,8 @@ function cupRecoHtml(evs, moneda){
   const fondos = c.fondos.map(f=>{
     if(c.conMonto && f.monto > 0 && f.monto < minimo) bajoMinimo.push(`${nombreFondoVisible(f.nombre)} (${fmtMoney(f.monto, c.moneda)})`);
     const sinDur = f.sinDuration.length ? `<p class="cg-fondo-arg" style="color:#8A5A0F;">Sin duration en 1816 para ${escHtml(f.sinDuration.join(', '))}: se sugiere este fondo por defecto.</p>` : '';
-    let html = tarjeta(f.nombre, f.monto, f.tickers, sinDur);
+    const arg = f.args.map(a => (REINV.tipos[a] || REINV.tipos[a.replace(/ corta$/, '')] || {}).argumento || '').filter(Boolean)[0] || '';
+    let html = tarjeta(f.nombre, f.monto, f.tickers, (arg ? `<p class="cg-fondo-arg">${escHtml(arg)}</p>` : '') + sinDur);
     if(f.cable){
       if(c.conMonto && f.cable.monto > 0 && f.cable.monto < minimo && f.cable.monto !== f.monto) bajoMinimo.push(`${nombreFondoVisible(f.cable.nombre)} (${fmtMoney(f.cable.monto, c.moneda)})`);
       html += '<div class="cg-o">Ó</div>'
