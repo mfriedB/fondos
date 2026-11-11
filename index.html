@@ -1670,6 +1670,11 @@
   .cg-fondo-nombre{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .cg-tag{ font-size:11px; font-weight:700; color:var(--navy); background:#E8ECFA; border-radius:999px; padding:2px 8px; white-space:nowrap; }
   .cg-o{ text-align:center; font-size:14px; font-weight:800; color:var(--navy); margin:8px 0 0; text-transform:uppercase; }
+
+  .cg-grupo{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#fff; background:var(--navy); border-radius:6px; padding:6px 10px; margin:14px 0 6px; }
+  .cg-grupo.resto{ background:#8A93AD; margin-top:22px; }
+  .cg-grupo span{ font-weight:600; opacity:.8; }
+  .cg-panel.usd .cg-grupo:not(.resto){ background:#0F6B4A; }
 </style>
 </head>
 <body>
@@ -6388,10 +6393,11 @@ function cupTituloSemana(s){
    0,50 y un vencimiento de 130 se vean juntos; el tramo oscuro es capital) y
    al lado va el casillero para los nominales del cliente. */
 function cupPanelHtml(evs, moneda){
-  // Dentro de cada dia, por ticker de la A a la Z
+  // Primero los mas relevantes y despues el resto; dentro de cada grupo, por dia y por ticker de la A a la Z
   const todos = evs.filter(e => e.moneda === moneda);
   const q = claveTxt(CUP.busca);
   const lista = todos.filter(e => !q || claveTxt(e.ticker).includes(q) || claveTxt(e.nombre).includes(q) || CUP.montos[cupClave(e)]).sort((a, b)=>{
+    if(a.destacado !== b.destacado) return a.destacado ? -1 : 1;
     if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
     return a.ticker.localeCompare(b.ticker, 'es', { numeric: true });
   });
@@ -6411,14 +6417,23 @@ function cupPanelHtml(evs, moneda){
   const hoy = isoLocal(new Date());
 
   let diaPrevio = null;
+  let grupoPrevio = null;
+  const nRel = lista.filter(e => e.destacado).length;
   const filas = lista.map(e=>{
     const d = fechaDeIso(e.fecha);
     const pago = cupPagoCada100(e);
     const k = cupClave(e);
     const cargado = CUP.montos[k] ? Number(CUP.montos[k]).toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
     let sep = '';
+    if(e.destacado !== grupoPrevio){
+      sep = e.destacado
+        ? `<div class="cg-grupo">Más relevantes <span>${nRel}</span></div>`
+        : `<div class="cg-grupo resto">Resto <span>${lista.length - nRel}</span></div>`;
+      grupoPrevio = e.destacado;
+      diaPrevio = null;
+    }
     if(e.fecha !== diaPrevio){
-      sep = `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${e.fecha === hoy ? ' · hoy' : (e.fecha < hoy ? ' · ya pagó' : '')}</div>`;
+      sep += `<div class="cg-dia">${CUP_DIAS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1}${e.fecha === hoy ? ' · hoy' : (e.fecha < hoy ? ' · ya pagó' : '')}</div>`;
       diaPrevio = e.fecha;
     }
     let barra, valor;
