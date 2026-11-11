@@ -1661,7 +1661,7 @@
   .comp-ref .cup-check{ padding-bottom:0; }
   .comp-ref-label{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
 
-  .cup-buscar{ font:inherit; font-size:13px; padding:7px 12px; border:1px solid var(--line); border-radius:8px; min-width:240px; color:var(--text); background:#fff; }
+  .cup-buscar{ font:inherit; font-size:13px; padding:7px 12px; border:1px solid var(--line); border-radius:8px; min-width:320px; color:var(--text); background:#fff; }
   .cup-buscar:focus{ outline:none; border-color:var(--accent); }
   .cg-opciones{ justify-content:space-between; }
   .cg-resumen{ font-size:12px; color:var(--muted); margin:0 0 10px; }
@@ -2041,7 +2041,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor" aria-label="Buscar instrumento" autocomplete="off" />
+        <input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" />
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
@@ -6293,6 +6293,18 @@ function cupSemanas(){
 function cupEventosDeSemana(s){
   return REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && (!CUP.soloDestacados || e.destacado));
 }
+/* Lo que se muestra: los cobros de la semana elegida o, si hay una busqueda,
+   todos los pagos del calendario (desde la semana en curso) que coinciden por
+   ticker o emisor, mas los de la semana que ya tienen nominales cargados. */
+function cupEventosVisibles(){
+  const semanas = cupSemanas();
+  const sem = cupEventosDeSemana(semanas[CUP.semana]);
+  const q = claveTxt(CUP.busca);
+  if(!q) return sem;
+  const coincide = REINV.eventos.filter(e => e.fecha >= semanas[0].ini && (claveTxt(e.ticker).includes(q) || claveTxt(e.nombre).includes(q)));
+  const extra = sem.filter(e => CUP.montos[cupClave(e)] && !coincide.includes(e));
+  return coincide.concat(extra);
+}
 function cupClave(e){
   return `${e.fecha}|${e.ticker}`;
 }
@@ -6396,8 +6408,9 @@ function cupPanelHtml(evs, moneda){
   // Primero los mas relevantes y despues el resto; dentro de cada grupo, por dia y por ticker de la A a la Z
   const todos = evs.filter(e => e.moneda === moneda);
   const q = claveTxt(CUP.busca);
-  const lista = todos.filter(e => !q || claveTxt(e.ticker).includes(q) || claveTxt(e.nombre).includes(q) || CUP.montos[cupClave(e)]).sort((a, b)=>{
-    if(a.destacado !== b.destacado) return a.destacado ? -1 : 1;
+  // Con busqueda: resultados de todo el calendario, en orden de fecha y separados por semana
+  const lista = todos.slice().sort((a, b)=>{
+    if(!q && a.destacado !== b.destacado) return a.destacado ? -1 : 1;
     if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
     return a.ticker.localeCompare(b.ticker, 'es', { numeric: true });
   });
@@ -6406,9 +6419,12 @@ function cupPanelHtml(evs, moneda){
   const titulo = moneda === 'Dólar' ? 'Instrumentos que pagan dólares' : 'Instrumentos que pagan pesos';
   // Cuanto paga el mercado en la semana, segun el total de cada pago en 1816
   const totalM = todos.reduce((a, e) => a + (e.total || 0), 0);
-  const resumen = `<p class="cg-resumen">${todos.length} ${todos.length === 1 ? 'pago' : 'pagos'} en la semana${totalM > 0 ? ` · el mercado cobra <strong>${mon} ${cupMillones(totalM)}</strong>` : ''}${q ? ` · ${lista.length} ${lista.length === 1 ? 'coincide' : 'coinciden'} con la búsqueda` : ''}</p>`;
+  const nCoin = q ? lista.filter(e => claveTxt(e.ticker).includes(q) || claveTxt(e.nombre).includes(q)).length : 0;
+  const resumen = q
+    ? `<p class="cg-resumen">${nCoin} ${nCoin === 1 ? 'pago coincide' : 'pagos coinciden'} con la búsqueda en todo el calendario${lista.length > nCoin ? ' · se mantienen a la vista los que ya tienen nominales cargados' : ''}</p>`
+    : `<p class="cg-resumen">${todos.length} ${todos.length === 1 ? 'pago' : 'pagos'} en la semana${totalM > 0 ? ` · el mercado cobra <strong>${mon} ${cupMillones(totalM)}</strong>` : ''}</p>`;
   if(!lista.length){
-    return `<div class="cg-panel ${clase}"><h3>${titulo}</h3>${todos.length ? resumen : ''}<p class="cup-vacio">${todos.length ? 'Ningún instrumento coincide con la búsqueda.' : `Sin cobros en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} esta semana.`}</p><div class="cg-reco" data-reco="${moneda}"></div></div>`;
+    return `<div class="cg-panel ${clase}"><h3>${titulo}</h3>${(todos.length && !q) ? resumen : ''}<p class="cup-vacio">${q ? `Ningún pago en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} coincide con la búsqueda.` : `Sin cobros en ${moneda === 'Dólar' ? 'dólares' : 'pesos'} esta semana.`}</p><div class="cg-reco" data-reco="${moneda}"></div></div>`;
   }
   const pagos = lista.map(cupPagoCada100).filter(v => v != null && v > 0);
   const piso = 0.1;
@@ -6418,6 +6434,7 @@ function cupPanelHtml(evs, moneda){
 
   let diaPrevio = null;
   let grupoPrevio = null;
+  const semanasTodas = cupSemanas();
   const nRel = lista.filter(e => e.destacado).length;
   const filas = lista.map(e=>{
     const d = fechaDeIso(e.fecha);
@@ -6425,7 +6442,15 @@ function cupPanelHtml(evs, moneda){
     const k = cupClave(e);
     const cargado = CUP.montos[k] ? Number(CUP.montos[k]).toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
     let sep = '';
-    if(e.destacado !== grupoPrevio){
+    if(q){
+      const sm = semanasTodas.find(x => e.fecha >= x.ini && e.fecha <= x.fin);
+      const idSem = sm ? sm.idx : -1;
+      if(idSem !== grupoPrevio){
+        sep = `<div class="cg-grupo">${sm ? `${cupTituloSemana(sm)} <span>${cupRangoTexto(sm)}</span>` : 'Más adelante'}</div>`;
+        grupoPrevio = idSem;
+        diaPrevio = null;
+      }
+    } else if(e.destacado !== grupoPrevio){
       sep = e.destacado
         ? `<div class="cg-grupo">Más relevantes <span>${nRel}</span></div>`
         : `<div class="cg-grupo resto">Resto <span>${lista.length - nRel}</span></div>`;
@@ -6538,7 +6563,7 @@ function cupRecoHtml(evs, moneda){
 // Recalcula lo que depende de los nominales cargados, sin redibujar las filas
 function actualizarCup(){
   const s = cupSemanas()[CUP.semana];
-  const evs = cupEventosDeSemana(s);
+  const evs = cupEventosVisibles();
   let ars = 0, usd = 0;
   evs.forEach(e=>{
     const c = cupCobro(e);
@@ -6566,7 +6591,7 @@ function renderCupones(){
   if(!panel || !REINV.ok || !DATA.fondos.length) return;
   const semanas = cupSemanas();
   const s = semanas[CUP.semana];
-  const evs = cupEventosDeSemana(s);
+  const evs = cupEventosVisibles();
 
   document.getElementById('cupSemanaSelect').innerHTML = semanas.map(x=>{
     const n = cupEventosDeSemana(x).length;
@@ -6598,7 +6623,7 @@ function cupElegirSemana(idx){
    desde ahi el asesor ajusta los pesos y baja el PDF con el nombre del cliente. */
 function cupAbrirEnCalculadora(moneda){
   const s = cupSemanas()[CUP.semana];
-  const evs = cupEventosDeSemana(s);
+  const evs = cupEventosVisibles();
   const hayMontos = evs.some(e => e.moneda === moneda && cupCobro(e) > 0);
   const c = cupCarteraSugerida(hayMontos ? evs.filter(e => cupCobro(e) > 0) : evs, moneda);
   if(!c) return;
@@ -6632,7 +6657,7 @@ document.getElementById('cupSemanaSelect').addEventListener('change', (e)=> cupE
 document.getElementById('cupBuscar').addEventListener('input', (e)=>{
   CUP.busca = e.target.value;
   const s = cupSemanas()[CUP.semana];
-  const evs = cupEventosDeSemana(s);
+  const evs = cupEventosVisibles();
   document.getElementById('cupGraficos').innerHTML = cupPanelHtml(evs, 'Pesos') + cupPanelHtml(evs, 'Dólar');
   actualizarCup();
 });
