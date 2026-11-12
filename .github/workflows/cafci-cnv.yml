@@ -1,0 +1,39 @@
+# Descarga las planillas diarias oficiales (CNV / CAFCI) y las guarda en la rama cafci-datos.
+# Solo corre en la rama cafci-datos: no toca main ni la pagina publicada.
+name: Planillas CAFCI-CNV
+
+on:
+  push:
+    branches: [cafci-datos]
+    paths: ['cafci/**', '.github/workflows/cafci-cnv.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cafci-cnv
+  cancel-in-progress: false
+
+jobs:
+  descargar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: cafci-datos
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install requests openpyxl pandas
+      - name: Descargar
+        run: python cafci/descargar_cnv.py
+      - name: Commitear resultados
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cafci/raw cafci/debug cafci/procesado 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Planillas CAFCI-CNV: actualizacion automatica"
+            git push origin HEAD:cafci-datos
+          fi
