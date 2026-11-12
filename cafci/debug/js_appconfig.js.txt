@@ -1,0 +1,65 @@
+/** @module AppDeclaracionesSAT */
+/**
+* Modulo que inicia la UI principal
+*
+* (c) Microsoft 2018
+*/
+/*global namespace:false, FormsBuilder:false, SAT: false, AppDeclaracionesSAT:false, ko:false, Base64:false */
+
+"use strict";
+
+(function () {
+    namespace("AppDeclaracionesSAT", getConfig, setConfig, getConst);
+    
+    window.ORIGEN_DATOS_GRID = { "NORMAL": 1, "FILTRADO": 2, "PAGINADO": 3 };
+
+    var constants = {};
+
+    constants.TipoDeclaracionNormal = "001";
+    constants.TipoDeclaracionNormalCorrecionFiscal = "003";
+    constants.TipoDeclaracionComplementaria = "002";
+    constants.TipoDeclaracionComplementariaCorrecionFiscal = "004";
+    constants.TipoDeclaracionComplementariaDictamen = "005";
+    constants.TipoDeclaracionComplementariaDesconsolidacion = "009";
+    constants.TipoDeclaracionComplementariaDesincorporacion = "010";
+
+    constants.TipoComplementariaDejarSinEfecto = "002";
+    constants.TipoComplementariaModificacionObligaciones = "003";
+    constants.TipoComplementariaNoPresentada = "004";
+    constants.TipoComplementariaActualizacionDeImporte = "005";
+    constants.TipoComplementariaEsquemaAnterior = '006';
+
+    constants.TotalAPagarViewModelId = "E1024P24007";
+
+    var config = {};
+    config.rfc = '';
+    config.nombre = '';
+    config.tipodeclaracion = '';
+    config.tipopersona = '';
+    config.tipocomplementaria = '';
+    config.origen = '';
+    config.ejercicio = 0;
+    config.debug = false;
+    config.esSelector = false;
+    config.ejercicioperfil = 2015;    
+    config.urlSelector = '';
+    config.infoIDC = true;
+    config.configuracionDeclaracion = { "regimen": 6 };
+    config.limiteRegistrosGrid = 20;
+    config.limiteRegistrosCargaMasiva = 1201;
+    config.limitePaginasPaginador = 10;
+    config.fechaActual = new Date();
+    config["view-rules"] = true;
+    function getConfig(key) {
+        return config[key];
+    }
+
+    function setConfig(key, value) {
+        config[key] = value;
+    }
+
+    function getConst(key) {
+        return constants[key];
+    }
+
+})();

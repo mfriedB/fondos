@@ -1,0 +1,81 @@
+/** @module CNV.Environment */
+/**
+* Modulo que inicia una variable de entorno
+*
+* (c) Microsoft 2018
+*/
+/*global namespace:false, FormsBuilder:false, SAT: false, AppDeclaracionesSAT:false, ko:false, Base64:false */
+
+"use strict";
+
+(function () {
+    namespace("CNV.Environment", settings, setSetting, addtoArraySetting, removeArraySetting);
+
+    var ObjSettings = {};
+    ObjSettings['isHydrate'] = false;
+    ObjSettings['isModified'] = false;
+    ObjSettings['applyrulesvalidation'] = true;
+    ObjSettings['showdialogs'] = true;
+    ObjSettings['dejarsinefecto'] = false;
+    ObjSettings['esquemaanterior'] = false;
+    ObjSettings['actualizacionimporte'] = false;
+    ObjSettings['applyrules'] = true;
+    ObjSettings['appversion'] = '3.1.13'; // Version mayor, Version menor, Compilacion
+    ObjSettings['isRowClicked'] = false;
+    ObjSettings['isMacOSX'] = false;
+    ObjSettings['loadedPrecargarAnexo'] = false;
+    ObjSettings['thisPropertiesNotExecuteRules'] = [];
+    ObjSettings['entidadReteneciones'] = ["1098", "1012", "1041"];
+    ObjSettings['online'] = true;
+    ObjSettings['performClosing'] = false;
+    ObjSettings['performClosingObject'] = undefined;
+    ObjSettings['isMobile'] = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    ObjSettings['isDAS'] = false;
+    ObjSettings['runRulesCalc'] = false;
+    ObjSettings['isSelector'] = false;
+    ObjSettings['isSelectorPropuesta'] = false;
+    ObjSettings['numeroRetenedoresPermitidos'] = 1;
+    ObjSettings['isSimulador'] = false;
+    ObjSettings['AuxMassive'] = true;
+    ObjSettings['massives'] = [];
+    ObjSettings['firmadoSilverlight'] = true;
+    ObjSettings['jsFirmado'] = '';
+    ObjSettings['isProposal'] = false;
+    ObjSettings['acceptProposal'] = false;
+    ObjSettings['runRulesGrid'] = true;
+    ObjSettings['loadingTemporal'] = false;
+    ObjSettings['initialKoBinding'] = false;
+    ObjSettings['executingRule'] = false;
+    ObjSettings['modifyingGridVm'] = false;
+    ObjSettings['ViewCfdiPDF'] = true;
+    ObjSettings['ContribuyenteListaNegra'] = false;
+    ObjSettings['urlManualCargaMasivaRetenciones'] = "https://devformsbuilder.blob.core.windows.net/1-asdasdasd-2016-m-001-1/DeclaracionAnual2016.pdf?st=2017-04-12T17%3A26%3A00Z&se=2017-04-13T17%3A26%3A00Z&sp=rl&sv=2015-12-11&sr=b&sig=XbRYomKyEuh6EVucpuD%2BCNTuhpIZtcwYa0CPxKyU8Hs%3D";
+    ObjSettings['urlenvio'] = blobHost || "https://desa-iis.cnv.gov.ar:8012/BlobWebService.svc/";
+    ObjSettings['urlTemplate'] = "/Templates/";
+    ObjSettings['isPresentationMode'] = false;
+
+    function settings(key) {
+        ObjSettings['loadXMLTemplate'] = false;
+        ObjSettings['debug'] = true;
+        ObjSettings['environment'] = 'dev';
+        ObjSettings['typeapp'] = 'web'; //web || desktop
+
+        return ObjSettings[key];
+    }
+
+    function setSetting(key, value) {
+        ObjSettings[key] = value;
+    }
+
+    function addtoArraySetting(key, value) {
+        ObjSettings[key].push(value);
+    }
+
+    function removeArraySetting(key, value) {
+        var index = ObjSettings[key].indexOf(value);
+        if (index != -1) {
+            ObjSettings[key].splice(index, 1);
+        }
+    }
+
+})();

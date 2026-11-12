@@ -1,82 +1,62 @@
-[   0.0s] == CAFCI pb_get
-[   0.2s]   status 200 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet attachment; filename="20261111_Planilla_Diaria_A.xlsx" 961931
-[   0.2s]   OK 20261111_Planilla_Diaria_A.xlsx
-[   0.2s] == Indice CNV
-[   5.4s]   status 200 2010799
-[   5.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/cnv_index.html 2010799
-[   5.5s]   filas con Cuotaparte: 3206
-[   5.5s]     ['11 nov. 2026', '12 nov. 2026 12:58', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 11 nov. 2026', '7-3591747-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64']
-[   5.5s]     ['11 nov. 2026', '11 nov. 2026 20:20', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 11 nov. 2026', '7-3591455-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2']
-[   5.5s]     ['5 nov. 2026', '11 nov. 2026 15:28', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3591177-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B']
-[   5.5s]     ['5 nov. 2026', '11 nov. 2026 11:20', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3590857-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/C17EA8D3-4293-412E-B872-A672DA452D11']
-[   5.5s]     ['5 nov. 2026', '5 nov. 2026 21:14', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3590042-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/337AFB2C-198B-4656-898D-07E5D7B76B3E']
-[   5.5s]   guardado /home/runner/work/fondos/fondos/cafci/debug/hrefs.txt 277684
-[   5.5s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64
-[   6.7s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64 text/html; charset=utf-8 52049
-[   6.7s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_0.txt 52016
-[   6.8s]    guids ['07ce8a18-f4e2-4d80-5e25-64419680cbd8', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', '9E9FA16E-1869-4507-9A7D-BA2B663B8D64']
-[   6.8s]    nombre 20261111_Planilla_Diaria_A.xlsx
-[   6.9s]    valet 07ce8a18-f4e2-4d80-5e25-64419680cbd8 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[   8.0s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[   8.0s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_07ce8a18.html 2458
-[   8.2s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[   8.3s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[   8.3s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_942b08c0.html 2458
-[   8.5s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[   8.7s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[   8.7s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_9825da93.html 2458
-[   8.9s]    valet 9E9FA16E-1869-4507-9A7D-BA2B663B8D64 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[   9.1s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[   9.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_9E9FA16E.html 2458
-[  10.1s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2
-[  10.4s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2 text/html; charset=utf-8 52049
-[  10.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_1.txt 52016
-[  10.4s]    guids ['cf05ab0e-5b95-45a3-2c73-a752729c5454', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', '8CB8210D-BAF3-4432-95DD-88E22EEC8FB2']
+[   0.7s]   js /Engine/js/fbhtmlcontrols/fb.publicuploader.js 200 10734
+[   0.7s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_fb.publicuploader.js.txt 10734
+[   0.8s]   js /Engine/js/fb.fileutils.js 200 2401
+[   0.8s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_fb.fileutils.js.txt 2401
+[   1.0s]   js /js/Presentations/presentations.js 200 10894
+[   1.0s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_presentations.js.txt 10894
+[   1.1s]   js /Engine/js/CNV.environment.js 200 3272
+[   1.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_CNV.environment.js.txt 3272
+[   1.3s]   js /Engine/js/appconfig.js 200 2092
+[   1.3s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_appconfig.js.txt 2092
+[   1.4s]   js /lib/jquery-file-download/jquery.fileDownload.js 200 20099
+[   1.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_jquery.fileDownload.js.txt 20099
+[   1.6s]   js /Engine/js/fb.utils.js 200 13780
+[   1.6s]   guardado /home/runner/work/fondos/fondos/cafci/debug/js_fb.utils.js.txt 13780
+[   1.6s] == CAFCI pb_get
+[   1.8s]   status 200 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet attachment; filename="20261111_Planilla_Diaria_A.xlsx" 961931
+[   1.8s]   OK 20261111_Planilla_Diaria_A.xlsx
+[   1.8s] == Indice CNV
+[  10.1s]   status 200 2010799
+[  10.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/cnv_index.html 2010799
+[  10.2s]   filas con Cuotaparte: 3206
+[  10.2s]     ['11 nov. 2026', '12 nov. 2026 12:58', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 11 nov. 2026', '7-3591747-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64']
+[  10.2s]     ['11 nov. 2026', '11 nov. 2026 20:20', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 11 nov. 2026', '7-3591455-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2']
+[  10.2s]     ['5 nov. 2026', '11 nov. 2026 15:28', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3591177-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B']
+[  10.2s]     ['5 nov. 2026', '11 nov. 2026 11:20', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3590857-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/C17EA8D3-4293-412E-B872-A672DA452D11']
+[  10.2s]     ['5 nov. 2026', '5 nov. 2026 21:14', 'Valores Diarios de Cuotaparte(Valores Sujetos a Revision) al 5 nov. 2026', '7-3590042-D'] ['https://aif2.cnv.gov.ar/Presentations/publicview/337AFB2C-198B-4656-898D-07E5D7B76B3E']
+[  10.2s]   guardado /home/runner/work/fondos/fondos/cafci/debug/hrefs.txt 277684
+[  10.2s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64
+[  10.4s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/9E9FA16E-1869-4507-9A7D-BA2B663B8D64 text/html; charset=utf-8 52049
+[  10.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_0.txt 52016
+[  10.4s]    guids ['07ce8a18-f4e2-4d80-5e25-64419680cbd8', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', '9E9FA16E-1869-4507-9A7D-BA2B663B8D64']
 [  10.4s]    nombre 20261111_Planilla_Diaria_A.xlsx
-[  10.6s]    valet cf05ab0e-5b95-45a3-2c73-a752729c5454 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  10.7s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  10.7s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_cf05ab0e.html 2458
-[  10.9s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  11.1s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  11.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_942b08c0.html 2458
-[  11.3s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  11.5s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  11.5s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_9825da93.html 2458
-[  11.7s]    valet 8CB8210D-BAF3-4432-95DD-88E22EEC8FB2 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  11.8s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  11.8s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_8CB8210D.html 2458
-[  12.8s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B
-[  13.1s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B text/html; charset=utf-8 52049
-[  13.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_2.txt 52016
-[  13.1s]    guids ['9c2de647-2737-4972-9ca4-4088edbe84e1', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', '2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B']
-[  13.1s]    nombre 20261105_Planilla_Diaria_A.xlsx
-[  13.3s]    valet 9c2de647-2737-4972-9ca4-4088edbe84e1 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  13.5s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  13.5s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_2_9c2de647.html 2458
-[  13.7s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  13.9s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  13.9s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_2_942b08c0.html 2458
-[  14.0s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  14.2s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  14.2s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_2_9825da93.html 2458
-[  14.4s]    valet 2576EDAD-1FB5-4B50-9DE2-0E80265A1B2B 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  14.6s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  14.6s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_2_2576EDAD.html 2458
-[  15.6s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/C17EA8D3-4293-412E-B872-A672DA452D11
-[  15.9s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/C17EA8D3-4293-412E-B872-A672DA452D11 text/html; charset=utf-8 52049
-[  15.9s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_3.txt 52016
-[  15.9s]    guids ['ce233b0a-b465-4b19-9155-ff6112476b94', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', 'C17EA8D3-4293-412E-B872-A672DA452D11']
-[  15.9s]    nombre 20261105_Planilla_Diaria_A.xlsx
-[  16.1s]    valet ce233b0a-b465-4b19-9155-ff6112476b94 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  16.2s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  16.2s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_3_ce233b0a.html 2458
-[  17.4s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  17.6s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  17.6s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_3_942b08c0.html 2458
-[  17.8s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  18.0s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  18.0s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_3_9825da93.html 2458
-[  18.2s]    valet C17EA8D3-4293-412E-B872-A672DA452D11 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
-[  18.4s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
-[  18.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_3_C17EA8D3.html 2458
-[  19.4s] == fin, descargados 0
+[  10.6s]    valet 07ce8a18-f4e2-4d80-5e25-64419680cbd8 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  11.3s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  11.3s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_07ce8a18.html 2458
+[  11.5s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  11.6s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  11.6s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_942b08c0.html 2458
+[  11.8s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  11.9s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  11.9s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_9825da93.html 2458
+[  12.1s]    valet 9E9FA16E-1869-4507-9A7D-BA2B663B8D64 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  12.2s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  12.2s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_0_9E9FA16E.html 2458
+[  13.2s]   meta https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2
+[  13.5s]    status 200 https://aif2.cnv.gov.ar/Presentations/publicview/8CB8210D-BAF3-4432-95DD-88E22EEC8FB2 text/html; charset=utf-8 52049
+[  13.5s]   guardado /home/runner/work/fondos/fondos/cafci/debug/meta_1.txt 52016
+[  13.5s]    guids ['cf05ab0e-5b95-45a3-2c73-a752729c5454', '942b08c0-ade7-4442-8d5c-49ec4e009185', '9825da93-3e7c-4e0e-8f09-1e58b0db7140', '8CB8210D-BAF3-4432-95DD-88E22EEC8FB2']
+[  13.5s]    nombre 20261111_Planilla_Diaria_A.xlsx
+[  13.6s]    valet cf05ab0e-5b95-45a3-2c73-a752729c5454 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  13.8s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  13.8s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_cf05ab0e.html 2458
+[  14.0s]    valet 942b08c0-ade7-4442-8d5c-49ec4e009185 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  14.1s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  14.1s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_942b08c0.html 2458
+[  14.3s]    valet 9825da93-3e7c-4e0e-8f09-1e58b0db7140 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  14.4s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  14.4s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_9825da93.html 2458
+[  14.6s]    valet 8CB8210D-BAF3-4432-95DD-88E22EEC8FB2 200 {"valetKeyData":"AAEAAAD/////AQAAAAAAAAAMAgAAAFNDTlYuU2VjdXJpdHkuVmFsZXRLZXkuQ2xpZW50LCBWZXJzaW9uPTEuMC4zLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49bnVsbAUBAAAALENOVi5TZWN1cml0eS5WYWxldEtleS5DbGl
+[  14.7s]    blob 400 text/html None 2458 b'\xef\xbb\xbf<'
+[  14.7s]   guardado /home/runner/work/fondos/fondos/cafci/debug/blob_err_1_8CB8210D.html 2458
+[  15.7s] == fin, descargados 0

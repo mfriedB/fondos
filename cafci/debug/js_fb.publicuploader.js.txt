@@ -1,0 +1,225 @@
+/**
+ * Modulo para el render de formularios que crea un control
+ * que permite el envio de archivos.
+ * 
+ * (c) Microsoft 2018
+ */
+
+"use strict";
+
+(function () {
+    namespace("FormsBuilder.Modules", Uploader, loadedUIUploader);
+
+    var MSJ_ERROR_TAMANO_ARCHVO = "El archivo seleccionado supera el tamaño permitido.";
+    var MSJ_ERROR_NUMERO_ARCHIVOS = "Solo puede cargar {0} archivo(s). Elimine un archivo de la lista para poder continuar.";
+
+    var VER_DETALLE = "Ver detalle";
+    var OCULTAR_DETALLE = "Ocultar detalle";
+    var SIN_ARCHIVOS = "Ningún archivo agregado";
+    var UN_ARCHIVO = "1 archivo agregado";
+    var VARIOS_ARCHIVOS = "{0} archivos agregados";
+
+    var archivosControl = {};
+
+    function Uploader(control) {        
+        var controlBase = FormsBuilder.Modules.ControlBase();
+
+        var idUploader = $(control).attr("id");
+        var idEntidad = $(control).attr("idEntidadPropiedad");
+        var idPropiedad = $(control).attr("idPropiedad");
+        var idEntidadPropiedad = "E{0}P{1}".format(idEntidad, idPropiedad);
+
+        var entidad = Enumerable.From(FormsBuilder.XMLForm.getEntidades()).Where("$.id == {0}".format(idEntidad)).FirstOrDefault();       
+        var propiedad = Enumerable.From(entidad.propiedades.propiedad).Where("$.id == '{0}'".format(idPropiedad)).FirstOrDefault();
+
+        var tituloCorto = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'TituloCorto'").FirstOrDefault();
+        var tituloLargo = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'TituloLargo'").FirstOrDefault();
+        var tiposPermitidos = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'Extensiones'").FirstOrDefault();        
+        var numeroArchivos = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'NumeroArchivos'").FirstOrDefault();        
+        var tamanoArchivos = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'TamanoArchivos'").FirstOrDefault();
+        var obligatorio = Enumerable.From(control.atributos.atributo).Where("$.nombre == 'Obligatorio'").FirstOrDefault();
+        var textoAyuda = controlBase.getHelpText.apply(this, [control]);               
+
+        var uploaderHtml = $("<div><div class='sat-height-field titulo'></div><div class='input-grouper sat-height-field'>" +
+            "<div class='row'><div class='col-xs-5'><input id='descripcion-{0}' class='form-control' disabled type='text' value='{1}'/><input type='hidden' id='file-guid-{0}'/>".format(idUploader, SIN_ARCHIVOS) +
+            "</div><div class='col-xs-3'><label class='btn btn-contextual' view-model='{1}' id='{0}'><input id='archivos-{0}' idEntidadPropiedad='{1}' type='file' style='display: none;'/>".format(idUploader, idEntidadPropiedad) +
+            "Examinar</label></div><a class='toggleDetalleArchivos' href='#detalle-{0}' style='padding: 0 5px;' data-toggle='collapse'>".format(idUploader) +
+            "Ver detalle</a></div></div>");
+        var grid = $("<div class='row' style='margin-top:1em; margin-bottom:1em;'><div id='detalle-{0}' class='col-sm-12'>".format(idUploader) +
+            "<div class='table-responsive'><table id='lista-archivos-{0}'".format(idUploader) +
+            "class='table table-striped' data-toggle='table' data-cache='false' data-pagination='true' data-page-size='10' " +
+            "data-id-field='id' data-show-footer='false' data-locale='es-MX'>" +
+            "<thead><th data-align='center' data-formatter='FormsBuilder.Formatters.consecutiveFormatter'>#</th>" +
+            "<th data-field='nombreArchivo'>Nombre archivo</th>" +
+            "<th data-field='tamano' data-align='center'>Tamaño</th>" +
+            "<th data-align='center' data-formatter='FormsBuilder.Formatters.downloadFileFormatter'>Descargar</th>" +
+            "<th data-align='center' data-formatter='FormsBuilder.Formatters.deleteFileFormatter'>Eliminar</th>" +
+            "</thead></table></div></div></div>");
+
+        archivosControl[idEntidadPropiedad] = [];
+
+        if (tituloCorto === undefined) {
+            tituloCorto = Enumerable.From(propiedad.atributos.atributo).Where("$.nombre == 'TituloCorto'").FirstOrDefault();
+        }
+
+        if (tituloLargo === undefined) {
+            tituloLargo = Enumerable.From(propiedad.atributos.atributo).Where("$.nombre == 'TituloLargo'").FirstOrDefault({ valor: "" });
+        }
+
+        if (tiposPermitidos !== undefined) {
+            uploaderHtml.find("input[type='file']").attr("accept", tiposPermitidos.valor);
+        }
+
+        if (numeroArchivos !== undefined) {
+            uploaderHtml.find("input[type='file']").attr("data-archivos", numeroArchivos.valor);
+        }
+
+        if (tamanoArchivos !== undefined) {
+            uploaderHtml.find("input[type='file']").attr("data-tamano", tamanoArchivos.valor);
+        }
+
+        var templateAyuda = controlBase.helpString.apply(this, [tituloLargo, textoAyuda]);
+
+        uploaderHtml.find(".titulo").text(tituloCorto.valor);
+        uploaderHtml.find("div.input-group").attr('help-text', templateAyuda);
+        
+        if (obligatorio)
+            uploaderHtml.find("input[type='hidden']").attr("data-obligatorio", idEntidadPropiedad);
+        uploaderHtml.append(grid);
+
+        return uploaderHtml.html();
+    }
+
+    function loadedUIUploader() {
+        $("table[id^='lista-archivos']").bootstrapTable();
+
+        $("a.toggleDetalleArchivos").click(function (event) {
+            var texto = $(this).text();
+
+            if (texto === VER_DETALLE) {
+                $(this).text(OCULTAR_DETALLE);
+            } else if (texto === OCULTAR_DETALLE) {
+                $(this).text(VER_DETALLE);
+            }
+        });
+
+        $("input[type='file'][id^='archivos']").on("load-data",function(event, value){
+            var idEntidadPropiedad = $(this).attr("idEntidadPropiedad");
+            var idUploader = this.id.split("-")[1];
+            archivosControl[idEntidadPropiedad] = JSON.parse(value);
+            actualizarControl(idUploader, idEntidadPropiedad);
+        });
+
+        $("input[type='file'][id^='archivos']").change(function (event) {
+            event.preventDefault();
+            
+            var idUploader = this.id.split("-")[1];
+            var idEntidadPropiedad = $(this).attr("idEntidadPropiedad");
+            var archivo = this.files[0];
+            var tamanoLimite = parseInt($(this).data("tamano"));
+            var numeroArchivos = parseInt($(this).data("archivos"));
+            var callbackEnvioArchivo = function (urlArchivo , hash) {
+                archivosControl[idEntidadPropiedad].push({
+                    "idUploader": idUploader,
+                    "idEntidadPropiedad": idEntidadPropiedad,
+                    "nombreArchivo": archivo.name,
+                    "tamano": (archivo.size / 1048576).toFixed(2) + " MB",
+                    "guid": urlArchivo,
+                    "hash": hash
+                });
+                
+                actualizarControl(idUploader, idEntidadPropiedad);
+            };
+            console.log('Upload')
+            console.log($(this).data("archivos"))
+            enviarArchivo(archivo, callbackEnvioArchivo);
+        });
+
+        $(document).on("click", "a.deleteFile", function (event) {
+            event.preventDefault();
+
+            var idUploader = $(this).data("iduploader");
+            var idEntidadPropiedad = $(this).data("entidad-propiedad");
+            var indice = $(this).data("index");
+
+            archivosControl[idEntidadPropiedad].splice(indice, 1);
+
+            actualizarControl(idUploader, idEntidadPropiedad);
+        });
+
+        $(document).on("click", "a.downloadFile", function (event) {
+            event.preventDefault();
+
+            var idUploader = $(this).data("iduploader");
+            var idEntidadPropiedad = $(this).data("entidad-propiedad");
+            console.log(idEntidadPropiedad)
+            var indice = $(this).data("index");
+
+            //var file = archivosControl[idEntidadPropiedad][indice];
+            var guid = $(this).data('guid');
+            var name = $(this).data('name');
+            cnv_functions().getPublicBlob(guid, name);
+        });
+    }
+
+    function enviarArchivo(archivo, callback) {
+        
+        var urlEnvio = CNV.Environment.settings('urlenvio');
+        if (archivo && (callback && typeof callback === "function")) {
+            //HACER PETICION Y EJECUTAR CALLBACK EN SUCCESS
+            var fileId = createGuid();
+            var data = new FormData();
+            
+            //callback(fileId);
+            $.ajax({
+                url: 'https://' + window.location.host + "/api/ValetKeyProvider/GetValetKey/" + fileId + "?operation=UploadBlobAndGetHash%2F",
+                success: function (result) {
+                    data.append('blobId', fileId);
+                    data.append(archivo.name, archivo);
+                    jQuery.ajax({
+                        url: urlEnvio +'UploadBlobWithHash/',
+                        data: data,
+                        cache: false,
+                        headers: { 'ValetKey': result.valetKeyData },
+                        contentType: false,
+                        processData: false,
+                        method: 'POST',
+                        type: 'POST', // For jQuery < 1.9
+                        success: function (data) {
+                            callback(fileId,data);
+                        }
+                    });
+
+                    
+                }
+            });
+        }
+    }
+
+    function createGuid() {
+        function S4() {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        }
+        return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+    }
+
+    function actualizarControl(idUploader, idEntidadPropiedad){
+        $("#file-guid-{0}".format(idUploader)).val(JSON.stringify(archivosControl[idEntidadPropiedad]));
+        $("#lista-archivos-{0}".format(idUploader)).bootstrapTable("load", archivosControl[idEntidadPropiedad]);
+
+        var archivosEnlista = archivosControl[idEntidadPropiedad].length;
+        var descripcion;
+
+        if (archivosEnlista === 0) {
+            descripcion = SIN_ARCHIVOS;
+        } else if (archivosEnlista === 1) {
+            descripcion = UN_ARCHIVO;
+        } else if (archivosEnlista > 1) {
+            descripcion = VARIOS_ARCHIVOS.format(archivosEnlista);
+        }
+
+        $("#descripcion-{0}".format(idUploader)).val(descripcion);
+    }
+    
+    
+})();

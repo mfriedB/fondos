@@ -9,7 +9,7 @@
 /SitioWeb/Content/assets/css/institucional.css
 /SitioWeb/Content/assets/css/normalize.css
 /SitioWeb/Content/assets/css/spin.css
-/SitioWeb/Content/assets/css/style.css?v=a4b56bad-c3bd-40c1-8643-cb8634ff4222
+/SitioWeb/Content/assets/css/style.css?v=c2b62f48-0dfc-4ee6-965c-c53c5e92390a
 /SitioWeb/Content/assets/font-awesome/css/font-awesome.min.css
 /SitioWeb/Content/assets/images/android-icon-192x192.png
 /SitioWeb/Content/assets/images/apple-icon-114x114.png
