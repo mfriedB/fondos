@@ -88,7 +88,19 @@ def cadena(href, tag):
             return nombre, d.content
     return nombre, None
 
+JS = ["/Engine/js/fbhtmlcontrols/fb.publicuploader.js", "/Engine/js/fb.fileutils.js", "/js/Presentations/presentations.js",
+      "/Engine/js/CNV.environment.js", "/Engine/js/appconfig.js", "/lib/jquery-file-download/jquery.fileDownload.js", "/Engine/js/fb.utils.js"]
+
+def bajar_js():
+    for j in JS:
+        try:
+            r = S.get("https://aif2.cnv.gov.ar" + j, timeout=(15, 45))
+            log("  js", j, r.status_code, len(r.text)); save("js_" + j.split("/")[-1] + ".txt", r.text)
+        except Exception as e:
+            log("  js error", j, repr(e))
+
 def main():
+    if CFG["modo"] == "explorar": bajar_js()
     cafci_ultima()
     txt = indice()
     fl = filas(txt); log("  filas con Cuotaparte:", len(fl))
