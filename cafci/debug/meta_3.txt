@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentaci&#xF3;n #3590857 - Camara Argentina de Fondos Comunes de Inversion | 30576167330 - Comisión Nacional de Valores</title>
+
+    <!-- Library Css -->
+    <link href="/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css?v=DkJIJr7tJde8bgPnI0oQ7JF-kMKMN5wIkQaIMSxQs54" rel="stylesheet" />
+    <link href="/lib/noty/lib/noty.css?v=WPvBXHbbHuWL3fCWI_s2_NvCwu3Xk6ged8JzU3O74Sc" rel="stylesheet" />
+    <link href="/lib/jquery-ui/1.12.1/jquery-ui.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900,900i" rel="stylesheet" >
+    <!-- link href="~/css/fonts.css" rel="stylesheet" /-->
+
+    <!-- Simple Line Icons -->
+    <link href="/css/simple-line-icons.css" rel="stylesheet" />
+
+    <!-- Menu styles -->
+    <link href="/css/animate.css" rel="stylesheet" />
+    <link href="/css/nav-aside-menu2.css" rel="stylesheet" />
+    
+    <!-- Boostrap styles -->
+    <link href="/lib/bootgrid/bootgrid.css" rel="stylesheet" />
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+
+    <!-- Custom styles -->
+    <link href="/css/shared.css?v=RSDb59AZAOJlfmsyADe4AuxoHg5xffvT7xuae-zRBKE" rel="stylesheet" />
+    <link href="/css/styles.css?v=BEBx4gbbVfEFlAY9iYyhUvtdPKnsY-lsaOtW17yXiys" rel="stylesheet" />
+    <link href="/css/reset.css?v=7ybxAlYx7O_I6ouWY_4fEkW0Hjovh0404S1NMQqOgo4" rel="stylesheet" />
+    <link href="/css/trusteeshipserie/trusteeshipserie.css?v=OLW-PbfBc2iAFAcR1oxGdOhwZMe9qSRUbiulRVtJ2ws" rel="stylesheet" />
+
+    <!-- Scripts  styles -->
+    <script src="/js/site.bo.min.js?v=IGhBiXe1fb2NFEGNYLVaOYb957igFRpHbYLChEyNPOc" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var blobHost =  "https://blob.cnv.gov.ar/BlobWebService.svc/";
+
+        ///Polyfill shims assets
+        $.webshims.setOptions('basePath', host + '/lib/polyfiller/shims/');
+
+        $(document).ready(function () {
+            $(".nav-header").on("click", function () {
+                $(".nav-aside-menu").toggleClass("open");
+            });
+        });
+    </script>
+
+    
+
+    <script src="/js/Presentations/presentations.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/namespace.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/jquery-1.7.2.min.js"></script>
+    <script type='text/javascript' src="/lib/jquery-file-download/jquery.fileDownload.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/bootstrap.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/knockout-2.3.0.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/date.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/response.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/jquery.linq.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/linq.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/jsonpath.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/bootstrap-table.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/bootstrap-table-es-MX.js"></script>
+    <!-- Script de ayuda -->
+    <script type='text/javascript' src="/Engine/js/fb.helper.js"></script> <!-- Solo para dev Ivan -->
+    <script type='text/javascript' src="/Engine/js/fb.helperjson.js"></script> <!-- Solo para dev Ivan -->
+    <script type='text/javascript' src="/Engine/js/fb.utils.js"></script>
+    <script type='text/javascript' src="/Engine/js/fb.xmlform.js"></script>
+    <script type='text/javascript' src="/Engine/js/CNV.utils.js"></script>
+    <script type='text/javascript' src="/Engine/js/formatters.js"></script>
+    <!-- Script que contiene un administrador de promesas -->
+    <script type='text/javascript' src="/Engine/js/fb.queue.promise.js"></script> <!-- Solo para dev Ivan -->
+    <!-- Scripts de la aplicacion principal -->
+    <script type='text/javascript' src="/Engine/js/app.js"></script>
+    <script type='text/javascript' src="/Engine/js/appui.js"></script>
+    <script type='text/javascript' src="/Engine/js/appconfig.js"></script>
+    <script type='text/javascript' src="/Engine/js/fb.pagination.js"></script>
+    <script type='text/javascript' src="/Engine/js/fb.fileutils.js"></script>
+    <script type='text/javascript' src="/Engine/js/fb.cargamasiva.js"></script>
+    <!-- Componente de construccion de html -->
+    <script type='text/javascript' src="/Engine/js/fb.htmlbuilder.js"></script>
+    <!-- Script para Modal de Compensaciones -->
+    <script type='text/javascript' src="/Engine/js/compensaciones.js"></script>
+    <!-- Plugins que generan los controles visuales (htmldom)  -->
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.controlbase.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.checkbox.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.iconosayuda.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.cuadrodialogo.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.cuadromodal.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.cuadrocompensaciones.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.list.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.textbox.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.decimal.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.oculto.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.label.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.controlvacio.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.combobox.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.formulariogrid.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.formulariogridedicion.new.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.fecha.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.etiquetatexto.js"></script>
+    <script type='text/javascript' src="/Engine/js/fbhtmlcontrols/fb.clasificador.js"></script>
+    <script type="text/javascript" src="/Engine/js/fbhtmlcontrols/fb.publicuploader.js"></script>
+    <!-- Componente del Modelo del formulario -->
+    <script type='text/javascript' src="/Engine/js/fb.viewmodel.js?v=_ANn0aJbhhHqsPnWGTn77f90Bi_2zE0CnEOKkTF0TWc"></script>
+    <!-- Componente que genera las reglas y validaciones -->
+    <script type='text/javascript' src="/Engine/js/fb.runtime.js?v=dBy2UT1P83R1SImgoBVU3NVlDYYH8M38h5Rl1OBMTZ8"></script>
+    <!-- Componente que genera un repositorio de catalogos -->
+    <script type='text/javascript' src="/Engine/js/fb.catalogs.js"></script>
+    <!-- Componente de parseo -->
+    <script type='text/javascript' src="/Engine/js/fb.parser.responsive.js"></script>
+    <script type='text/javascript' src="/Engine/js/fb.parserjson.js"></script>
+    <!-- Scripts de la aplicacion principal -->
+    <script type='text/javascript' src="/Engine/js/CNV.environment.js"></script>
+    <!--<script type='text/javascript' src=" Html.URLContenidoEstatico("fb.businessrules.js")"></script>-->
+    <!-- Se cargan al final los scripts que no seran utilizados en un principio,
+            se modificara para cargarlos asincronamente -->
+    <script type='text/javascript' src="/Engine/js/3rdparty/base64.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/jquery.formatCurrency.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/json2.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/jquery.maskedinput.min.js"></script>
+    <script type='text/javascript' src="/Engine/js/3rdparty/bootstrap-datepicker.js"></script>
+
+
+</head>
+<body class="body">
+
+
+    <input type="hidden" id="RequestVerificationToken" name="RequestVerificationToken" value="CfDJ8HhGcXyaVwxEh42i5cS9cmg4pRzEqF6b3ukBDPugEYep9YWUVKfuvHRuJ17M6seKCmJ1vg7Q4grURv4VBOxEzUpeC8NzDa9EMdj8Pcjt0VTCx7UGOVIJXgKTZTfssKZThKS1FjoahVxpvVt0Ejp2SRg">
+
+
+    <div id="page-wrapper" class="container-fluid publico">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0; padding-top: 20px;">
+            <div class="navbar-header text-center" style="width: 100%; float: none;">
+                <img width="100" class="logo" src="/images/logo2024.png" alt="CNV. Comisión Nacional de Valores. República Argentina." style="margin-bottom: 5px;">
+            </div>
+        </nav>
+        <div id="body" class="container body-content col-md-12">
+            <link href="/Engine/css/datepicker.css" rel="stylesheet" media="screen">
+<link href="/Engine/css/bootstrap-table.css" rel="stylesheet">
+<input id="filterId" hidden />
+<div class="row header-section">
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-4">
+                <h3 class="h3 title">Presentaci&#xF3;n #3590857 - Camara Argentina de Fondos Comunes de Inversion | 30576167330</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="row vmargin-lg no-mg-top">
+        <div class="col-xs-2">
+            <label for="txtPresentationId">Presentación</label>
+            <input id="txtPresentationId" class="form-control input-sm" value="3590857" readonly />
+        </div>
+        <div class="col-xs-3">
+            <label for="txtFormTypeName">Formulario</label>
+            <input id="txtFormTypeName" class="form-control input-sm" value="Valores Diarios de Cuotapartes" readonly />
+        </div>
+        <div class="col-xs-3">
+            <div class="expiration-date-container">
+                <label for="txtExpirationDate">Fecha de Vencimiento</label>
+                <input id="txtExpirationDate" class="form-control input-sm" readonly />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <form id="form-presentation" class="form-horizontal">
+                <div id="htmlOutput">
+                    <div class="icon6-wrapper">
+                        <i class="icon-refresh icon-spin icon-6"></i>
+                    </div>
+                </div>
+            </form>
+            <div id="modal-ayuda" class="modal fade" backdrop="static" keyboard="false" style="z-index: 9999">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <div class="notify">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modal-iconoAyuda" class="modal fade" backdrop="static" keyboard="false" style="z-index: 9999">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <div class="notify">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modal-error" class="modal fade" backdrop="static" keyboard="false" style="z-index: 9999">
+                <div class="modal-dialog">
+                    <div class="modal-content alert alert-danger">
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <div class="notify">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Cargando información.</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="col-lg-offset-1 col-lg-11">
+                                    <i class="icon-spinner icon-spin icon-large icon-6x"></i>
+                                    <span class="title-progress">Espera por favor mientras termina de cargar la información necesaria.</span>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalSeccion" class="modal fade" style="z-index: 9999" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- dialog body -->
+                        <div class="modal-body">
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="si btn btn-primary btn-red">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hide">
+                <div id="ayudasCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                    <!-- Carousel indicators -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#ayudasCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#ayudasCarousel" data-slide-to="1"></li>
+                        <li data-target="#ayudasCarousel" data-slide-to="2"></li>
+                    </ol>
+                    <!-- Wrapper for carousel items -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div style="padding-left: 15%; padding-right: 15%; padding-bottom: 12%;">
+                                <table class="tabla-ayuda table-responsive" style="width: 100%;">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div style="padding-left: 15%; padding-right: 15%; padding-bottom: 12%;">
+                                <table class="tabla-ayuda table-responsive" style="width: 100%;">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div style="padding-left: 15%; padding-right: 15%; padding-bottom: 12%;">
+                                <table class="tabla-ayuda table-responsive" style="width: 100%;">
+                                    <thead>
+                                        <tr></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel controls -->
+                    <a class="carousel-control left" href="#ayudasCarousel" style="opacity: 1;" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="carousel-control right" href="#ayudasCarousel" style="opacity: 1;" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+            <div id="modalErrorFilaFormularioGridEdicion" class="modal fade" style="z-index: 9999" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Para realizar ésta acción, por favor corrija los errores de la captura del registro actual.
+                        </div>
+                        <div class="modal-footer">
+                            <div class="notify">
+                                <button type="button" data-dismiss="modal" class="no btn btn-primary btn-red">
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalAvisoCompensaciones" class="modal fade" style="z-index: 9999" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- dialog body -->
+                        <div class="modal-body">
+                            Esta opción no está disponible para este dispositivo, utiliza un equipo de cómputo de escritorio.
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="si btn btn-primary btn-red">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divDynamicModals">
+            </div>
+            <div id="modalErroresEnSecciones" class="modal fade" style="z-index: 9999" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <input type="hidden">
+                        <!-- dialog body -->
+                        <div class="modal-body">
+                            Proceso concluido. Se detectaron errores en la declaración.
+
+
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-primary btn-red">
+                                Aceptar
+
+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="templateDlgCompensanciones">
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" backdrop="static" keyboard="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h4 class="modal-title">Compensaciones</h4>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <h4 class="modal-title">
+                                            <span>Total: $</span><span id="lblMonto"></span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button id="btnCancelar" type="button" class="btn btn-primary btn-red">Cancelar</button>
+                                <button id="addItem" type="button" class="btn btn-primary btn-red">Agregar</button>
+                                <button id="btnTerminar" type="button" class="btn btn-primary btn-red">Terminar</button>
+                                <div style="clear: both;"></div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+            <div id="templateRowCompensaciones" class="hide">
+                <div class="container sat-row-compensaciones">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Tipo</label>
+                            <select id="tipoSelect" class="form-control sat-height-field" claveinformativa="C1302"></select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Periodicidad</label>
+                            <select id="periodicidadSelect" class="form-control" disabled="disabled" claveinformativa="C1303"></select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Período</label>
+                            <select id="periodoSelect" class="form-control" disabled="disabled" claveinformativa="C1304"></select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Ejercicio</label>
+                            <select id="ejercicioSelect" class="form-control" disabled="disabled" claveinformativa="C1305"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Fecha de causación (dd-mm-aaaa)</label>
+                            <div class="input-append date" id="datepicker" data-date-format="dd/mm/yyyy">
+                                <input class="form-control" maxlength="12" id="txtFechaCausacion" type="text" maxlength="10" disabled="disabled" claveinformativa="C1315" />
+                                <span style="display: none;" class="add-on"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Número de operación</label>
+                            <input id="txtNumeroOperacion" onkeyup="ESALFANUMERICO(event)" maxlength="14" class="form-control" type="text" disabled="disabled" claveinformativa="C1306" />
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Concepto</label>
+                            <select id="selectConcepto" class="form-control" disabled="disabled" claveinformativa="C1307"></select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Saldo a aplicar</label>
+                            <input maxlength="12" id="txtSaldoAplicar" class="form-control currency" type="text" disabled="disabled" onkeydown="return SoloNumerosPositivos(event)" claveinformativa="C1308" />
+                            <button id="btnValidar" disabled="disabled">Continuar</button>
+                            <button id="btnEliminar">Eliminar</button>
+                        </div>
+                    </div>
+                    <div style="width: 100%; border: solid 1px lightgrey; border-width: thin"></div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label>Tipo de declaración</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <select id="selectTipoDeclaracion" class="form-control" disabled="disabled" claveinformativa="C1309"></select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label>Monto del saldo a favor original</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <input maxlength="12" id="txtSaldoFavor" class="form-control currency" type="text" disabled="disabled" onkeydown="return SoloNumerosPositivos(event)" claveinformativa="C1311" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label style="width: 200px;">Fecha en que se presentó la </br> declaración del saldo a favor (dd-mm-aaaa)</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <div class="input-append date" id="datepicker" data-date-format="dd/mm/yyyy">
+                                                <input class="form-control" style="float: left; width: 85%; margin-right: 5px;" id="txtFechaDeclaracion" type="text" maxlength="10" disabled="disabled" claveinformativa="C1314">
+                                                <span style="display: none;" class="add-on"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label>Número de operación</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <input id="txtNumeroOperacion1" onkeyup="ESALFANUMERICO(event)" maxlength="14" class="form-control" type="text" disabled="disabled" claveinformativa="C1310" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label>Remanente histórico antes de la aplicación</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <input maxlength="12" id="txtRemanenteHistorico" class="form-control currency" type="text" disabled="disabled" onkeydown="return SoloNumerosPositivos(event)" claveinformativa="C1312" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <table width="400px">
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <label>Remanente actualizado antes de la aplicación</label>
+                                        </td>
+                                        <td style="width: 50%;">
+                                            <input maxlength="12" id="txtRemanenteActualizado" class="form-control currency" type="text" disabled="disabled" onkeydown="return SoloNumerosPositivos(event)" claveinformativa="C1313" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%; border: solid 1px;"></div>
+                </div>
+            </div>
+            <div class="modal fade" id="dlgCancelar" style="z-index: 9999" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Cancelar</h4>
+                        </div>
+                        <div class="modal-body">¿Está seguro de cancelar todas las Compensaciones?</div>
+                        <div class="modal-footer">
+                            <button id="btnAceptar" type="button" class="btn btn-primary btn-red">SI</button>
+                            <button type="button" class="btn btn-primary btn-red" data-dismiss="modal">NO</button>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="modalEliminarGridEdicion" class="modal fade" style="z-index: 9999" backdrop="static" keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <input type="hidden">
+                        <!-- dialog body -->
+                        <div class="modal-body">
+                            El registro se eliminará. ¿Deseas continuar?
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer">
+                            <button type="button" class="aceptar btn btn-primary btn-red">
+                                Aceptar
+                            </button>
+                            <button type="button" data-dismiss="modal" class="cancelar btn btn-primary btn-red">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="templateCuadroDialogoModal">
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog" style="width: 800px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h4 id="lblTituloCuadroDialogo" class="modal-title"></h4>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <h4 class="modal-title">
+                                            <span>Total: $</span><span id="lblMontoEstimulo"></span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" class="sat-tmpl-row" />
+                                <input type="hidden" class="sat-view-model-row-id" />
+                                <table class="table table-bordered sat-table"></table>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancelTable" type="button" class="btn btn-primary btn-red">
+                                    Cancelar
+                                </button>
+                                <button id="nuevaFila" type="button" class="btn btn-primary btn-red">
+                                    Agregar
+                                </button>
+                                <button id="acceptTable" type="button" class="btn btn-primary btn-red">
+                                    Terminar
+                                </button>
+                                <div style="clear: both;"></div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+            <div id="modalYesNo" class="modal fade" style="z-index: 9999">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- dialog body -->
+                        <div class="modal-body">
+                            Ya hay información capturada, ¿desea continuar con la operación?
+                        </div>
+                        <!-- dialog buttons -->
+                        <div class="modal-footer">
+                            <button type="button" class="si btn btn-primary btn-red">
+                                SI
+                            </button>
+                            <button type="button" class="no btn btn-primary btn-red">
+                                NO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalValidando" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Validando</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="col-lg-offset-1 col-lg-11">
+                                    <i class="icon-spinner icon-spin icon-large icon-6x"></i> Espera por favor mientras termina de validar los datos que capturaste.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalDetalleCargaMasiva" tabindex="-1" role="dialog" aria-hidden="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Detalle carga masiva</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-success" style="padding: 1em!important;">
+                            </div>
+                            <div class="alert alert-danger" style="padding: 1em!important;">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-primary btn-red">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalCargandoArchivo" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Cargando archivo.</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="col-lg-offset-1 col-lg-11">
+                                    <i class="icon-spinner icon-spin icon-large icon-6x"></i>
+                                    <span class="title-progress">Espera por favor mientras termina de cargar y leer el archivo.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="DVPLANFOR" class="sat-div-contenedores hide">-</div>
+            <div id="DVDAPREFOR" class="sat-div-contenedores hide">-</div>
+            <div id="DVDAPREFORCOMP" class="sat-div-contenedores hide">-</div>
+            <div id="DVOPER" class="sat-div-contenedores hide">-</div>
+            <div id="DVDECLARACIONDISCO" class="sat-div-contenedores hide">-</div>
+            <div id="DVDECLARACION" class="sat-div-contenedores hide">-</div>
+            <div id="DVINFOCON" class="sat-div-contenedores hide">-</div>
+            <div id="DVINFOALERTCLIENT" class="sat-div-contenedores hide">-</div>
+            <div id="DVINFOALERTCLIENTORIGIN" class="sat-div-contenedores hide">-</div>
+            <div id="DVCA07" class="sat-div-contenedores hide">-</div>
+            <div id="DVCA08" class="sat-div-contenedores hide">-</div>
+            <div id="DVRETENCIONES" class="sat-div-contenedores hide">-</div>
+            <div id="DVINITRETENCIONES" class="sat-div-contenedores hide">-</div>
+            <div id="DVINFODECLA" clasS="sat-div-contenedores hide">-</div>
+            <input style="display: none;" id="fileDialog" type="file" />
+            <input type="hidden" id="idRetencion">
+        </div>
+    </div>
+</div>
+<script type="text/javascript" defer="defer">
+    "use strict";
+
+    var message = "";
+    if(message != "")
+    {
+        alert(message);
+        window.history.back();
+    }
+
+    var formTypeId = '500';
+    var expirationId = '-1';
+
+    var presentationIdGlobal = '3590857';
+    var formTypeName = 'Valores Diarios de Cuotapartes';
+    var societyName = '';
+    var presentationDate = '';
+
+    var presentation ='<modeloDatos><relacionesGrid /><entidad visibilidad="true" id="10001" tipo="" clave="Valores Diarios de Cuotapartes"><propiedad id="Des" visible="true" claveinformativa="Des">VALORES DIARIOS DE CUOTAPARTES SUJETOS A REVISION</propiedad><propiedad id="FechDoc" visible="true" claveinformativa="FechDoc">2026-11-05T03:00:00.000Z</propiedad><propiedad id="PlaVDC" visible="true" claveinformativa="PlaVDC" uploader="archivos-1uploader17220">[{"idUploader":"1uploader17220","idEntidadPropiedad":"E10001PPlaVDC","nombreArchivo":"20261105_Planilla_Diaria_A.xlsx","tamano":"0.92 MB","guid":"ce233b0a-b465-4b19-9155-ff6112476b94","hash":"61parvxSGBUTmrMbNEg/u+psnTfeesgAZjFdvweITXA="}]</propiedad></entidad></modeloDatos>';
+
+
+    var formFile = {"navegacion":{"agrupador":[{"id":"1group22265","titulo":"","idEntidadPropiedad":"","idPropiedad":"","idTipoAgrupador":"","icono":"","subregimen":"","orden":"","seccion":[{"id":"1section35098","idControlFormulario":"1maincontainer244022","tituloSeccion":"Valores Diarios de Cuotapartes","tipoSeccion":"","orden":"","ocultar":""}]}]},"reglas":{"reglas":{"regla":[{"idEntidad":"10001","idFormulario":"","tipoRegla":"Validacion","mensajeError":"CAMPO OBLIGATORIO","orden":"","participaEnGrid":false,"definicion":"SI(ESNULO($Des),FALSO,VERDADERO)\n","idPropiedadAsociada":"Des","disparadores":"","id":100001,"ejecutarAlInicio":"1"},{"idEntidad":"10001","idFormulario":"","tipoRegla":"Validacion","mensajeError":"CAMPO OBLIGATORIO","orden":"","participaEnGrid":false,"definicion":"SI(ESNULO($FechDoc),FALSO,VERDADERO)\n","idPropiedadAsociada":"FechDoc","disparadores":"","id":100002,"ejecutarAlInicio":"1"},{"idEntidad":"10001","idFormulario":"","tipoRegla":"Validacion","mensajeError":"Se requiere un archivo adjunto.","orden":"","participaEnGrid":false,"definicion":"SI(ESNULO($PlaVDC),FALSO,VERDADERO)\n","idPropiedadAsociada":"PlaVDC","disparadores":"","id":100003,"ejecutarAlInicio":"1"}]},"propiedades":{"propiedad":[{"idEntidad":10001,"idFormulario":"","idRegla":100001,"idEntidadPropiedad":10001,"idPropiedad":"Des","ejecutarRegla":"1","id":"Des10001"},{"idEntidad":10001,"idFormulario":"","idRegla":100002,"idEntidadPropiedad":10001,"idPropiedad":"FechDoc","ejecutarRegla":"1","id":"FechDoc10001"},{"idEntidad":10001,"idFormulario":"","idRegla":100003,"idEntidadPropiedad":10001,"idPropiedad":"PlaVDC","ejecutarRegla":"1","id":"PlaVDC10001"}]}},"diagramacion":[{"control":{"id":"1maincontainer244022","tipoControl":"Grupo","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1column18548","tipoControl":"Columna","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1row23324","tipoControl":"Grupo","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1column44609","tipoControl":"Columna","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1textbox26561","tipoControl":"CuadroTexto","idEntidadPropiedad":"10001","idPropiedad":"Des","orden":"","atributos":{"atributo":[{"nombre":"Obligatorio","valor":""}]},"controles":{"control":[]}}]}}]}},{"id":"1row29093","tipoControl":"Grupo","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1column18657","tipoControl":"Columna","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1date19904","tipoControl":"ControlFecha","idEntidadPropiedad":"10001","idPropiedad":"FechDoc","orden":"","atributos":{"atributo":[{"nombre":"Obligatorio","valor":""}]},"controles":{"control":[]}}]}},{"id":"1column264944","tipoControl":"Columna","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[]}}]}},{"id":"1row49182","tipoControl":"Grupo","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1column18409","tipoControl":"Columna","idEntidadPropiedad":"","idPropiedad":"","orden":"","atributos":{"atributo":[]},"controles":{"control":[{"id":"1uploader17220","tipoControl":"Uploader","idEntidadPropiedad":"10001","idPropiedad":"PlaVDC","orden":"","atributos":{"atributo":[{"nombre":"Obligatorio","valor":""},{"nombre":"TituloCorto","valor":"Planilla Valores Diarios de Cuotapartes"},{"nombre":"TituloLargo","valor":"Planilla Valores Diarios de Cuotapartes"},{"nombre":"Extensiones","valor":".pdf, .xls, .xlsx, .doc, .docx"},{"nombre":"NumeroArchivos","valor":"3"},{"nombre":"TamanoArchivos","valor":"10485760"}]},"controles":{"control":[]}}]}}]}}]}}]}}}],"ayudas":{"textos":{"ayudas":{"entidad":[]}}},"metadata":{"Aplicacion":"CNV - Autopista","Ejercicio":2018,"Periodo":"001","Periodicidad":"NA","FormularioId":1,"DescripcionFormulario":null,"DescripcionCorta":null,"Version":0,"Estatus":"edicion","FechaCreacion":"2018-10-16T14:34:30.8146003-03:00","FechaModificacion":"2018-10-16T14:34:30.8146003-03:00","UriArchivo":"https://desa-iis.cnv.gov.ar:8012/BlobWebService.svc/DownloadBlob/942b08c0-ade7-4442-8d5c-49ec4e009185","UriRutaRespaldo":null,"EsFormularioComun":false,"UsuarioAsignado":"","Reforma":1,"FormType":500,"BlobId":"9825da93-3e7c-4e0e-8f09-1e58b0db7140","PartitionKey":"1","RowKey":"2018.001.NA.1","Timestamp":"0001-01-01T00:00:00-03:00","ETag":""},"modeloDatos":[{"id":10001,"nombre":"Valores Diarios de Cuotapartes","atributos":{"atributo":[{"nombre":"tipo","valor":""},{"nombre":"multiplicidad","valor":"1"},{"nombre":"llave","valor":"Valores Diarios de Cuotapartes"}]},"propiedades":{"propiedad":[{"id":"Des","nombre":"Descripción","tipoDatos":"Alfanumerico","claveInformativa":"Des","atributos":{"atributo":[{"nombre":"TituloCorto","valor":"Descripción"},{"nombre":"Obligatorio","valor":""}]}},{"id":"FechDoc","nombre":"Fecha del Documento","tipoDatos":"Fecha","claveInformativa":"FechDoc","atributos":{"atributo":[{"nombre":"TituloCorto","valor":"Fecha del Documento"},{"nombre":"Obligatorio","valor":""}]}},{"id":"PlaVDC","nombre":"Planilla de Valores Diarios de Cuotapartes","tipoDatos":"Alfanumerico","claveInformativa":"PlaVDC","atributos":{"atributo":[{"nombre":"TituloCorto","valor":"Planilla de Valores Diarios de Cuotapartes"},{"nombre":"Obligatorio","valor":""},{"nombre":"Uploader","valor":""}]}}]}}]};
+
+    $(document).ready(function () {
+
+        viewModel = new PresentationModel();
+        GetPreviousExpirations(formTypeId, expirationId);
+        console.log(formFile)
+        $("#cerrarSesion").on('click', function () {
+            verificaPagina('/Home/LogOut');
+        });
+
+        if(!$("#txtExpirationDate").val()){
+            $(".expiration-date-container").hide();
+        }
+
+        $('#btnRevisionDeclara, #revisarResponsivo').on('click', function () {
+            window.location.href = 'das.pdf';
+        });
+
+        CNV.Environment.setSetting('isDAS', true);
+        CNV.Environment.setSetting('applyrules', false);
+        CNV.Environment.setSetting('isPresentationMode', true);
+
+        AppDeclaracionesSAT.initStepThree(function () {
+            $('#form-presentation input').prop('readonly', true);
+            $('#form-presentation select').prop('disabled', true);
+            $('#form-presentation label.btn').remove();
+
+            $("#form-presentation .btn")
+                .not('.formgrid .btnCancelEdit')
+                .not('.btnEditFormularioGridEdicionRow')
+                .remove();
+
+            $("[id^=lista-archivos] th:last-child, [id^=lista-archivos] td:last-child").remove();
+            $('.datepicker-control-div').datepicker("remove");
+        });
+
+        AppDeclaracionesSAT.initProxyDivs();
+
+        var info = {
+            rfc: 'ADC010403J89',
+            nombre: 'Ferreteria X',
+            tipodeclaracion: '001',
+            tipocomplementaria: '001',
+            tipodeclaraciontexto: 'texto declaracion',
+            tipocomplementariatexto: 'texto complementaria',
+            periodicidad: 'anual',
+            periodo: 'anual',
+            tipopersona: 'F',
+            origen: 'origen-data',
+            ejercicio: '2014',
+            subregimensugerido: '',
+            forma: 'tmp',
+            tipodisco: ''
+        };
+
+        $('#DVINFOCON').html(JSON.stringify(info));
+
+        $(window).bind('scroll', function () {
+            if ($(window).scrollTop() > 94) {
+                $('.lineGray').addClass('fixed');
+            } else {
+                $('.lineGray').removeClass('fixed');
+            }
+        });
+        $(".mainmenu").css("height", $('#mainPanel').height());
+
+        Response.action(function () {
+            if (Response.band(1200)) {
+                // 1200+
+                $('.mainmenu').removeClass('hide');
+                $('#banner-desktop').removeClass('hide');
+                $('#banner-responsive').addClass('hide');
+                $('.containerTabs').removeClass('hide');
+            }
+            else if (Response.band(992)) {
+                // 992+
+
+                $('.containerTabs').addClass('hide');
+                $('.mainmenu').addClass('hide');
+                $('#banner-responsive').removeClass('hide');
+                $('#banner-desktop').addClass('hide');
+            }
+            else if (Response.band(768)) {
+                // 768+
+                $('.containerTabs').addClass('hide');
+                $('.mainmenu').addClass('hide');
+                $('#banner-responsive').removeClass('hide');
+                $('#banner-desktop').addClass('hide');
+            }
+            else {
+                // 0->768
+                $('.containerTabs').addClass('hide');
+                $('.mainmenu').addClass('hide');
+                $('#banner-responsive').removeClass('hide');
+                $('#banner-desktop').addClass('hide');
+            }
+        });
+
+        $(document).on("hidden.bs.modal", function () {
+            var modalesAbiertos = $(".modal:visible").length;
+
+            if (modalesAbiertos > 0) {
+                $("body").addClass("modal-open");
+            }
+        });
+        FormsBuilder.Paginacion.configurarPaginador();
+        FormsBuilder.CargaMasiva.configurarCargaMasiva();
+    });
+</script>
+        </div><!-- /.inicio -->
+    </div>
+
+
+</body>
+
+</html>
