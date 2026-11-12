@@ -1,0 +1,12 @@
+200 35880 https://www.argentina.gob.ar/cnv/empresas
+FORMS: ['<form class="main-form" role="search" action="/cnv/empresas" method="post" id="apachesolr-search-custom-page-search-form" accept-charset="UTF-8">']
+INPUTS: ['<input type="hidden" name="form_build_id" value="form-XdgIfvM4W-_3Job0_B1WSr9doUeKetaxKekHS8EJTnE" />', '<input type="hidden" name="form_id" value="apachesolr_search_custom_page_search_form" />', '<input id="edit-tarro-de-miel-apachesolr-search-custom-page-search-form" class="form-control form-text" type="text" name="tarro_de_miel" value="" size="60" maxlength="128" />', '<input placeholder="Buscá en el sitio" id="edit-keys" class="input-search form-control form-text" aria-label="Buscá en el sitio" type="text" name="keys" value="" size="20" maxlength="255" />']
+LINKS: []
+404 3708 https://www.cnv.gov.ar/SitioWeb/Empresas/Buscar?nombre=BALANZ
+   
+404 3724 https://www.cnv.gov.ar/SitioWeb/Empresas/BuscarEmpresas?q=BALANZ
+   
+200 35880 https://www.argentina.gob.ar/cnv/empresas
+   
+404 3712 https://www.cnv.gov.ar/SitioWeb/Empresas/Empresas?search=BALANZ
+   
