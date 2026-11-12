@@ -89,7 +89,7 @@ def cadena(href, tag):
     return nombre, None
 
 JS = ["/Engine/js/fbhtmlcontrols/fb.publicuploader.js", "/Engine/js/fb.fileutils.js", "/js/Presentations/presentations.js",
-      "/Engine/js/CNV.environment.js", "/Engine/js/appconfig.js", "/lib/jquery-file-download/jquery.fileDownload.js", "/Engine/js/fb.utils.js"]
+      "/Engine/js/CNV.environment.js", "/Engine/js/appconfig.js", "/lib/jquery-file-download/jquery.fileDownload.js", "/Engine/js/fb.utils.js", "/js/site.bo.min.js"]
 
 def bajar_js():
     for j in JS:
