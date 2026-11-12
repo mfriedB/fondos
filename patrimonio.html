@@ -531,6 +531,79 @@
     color:var(--navy);
     cursor:pointer;
   }
+  /* Se oculta el calendario nativo del navegador (muy chico): se usa uno propio (.cal-pop) */
+  .range-date{ cursor:pointer; }
+  .range-date input[type=date]::-webkit-calendar-picker-indicator{ display:none; }
+  .range-date .cal-ico{ display:inline-flex; color:var(--muted); }
+  .range-date.active .cal-ico{ color:var(--navy); }
+  .cal-pop{
+    position:absolute;
+    z-index:9999;
+    width:336px;
+    max-width:calc(100vw - 16px);
+    box-sizing:border-box;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 16px 44px rgba(19,30,66,0.20);
+    padding:16px;
+    font-family:inherit;
+    color:var(--navy);
+  }
+  .cal-head{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .cal-head select{
+    flex:1;
+    min-width:0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    padding:8px 8px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    color:var(--navy);
+    cursor:pointer;
+  }
+  .cal-head select.cal-year{ flex:0 0 88px; }
+  .cal-nav{
+    flex:0 0 38px;
+    height:38px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--navy);
+    font-size:20px;
+    line-height:1;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .cal-nav:hover:not(:disabled){ border-color:#B9C4E8; background:#F4F6FC; }
+  .cal-nav:disabled{ opacity:.35; cursor:default; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:3px; }
+  .cal-dow{
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    padding:4px 0 6px;
+  }
+  .cal-day{
+    height:40px;
+    border:none;
+    border-radius:8px;
+    background:transparent;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy);
+    cursor:pointer;
+  }
+  .cal-day:hover:not(:disabled){ background:#E9EEFB; }
+  .cal-day.sel{ background:var(--navy); color:#fff; }
+  .cal-day:disabled{ color:#C5CAD8; cursor:default; }
   .hist-chart-wrap{ position:relative; height:320px; }
 
   /* Tabs (dos solapas: Patrimonio Futuro / Costo de Oportunidad) */
@@ -1851,6 +1924,111 @@ function resolveChartWindow(range, custom, csIdx){
   return { startIdx, endIdx };
 }
 
+/* Calendario propio para los inputs de fecha (el nativo del navegador es muy chico) */
+const CAL_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let calPop = null;
+
+function isoAddDays(iso, n){
+  const d = new Date(iso + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function calOutside(e){
+  if(calPop && !calPop.contains(e.target) && !calPop._anchor.contains(e.target)) closeCalendar();
+}
+function calKey(e){ if(e.key === 'Escape') closeCalendar(); }
+function closeCalendar(){
+  if(!calPop) return;
+  calPop.remove();
+  calPop = null;
+  document.removeEventListener('mousedown', calOutside, true);
+  document.removeEventListener('keydown', calKey, true);
+  window.removeEventListener('resize', closeCalendar);
+}
+
+// Abre el calendario debajo del input `el`; solo se pueden elegir dias entre minIso y maxIso
+function openCalendar(el, minIso, maxIso){
+  closeCalendar();
+  const anchor = el.parentElement;
+  let sel = el.value || el.dataset.shown || maxIso;
+  if(sel < minIso) sel = minIso;
+  if(sel > maxIso) sel = maxIso;
+  let y = +sel.slice(0, 4), m = +sel.slice(5, 7) - 1;
+  const minY = +minIso.slice(0, 4), maxY = +maxIso.slice(0, 4);
+  const pop = document.createElement('div');
+  pop.className = 'cal-pop';
+  pop._anchor = anchor;
+
+  const draw = ()=>{
+    const ym = `${y}-${String(m + 1).padStart(2, '0')}`;
+    const offset = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7;   // semana de lunes a domingo
+    const nDays = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    let cells = ['Lu','Ma','Mi','Ju','Vi','Sa','Do'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+    for(let i = 0; i < offset; i++) cells += '<span></span>';
+    for(let d = 1; d <= nDays; d++){
+      const iso = `${ym}-${String(d).padStart(2, '0')}`;
+      const off = iso < minIso || iso > maxIso;
+      cells += `<button type="button" class="cal-day${iso === sel ? ' sel' : ''}" data-iso="${iso}"${off ? ' disabled' : ''}>${d}</button>`;
+    }
+    const monthOpts = CAL_MESES.map((n, i)=>{
+      const mm = `${y}-${String(i + 1).padStart(2, '0')}`;
+      const off = mm < minIso.slice(0, 7) || mm > maxIso.slice(0, 7);
+      return `<option value="${i}"${i === m ? ' selected' : ''}${off ? ' disabled' : ''}>${n}</option>`;
+    }).join('');
+    let yearOpts = '';
+    for(let yy = minY; yy <= maxY; yy++) yearOpts += `<option value="${yy}"${yy === y ? ' selected' : ''}>${yy}</option>`;
+    pop.innerHTML = `
+      <div class="cal-head">
+        <button type="button" class="cal-nav" data-nav="-1" title="Mes anterior"${ym <= minIso.slice(0, 7) ? ' disabled' : ''}>&#8249;</button>
+        <select class="cal-month" aria-label="Mes">${monthOpts}</select>
+        <select class="cal-year" aria-label="A&ntilde;o">${yearOpts}</select>
+        <button type="button" class="cal-nav" data-nav="1" title="Mes siguiente"${ym >= maxIso.slice(0, 7) ? ' disabled' : ''}>&#8250;</button>
+      </div>
+      <div class="cal-grid">${cells}</div>`;
+  };
+  const clampMonth = ()=>{
+    const ym = `${y}-${String(m + 1).padStart(2, '0')}`;
+    if(ym < minIso.slice(0, 7)){ y = minY; m = +minIso.slice(5, 7) - 1; }
+    if(ym > maxIso.slice(0, 7)){ y = maxY; m = +maxIso.slice(5, 7) - 1; }
+  };
+
+  pop.addEventListener('click', (e)=>{
+    const nav = e.target.closest('.cal-nav');
+    if(nav && !nav.disabled){
+      m += +nav.dataset.nav;
+      if(m < 0){ m = 11; y--; } else if(m > 11){ m = 0; y++; }
+      draw();
+      return;
+    }
+    const day = e.target.closest('.cal-day');
+    if(day && !day.disabled){
+      el.value = day.dataset.iso;
+      closeCalendar();
+      el.dispatchEvent(new Event('change', { bubbles:true }));
+      if(el.dataset.shown) el.value = el.dataset.shown;
+    }
+  });
+  pop.addEventListener('change', (e)=>{
+    if(e.target.classList.contains('cal-month')) m = +e.target.value;
+    else if(e.target.classList.contains('cal-year')) y = +e.target.value;
+    clampMonth();
+    draw();
+  });
+
+  draw();
+  document.body.appendChild(pop);
+  const r = anchor.getBoundingClientRect();
+  const w = pop.offsetWidth;
+  let left = r.right - w + window.scrollX;
+  left = Math.max(window.scrollX + 8, Math.min(left, window.scrollX + document.documentElement.clientWidth - w - 8));
+  pop.style.left = left + 'px';
+  pop.style.top = (r.bottom + window.scrollY + 6) + 'px';
+  calPop = pop;
+  document.addEventListener('mousedown', calOutside, true);
+  document.addEventListener('keydown', calKey, true);
+  window.addEventListener('resize', closeCalendar);
+}
+
 // Conecta los inputs de fecha inicio / fin de un grafico con sus botones de periodo.
 // onCustom(start, end) se llama cuando el usuario elige un rango valido.
 function setupDateRange(prefix, filtersId, onCustom){
@@ -1866,6 +2044,18 @@ function setupDateRange(prefix, filtersId, onCustom){
     onCustom(s, e);
   };
   [startEl, endEl].forEach(el=>{
+    const box = el.parentElement;
+    box.insertAdjacentHTML('beforeend', '<span class="cal-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>');
+    box.addEventListener('click', (e)=>{
+      e.preventDefault();   // evita el calendario nativo (Firefox lo abre con el clic)
+      if(!DATES.length) return;
+      if(calPop && calPop._anchor === box){ closeCalendar(); return; }
+      // El inicio no puede pasar al fin, ni el fin quedar antes del inicio
+      const first = DATES[0], last = DATES[DATES.length - 1];
+      const curStart = startEl.dataset.shown || first, curEnd = endEl.dataset.shown || last;
+      if(el === startEl) openCalendar(el, first, isoAddDays(curEnd, -1));
+      else openCalendar(el, isoAddDays(curStart, 1), last);
+    });
     el.addEventListener('change', handler);
     // Al salir del campo se muestra la ventana realmente graficada (dias habiles, limites de datos)
     el.addEventListener('blur', ()=>{
