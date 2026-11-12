@@ -79,10 +79,11 @@ def cadena(href, tag):
         if not vk.ok or len(vk.text) < 10: continue
         key = vk.text.strip().strip('"')
         try:
-            j = vk.json(); key = j if isinstance(j, str) else (j.get("ValetKey") or j.get("valetKey") or j.get("key") or json.dumps(j))
+            j = vk.json(); key = j if isinstance(j, str) else (j.get("valetKeyData") or j.get("ValetKey") or j.get("valetKey"))
         except Exception: pass
         d = S.post(f"https://blob.cnv.gov.ar/BlobWebService.svc/DownloadBlob/{g}", headers={"ValetKey": key}, timeout=(15,90))
         log("   blob", d.status_code, d.headers.get("Content-Type"), d.headers.get("Content-Disposition"), len(d.content), d.content[:4])
+        if not d.ok and CFG["modo"] == "explorar": save(f"blob_err_{tag}_{g[:8]}.html", d.text[:5000])
         if d.ok and d.content[:2] == b"PK":
             return nombre, d.content
     return nombre, None
@@ -94,9 +95,10 @@ def main():
     for tds, hrefs in fl[:5]: log("   ", tds, hrefs)
     if CFG["modo"] == "explorar":
         save("hrefs.txt", "\n".join(sorted(set(re.findall(r'href="([^"]+)"', txt)))))
-    n = 0
+    n = 0; intentos = 0
     for i, (tds, hrefs) in enumerate(fl):
-        if n >= CFG.get("max_archivos", 2): break
+        if n >= CFG.get("max_archivos", 2) or intentos >= CFG.get("max_archivos", 2) * 2: break
+        intentos += 1
         for h in hrefs:
             nombre, data = cadena(h, f"{i}")
             if data:
