@@ -1,27 +1,26 @@
-"""Explora el sitio publico de la CNV buscando informacion de cuotapartistas por fondo (paso 2: Empresas y Personas)."""
-import os, re, requests, html, json
+"""Explora AIF (aif2.cnv.gov.ar): rutas publicas y tipos de presentaciones (paso 3)."""
+import os, re, requests
 OUT = os.path.join(os.path.dirname(__file__), "out"); os.makedirs(OUT, exist_ok=True)
 S = requests.Session(); S.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36"
-log = open(os.path.join(OUT, "log2.txt"), "w")
-def get(u, name=None, **kw):
+log = open(os.path.join(OUT, "log3.txt"), "w")
+def get(u, name=None):
     try:
-        r = S.get(u, timeout=(15, 60), **kw)
+        r = S.get(u, timeout=(15, 60))
         if name: open(os.path.join(OUT, name), "wb").write(r.content)
         log.write(f"{r.status_code} {len(r.content)} {r.url}\n"); return r.text
     except Exception as e:
         log.write(f"ERR {u} {e!r}\n"); return ""
-def texto(h):
-    t = re.sub(r"<script.*?</script>|<style.*?</style>", "", h, flags=re.S)
-    return [l.strip() for l in html.unescape(re.sub(r"<[^>]+>", "\n", t)).split("\n") if l.strip()]
-h = get("https://www.cnv.gov.ar/SitioWeb/Empresas", "empresas.html")
-log.write("FORMS: " + repr(re.findall(r'<form[^>]*>', h)) + "\n")
-log.write("INPUTS: " + repr(re.findall(r'<input[^>]*>', h)[:20]) + "\n")
-log.write("LINKS: " + repr(sorted(set(re.findall(r'href="(/SitioWeb/[^"]+)"', h)))) + "\n")
-for js in sorted(set(re.findall(r'src="(/SitioWeb/[^"]+\.js[^"]*)"', h))):
-    t = get("https://www.cnv.gov.ar" + js)
-    for m in sorted(set(re.findall(r'["\'](/SitioWeb/[A-Za-z/]+)["\']', t))): log.write(f"  JS {js}: {m}\n")
-for q in ["/SitioWeb/Empresas/Buscar?nombre=BALANZ", "/SitioWeb/Empresas/BuscarEmpresas?q=BALANZ", "/SitioWeb/Empresas?q=BALANZ", "/SitioWeb/Empresas/Empresas?search=BALANZ"]:
-    t = get("https://www.cnv.gov.ar" + q, re.sub(r"\W", "_", q)[-40:] + ".html")
-    log.write("   " + " | ".join(l for l in texto(t) if "ALANZ" in l.upper())[:500] + "\n")
-    for l in sorted(set(re.findall(r'href="([^"]*Empresa[^"]*)"', t)))[:30]: log.write(f"   link {l}\n")
+seen = set()
+for u in ["https://aif2.cnv.gov.ar/", "https://aif2.cnv.gov.ar/Presentations/publicview/DD4B50E0-4B77-4615-AFBC-E86AA4A540A8"]:
+    h = get(u, re.sub(r"\W", "_", u)[-30:] + ".html")
+    for js in sorted(set(re.findall(r'src="([^"]+\.js[^"]*)"', h))):
+        ju = js if js.startswith("http") else "https://aif2.cnv.gov.ar" + ("" if js.startswith("/") else "/") + js
+        if ju in seen: continue
+        seen.add(ju); t = get(ju)
+        rutas = sorted(set(re.findall(r'["\'`](/?(?:api|Presentations|presentations|public|Public)[A-Za-z0-9_/\-]*)["\'`]', t)))
+        log.write(f"  JS {ju}: {rutas[:80]}\n")
+        for m in sorted(set(re.findall(r'.{60}[Cc]uotapartista.{60}', t)))[:15]: log.write(f"    CUOTAPARTISTA: {m}\n")
+# rutas candidatas de busqueda publica
+for p in ["/Presentations/publicsearch", "/Presentations/PublicSearch", "/api/Presentations/public", "/api/PublicPresentations", "/Presentations/public", "/api/DocumentTypes", "/api/Entities/public"]:
+    t = get("https://aif2.cnv.gov.ar" + p, re.sub(r"\W", "_", p) + ".txt"); log.write("   " + t[:300].replace("\n", " ") + "\n")
 log.close()
