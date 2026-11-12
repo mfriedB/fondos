@@ -1,0 +1,5 @@
+200 183641 https://www.cnv.gov.ar/SitioWeb/FondosComunesInversion
+LINKS FCI:
+/SitioWeb/FondosComunesInversion/CuotaPartes
+200 2010809 https://www.cnv.gov.ar/SitioWeb/FondosComunesInversion/CuotaPartes
+   [0] celdas ejemplo: ['1 abr. 2020 19:25', '1 abr. 2020 19:27', '1 abr. 2020 20:28', '1 abr. 2022 20:34', '1 abr. 2025 20:13', '1 abr. 2026 12:55', '1 abr. 2026 15:09', '1 abr. 2026 20:43', '1 ago. 2022 20:17', '1 ago. 2023 14:47', '1 ago. 2023 14:50', '1 ago. 2023 20:39', '1 ago. 2024 11:59', '1 ago. 2024 20:18', '1 ago. 2025 20:25', '1 dic. 2020 20:13', '1 dic. 2021 20:24', '1 dic. 2022 20:36', '1 dic. 2023 14:53', '1 dic. 2023 20:40', '1 dic. 2025 14:16', '1 dic. 2025 20:23', '1 feb. 2021 20:18', '1 feb. 2022 20:15', '1 feb. 2023 20:33']
