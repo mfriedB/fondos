@@ -18,7 +18,7 @@ concurrency:
 jobs:
   descargar:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v5
         with:
@@ -29,13 +29,12 @@ jobs:
       - run: pip install requests openpyxl pandas
       - name: Descargar
         run: |
-          mkdir -p cafci/debug
-          timeout 600 python -u cafci/descargar_cnv.py 2>&1 | tee cafci/debug/log.txt || true
+          timeout 1500 python -u cafci/descargar_cnv.py
       - name: Commitear resultados
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for d in cafci/raw cafci/debug cafci/procesado; do [ -e "$d" ] && git add "$d"; done
+          for d in cafci/raw cafci/procesado; do [ -e "$d" ] && git add "$d"; done
           if ! git diff --cached --quiet; then
             git commit -m "Planillas CAFCI-CNV: actualizacion automatica"
             git push origin HEAD:cafci-datos
