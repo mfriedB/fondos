@@ -1701,6 +1701,10 @@
   .cg-fila.rel .cg-ticker{ font-weight:800; }
   .cg-nota{ margin-top:8px; background:#FFF4CC; border:1px solid #F0D777; color:#6B5200; border-radius:6px; padding:6px 10px; font-size:12px; font-weight:700; }
   .cg-alt{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:14px 0 0; }
+
+  /* Pastilla de novedad: superpuesta sobre el vertice, no ocupa lugar en la pagina */
+  .btn-cupones{ position:relative; }
+  .btn-cupones-nuevo{ position:absolute; top:-11px; right:-14px; background:#FFC83D; color:#3D2C00; font-size:10.5px; font-weight:800; letter-spacing:.06em; line-height:1.2; padding:3px 9px; border-radius:999px; border:2px solid #fff; transform:rotate(8deg); box-shadow:0 3px 8px rgba(0,0,0,.22); pointer-events:none; white-space:nowrap; }
 </style>
 </head>
 <body>
@@ -1763,6 +1767,7 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18"/><path d="M8 2.5v4"/><path d="M16 2.5v4"/><path d="M12 12.5v5"/><path d="M14 13.6c-.4-.6-1.1-.9-2-.9-1.100 0-1.900.5-1.900 1.300 0 1.700 4 .8 4 2.500 0 .8-.900 1.300-2.100 1.300-.9 0-1.700-.3-2.100-.9"/></svg>
         Reinversión de cupones
         <span class="btn-cupones-flecha">›</span>
+        <span class="btn-cupones-nuevo" aria-hidden="true">¡NUEVO!</span>
       </button>
       <button id="downloadPdfBtn" class="btn-pdf" title="Descargar PDF de la cartera sugerida">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
