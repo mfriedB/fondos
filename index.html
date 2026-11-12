@@ -635,6 +635,36 @@
   }
   .range-btn:hover{ border-color:#B9C4E8; }
   .range-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  /* Selectores de fecha inicio / fin (rango personalizado), al lado de los botones de periodo */
+  .range-filters{ align-items:center; }
+  .range-date{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:7px;
+    padding:0 10px;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--muted);
+    transition:border-color .12s ease;
+  }
+  .range-date:hover{ border-color:#B9C4E8; }
+  .range-date.active{ border-color:var(--navy); color:var(--navy); }
+  .range-date input[type=date]{
+    border:none;
+    background:transparent;
+    outline:none;
+    padding:6px 0;
+    margin:0;
+    width:auto;
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--navy);
+    cursor:pointer;
+  }
   .hist-chart-wrap{ position:relative; height:320px; }
 
   /* Tabs */
@@ -1463,6 +1493,8 @@
           <button class="range-btn" data-range="6M">6M</button>
           <button class="range-btn active" data-range="12M">12M</button>
           <button class="range-btn" data-range="YTD">YTD</button>
+          <div class="range-date" title="Fecha de inicio del gráfico"><span>Inicio</span><input type="date" id="histStart" aria-label="Fecha inicio"></div>
+          <div class="range-date" title="Fecha de fin del gráfico"><span>Fin</span><input type="date" id="histEnd" aria-label="Fecha fin"></div>
         </div>
       </div>
 
@@ -1519,6 +1551,8 @@
             <button class="range-btn" data-range="6M">6M</button>
             <button class="range-btn active" data-range="12M">12M</button>
             <button class="range-btn" data-range="YTD">YTD</button>
+            <div class="range-date" title="Fecha de inicio del gráfico"><span>Inicio</span><input type="date" id="fundHistStart" aria-label="Fecha inicio"></div>
+            <div class="range-date" title="Fecha de fin del gráfico"><span>Fin</span><input type="date" id="fundHistEnd" aria-label="Fecha fin"></div>
           </div>
         </div>
 
@@ -2542,6 +2576,68 @@ function dateIdxOnOrAfter(targetStr){
   return DATES.length - 1;
 }
 
+function dateIdxOnOrBefore(targetStr){
+  for(let i=DATES.length-1;i>=0;i--){
+    if(DATES[i] <= targetStr) return i;
+  }
+  return 0;
+}
+
+// Ventana [startIdx, endIdx] de un grafico historico: un periodo fijo (1M, 3M, ...)
+// que termina en el ultimo dato, o un rango personalizado (fecha inicio / fecha fin).
+// csIdx es el primer indice en que todos los fondos del grafico tienen dato.
+function resolveChartWindow(range, custom, csIdx){
+  const last = DATES.length - 1;
+  let startIdx, endIdx = last;
+  if(range === 'CUSTOM' && custom && custom.start && custom.end){
+    startIdx = dateIdxOnOrAfter(custom.start);
+    endIdx = dateIdxOnOrBefore(custom.end);
+  } else {
+    startIdx = dateIdxOnOrAfter(subtractPeriod(DATES[last], range));
+  }
+  startIdx = Math.max(csIdx, startIdx);
+  if(endIdx < startIdx) endIdx = startIdx;
+  return { startIdx, endIdx };
+}
+
+// Conecta los inputs de fecha inicio / fin de un grafico con sus botones de periodo.
+// onCustom(start, end) se llama cuando el usuario elige un rango valido.
+function setupDateRange(prefix, filtersId, onCustom){
+  const startEl = document.getElementById(prefix + 'Start');
+  const endEl = document.getElementById(prefix + 'End');
+  if(!startEl || !endEl) return;
+  const handler = ()=>{
+    const s = startEl.value, e = endEl.value;
+    if(!s || !e || !DATES.length) return;
+    // Mientras se tipea el anio el input pasa por fechas intermedias fuera de rango: se ignoran
+    if(s < DATES[0] || e > DATES[DATES.length - 1] || s >= e) return;
+    document.querySelectorAll('#' + filtersId + ' .range-btn').forEach(b=>b.classList.remove('active'));
+    onCustom(s, e);
+  };
+  [startEl, endEl].forEach(el=>{
+    el.addEventListener('change', handler);
+    // Al salir del campo se muestra la ventana realmente graficada (dias habiles, limites de datos)
+    el.addEventListener('blur', ()=>{
+      if(el.dataset.shown) el.value = el.dataset.shown;
+    });
+  });
+}
+
+// Refleja en los inputs la ventana que se esta graficando
+function syncDateRange(prefix, startIdx, endIdx, isCustom){
+  const startEl = document.getElementById(prefix + 'Start');
+  const endEl = document.getElementById(prefix + 'End');
+  if(!startEl || !endEl || !DATES.length) return;
+  const pairs = [[startEl, DATES[startIdx]], [endEl, DATES[endIdx]]];
+  pairs.forEach(([el, val])=>{
+    el.min = DATES[0];
+    el.max = DATES[DATES.length - 1];
+    el.dataset.shown = val;
+    if(document.activeElement !== el) el.value = val;
+    el.parentElement.classList.toggle('active', !!isCustom);
+  });
+}
+
 function subtractPeriod(dateStr, period){
   const d = new Date(dateStr + 'T00:00:00');
   if(period === '1M') d.setMonth(d.getMonth() - 1);
@@ -2645,13 +2741,31 @@ function bluePalette(n){
   return result;
 }
 
+// Nitidez de los graficos: se dibujan con al menos el doble de pixeles que el tamanio
+// en pantalla. En monitores de densidad estandar (o con zoom / escala de Windows
+// fraccionaria) el canvas a 1x deja textos y lineas borrosos.
+function chartPixelRatio(){
+  return Math.min(4, Math.max(2, Math.ceil(window.devicePixelRatio || 1)));
+}
+if(typeof Chart !== 'undefined'){
+  Chart.defaults.devicePixelRatio = chartPixelRatio();
+  window.addEventListener('resize', ()=>{
+    const pr = chartPixelRatio();
+    if(Chart.defaults.devicePixelRatio === pr) return;
+    Chart.defaults.devicePixelRatio = pr;
+    Object.values(Chart.instances || {}).forEach(ch=> ch.resize());
+  });
+}
+
 let chartFondoInstance = null;
 let chartCategoriaInstance = null;
 let histChartInstance = null;
 let currentRange = '12M';
+let histCustom = null;   // { start, end } cuando currentRange === 'CUSTOM'
 let lastRows = [];
 let selectedFunds = [];
 let currentFundRange = '12M';
+let fundCustom = null;   // { start, end } cuando currentFundRange === 'CUSTOM'
 let fundHistChartInstance = null;
 
 function renderCompositionCharts(rows){
@@ -2742,10 +2856,9 @@ function monthLabel(iso){
 
 function renderHistChart(rows){
   const csIdx = commonStartIdx(rows);
-  const endIdx = DATES.length - 1;
-  const target = subtractPeriod(DATES[endIdx], currentRange);
-  const startIdx = Math.max(csIdx, dateIdxOnOrAfter(target));
+  const { startIdx, endIdx } = resolveChartWindow(currentRange, histCustom, csIdx);
   const baseIdx = startIdx;
+  syncDateRange('hist', startIdx, endIdx, currentRange === 'CUSTOM');
 
   const labels = [];
   const isoDates = [];
@@ -2831,9 +2944,15 @@ function renderHistChart(rows){
 document.querySelectorAll('#histFilters .range-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     currentRange = btn.dataset.range;
+    histCustom = null;
     document.querySelectorAll('#histFilters .range-btn').forEach(b=>b.classList.toggle('active', b === btn));
     if(lastRows.length) renderHistChart(lastRows);
   });
+});
+setupDateRange('hist', 'histFilters', (start, end)=>{
+  currentRange = 'CUSTOM';
+  histCustom = { start, end };
+  if(lastRows.length) renderHistChart(lastRows);
 });
 
 /* ---------------------------------------------------------------------
@@ -2892,15 +3011,24 @@ function renderFundComparison(){
 
   const rowsAll = selectedFunds.map(f => ({ nombre: f, pct: 100, found: true }));
   const csIdx = commonStartIdx(rowsAll);
-  const endIdx = DATES.length - 1;
-  const target = subtractPeriod(DATES[endIdx], currentFundRange);
-  const baseIdx = Math.max(csIdx, dateIdxOnOrAfter(target));
+  const { startIdx: baseIdx, endIdx } = resolveChartWindow(currentFundRange, fundCustom, csIdx);
+  const isCustomRange = currentFundRange === 'CUSTOM';
+  syncDateRange('fundHist', baseIdx, endIdx, isCustomRange);
 
   // Chips con el retorno individual de cada fondo en la ventana elegida
   chipsEl.innerHTML = selectedFunds.map((fondo, i)=>{
     const color = fundColor(i);
     const ownCsIdx = FIRST_IDX[fondo] || 0;
-    const ret = periodReturn([{ nombre: fondo, pct: 100, found: true }], currentFundRange, ownCsIdx);
+    const fundRow = [{ nombre: fondo, pct: 100, found: true }];
+    let ret;
+    if(isCustomRange){
+      // Rango personalizado: retorno del fondo entre fecha inicio y fecha fin (s/d si no existia al inicio)
+      const reqStart = dateIdxOnOrAfter(fundCustom.start);
+      const val = reqStart < ownCsIdx ? null : portfolioIndexAt(fundRow, endIdx, reqStart);
+      ret = val == null ? null : (val - 1) * 100;
+    } else {
+      ret = periodReturn(fundRow, currentFundRange, ownCsIdx);
+    }
     return `
       <div class="fund-chip">
         <span class="chip-dot" style="background:${color};"></span>
@@ -2993,9 +3121,15 @@ document.getElementById('fundChipsRow').addEventListener('click', (e)=>{
 document.querySelectorAll('#fundHistFilters .range-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     currentFundRange = btn.dataset.range;
+    fundCustom = null;
     document.querySelectorAll('#fundHistFilters .range-btn').forEach(b=>b.classList.toggle('active', b === btn));
     renderFundComparison();
   });
+});
+setupDateRange('fundHist', 'fundHistFilters', (start, end)=>{
+  currentFundRange = 'CUSTOM';
+  fundCustom = { start, end };
+  renderFundComparison();
 });
 
 function selectOption(groupId, attr, value){
