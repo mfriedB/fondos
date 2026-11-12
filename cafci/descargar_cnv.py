@@ -73,19 +73,21 @@ def cadena(href, tag):
     nombre = re.search(r"\d{8}_Planilla_Diaria_A\.xlsx", r.text)
     nombre = nombre.group(0) if nombre else None
     log("   nombre", nombre)
-    for g in dict.fromkeys(guids):
-        vk = S.get(f"https://aif2.cnv.gov.ar/api/ValetKeyProvider/GetPublicValetKey/{g}?operation=DownloadBlob%2F", timeout=(15,45))
-        log("   valet", g, vk.status_code, vk.text[:200].replace("\n", " "))
-        if not vk.ok or len(vk.text) < 10: continue
-        key = vk.text.strip().strip('"')
-        try:
-            j = vk.json(); key = j if isinstance(j, str) else (j.get("valetKeyData") or j.get("ValetKey") or j.get("valetKey"))
-        except Exception: pass
-        d = S.post(f"https://blob.cnv.gov.ar/BlobWebService.svc/DownloadBlob/{g}", headers={"ValetKey": key}, timeout=(15,90))
-        log("   blob", d.status_code, d.headers.get("Content-Type"), d.headers.get("Content-Disposition"), len(d.content), d.content[:4])
-        if not d.ok and CFG["modo"] == "explorar": save(f"blob_err_{tag}_{g[:8]}.html", d.text[:5000])
-        if d.ok and d.content[:2] == b"PK":
-            return nombre, d.content
+    blob = re.search(r'"guid":"([0-9a-fA-F-]{36})"', r.text)
+    cands = [blob.group(1)] if blob else list(dict.fromkeys(guids))[:1]
+    for g in cands:
+        for op in ("DownloadBlob", "DownloadBlob%2F"):
+            vk = S.get(f"https://aif2.cnv.gov.ar/api/ValetKeyProvider/GetPublicValetKey/{g}?operation={op}", timeout=(15, 45))
+            if not vk.ok: log("   valet", op, vk.status_code); continue
+            try: key = vk.json()["valetKeyData"]
+            except Exception: key = vk.text.strip().strip('"')
+            for modo in ("form", "header"):
+                kw = {"data": {"ValetKey": key}} if modo == "form" else {"headers": {"ValetKey": key}}
+                d = S.post(f"https://blob.cnv.gov.ar/BlobWebService.svc/DownloadBlob/{g}", timeout=(15, 90), **kw)
+                log("   blob", op, modo, d.status_code, d.headers.get("Content-Type"), len(d.content), d.content[:4])
+                if d.ok and d.content[:2] == b"PK":
+                    CFG["_ok"] = (op, modo)
+                    return nombre, d.content
     return nombre, None
 
 JS = ["/Engine/js/fbhtmlcontrols/fb.publicuploader.js", "/Engine/js/fb.fileutils.js", "/js/Presentations/presentations.js",
