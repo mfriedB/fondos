@@ -18,6 +18,7 @@ concurrency:
 jobs:
   descargar:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
         with:
@@ -27,7 +28,9 @@ jobs:
           python-version: '3.12'
       - run: pip install requests openpyxl pandas
       - name: Descargar
-        run: python cafci/descargar_cnv.py
+        run: |
+          mkdir -p cafci/debug
+          timeout 600 python -u cafci/descargar_cnv.py 2>&1 | tee cafci/debug/log.txt || true
       - name: Commitear resultados
         run: |
           git config user.name  "github-actions[bot]"

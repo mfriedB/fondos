@@ -18,7 +18,8 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 S = requests.Session(); S.headers.update(UA)
 INDEX = "https://www.cnv.gov.ar/SitioWeb/FondosComunesInversion/CuotaPartes"
 
-def log(*a): print(*a, flush=True)
+T0=time.time()
+def log(*a): print(f"[{time.time()-T0:6.1f}s]", *a, flush=True)
 def save(name, data):
     p = os.path.join(DBG, name)
     with open(p, "wb" if isinstance(data, bytes) else "w") as f: f.write(data)
@@ -27,7 +28,7 @@ def save(name, data):
 def cafci_ultima():
     log("== CAFCI pb_get")
     try:
-        r = S.get("https://api.pub.cafci.org.ar/pb_get", timeout=120,
+        r = S.get("https://api.pub.cafci.org.ar/pb_get", timeout=(15,60),
                   headers={"Referer": "https://www.cafci.org.ar/", "Origin": "https://www.cafci.org.ar"})
         cd = r.headers.get("Content-Disposition", "")
         log("  status", r.status_code, r.headers.get("Content-Type"), cd, len(r.content))
@@ -44,7 +45,7 @@ def cafci_ultima():
 
 def indice():
     log("== Indice CNV")
-    r = S.get(INDEX, timeout=120); log("  status", r.status_code, len(r.text))
+    r = S.get(INDEX, timeout=(15,60)); log("  status", r.status_code, len(r.text))
     if CFG["modo"] == "explorar": save("cnv_index.html", r.text)
     return r.text
 
@@ -64,7 +65,7 @@ def cadena(href, tag):
     url = html.unescape(href)
     if url.startswith("/"): url = "https://www.cnv.gov.ar" + url
     log("  meta", url)
-    r = S.get(url, timeout=120, allow_redirects=True)
+    r = S.get(url, timeout=(15,60), allow_redirects=True)
     log("   status", r.status_code, r.url, r.headers.get("Content-Type"), len(r.content))
     if CFG["modo"] == "explorar": save(f"meta_{tag}.txt", r.text[:200000])
     guids = re.findall(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", r.text + " " + r.url)
@@ -73,14 +74,14 @@ def cadena(href, tag):
     nombre = nombre.group(0) if nombre else None
     log("   nombre", nombre)
     for g in dict.fromkeys(guids):
-        vk = S.get(f"https://aif2.cnv.gov.ar/api/ValetKeyProvider/GetPublicValetKey/{g}?operation=DownloadBlob%2F", timeout=60)
+        vk = S.get(f"https://aif2.cnv.gov.ar/api/ValetKeyProvider/GetPublicValetKey/{g}?operation=DownloadBlob%2F", timeout=(15,45))
         log("   valet", g, vk.status_code, vk.text[:200].replace("\n", " "))
         if not vk.ok or len(vk.text) < 10: continue
         key = vk.text.strip().strip('"')
         try:
             j = vk.json(); key = j if isinstance(j, str) else (j.get("ValetKey") or j.get("valetKey") or j.get("key") or json.dumps(j))
         except Exception: pass
-        d = S.post(f"https://blob.cnv.gov.ar/BlobWebService.svc/DownloadBlob/{g}", headers={"ValetKey": key}, timeout=180)
+        d = S.post(f"https://blob.cnv.gov.ar/BlobWebService.svc/DownloadBlob/{g}", headers={"ValetKey": key}, timeout=(15,90))
         log("   blob", d.status_code, d.headers.get("Content-Type"), d.headers.get("Content-Disposition"), len(d.content), d.content[:4])
         if d.ok and d.content[:2] == b"PK":
             return nombre, d.content
