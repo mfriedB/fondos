@@ -1,0 +1,134 @@
+200 23832 https://cnvfs.cnv.gov.ar/adfs/ls/?wtrealm=https%3A%2F%2Faif2.cnv.gov.ar&wa=wsignin1.0&wreply=https%3A%2F%2Faif2.cnv.gov.ar%2Fsignin-wsfed&wctx=CfDJ8HhGcXyaVwxEh42i5cS9cmiUDre7WJ5CXCGc8wZj2B9uys-1GVP6YzoixdEkPpqfSukHTJbtIMQ42NBji3vi4ovPHDQBX2KD-k92UEr1E99n_IGYaHQQWWxrLyx2WpNh_7LMD9VzVkex-Ca0DkgWEPgHx7W9N0Ss-bnbiTGN8B4fkO5v2ZDv3DPgdHz7-fODkiw0hOYeGrUXLrycoOq4V_qeD-P8hZpQCWLVDghEWj3R
+200 76721 https://aif2.cnv.gov.ar/Presentations/publicview/DD4B50E0-4B77-4615-AFBC-E86AA4A540A8
+200 2053 https://aif2.cnv.gov.ar/Engine/js/3rdparty/base64.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/base64.min.js: []
+200 50019 https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-datepicker.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-datepicker.js: []
+200 1063 https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-table-es-MX.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-table-es-MX.js: []
+200 110888 https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-table.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap-table.js: []
+200 27731 https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/bootstrap.min.js: []
+200 25905 https://aif2.cnv.gov.ar/Engine/js/3rdparty/date.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/date.js: []
+200 94843 https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery-1.7.2.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery-1.7.2.min.js: []
+200 5086 https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.formatCurrency.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.formatCurrency.min.js: []
+200 92772 https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.linq.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.linq.js: []
+200 4902 https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.maskedinput.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/jquery.maskedinput.min.js: []
+200 3379 https://aif2.cnv.gov.ar/Engine/js/3rdparty/json2.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/json2.min.js: []
+200 17289 https://aif2.cnv.gov.ar/Engine/js/3rdparty/jsonpath.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/jsonpath.js: []
+200 42820 https://aif2.cnv.gov.ar/Engine/js/3rdparty/knockout-2.3.0.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/knockout-2.3.0.js: []
+200 92154 https://aif2.cnv.gov.ar/Engine/js/3rdparty/linq.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/linq.js: []
+200 514 https://aif2.cnv.gov.ar/Engine/js/3rdparty/namespace.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/namespace.min.js: []
+200 8726 https://aif2.cnv.gov.ar/Engine/js/3rdparty/response.min.js
+  JS https://aif2.cnv.gov.ar/Engine/js/3rdparty/response.min.js: []
+200 3272 https://aif2.cnv.gov.ar/Engine/js/CNV.environment.js
+  JS https://aif2.cnv.gov.ar/Engine/js/CNV.environment.js: []
+200 15274 https://aif2.cnv.gov.ar/Engine/js/CNV.utils.js
+  JS https://aif2.cnv.gov.ar/Engine/js/CNV.utils.js: []
+200 113710 https://aif2.cnv.gov.ar/Engine/js/app.js
+  JS https://aif2.cnv.gov.ar/Engine/js/app.js: []
+200 2092 https://aif2.cnv.gov.ar/Engine/js/appconfig.js
+  JS https://aif2.cnv.gov.ar/Engine/js/appconfig.js: []
+200 80692 https://aif2.cnv.gov.ar/Engine/js/appui.js
+  JS https://aif2.cnv.gov.ar/Engine/js/appui.js: []
+200 48909 https://aif2.cnv.gov.ar/Engine/js/compensaciones.js
+  JS https://aif2.cnv.gov.ar/Engine/js/compensaciones.js: []
+200 9498 https://aif2.cnv.gov.ar/Engine/js/fb.cargamasiva.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.cargamasiva.js: []
+200 991 https://aif2.cnv.gov.ar/Engine/js/fb.catalogs.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.catalogs.js: []
+200 2404 https://aif2.cnv.gov.ar/Engine/js/fb.fileutils.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.fileutils.js: []
+200 5088 https://aif2.cnv.gov.ar/Engine/js/fb.helper.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.helper.js: []
+200 4371 https://aif2.cnv.gov.ar/Engine/js/fb.helperjson.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.helperjson.js: []
+200 761 https://aif2.cnv.gov.ar/Engine/js/fb.htmlbuilder.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.htmlbuilder.js: []
+200 6001 https://aif2.cnv.gov.ar/Engine/js/fb.pagination.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.pagination.js: []
+200 7083 https://aif2.cnv.gov.ar/Engine/js/fb.parser.responsive.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.parser.responsive.js: []
+200 20554 https://aif2.cnv.gov.ar/Engine/js/fb.parserjson.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.parserjson.js: []
+200 1205 https://aif2.cnv.gov.ar/Engine/js/fb.queue.promise.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.queue.promise.js: []
+200 160567 https://aif2.cnv.gov.ar/Engine/js/fb.runtime.js?v=dBy2UT1P83R1SImgoBVU3NVlDYYH8M38h5Rl1OBMTZ8
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.runtime.js?v=dBy2UT1P83R1SImgoBVU3NVlDYYH8M38h5Rl1OBMTZ8: []
+200 13780 https://aif2.cnv.gov.ar/Engine/js/fb.utils.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.utils.js: []
+200 122614 https://aif2.cnv.gov.ar/Engine/js/fb.viewmodel.js?v=_ANn0aJbhhHqsPnWGTn77f90Bi_2zE0CnEOKkTF0TWc
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.viewmodel.js?v=_ANn0aJbhhHqsPnWGTn77f90Bi_2zE0CnEOKkTF0TWc: []
+200 5684 https://aif2.cnv.gov.ar/Engine/js/fb.xmlform.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fb.xmlform.js: []
+200 2790 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.checkbox.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.checkbox.js: []
+200 73513 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.clasificador.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.clasificador.js: []
+200 21922 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.combobox.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.combobox.js: []
+200 17442 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.controlbase.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.controlbase.js: []
+200 750 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.controlvacio.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.controlvacio.js: []
+200 4824 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadrocompensaciones.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadrocompensaciones.js: []
+200 17721 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadrodialogo.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadrodialogo.js: []
+200 8827 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadromodal.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.cuadromodal.js: []
+200 4164 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.decimal.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.decimal.js: []
+200 2145 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.etiquetatexto.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.etiquetatexto.js: []
+200 4773 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.fecha.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.fecha.js: []
+200 44331 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.formulariogrid.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.formulariogrid.js: []
+200 47764 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.formulariogridedicion.new.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.formulariogridedicion.new.js: []
+200 2853 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.iconosayuda.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.iconosayuda.js: []
+200 2621 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.label.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.label.js: []
+200 2904 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.list.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.list.js: []
+200 1696 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.oculto.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.oculto.js: []
+200 10737 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.publicuploader.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.publicuploader.js: ['/api/ValetKeyProvider/GetValetKey/']
+200 6379 https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.textbox.js
+  JS https://aif2.cnv.gov.ar/Engine/js/fbhtmlcontrols/fb.textbox.js: []
+200 937 https://aif2.cnv.gov.ar/Engine/js/formatters.js
+  JS https://aif2.cnv.gov.ar/Engine/js/formatters.js: []
+200 10910 https://aif2.cnv.gov.ar/js/Presentations/presentations.js
+  JS https://aif2.cnv.gov.ar/js/Presentations/presentations.js: []
+200 852362 https://aif2.cnv.gov.ar/js/site.bo.min.js?v=IGhBiXe1fb2NFEGNYLVaOYb957igFRpHbYLChEyNPOc
+  JS https://aif2.cnv.gov.ar/js/site.bo.min.js?v=IGhBiXe1fb2NFEGNYLVaOYb957igFRpHbYLChEyNPOc: ['/Presentations/ChangeStatus', '/Presentations/DeleteDraft/', '/Presentations/Filter', '/Presentations/FilterAdministeredPresented', '/Presentations/FilterPresented', '/Presentations/Generate/', '/Presentations/GenerateDraft/', '/Presentations/GenerateForm/', '/Presentations/GeneratePrevious/', '/Presentations/GetPresentationDrafts', '/Presentations/GetPresentationsByOperatorsSociety', '/Presentations/GetUnsignedPresentations', '/Presentations/HistoryPresentationsList', '/Presentations/View', '/Presentations/View/', '/Presentations/checkisown', '/Public/Download/', '/api/Document/GetByCountry/', '/api/ValetKeyProvider/GetPublicValetKey/', '/api/ValetKeyProvider/GetValetKey/']
+200 20099 https://aif2.cnv.gov.ar/lib/jquery-file-download/jquery.fileDownload.js
+  JS https://aif2.cnv.gov.ar/lib/jquery-file-download/jquery.fileDownload.js: []
+404 0 https://aif2.cnv.gov.ar/Presentations/publicsearch
+   
+404 0 https://aif2.cnv.gov.ar/Presentations/PublicSearch
+   
+404 0 https://aif2.cnv.gov.ar/api/Presentations/public
+   
+404 0 https://aif2.cnv.gov.ar/api/PublicPresentations
+   
+404 0 https://aif2.cnv.gov.ar/Presentations/public
+   
+404 0 https://aif2.cnv.gov.ar/api/DocumentTypes
+   
+404 0 https://aif2.cnv.gov.ar/api/Entities/public
+   
