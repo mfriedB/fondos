@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-13T04:34:07+00:00",
+ "actualizado": "2026-11-13T06:08:28+00:00",
  "fuente": "Planilla Diaria CAFCI archivada por la CNV",
  "fechas_planilla": [
   "2019-12-27",
@@ -833,6 +833,14 @@
   "2023-05-30",
   "2023-05-31",
   "2023-06-01",
+  "2023-06-02",
+  "2023-06-05",
+  "2023-06-06",
+  "2023-06-07",
+  "2023-06-08",
+  "2023-06-09",
+  "2023-06-12",
+  "2023-06-13",
   "2023-06-14",
   "2023-06-15",
   "2023-06-16",
@@ -854,6 +862,7 @@
   "2023-07-12",
   "2023-07-13",
   "2023-07-14",
+  "2023-07-17",
   "2023-07-18",
   "2023-07-19",
   "2023-07-20",
@@ -877,6 +886,8 @@
   "2023-08-15",
   "2023-08-16",
   "2023-08-17",
+  "2023-08-18",
+  "2023-08-22",
   "2023-08-23",
   "2023-08-24",
   "2023-08-25",
@@ -1404,6 +1415,7 @@
   "2025-10-17",
   "2025-10-20",
   "2025-10-21",
+  "2025-10-22",
   "2025-10-23",
   "2025-10-24",
   "2025-10-27",
@@ -1422,6 +1434,7 @@
   "2025-11-14",
   "2025-11-17",
   "2025-11-18",
+  "2025-11-19",
   "2025-11-20",
   "2025-11-25",
   "2025-11-26",
@@ -1663,7 +1676,7 @@
    "desde": "2019-12-31",
    "hasta": "2020-01-31",
    "parcial": false,
-   "fondos": 542,
+   "fondos": 576,
    "planillas": 22
   },
   {
@@ -1672,7 +1685,7 @@
    "desde": "2020-01-31",
    "hasta": "2020-02-29",
    "parcial": false,
-   "fondos": 542,
+   "fondos": 576,
    "planillas": 18
   },
   {
@@ -1681,7 +1694,7 @@
    "desde": "2020-02-29",
    "hasta": "2020-03-31",
    "parcial": false,
-   "fondos": 538,
+   "fondos": 573,
    "planillas": 19
   },
   {
@@ -1690,7 +1703,7 @@
    "desde": "2020-03-31",
    "hasta": "2020-04-30",
    "parcial": false,
-   "fondos": 537,
+   "fondos": 572,
    "planillas": 20
   },
   {
@@ -1699,7 +1712,7 @@
    "desde": "2020-04-30",
    "hasta": "2020-05-31",
    "parcial": false,
-   "fondos": 539,
+   "fondos": 574,
    "planillas": 19
   },
   {
@@ -1708,7 +1721,7 @@
    "desde": "2020-05-31",
    "hasta": "2020-06-30",
    "parcial": false,
-   "fondos": 532,
+   "fondos": 568,
    "planillas": 21
   },
   {
@@ -1717,7 +1730,7 @@
    "desde": "2020-06-30",
    "hasta": "2020-07-31",
    "parcial": false,
-   "fondos": 530,
+   "fondos": 566,
    "planillas": 21
   },
   {
@@ -1726,7 +1739,7 @@
    "desde": "2020-07-31",
    "hasta": "2020-08-31",
    "parcial": false,
-   "fondos": 532,
+   "fondos": 568,
    "planillas": 20
   },
   {
@@ -1735,7 +1748,7 @@
    "desde": "2020-08-31",
    "hasta": "2020-09-30",
    "parcial": false,
-   "fondos": 534,
+   "fondos": 573,
    "planillas": 22
   },
   {
@@ -1744,7 +1757,7 @@
    "desde": "2020-09-30",
    "hasta": "2020-10-31",
    "parcial": false,
-   "fondos": 540,
+   "fondos": 579,
    "planillas": 21
   },
   {
@@ -1753,7 +1766,7 @@
    "desde": "2020-10-31",
    "hasta": "2020-11-30",
    "parcial": false,
-   "fondos": 536,
+   "fondos": 578,
    "planillas": 19
   },
   {
@@ -1762,7 +1775,7 @@
    "desde": "2020-11-30",
    "hasta": "2020-12-31",
    "parcial": false,
-   "fondos": 540,
+   "fondos": 581,
    "planillas": 18
   },
   {
@@ -1771,7 +1784,7 @@
    "desde": "2020-12-31",
    "hasta": "2021-01-31",
    "parcial": false,
-   "fondos": 541,
+   "fondos": 582,
    "planillas": 20
   },
   {
@@ -1780,7 +1793,7 @@
    "desde": "2021-01-31",
    "hasta": "2021-02-28",
    "parcial": false,
-   "fondos": 543,
+   "fondos": 585,
    "planillas": 18
   },
   {
@@ -1789,7 +1802,7 @@
    "desde": "2021-02-28",
    "hasta": "2021-03-31",
    "parcial": false,
-   "fondos": 547,
+   "fondos": 590,
    "planillas": 22
   },
   {
@@ -1798,7 +1811,7 @@
    "desde": "2021-03-31",
    "hasta": "2021-04-30",
    "parcial": false,
-   "fondos": 548,
+   "fondos": 591,
    "planillas": 20
   },
   {
@@ -1807,7 +1820,7 @@
    "desde": "2021-04-30",
    "hasta": "2021-05-31",
    "parcial": false,
-   "fondos": 555,
+   "fondos": 599,
    "planillas": 19
   },
   {
@@ -1816,7 +1829,7 @@
    "desde": "2021-05-31",
    "hasta": "2021-06-30",
    "parcial": false,
-   "fondos": 556,
+   "fondos": 600,
    "planillas": 21
   },
   {
@@ -1825,7 +1838,7 @@
    "desde": "2021-06-30",
    "hasta": "2021-07-31",
    "parcial": false,
-   "fondos": 561,
+   "fondos": 604,
    "planillas": 21
   },
   {
@@ -1843,7 +1856,7 @@
    "desde": "2021-08-31",
    "hasta": "2021-09-30",
    "parcial": false,
-   "fondos": 616,
+   "fondos": 618,
    "planillas": 22
   },
   {
@@ -1852,7 +1865,7 @@
    "desde": "2021-09-30",
    "hasta": "2021-10-31",
    "parcial": false,
-   "fondos": 625,
+   "fondos": 627,
    "planillas": 19
   },
   {
@@ -1888,7 +1901,7 @@
    "desde": "2022-01-31",
    "hasta": "2022-02-28",
    "parcial": false,
-   "fondos": 652,
+   "fondos": 654,
    "planillas": 19
   },
   {
@@ -1960,7 +1973,7 @@
    "desde": "2022-09-30",
    "hasta": "2022-10-31",
    "parcial": false,
-   "fondos": 686,
+   "fondos": 688,
    "planillas": 19
   },
   {
@@ -2033,7 +2046,7 @@
    "hasta": "2023-06-30",
    "parcial": false,
    "fondos": 735,
-   "planillas": 12
+   "planillas": 20
   },
   {
    "archivo": "fondos_cafci_2023-07-31.csv",
@@ -2042,7 +2055,7 @@
    "hasta": "2023-07-31",
    "parcial": false,
    "fondos": 741,
-   "planillas": 20
+   "planillas": 21
   },
   {
    "archivo": "fondos_cafci_2023-08-31.csv",
@@ -2051,7 +2064,7 @@
    "hasta": "2023-08-31",
    "parcial": false,
    "fondos": 746,
-   "planillas": 20
+   "planillas": 22
   },
   {
    "archivo": "fondos_cafci_2023-09-30.csv",
@@ -2131,7 +2144,7 @@
    "desde": "2024-04-30",
    "hasta": "2024-05-31",
    "parcial": false,
-   "fondos": 814,
+   "fondos": 815,
    "planillas": 22
   },
   {
@@ -2266,7 +2279,7 @@
    "desde": "2025-07-31",
    "hasta": "2025-08-31",
    "parcial": false,
-   "fondos": 981,
+   "fondos": 982,
    "planillas": 20
   },
   {
@@ -2285,7 +2298,7 @@
    "hasta": "2025-10-31",
    "parcial": false,
    "fondos": 1007,
-   "planillas": 21
+   "planillas": 22
   },
   {
    "archivo": "fondos_cafci_2025-11-30.csv",
@@ -2294,7 +2307,7 @@
    "hasta": "2025-11-30",
    "parcial": false,
    "fondos": 1016,
-   "planillas": 16
+   "planillas": 17
   },
   {
    "archivo": "fondos_cafci_2025-12-31.csv",
@@ -2311,7 +2324,7 @@
    "desde": "2025-12-31",
    "hasta": "2026-01-31",
    "parcial": false,
-   "fondos": 1025,
+   "fondos": 1026,
    "planillas": 21
   },
   {
@@ -2320,7 +2333,7 @@
    "desde": "2026-01-31",
    "hasta": "2026-02-28",
    "parcial": false,
-   "fondos": 1038,
+   "fondos": 1039,
    "planillas": 18
   },
   {
@@ -2329,7 +2342,7 @@
    "desde": "2026-02-28",
    "hasta": "2026-03-31",
    "parcial": false,
-   "fondos": 1044,
+   "fondos": 1045,
    "planillas": 20
   },
   {
@@ -2356,7 +2369,7 @@
    "desde": "2026-05-31",
    "hasta": "2026-06-30",
    "parcial": false,
-   "fondos": 1094,
+   "fondos": 1095,
    "planillas": 21
   },
   {
