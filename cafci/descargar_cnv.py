@@ -38,8 +38,12 @@ def indice():
         href = re.search(r'href="(https://aif2\.cnv\.gov\.ar/Presentations/publicview/[^"]+)"', tr)
         if len(tds) < 4 or not href or "Cuotaparte" not in tds[2]: continue
         fd, fr = fecha_es(tds[0]), fecha_es(tds[1])
-        if not fd: continue
-        k = fd.date()
+        m_al = re.search(r"\bal (\d{1,2} \w+\.? \d{4})", tds[2])
+        fdat = fecha_es(m_al.group(1)) if m_al else None
+        if not (fdat or fd): continue
+        # la fecha del DATO esta en la descripcion ("... al 23 jul. 2021"); la CNV re-publica revisiones de dias
+        # anteriores con otra fecha de documento: se toma la ultima recepcion de cada fecha de dato
+        k = (fdat or fd).date()
         if k not in docs or (fr and fr > docs[k]["recepcion"]):
             docs[k] = {"recepcion": fr, "href": href.group(1), "id": tds[3]}
     log("indice CNV:", len(docs), "fechas, de", min(docs), "a", max(docs))

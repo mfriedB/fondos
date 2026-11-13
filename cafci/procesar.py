@@ -109,7 +109,7 @@ def limpiar(D):
 
 def categoria_1816(r):
     c = r.clasificacion_cafci or ""
-    if c.startswith("Mercado de Dinero"): return "Money Market"
+    if c.startswith(("Mercado de Dinero", "Plazo Fijo")): return "Money Market"   # "Plazo Fijo" = nombre viejo (hasta 2021)
     if c.startswith("Renta Variable"): return "Renta Variable"
     if c.startswith("Renta Mixta") or c.startswith("Retorno Total"): return "Renta Mixta"
     if c.startswith(("PyMes", "Infraestructura", "ASG", "RG900")): return "Destino Esp."
