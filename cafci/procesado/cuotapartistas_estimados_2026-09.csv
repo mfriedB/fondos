@@ -307,8 +307,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 488,Optimum Renta Mixta Flexible,Santander Asset Management G.F.C.I.S.A.,Renta Fija,35554.1,9483.77,1280,2.7785e+07
 1639,Chaco FCI Renta Fija Dólares,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Renta Fija,35223.4,9395.55,1268,2.7785e+07
 1121,Balanz Performance III,Balanz S.G.F.C.I.S.A.U.,Renta Fija,35221.3,9394.99,1268,2.7785e+07
-120,Consultatio Balance Fund,One618 Asset Management S.G.F.C.I.S.A.,Retorno Total,230589,12048.3,1266,1.82163e+08
 1960,Blacktoro Pesos,Blacktoro Asset Management S.A.,Mercado de Dinero,31923.5,5315.21,1266,2.52066e+07
+120,Consultatio Balance Fund,One618 Asset Management S.G.F.C.I.S.A.,Retorno Total,230589,12048.3,1266,1.82163e+08
 1348,Argenfunds Inversión Pesos,Argenfunds S.A.,Renta Fija,35136.1,9372.27,1265,2.7785e+07
 1569,Pionero Inversión Dólar,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,34335.7,9158.76,1236,2.7785e+07
 1852,Crecer Liquidez Dolares,Ciudad Administradora de Activos S.A.U.,Mercado de Dinero,30891,5143.29,1226,2.52066e+07
@@ -318,23 +318,23 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1358,Pionero Crecimiento,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,32993.3,8800.7,1187,2.7785e+07
 1243,Allaria Patrimonio IV,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,76226.5,5310.33,1186,6.4267e+07
 678,Gainvest Renta Fija Proteccion Plus,StoneX Asset Management S.A.,Renta Fija,32868.4,8767.38,1183,2.7785e+07
-1421,Valiant Renta Fija Balanceado II,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,32509.6,8671.67,1170,2.7785e+07
 1175,Allaria Unicred Empresas,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,32500.2,8669.17,1170,2.7785e+07
+1421,Valiant Renta Fija Balanceado II,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,32509.6,8671.67,1170,2.7785e+07
 186,Lombard Renta Fija,Patagonia Inversora S.A.S.G.F.C.I,Renta Fija,32440.5,8653.24,1168,2.7785e+07
 906,MEGAQM Renta Fija LATAM,MEGA QM S.A.,Renta Fija,32354.5,8630.29,1164,2.7785e+07
 1465,Dracma Estrategia Dólar I,Dracma Asset Management S.A.,Renta Fija,32227.6,8596.45,1160,2.7785e+07
 920,Gainvest Global I,StoneX Asset Management S.A.,Renta Fija,32192.3,8587.04,1159,2.7785e+07
 276,Optimum FAE (Fondo de Aplicaciones Especiales),SAM Argentina S.G.F.C.I.S.A.U.,Renta Fija,32039.5,8546.28,1153,2.7785e+07
-1338,Adcap Ahorro Dinámico Fondo de Dinero,Adcap Asset Management S.G.F.C.I.S.A.,Mercado de Dinero,28936.7,4817.92,1148,2.52066e+07
 1365,GMC Money Market,GMC Asset Management S.A.U.,Mercado de Dinero,28935,4817.62,1148,2.52066e+07
+1338,Adcap Ahorro Dinámico Fondo de Dinero,Adcap Asset Management S.G.F.C.I.S.A.,Mercado de Dinero,28936.7,4817.92,1148,2.52066e+07
 1147,Galileo Multi Strategy,Delta Asset Management S.A.,Renta Mixta,73569.3,5125.22,1145,6.4267e+07
 955,IAM Estrategia,Industrial Asset Management S.G.F.C.I.S.A.,Renta Fija,31465.3,8393.12,1132,2.7785e+07
 1657,IOL Portafolio Potenciado,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,31376.6,8369.45,1129,2.7785e+07
 984,Lombard Ahorro Plus,Patagonia Inversora S.A.S.G.F.C.I,Renta Fija,31308.2,8351.2,1127,2.7785e+07
 1053,Galileo Fixed Income,Delta Asset Management S.A.,Renta Fija,31274.8,8342.29,1126,2.7785e+07
 1492,Champaquí Renta Dólar,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,31068.8,8287.36,1118,2.7785e+07
-801,Allaria Gestion,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,71721.5,4996.49,1116,6.4267e+07
 1519,Adcap Financiamiento Megra,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,31012.9,8272.44,1116,2.7785e+07
+801,Allaria Gestion,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,71721.5,4996.49,1116,6.4267e+07
 1792,Bull Market Ahorro Balanceado II,Bull Market Asset Management S.A.,Renta Fija,30882.7,8237.71,1111,2.7785e+07
 1574,Parakeet Renta Pesos,Parakeet S.G.F.C.I.S.A.,Renta Fija,30782.5,8210.99,1108,2.7785e+07
 672,Consultatio Renta Local,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,33856.8,8157.03,1108,3.05661e+07
@@ -356,8 +356,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 965,Toronto Trust Retorno Total,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,28126.6,7502.54,1012,2.7785e+07
 765,Galileo Ahorro Plus,Delta Asset Management S.A.,Renta Fija,27949.7,7455.37,1006,2.7785e+07
 1585,Parakeet Income,Parakeet S.G.F.C.I.S.A.,Renta Fija,27696.9,7387.93,997,2.7785e+07
-1055,Galileo Pesos,Delta Asset Management S.A.,Mercado de Dinero,25084.8,4176.57,995,2.52066e+07
 1571,BAVSA Ahorro Dólar,BAVSA Fondos S.A.,Mercado de Dinero,25075.6,4175.05,995,2.52066e+07
+1055,Galileo Pesos,Delta Asset Management S.A.,Mercado de Dinero,25084.8,4176.57,995,2.52066e+07
 1289,Max Cobertura,Max Capital Asset Management S.A.,Renta Fija,27432,7317.27,987,2.7785e+07
 79,Alpha Renta Cobertura,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,27204.9,7256.68,979,2.7785e+07
 1527,Ciclo Nova Estratégico,Ciclo Nova Asset Management S.A.,Renta Fija,27198.8,7255.07,979,2.7785e+07
@@ -371,30 +371,30 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 963,Delta Retorno Real,Delta Asset Management S.A.,Renta Fija,25651.3,6842.28,923,2.7785e+07
 599,Consultatio Estrategico,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,25297.8,6747.99,910,2.7785e+07
 1696,BAVSA Renta Balanceado V,BAVSA Fondos S.A.,Renta Fija,25140.2,6705.95,905,2.7785e+07
-468,Optimum Global Investment Grade,SAM Argentina S.G.F.C.I.S.A.U.,Renta Mixta,57844.1,4029.72,900,6.4267e+07
 1672,ConoSur Ahorro,Cono Sur S.G.F.C.I.S.A.,Renta Fija,24998.8,6668.24,900,2.7785e+07
+468,Optimum Global Investment Grade,SAM Argentina S.G.F.C.I.S.A.U.,Renta Mixta,57844.1,4029.72,900,6.4267e+07
 972,Balanz Capital Sudamericano,Balanz S.G.F.C.I.S.A.U.,Renta Fija,24840.4,6625.99,894,2.7785e+07
 1020,First Renta Mixta I,First Capital Markets S.A.,Renta Fija,24654.3,6576.34,887,2.7785e+07
 1532,1822 Raices Renta en Dolares,Provinfondos S.A.S.G.F.C.I.,Renta Fija,24609.5,6564.38,886,2.7785e+07
 518,GSS II,Grupo SS S.A.S.G.F.C.I.,Renta Fija,24530.3,6543.25,883,2.7785e+07
 1401,BAVSA Pesos Plus,BAVSA Fondos S.A.,Renta Fija,24474.3,6528.33,881,2.7785e+07
-1634,Parakeet MM Investments Fund,Parakeet S.G.F.C.I.S.A.,Renta Fija,24465.2,6525.9,881,2.7785e+07
 1467,Axis Pesos,Axis S.G.F.C.I.S.A.,Mercado de Dinero,22204.4,3697,881,2.52066e+07
+1634,Parakeet MM Investments Fund,Parakeet S.G.F.C.I.S.A.,Renta Fija,24465.2,6525.9,881,2.7785e+07
 1081,MEGAQM Renta Dólares,MEGA QM S.A.,Renta Fija,24247.7,6467.89,873,2.7785e+07
 1649,Pionero Dólar Mix,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,24111.6,6431.57,868,2.7785e+07
 1199,Consultatio Multimercado V,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,24054.5,6416.35,866,2.7785e+07
 697,Chaco Abierto Ahorro,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Renta Fija,24039.3,6412.29,865,2.7785e+07
-635,MAF Acciones Argentinas,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Variable,9216,3803.26,855,1.078e+07
 675,Galileo Premium,Delta Asset Management S.A.,Renta Fija,23765,6339.11,855,2.7785e+07
+635,MAF Acciones Argentinas,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Variable,9216,3803.26,855,1.078e+07
 1208,Adcap Balanceado XI,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,23520.4,6273.88,847,2.7785e+07
-1279,CYC Liquidez,C y C Administradora de Fondos S.A.,Mercado de Dinero,21244.3,3537.14,843,2.52066e+07
 628,Consultatio Renta Fija Argentina F.C.I.,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,23428,6249.23,843,2.7785e+07
+1279,CYC Liquidez,C y C Administradora de Fondos S.A.,Mercado de Dinero,21244.3,3537.14,843,2.52066e+07
 1542,SBS Patrimonio IX,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,52862.2,3682.65,823,6.4267e+07
 706,Consultatio Diamante Plus,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,22837.4,6089.45,822,2.77945e+07
 1603,Allaria Equity Selection,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Variable,8851.11,3652.67,821,1.078e+07
 617,Compass Renta Mixta,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,52389.2,3649.7,815,6.4267e+07
-1575,Parakeet Pesos,Parakeet S.G.F.C.I.S.A.,Mercado de Dinero,20465.2,3407.42,812,2.52066e+07
 1582,Wise Capital Money Markets,Wise Capital Asset Management S.A.,Mercado de Dinero,20462.1,3406.91,812,2.52066e+07
+1575,Parakeet Pesos,Parakeet S.G.F.C.I.S.A.,Mercado de Dinero,20465.2,3407.42,812,2.52066e+07
 1665,Crecer Capital Dolares,Ciudad Administradora de Activos S.A.U.,Renta Fija,22333.1,5957.19,804,2.7785e+07
 1546,BAVSA Global III,BAVSA Fondos S.A.,Renta Fija,22222.7,5927.74,800,2.7785e+07
 483,Alpha Renta Capital,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,22101.3,5895.36,795,2.7785e+07
@@ -402,8 +402,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1469,Axis S&C Renta Fija Dólar Low Volatility,Axis S.G.F.C.I.S.A.,Renta Mixta,50693.6,3531.58,789,6.4267e+07
 1160,Gainvest Estrategia IV,StoneX Asset Management S.A.,Renta Fija,21828.5,5822.58,786,2.7785e+07
 113,Alpha Planeamiento Conservador,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,21830,5822.97,786,2.7785e+07
-1935,BAVSA Renta Balanceado X,BAVSA Fondos S.A.,Renta Variable,8392.14,3463.27,778,1.078e+07
 1290,Max Renta Fija,Max Capital Asset Management S.A.,Renta Fija,21604,5762.7,778,2.7785e+07
+1935,BAVSA Renta Balanceado X,BAVSA Fondos S.A.,Renta Variable,8392.14,3463.27,778,1.078e+07
 817,Consultatio Global,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,21534.6,5744.19,775,2.7785e+07
 252,Supergestion,Santander Asset Management G.F.C.I.S.A.,Renta Mixta,49686.7,3461.43,773,6.4267e+07
 1587,Bull Market Ahorro Dólares,Bull Market Asset Management S.A.,Renta Fija,21423.3,5714.49,771,2.7785e+07
@@ -430,18 +430,18 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1151,Pionero Renta Dólares Plus,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,18989.8,5065.38,683,2.7785e+07
 1104,Ciclo Nova Renta Fija Dólar,Ciclo Nova Asset Management S.A.,Renta Fija,18952.5,5055.44,682,2.7785e+07
 1171,Novus Liquidez Plus,Novus Asset Management S.A.,Renta Fija,18859.3,5030.57,679,2.7785e+07
-692,MAF Renta Argentina,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,18748.4,5000.98,675,2.7785e+07
 699,Toronto Trust Multimercado,Investis Asset Management S.A.S.G.F.C.I.,Renta Variable,7280.13,3004.36,675,1.078e+07
+692,MAF Renta Argentina,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,18748.4,5000.98,675,2.7785e+07
 975,1810 Renta Fija Argentina,Proahorro Administradora de Activos S.A.,Renta Fija,18740.1,4998.77,674,2.7785e+07
 1251,SBS Acciones Brasil,SBS Asset Management S.A.S.G.F.C.I.,Renta Variable,7252.07,2992.78,673,1.078e+07
 946,Balanz Opportunity,Balanz S.G.F.C.I.S.A.U.,Renta Fija,18640.2,4972.13,671,2.7785e+07
-1750,BAVSA Renta Balanceado VI,BAVSA Fondos S.A.,Renta Fija,18491.3,4932.42,666,2.7785e+07
 1922,Bull Market Liquidez Dólar,Bull Market Asset Management S.A.,Mercado de Dinero,16789.5,2795.43,666,2.52066e+07
+1750,BAVSA Renta Balanceado VI,BAVSA Fondos S.A.,Renta Fija,18491.3,4932.42,666,2.7785e+07
 1671,ConoSur Liquidez,Cono Sur S.G.F.C.I.S.A.,Mercado de Dinero,16742.4,2787.58,664,2.52066e+07
-1103,Ciclo Nova Renta Fija,Ciclo Nova Asset Management S.A.,Renta Fija,18300.3,4881.46,659,2.7785e+07
-1490,Champaquí Renta Pesos,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,18318.9,4886.42,659,2.7785e+07
 608,SBS Balanceado,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,42333,2949.13,659,6.4267e+07
+1490,Champaquí Renta Pesos,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,18318.9,4886.42,659,2.7785e+07
 1130,Champaquí Estratégico,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,18304.2,4882.49,659,2.7785e+07
+1103,Ciclo Nova Renta Fija,Ciclo Nova Asset Management S.A.,Renta Fija,18300.3,4881.46,659,2.7785e+07
 1992,Allaria Dólar Performance II,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,18154,4842.42,653,2.7785e+07
 563,Compass Crecimiento II,Investis Asset Management S.A.S.G.F.C.I.,Renta Variable,7021.48,2897.63,651,1.078e+07
 62,Toronto Trust,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,18030,4809.37,649,2.7785e+07
@@ -450,8 +450,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1902,BAVSA Renta Balanceado Dólares IV,BAVSA Fondos S.A.,Renta Fija,17797.2,4747.26,641,2.7785e+07
 1094,Adcap Gestion Estrategica VIII,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,17716.4,4725.72,638,2.7785e+07
 1376,Novus Performance,Novus Asset Management S.A.,Renta Mixta,40899.4,2849.26,636,6.4267e+07
-1637,Parakeet Latam,Parakeet S.G.F.C.I.S.A.,Renta Fija,17644.2,4706.45,635,2.7785e+07
 1313,Gainvest Global VI,StoneX Asset Management S.A.,Renta Mixta,40825,2844.08,635,6.4267e+07
+1637,Parakeet Latam,Parakeet S.G.F.C.I.S.A.,Renta Fija,17644.2,4706.45,635,2.7785e+07
 1579,Wise Capital Hedge,Wise Capital Asset Management S.A.,Renta Fija,17566.2,4685.63,632,2.7785e+07
 1989,Puente Renta Fija Pesos III,Puente Asset Management S.A.,Renta Fija,17512.8,4671.41,630,2.7785e+07
 1466,Toronto Trust Estrategico,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,17470.3,4660.06,629,2.7785e+07
@@ -487,17 +487,17 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1524,Allaria Dólar Retorno Total,Allaria Fondos Administrados S.G.F.C.I.S.A.,Retorno Total,95114.3,4969.74,522,1.82163e+08
 749,Delta Gestion III,Delta Asset Management S.A.,Renta Fija,14326.5,3821.48,516,2.7785e+07
 1209,MEGAQM Sustentable ASG,MEGA QM S.A.,ASG,1328.55,254.03,510,2.60652e+06
-633,MAF Renta,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,14115.9,3765.3,508,2.7785e+07
 1388,Adcap Balance Multiactivo,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,14109.4,3763.57,508,2.7785e+07
+633,MAF Renta,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,14115.9,3765.3,508,2.7785e+07
 517,GSS I,Grupo SS S.A.S.G.F.C.I.,Renta Fija,14090.8,3758.6,507,2.7785e+07
 860,Premier Renta Mixta en Dólares,Supervielle Asset Management S.A.,Renta Fija,14042.1,3745.62,505,2.7785e+07
-1322,Dracma Renta Ahorro,Dracma Asset Management S.A.,Renta Fija,14023.5,3740.66,505,2.7785e+07
 679,Gainvest Balanceado,StoneX Asset Management S.A.,Renta Fija,14028.1,3741.89,505,2.7785e+07
+1322,Dracma Renta Ahorro,Dracma Asset Management S.A.,Renta Fija,14023.5,3740.66,505,2.7785e+07
 1766,Axis Rosental USD Strategic Income,Axis S.G.F.C.I.S.A.,Renta Mixta,31836.2,2217.88,495,6.4267e+07
-1076,SF Value,Delta Asset Management S.A.,Renta Mixta,31765.6,2212.96,494,6.4267e+07
 1789,Compass Renta Mixta V,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,31724.7,2210.1,494,6.4267e+07
-898,Toronto Trust Liquidez Dólar,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,13699.2,3654.16,493,2.7785e+07
+1076,SF Value,Delta Asset Management S.A.,Renta Mixta,31765.6,2212.96,494,6.4267e+07
 504,Delta Latinoamerica,Delta Asset Management S.A.,Renta Variable,5319.71,2195.34,493,1.078e+07
+898,Toronto Trust Liquidez Dólar,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,13699.2,3654.16,493,2.7785e+07
 1255,Balanz Latam Selection,Balanz S.G.F.C.I.S.A.U.,Renta Variable,5319.38,2195.2,493,1.078e+07
 1250,SBS Patrimonio VI,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,31410,2188.19,489,6.4267e+07
 1510,Dracma Estrategia Dólar,Dracma Asset Management S.A.,Renta Fija,13593,3625.83,489,2.7785e+07
@@ -510,8 +510,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 947,Pellegrini Renta Dólares,Pellegrini S.A.S.G.F.C.I.,Renta Fija,14235.7,3431.54,466,3.05513e+07
 1463,Toronto Trust Renta Dólar,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,29851.9,2079.64,464,6.4267e+07
 1015,Zofingen Factoring Abierto Pyme,Zofingen Investment S.A.,PyMEs,133276,669.571,464,2.87351e+08
-1084,MEGAQM Latam Corporativo,MEGA QM S.A.,Renta Fija,12855.6,3429.14,463,2.7785e+07
 1124,Fima Infraestructura I,Galicia Asset Management S.A.U.,Infraestructura,96076.5,662.07,463,2.07403e+08
+1084,MEGAQM Latam Corporativo,MEGA QM S.A.,Renta Fija,12855.6,3429.14,463,2.7785e+07
 1444,Balanz Capital Estrategia IV USD,Balanz S.G.F.C.I.S.A.U.,Renta Fija,12798.8,3413.98,461,2.7785e+07
 1700,Compass Renta Mixta IV,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,12751.3,3401.3,459,2.7785e+07
 1663,Crecer Renta Dólares,Ciudad Administradora de Activos S.A.U.,Renta Fija,12615.2,3365,454,2.7785e+07
@@ -547,11 +547,11 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1169,BM Smart Corto Plazo,Bull Market Asset Management S.A.,Renta Fija,10736,2863.75,386,2.7785e+07
 1176,Allaria Principal,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,10615.3,2831.55,382,2.7785e+07
 1668,Gainvest Dólares Premium,StoneX Asset Management S.A.,Mercado de Dinero,9623.8,1602.35,382,2.52066e+07
+802,Fima Mix I,Galicia Asset Management S.A.U.,Renta Mixta,24476.8,1705.18,381,6.4267e+07
 632,Balanz Retorno Total,Balanz S.G.F.C.I.S.A.U.,Renta Mixta,24475.1,1705.06,381,6.4267e+07
 1007,CYC Renta Mixta,C y C Administradora de Fondos S.A.,Renta Mixta,24491,1706.17,381,6.4267e+07
-802,Fima Mix I,Galicia Asset Management S.A.U.,Renta Mixta,24476.8,1705.18,381,6.4267e+07
-1948,Puente Ahorro Pesos,Puente Asset Management S.A.,Renta Fija,10499.2,2800.58,378,2.7785e+07
 1772,Parakeet Balanced Fund II,Parakeet S.G.F.C.I.S.A.,Renta Fija,10512.1,2804.01,378,2.7785e+07
+1948,Puente Ahorro Pesos,Puente Asset Management S.A.,Renta Fija,10499.2,2800.58,378,2.7785e+07
 588,Quiron Latam en U$S,Quiron Asset Management S.A.,Renta Fija,10474.7,2794.03,377,2.7785e+07
 1284,Max Estrategico IV,Max Capital Asset Management S.A.,Renta Mixta,23879.3,1663.55,372,6.4267e+07
 1724,Valiant Money Market Dolares,Valiant Asset Management S.G.F.C.I.S.A.U.,Mercado de Dinero,9261.15,1541.97,367,2.52066e+07
@@ -560,8 +560,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 373,Schroder Corto Plazo,Schroder S.A.S.G.F.C.I.,Renta Fija,10037.4,2677.39,361,2.7785e+07
 921,Gainvest Global II,StoneX Asset Management S.A.,Renta Mixta,23002.1,1602.44,358,6.4267e+07
 437,CMA Proteccion,Capital Markets Argentina Asset Management S.A.,Renta Fija,9835.11,2623.44,354,2.7785e+07
-1946,Puente Retorno Pesos,Puente Asset Management S.A.,Renta Fija,9827.43,2621.39,354,2.7785e+07
 1254,Balanz Soja,Balanz S.G.F.C.I.S.A.U.,Renta Variable,3819.12,1576.08,354,1.078e+07
+1946,Puente Retorno Pesos,Puente Asset Management S.A.,Renta Fija,9827.43,2621.39,354,2.7785e+07
 1371,Pionero Multiestrategia Mix,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,22587.4,1573.56,351,6.4267e+07
 643,SBS Pesos Plus,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,9699.23,2587.19,349,2.7785e+07
 503,Delta Renta,Delta Asset Management S.A.,Renta Fija,9499.43,2533.9,342,2.7785e+07
@@ -575,13 +575,13 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1976,Blacktoro Cobertura,Blacktoro Asset Management S.A.,Renta Fija,9022.89,2406.78,325,2.7785e+07
 1174,Novus Valor,Novus Asset Management S.A.,Renta Fija,9013.19,2404.2,324,2.7785e+07
 534,Delta Moneda,Delta Asset Management S.A.,Renta Fija,9012.34,2403.97,324,2.7785e+07
-1738,Numancia Pesos II,Zofingen Investment S.A.,Renta Fija,148786,0,320,4.64453e+08
 1854,Chimpay Pesos Conservador,Chimpay S.A.,Renta Fija,8897.07,2373.22,320,2.7785e+07
 997,Delta Renta Dólares Plus,Delta Asset Management S.A.,Renta Fija,8883.7,2369.65,320,2.7785e+07
+1738,Numancia Pesos II,Zofingen Investment S.A.,Renta Fija,148786,0,320,4.64453e+08
 769,MEGAQM Balanceado,MEGA QM S.A.,Retorno Total,57925.7,3026.62,318,1.82163e+08
 768,MEGAQM FCI Abierto Financiamiento de Infraestructura,MEGA QM S.A.,Infraestructura,64927.6,447.421,313,2.07403e+08
-685,Consultatio Abierto Pymes,One618 Asset Management S.G.F.C.I.S.A.,PyMEs,88703.4,445.64,309,2.87351e+08
 1087,MAF Mix II,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,19859.9,1383.54,309,6.4267e+07
+685,Consultatio Abierto Pymes,One618 Asset Management S.G.F.C.I.S.A.,PyMEs,88703.4,445.64,309,2.87351e+08
 1936,BAVSA Renta Balanceado XI,BAVSA Fondos S.A.,Renta Variable,3323.32,1371.47,308,1.078e+07
 1390,Premier Sustentable ASG,Supervielle Asset Management S.A.,ASG,794.126,151.844,305,2.60652e+06
 1776,Novus Dólar MM,Novus Asset Management S.A.,Mercado de Dinero,7693.39,1280.94,305,2.52066e+07
@@ -596,8 +596,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 571,Adcap Renta Fija,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,7787.27,2077.19,280,2.7785e+07
 1193,Pellegrini Retorno Total,Pellegrini S.A.S.G.F.C.I.,Renta Mixta,17914.7,1248.03,279,6.4267e+07
 1624,Axis Estrategia 28,Axis S.G.F.C.I.S.A.,Renta Mixta,17893.1,1246.53,278,6.4267e+07
-719,MAF Renta Mixta,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,17677.2,1231.48,275,6.4267e+07
 597,Allaria Abierto Pymes,Allaria Fondos Administrados S.G.F.C.I.S.A.,PyMEs,78990.2,396.842,275,2.87351e+08
+719,MAF Renta Mixta,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,17677.2,1231.48,275,6.4267e+07
 622,Gainvest Renta Fija Plus,StoneX Asset Management S.A.,Renta Fija,7590.07,2024.59,273,2.7785e+07
 1477,BAVSA Renta Balanceado IV,BAVSA Fondos S.A.,Renta Fija,7557.58,2015.92,272,2.7785e+07
 1619,Max Acciones Argentinas,Max Capital Asset Management S.A.,Renta Variable,2897.23,1195.63,269,1.078e+07
@@ -605,17 +605,17 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 236,Alpha Retorno Total,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Mixta,17093.8,1190.84,266,6.4267e+07
 760,Megainver Renta Global,MEGA QM S.A.,Renta Fija,7354.74,1961.82,265,2.7785e+07
 904,Argenfunds Renta Crecimiento,Argenfunds S.A.,Renta Fija,7289.42,1944.39,262,2.7785e+07
-1149,First Renta Mixta IV,First Capital Markets S.A.,Renta Fija,7206.96,1922.4,259,2.7785e+07
 1216,Gainvest Balanceado III,StoneX Asset Management S.A.,Renta Mixta,16675.7,1161.72,259,6.4267e+07
+1149,First Renta Mixta IV,First Capital Markets S.A.,Renta Fija,7206.96,1922.4,259,2.7785e+07
 1232,Delta Sustentable ASG,Delta Asset Management S.A.,ASG,667.516,127.635,256,2.60652e+06
-1552,Novus Retorno Total,Novus Asset Management S.A.,Renta Fija,7091.01,1891.47,255,2.7785e+07
 1661,Crecer Acciones,Ciudad Administradora de Activos S.A.U.,Renta Variable,2754.18,1136.59,255,1.078e+07
+1552,Novus Retorno Total,Novus Asset Management S.A.,Renta Fija,7091.01,1891.47,255,2.7785e+07
 1283,Max Estrategico III,Max Capital Asset Management S.A.,Renta Mixta,16342.4,1138.5,254,6.4267e+07
 721,Toronto Trust Global Capital,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,7015.67,1871.37,252,2.7785e+07
 70,ConoSur Ahorro Dólar,Cono Sur S.G.F.C.I.S.A.,Renta Fija,7015.52,1871.33,252,2.7785e+07
 621,Pellegrini Empresas Argentinas PyMES,Pellegrini S.A.S.G.F.C.I.,PyMEs,71778.1,360.609,250,2.87351e+08
-1012,Pionero Renta Estrategico,Macro Fondos S.G.F.C.I.S.A.,Retorno Total,45428,2373.62,249,1.82163e+08
 1635,Parakeet Multimercado,Parakeet S.G.F.C.I.S.A.,Renta Fija,6916.84,1845.01,249,2.7785e+07
+1012,Pionero Renta Estrategico,Macro Fondos S.G.F.C.I.S.A.,Retorno Total,45428,2373.62,249,1.82163e+08
 1494,Novus Renta Dólar,Novus Asset Management S.A.,Renta Fija,6907.98,1842.65,249,2.7785e+07
 1328,Delta Ahorro Dolares,Delta Asset Management S.A.,Renta Fija,6803.71,1814.83,245,2.7785e+07
 1326,Toronto Trust Gestión,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,15693.6,1093.3,244,6.4267e+07
@@ -625,16 +625,16 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1382,Adcap Balanceado III,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,15354.8,1069.7,239,6.4267e+07
 1629,Transatlantica Estrategia Dólar,Axis S.G.F.C.I.S.A.,Renta Mixta,15276.5,1064.24,238,6.4267e+07
 1375,Novus Renta Mixta,Novus Asset Management S.A.,Renta Mixta,15200.7,1058.96,237,6.4267e+07
+897,SBS Multiactivos,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,15137.8,1054.58,236,6.4267e+07
 954,IAM Renta Balanceada,Industrial Asset Management S.G.F.C.I.S.A.,Renta Fija,6547.97,1746.62,236,2.7785e+07
 1445,Axis Estrategia 15,Axis S.G.F.C.I.S.A.,Renta Mixta,15173.1,1057.04,236,6.4267e+07
-897,SBS Multiactivos,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,15137.8,1054.58,236,6.4267e+07
 1487,Champaquí Renta Variable,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Variable,2530.94,1044.47,235,1.078e+07
 713,Consultatio Crecimiento,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,6515.3,1737.9,234,2.7785e+07
 1296,Allaria Dinamico II,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,14969.2,1042.83,233,6.4267e+07
-1067,Argenfunds Renta Variable,Argenfunds S.A.,Renta Variable,2503.86,1033.29,232,1.078e+07
+1727,Cocos Crecimiento,Cocos Asset Management S.A.,Renta Fija,6440.66,1717.99,232,2.7785e+07
 930,Allaria Diversificado,Allaria Fondos Administrados S.G.F.C.I.S.A.,Retorno Total,42346.9,2212.63,232,1.82163e+08
 1580,Wise Capital Equity,Wise Capital Asset Management S.A.,Renta Variable,2496.48,1030.25,232,1.078e+07
-1727,Cocos Crecimiento,Cocos Asset Management S.A.,Renta Fija,6440.66,1717.99,232,2.7785e+07
+1067,Argenfunds Renta Variable,Argenfunds S.A.,Renta Variable,2503.86,1033.29,232,1.078e+07
 1228,Delta Gestion XI,Delta Asset Management S.A.,Renta Fija,6408.31,1709.37,231,2.7785e+07
 591,Allaria Renta Mixta II,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,14849.8,1034.51,231,6.4267e+07
 1977,Blacktoro Total Return,Blacktoro Asset Management S.A.,Renta Fija,6377.15,1701.05,230,2.7785e+07
@@ -643,27 +643,27 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1211,Consultatio ST Fondo Comun De Inversión ASG,One618 Asset Management S.G.F.C.I.S.A.,ASG,4078.21,93.8332,228,1.79217e+07
 1090,Delta Gestion X,Delta Asset Management S.A.,Renta Fija,6298.83,1680.16,227,2.7785e+07
 1367,Axis S&C Argentina Absolute Return,Axis S.G.F.C.I.S.A.,Renta Mixta,14501,1010.21,226,6.4267e+07
-1252,SBS Renta Mixta III,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,14360,1000.39,223,6.4267e+07
 428,Pellegrini Integral,Pellegrini S.A.S.G.F.C.I.,Renta Mixta,14356.9,1000.18,223,6.4267e+07
 1742,GMC Retorno Total III,GMC Asset Management S.A.U.,Renta Mixta,14300.2,996.227,223,6.4267e+07
+1252,SBS Renta Mixta III,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,14360,1000.39,223,6.4267e+07
 1086,MAF Mix I,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,14160.3,986.479,220,6.4267e+07
 1292,Balanz Performance XII,Balanz S.G.F.C.I.S.A.U.,Renta Fija,6093.23,1625.32,219,2.7785e+07
 352,Desarrollo Argentino I FCI Abierto para el Fin. de la Infra. y la Econ. Real,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,45217.8,311.599,218,2.07403e+08
-1172,Novus Estrategia,Novus Asset Management S.A.,Renta Fija,6026.64,1607.56,217,2.7785e+07
 789,Optimum Multi Asset Fund,SAM Argentina S.G.F.C.I.S.A.U.,Renta Fija,6016.12,1604.75,217,2.7785e+07
+1172,Novus Estrategia,Novus Asset Management S.A.,Renta Fija,6026.64,1607.56,217,2.7785e+07
 493,Optimum Renta Mixta Flexible Argentina,Santander Asset Management G.F.C.I.S.A.,Renta Fija,5972.85,1593.21,215,2.7785e+07
-1238,Allaria Cobertura Dinamica,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,13694.2,954.01,213,6.4267e+07
 1975,Vinci Compass Renta Mixta Dólares IV,Investis Asset Management S.A.S.G.F.C.I.,Renta Fija,5927.69,1581.16,213,2.7785e+07
+1238,Allaria Cobertura Dinamica,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,13694.2,954.01,213,6.4267e+07
 482,Premier Renta Plus en Pesos,Supervielle Asset Management S.A.,Renta Fija,5879.76,1568.38,212,2.7785e+07
 670,Adcap Moneda,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,5872.34,1566.4,211,2.7785e+07
-1391,Max Renta Fija Latam,Max Capital Asset Management S.A.,Renta Fija,5799.55,1546.98,209,2.7785e+07
 714,Allaria Renta Balanceada I,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,13423.1,935.125,209,6.4267e+07
 1752,Mabra BAVSA Pesos Plus,BAVSA Fondos S.A.,Renta Mixta,13457.7,937.531,209,6.4267e+07
-1089,Delta Gestion IX,Delta Asset Management S.A.,Renta Fija,5783.26,1542.64,208,2.7785e+07
+1391,Max Renta Fija Latam,Max Capital Asset Management S.A.,Renta Fija,5799.55,1546.98,209,2.7785e+07
 1044,1810 Renta Mixta,Proahorro Administradora de Activos S.A.,Renta Mixta,13351.4,930.126,208,6.4267e+07
-1217,Alamerica Abierto Pymes,Allaria Fondos Administrados S.G.F.C.I.S.A.,PyMEs,59136.3,297.097,206,2.87351e+08
+1089,Delta Gestion IX,Delta Asset Management S.A.,Renta Fija,5783.26,1542.64,208,2.7785e+07
 1177,Allaria Dolar Crecimiento,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,13232,921.806,206,6.4267e+07
 917,Gainvest Estrategia I,StoneX Asset Management S.A.,Renta Fija,5718.74,1525.43,206,2.7785e+07
+1217,Alamerica Abierto Pymes,Allaria Fondos Administrados S.G.F.C.I.S.A.,PyMEs,59136.3,297.097,206,2.87351e+08
 690,Balanz Capital Abierto Pymes FCI,Balanz S.G.F.C.I.S.A.U.,PyMEs,59236.5,297.6,206,2.87351e+08
 958,Galileo Estrategia,Delta Asset Management S.A.,Renta Fija,5685.21,1516.48,205,2.7785e+07
 1862,BAVSA Renta Balanceado VII,BAVSA Fondos S.A.,Renta Fija,5643.08,1505.25,203,2.7785e+07
@@ -677,34 +677,34 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1413,Gainvest Balanceado VII,StoneX Asset Management S.A.,Renta Mixta,12525.5,872.594,195,6.4267e+07
 1473,Ciclo Nova Estructurado,Ciclo Nova Asset Management S.A.,Renta Mixta,12473.5,868.969,194,6.4267e+07
 112,Alpha Renta Fija Serie 1,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,5371.51,1432.81,193,2.7785e+07
-1021,First Renta Mixta II,First Capital Markets S.A.,Renta Variable,2067.4,853.176,192,1.078e+07
 626,Galileo FCI Abierto Pymes,Delta Asset Management S.A.,PyMEs,55196,277.301,192,2.87351e+08
+1021,First Renta Mixta II,First Capital Markets S.A.,Renta Variable,2067.4,853.176,192,1.078e+07
 822,Argenfunds Renta Total,Argenfunds S.A.,Renta Fija,5301.41,1414.11,191,2.7785e+07
 1072,Valiant Renta Fija,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,5300.85,1413.96,191,2.7785e+07
 1369,Axis Brio Valores I,Axis S.G.F.C.I.S.A.,Renta Mixta,12203.7,850.173,190,6.4267e+07
 1253,Adcap S&C Renta Corporativa Corto Plazo Abierto Pymes,Adcap Asset Management S.G.F.C.I.S.A.,PyMEs,53805.1,270.313,187,2.87351e+08
-752,SBS Capital Plus,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,5146.81,1372.87,185,2.7785e+07
 1031,Fundcorp Long Performance,CMF Asset Management S.A.U.,Renta Fija,5130.27,1368.46,185,2.7785e+07
 1551,Novus Ahorro Dólares,Novus Asset Management S.A.,Renta Fija,5127.58,1367.74,185,2.7785e+07
-1363,Quiron Money Market,Quiron Asset Management S.A.,Mercado de Dinero,4646.59,773.65,184,2.52066e+07
+752,SBS Capital Plus,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,5146.81,1372.87,185,2.7785e+07
 857,Premier Estrategico,Supervielle Asset Management S.A.,Renta Mixta,11796.5,821.807,184,6.4267e+07
+1363,Quiron Money Market,Quiron Asset Management S.A.,Mercado de Dinero,4646.59,773.65,184,2.52066e+07
 912,Schroder Retorno Total Dos,Schroder S.A.S.G.F.C.I.,Retorno Total,33137.5,1731.44,182,1.82163e+08
-52,Blacktoro Ahorro,Blacktoro Asset Management S.A.,Renta Fija,5059.65,1349.62,182,2.7785e+07
 1097,SBS Patrimonio II,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,11720.4,816.504,182,6.4267e+07
+52,Blacktoro Ahorro,Blacktoro Asset Management S.A.,Renta Fija,5059.65,1349.62,182,2.7785e+07
 1929,Parakeet Balanced Fund III,Parakeet S.G.F.C.I.S.A.,Renta Fija,4995.25,1332.44,180,2.7785e+07
-565,Desarrollo Argentino II FCI Abierto para el Fin. de la Infra. y la Econ. Real,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,37156.3,256.047,179,2.07403e+08
 1958,Adcap Patrimonio II,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,4964.72,1324.3,179,2.7785e+07
+565,Desarrollo Argentino II FCI Abierto para el Fin. de la Infra. y la Econ. Real,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,37156.3,256.047,179,2.07403e+08
 1537,Apolo Dólares,GMC Asset Management S.A.U.,Renta Mixta,11510,801.848,179,6.4267e+07
-1398,Max Multigestión I,Max Capital Asset Management S.A.,Renta Fija,82726,0,178,4.64453e+08
 1101,Ciclo Nova Multiestrategia,Ciclo Nova Asset Management S.A.,Renta Mixta,11412.4,795.044,178,6.4267e+07
+1398,Max Multigestión I,Max Capital Asset Management S.A.,Renta Fija,82726,0,178,4.64453e+08
 1449,Axis Estrategia 19,Axis S.G.F.C.I.S.A.,Renta Mixta,11398.6,794.085,177,6.4267e+07
 658,Premier Commodities,Supervielle Asset Management S.A.,Renta Mixta,11288.1,786.388,176,6.4267e+07
 1207,Alycbur FCI Abierto Pymes,Adcap Asset Management S.G.F.C.I.S.A.,PyMEs,50602.5,254.224,176,2.87351e+08
 1930,Tandem Global III,Tandem Capital S.A.,Renta Mixta,11099.7,773.264,173,6.4267e+07
 1697,BAVSA Estrategia Dolar,BAVSA Fondos S.A.,Renta Mixta,11125.5,775.056,173,6.4267e+07
-1448,Axis Estrategia 18,Axis S.G.F.C.I.S.A.,Renta Mixta,11042.9,769.304,172,6.4267e+07
 1741,Parakeet Dólar Estructurado,Parakeet S.G.F.C.I.S.A.,Renta Fija,4781.86,1275.52,172,2.7785e+07
 589,Delta Empresas Argentinas Pymes,Delta Asset Management S.A.,PyMEs,49340.7,247.885,172,2.87351e+08
+1448,Axis Estrategia 18,Axis S.G.F.C.I.S.A.,Renta Mixta,11042.9,769.304,172,6.4267e+07
 1059,Alamerica Renta Fija Dolar Latam,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,10982.3,765.087,171,6.4267e+07
 1409,Axis Estrategia 11,Axis S.G.F.C.I.S.A.,Renta Mixta,10936.2,761.869,170,6.4267e+07
 816,Delta Gestion VI,Delta Asset Management S.A.,Renta Fija,4814.82,1258.6,170,2.8318e+07
@@ -716,8 +716,8 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1931,Tandem Global IV,Tandem Capital S.A.,Renta Mixta,10652.6,742.117,166,6.4267e+07
 787,IAM FCI Abierto Pymes,Industrial Asset Management S.G.F.C.I.S.A.,PyMEs,47743.8,239.862,166,2.87351e+08
 1146,Galileo Multimercado IV,Delta Asset Management S.A.,Renta Mixta,10603.1,738.667,165,6.4267e+07
-511,Compass Argentina Abierto PyMEs,Investis Asset Management S.A.S.G.F.C.I.,PyMEs,47206.3,237.161,164,2.87351e+08
 1027,Consultatio Gestion II,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,10559.8,735.651,164,6.4267e+07
+511,Compass Argentina Abierto PyMEs,Investis Asset Management S.A.S.G.F.C.I.,PyMEs,47206.3,237.161,164,2.87351e+08
 1457,Axis Estrategia 25,Axis S.G.F.C.I.S.A.,Renta Mixta,10468.9,729.315,163,6.4267e+07
 579,Optimum Renta Fija Estrategica,Santander Asset Management G.F.C.I.S.A.,Renta Fija,4514.22,1204.13,162,2.7785e+07
 1623,Avantia Multiestrategia,Axis S.G.F.C.I.S.A.,Renta Mixta,10314.9,718.588,161,6.4267e+07
@@ -729,21 +729,21 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 1633,Parakeet Premium,Parakeet S.G.F.C.I.S.A.,Renta Fija,4247.8,1133.07,153,2.7785e+07
 1489,Tandem Dólares Retorno Total,Tandem Capital S.A.,Retorno Total,27708.2,1447.76,152,1.82163e+08
 1312,Gainvest Global V,StoneX Asset Management S.A.,Renta Mixta,9709.56,676.418,151,6.4267e+07
-1410,Axis Estrategia 12,Axis S.G.F.C.I.S.A.,Renta Mixta,9629.92,670.87,150,6.4267e+07
 1695,Compass Renta Mixta Dólares III,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,9639.57,671.542,150,6.4267e+07
 1673,ConoSur Financiamiento,Cono Sur S.G.F.C.I.S.A.,Renta Fija,4178.25,1114.52,150,2.7785e+07
-607,Delta Multimercado I,Delta Asset Management S.A.,Renta Mixta,9581.5,667.497,149,6.4267e+07
-1092,Numancia Pesos,Zofingen Investment S.A.,Renta Fija,69296.8,0,149,4.64453e+08
+1410,Axis Estrategia 12,Axis S.G.F.C.I.S.A.,Renta Mixta,9629.92,670.87,150,6.4267e+07
 915,First Renta Pesos,First Capital Markets S.A.,Renta Fija,4148.85,1106.67,149,2.7785e+07
+1092,Numancia Pesos,Zofingen Investment S.A.,Renta Fija,69296.8,0,149,4.64453e+08
+607,Delta Multimercado I,Delta Asset Management S.A.,Renta Mixta,9581.5,667.497,149,6.4267e+07
 1856,Chimpay Retorno Total,Chimpay S.A.,Retorno Total,27020.5,1411.83,148,1.82163e+08
 1584,Wise Capital Saving,Wise Capital Asset Management S.A.,Renta Mixta,9451.42,658.435,147,6.4267e+07
 1867,Tango Money Market,Tango Asset Management S.A.,Mercado de Dinero,28276.3,256.59,147,1.92638e+08
-1470,Axis Estrategia 13,Axis S.G.F.C.I.S.A.,Renta Mixta,9295.11,647.545,145,6.4267e+07
 1023,Zofingen Dollar Linked,Zofingen Investment S.A.,Renta Fija,4034.54,1076.18,145,2.7785e+07
+1470,Axis Estrategia 13,Axis S.G.F.C.I.S.A.,Renta Mixta,9295.11,647.545,145,6.4267e+07
 1180,Consultatio Gestion IV,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,66712.5,0,144,4.64453e+08
+1268,Fima Mix II,Galicia Asset Management S.A.U.,Renta Mixta,9230.81,643.065,144,6.4267e+07
 998,Delta Multimercado II,Delta Asset Management S.A.,Renta Fija,4012.93,1070.42,144,2.7785e+07
 1181,Consultatio Gestion V,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,9286.41,646.939,144,6.4267e+07
-1268,Fima Mix II,Galicia Asset Management S.A.U.,Renta Mixta,9230.81,643.065,144,6.4267e+07
 1201,Ualintec Renta Fija Pesos,Ualá Fondos S.A.U.,Renta Fija,3985.31,1063.05,143,2.7785e+07
 1710,Consultatio Estrategia IV,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,65896.4,0,142,4.64453e+08
 108,1822 Raices Abierto Pymes,Provinfondos S.A.S.G.F.C.I.,PyMEs,40815.2,205.053,142,2.87351e+08
@@ -752,26 +752,26 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 610,SBS Estrategia,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,3801.73,1014.08,137,2.7785e+07
 1022,Intervalores Ahorro,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,3806.25,1015.29,137,2.7785e+07
 1643,CMA Estrategia Pesos,Capital Markets Argentina Asset Management S.A.,Renta Fija,3784.04,1009.36,136,2.7785e+07
-1455,Axis Estrategia 23,Axis S.G.F.C.I.S.A.,Renta Mixta,8702.19,606.24,135,6.4267e+07
 1689,Axis Estrategia 32,Axis S.G.F.C.I.S.A.,Renta Mixta,8680.57,604.733,135,6.4267e+07
-1396,Max Dinamico IV,Max Capital Asset Management S.A.,Renta Fija,61721.3,0,133,4.64453e+08
+1455,Axis Estrategia 23,Axis S.G.F.C.I.S.A.,Renta Mixta,8702.19,606.24,135,6.4267e+07
 1440,Lombard Dinámico I,Patagonia Inversora S.A.S.G.F.C.I,Renta Mixta,8522.79,593.742,133,6.4267e+07
+1396,Max Dinamico IV,Max Capital Asset Management S.A.,Renta Fija,61721.3,0,133,4.64453e+08
 1558,Adcap Gestión Estratégica III,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,3630.38,968.374,131,2.7785e+07
-746,MEGAQM Renta Mixta,MEGA QM S.A.,Renta Mixta,8448.68,588.579,131,6.4267e+07
 725,MAF Renta Balanceada,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,8422.36,586.745,131,6.4267e+07
+746,MEGAQM Renta Mixta,MEGA QM S.A.,Renta Mixta,8448.68,588.579,131,6.4267e+07
 1589,Fundcorp Crecimiento,CMF Asset Management S.A.U.,Renta Mixta,8411.66,586,131,6.4267e+07
 1538,MEGAQM Cobertura FCIA Pymes,MEGA QM S.A.,PyMEs,37297.4,187.38,130,2.87351e+08
 1464,Dracma Multiestrategia,Dracma Asset Management S.A.,Renta Mixta,8258.92,575.359,129,6.4267e+07
 1408,Axis Estrategia 10,Axis S.G.F.C.I.S.A.,Renta Mixta,8160.47,568.5,127,6.4267e+07
 1134,Allaria Unicred Abierto Pymes FCI,Allaria Fondos Administrados S.G.F.C.I.S.A.,PyMEs,36537.5,183.562,127,2.87351e+08
 1534,1822 Raices Renta Fija Internacional,Provinfondos S.A.S.G.F.C.I.,Renta Fija,3515.19,937.649,127,2.7785e+07
-1065,Fima Renta Fija Internacional,Galicia Asset Management S.A.U.,Renta Fija,3496.05,932.542,126,2.7785e+07
 1349,Argenfunds Inversión Dólares,Argenfunds S.A.,Renta Fija,3495.59,932.421,126,2.7785e+07
+1065,Fima Renta Fija Internacional,Galicia Asset Management S.A.U.,Renta Fija,3496.05,932.542,126,2.7785e+07
 1646,CYC Dólares Liquidez,C y C Administradora de Fondos S.A.,Mercado de Dinero,3150.69,524.584,125,2.52066e+07
 1621,Argenfunds Liquidez Dólares,Argenfunds S.A.,Mercado de Dinero,3153.2,525.002,125,2.52066e+07
 1361,Gainvest Global VIII,StoneX Asset Management S.A.,Renta Mixta,7950.32,553.86,124,6.4267e+07
-764,Galileo Renta Fija,Delta Asset Management S.A.,Retorno Total,21958.1,1147.32,121,1.82163e+08
 942,Dracma Balanceado,Dracma Asset Management S.A.,Renta Mixta,7763.24,540.827,121,6.4267e+07
+764,Galileo Renta Fija,Delta Asset Management S.A.,Retorno Total,21958.1,1147.32,121,1.82163e+08
 1857,Quiron Money Market USD,Quiron Asset Management S.A.,Mercado de Dinero,3019.72,502.778,120,2.52066e+07
 1751,Argentaria BAVSA Renta Fija Dólares,BAVSA Fondos S.A.,Renta Fija,3344.83,892.208,120,2.7785e+07
 1583,Wise Capital Multistrategy,Wise Capital Asset Management S.A.,Renta Mixta,7619.56,530.818,119,6.4267e+07
@@ -786,350 +786,350 @@ codigo_cnv,Fondo,Gerente,Tipo,AUM_millones,Monto_PH_est,Cuentas_estimadas,Ticket
 812,GSS Retorno Total,Grupo SS S.A.S.G.F.C.I.,Retorno Total,19625.6,1025.44,108,1.82163e+08
 1872,Mills Renta Fija Crecimiento Pesos,Mills Asset Management S.A.,Renta Fija,2936.85,783.382,106,2.7785e+07
 1203,Ualintec Renta Variable Pesos,Ualá Fondos S.A.U.,Renta Variable,1145.84,472.865,106,1.078e+07
-1459,Benedit Multiestrategia,Axis S.G.F.C.I.S.A.,Renta Mixta,6755.26,470.606,105,6.4267e+07
-1150,First Renta Mixta V,First Capital Markets S.A.,Renta Fija,2919.88,778.856,105,2.7785e+07
 613,Gainvest PYMEs,StoneX Asset Management S.A.,PyMEs,30209.1,151.768,105,2.87351e+08
+1150,First Renta Mixta V,First Capital Markets S.A.,Renta Fija,2919.88,778.856,105,2.7785e+07
+1459,Benedit Multiestrategia,Axis S.G.F.C.I.S.A.,Renta Mixta,6755.26,470.606,105,6.4267e+07
 1530,Schroder Crecimiento Tres,Schroder S.A.S.G.F.C.I.,Retorno Total,18866.8,985.793,104,1.82163e+08
 1692,Axis Estrategia Dólar 5,Axis S.G.F.C.I.S.A.,Renta Mixta,6599.13,459.729,103,6.4267e+07
 1581,Wise Capital Global Markets,Wise Capital Asset Management S.A.,Renta Mixta,6351.43,442.473,99,6.4267e+07
-824,Argenfunds Renta Flexible,Argenfunds S.A.,Renta Fija,2730.68,728.387,98,2.7785e+07
-1366,Champaquí Renta Futura,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,45564.6,0.125371,98,4.64378e+08
-1472,Quiron Renta Mixta,Quiron Asset Management S.A.,Renta Variable,1057.46,436.392,98,1.078e+07
-1462,Toronto Trust Ahorro Dólar,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,6325.85,440.691,98,6.4267e+07
 1640,Ciclo Nova Balanceado,Ciclo Nova Asset Management S.A.,Renta Mixta,6286.92,437.979,98,6.4267e+07
-1447,Axis Estrategia 17,Axis S.G.F.C.I.S.A.,Renta Mixta,6262.08,436.249,97,6.4267e+07
+1366,Champaquí Renta Futura,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,45564.6,0.125371,98,4.64378e+08
+824,Argenfunds Renta Flexible,Argenfunds S.A.,Renta Fija,2730.68,728.387,98,2.7785e+07
+1462,Toronto Trust Ahorro Dólar,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,6325.85,440.691,98,6.4267e+07
+1472,Quiron Renta Mixta,Quiron Asset Management S.A.,Renta Variable,1057.46,436.392,98,1.078e+07
 657,Pellegrini Agro FCI,Pellegrini S.A.S.G.F.C.I.,Renta Mixta,6244.78,435.044,97,6.4267e+07
+1447,Axis Estrategia 17,Axis S.G.F.C.I.S.A.,Renta Mixta,6262.08,436.249,97,6.4267e+07
 847,SBS Patrimonio IV,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,6211.42,432.719,97,6.4267e+07
 1434,Galileo Multi Strategy II,Delta Asset Management S.A.,Renta Mixta,6218.86,433.238,97,6.4267e+07
-1275,Gainvest Balanceado V,StoneX Asset Management S.A.,Renta Mixta,6145.97,428.16,96,6.4267e+07
 1901,BAVSA Renta Balanceado IX,BAVSA Fondos S.A.,Renta Variable,1036.18,427.61,96,1.078e+07
 1071,Valiant Renta Variable,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Variable,1039.01,428.779,96,1.078e+07
-1986,Quiron Pesos Estrategia,Quiron Asset Management S.A.,Renta Mixta,6116.17,426.084,95,6.4267e+07
+1275,Gainvest Balanceado V,StoneX Asset Management S.A.,Renta Mixta,6145.97,428.16,96,6.4267e+07
 1607,Allaria Gestión V,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,6078.91,423.488,95,6.4267e+07
+1986,Quiron Pesos Estrategia,Quiron Asset Management S.A.,Renta Mixta,6116.17,426.084,95,6.4267e+07
 237,Alpha Planeamiento Dinamico,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Mixta,6009.71,418.667,94,6.4267e+07
 1604,Allaria Dólar Gestión,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,6007.51,418.514,93,6.4267e+07
-1990,SBS Desarrollo Infraestructura II,SBS Asset Management S.A.S.G.F.C.I.,Infraestructura,19113.8,131.715,92,2.07403e+08
 1100,Valiant Renta Fija Dólares,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,2564.4,684.033,92,2.7785e+07
+1990,SBS Desarrollo Infraestructura II,SBS Asset Management S.A.S.G.F.C.I.,Infraestructura,19113.8,131.715,92,2.07403e+08
 1526,Balanz Crecimiento FCI Ab para Financ Infra y Econ Real,Balanz S.G.F.C.I.S.A.U.,Infraestructura,18958.5,130.644,91,2.07403e+08
 1128,Champaquí Ahorro Mixto,Bancor Fondos S.G.F.C.I.S.A.U.,Renta Fija,2529.17,674.637,91,2.7785e+07
 1374,Novus Multiestrategia,Novus Asset Management S.A.,Renta Mixta,5838.48,406.738,91,6.4267e+07
 594,Optimum Global Balanced,Santander Asset Management G.F.C.I.S.A.,Renta Mixta,5760.9,401.334,90,6.4267e+07
-1550,Novus Income Dólares,Novus Asset Management S.A.,Renta Fija,2442.38,651.486,88,2.7785e+07
 1834,Pionero Horizonte,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,121578,0,88,1.38372e+09
-1370,Axis Estrategia 6,Axis S.G.F.C.I.S.A.,Renta Mixta,5600.37,390.15,87,6.4267e+07
+1550,Novus Income Dólares,Novus Asset Management S.A.,Renta Fija,2442.38,651.486,88,2.7785e+07
 1784,Wise Capital Focus II,Wise Capital Asset Management S.A.,Renta Mixta,5595.36,389.801,87,6.4267e+07
-1378,Novus Renta Fija,Novus Asset Management S.A.,Renta Fija,2395.22,638.906,86,2.7785e+07
+1370,Axis Estrategia 6,Axis S.G.F.C.I.S.A.,Renta Mixta,5600.37,390.15,87,6.4267e+07
 1932,GMC Renta Fija Dolares,GMC Asset Management S.A.U.,Renta Mixta,5516.62,384.316,86,6.4267e+07
+1378,Novus Renta Fija,Novus Asset Management S.A.,Renta Fija,2395.22,638.906,86,2.7785e+07
 1450,Axis Estrategia 20,Axis S.G.F.C.I.S.A.,Renta Mixta,5432.21,378.435,85,6.4267e+07
-1310,Axis Estrategia 1,Axis S.G.F.C.I.S.A.,Renta Mixta,5392.72,375.685,84,6.4267e+07
-1168,Ciclo Nova Pyme,Ciclo Nova Asset Management S.A.,PyMEs,24151.5,121.336,84,2.87351e+08
-1562,Ualintec Cobertura,Ualá Fondos S.A.U.,Renta Fija,2325.53,620.315,84,2.7785e+07
 1042,Ciclo Nova Retorno Total,Ciclo Nova Asset Management S.A.,Renta Mixta,116349,0,84,1.38372e+09
-696,Chaco Renta Fija I,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Renta Fija,2306.99,615.372,83,2.7785e+07
+1168,Ciclo Nova Pyme,Ciclo Nova Asset Management S.A.,PyMEs,24151.5,121.336,84,2.87351e+08
+1310,Axis Estrategia 1,Axis S.G.F.C.I.S.A.,Renta Mixta,5392.72,375.685,84,6.4267e+07
+1562,Ualintec Cobertura,Ualá Fondos S.A.U.,Renta Fija,2325.53,620.315,84,2.7785e+07
 663,Pionero Empresas FCI Abierto Pymes,Macro Fondos S.G.F.C.I.S.A.,PyMEs,32575.8,109.499,83,3.9246e+08
+696,Chaco Renta Fija I,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Renta Fija,2306.99,615.372,83,2.7785e+07
 1083,MEGAQM Ahorro Dólares,MEGA QM S.A.,Renta Fija,2237.84,596.925,81,2.7785e+07
-1597,IAM Dinámico FCI Abierto Pymes,Industrial Asset Management S.G.F.C.I.S.A.,PyMEs,23285,116.983,81,2.87351e+08
 1628,Axis Estrategia Dólar 3,Axis S.G.F.C.I.S.A.,Renta Mixta,5207.22,362.761,81,6.4267e+07
+1597,IAM Dinámico FCI Abierto Pymes,Industrial Asset Management S.G.F.C.I.S.A.,PyMEs,23285,116.983,81,2.87351e+08
 1699,Compass Renta Mixta III,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,5165.79,359.876,80,6.4267e+07
 894,First Abierto Pymes,First Capital Markets S.A.,PyMEs,23089.4,116,80,2.87351e+08
-1064,Fima Acciones Latinoamerica,Galicia Asset Management S.A.U.,Renta Variable,840.468,346.844,78,1.078e+07
 631,Quiron Fixed Income,Quiron Asset Management S.A.,Renta Fija,2177.8,580.91,78,2.7785e+07
+1064,Fima Acciones Latinoamerica,Galicia Asset Management S.A.U.,Renta Variable,840.468,346.844,78,1.078e+07
 1474,Ciclo Nova Estructurado II,Ciclo Nova Asset Management S.A.,Renta Mixta,4978.99,346.862,77,6.4267e+07
 1395,Max Dinamico III,Max Capital Asset Management S.A.,Renta Fija,35107,0,76,4.64453e+08
 785,Consultatio Renta Pesos,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,34793.5,3.11052,75,4.6202e+08
 1912,Fundcorp Long Performance Plus II,CMF Asset Management S.A.U.,Retorno Total,13591,710.129,75,1.82163e+08
-1263,MAX Gestion Abierto Pyme I,Max Capital Asset Management S.A.,PyMEs,21124.2,106.127,74,2.87351e+08
 1186,First Renta Mixta VII,First Capital Markets S.A.,Renta Fija,2051.42,547.2,74,2.7785e+07
+1263,MAX Gestion Abierto Pyme I,Max Capital Asset Management S.A.,PyMEs,21124.2,106.127,74,2.87351e+08
 1359,Pionero Recovery,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,4768.42,332.192,74,6.4267e+07
 680,MAF Renta Balanceada 2,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,4683.12,326.25,73,6.4267e+07
 212,Fima Balanceado,Galicia Asset Management S.A.U.,Retorno Total,13165.7,687.911,72,1.82163e+08
 1223,Abierto Momentum Pymes,Zofingen Investment S.A.,PyMEs,75359.1,35.0704,70,1.08165e+09
 475,Gainvest Renta Fija,StoneX Asset Management S.A.,Renta Fija,1934.29,515.955,70,2.7785e+07
 595,Premier Abierto Pymes,Supervielle Asset Management S.A.,PyMEs,19823.3,99.591,69,2.87351e+08
-1591,Desarrollo Argentino III FCI Abierto para el Fin. de la Infra. y la Econ. Real,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,13812.5,95.1828,67,2.07403e+08
 1851,Tandem Global,Tandem Capital S.A.,Renta Mixta,4284.15,298.456,67,6.4267e+07
+1591,Desarrollo Argentino III FCI Abierto para el Fin. de la Infra. y la Econ. Real,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,13812.5,95.1828,67,2.07403e+08
 1821,Superfondo Renta Balance III,Santander Asset Management G.F.C.I.S.A.,Renta Mixta,4279.28,298.117,67,6.4267e+07
 1009,Compass Ahorro en Dolares,Investis Asset Management S.A.S.G.F.C.I.,Retorno Total,12132.3,633.912,67,1.82163e+08
-1080,MEGAQM Gestión Balanceada Dólares,MEGA QM S.A.,Renta Mixta,4246.42,295.827,66,6.4267e+07
 1743,GMC Retorno Total IV,GMC Asset Management S.A.U.,Renta Mixta,4247.44,295.899,66,6.4267e+07
+1080,MEGAQM Gestión Balanceada Dólares,MEGA QM S.A.,Renta Mixta,4246.42,295.827,66,6.4267e+07
 1517,Adcap Balanceado VII,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,30320.3,0,65,4.64453e+08
 1249,SBS Patrimonio V,SBS Asset Management S.A.S.G.F.C.I.,Renta Mixta,4127.91,287.572,64,6.4267e+07
 1507,Argenfunds Abierto Pymes II,Argenfunds S.A.,PyMEs,18038.4,90.6239,63,2.87351e+08
 1311,Axis Rosental FCI Abierto Pymes,Axis S.G.F.C.I.S.A.,PyMEs,17681.6,88.8314,62,2.87351e+08
-1509,Insider Retorno Estratégico,Dracma Asset Management S.A.,Retorno Total,11171.2,583.698,61,1.82163e+08
-1325,Fima Infraestructura II,Galicia Asset Management S.A.U.,Infraestructura,12567.8,86.6059,61,2.07403e+08
-1387,Adcap Balanceado XVII,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,1683.29,449.003,61,2.7785e+07
 1545,BAVSA Global II,BAVSA Fondos S.A.,Renta Mixta,3891.47,271.1,61,6.4267e+07
+1325,Fima Infraestructura II,Galicia Asset Management S.A.U.,Infraestructura,12567.8,86.6059,61,2.07403e+08
+1509,Insider Retorno Estratégico,Dracma Asset Management S.A.,Retorno Total,11171.2,583.698,61,1.82163e+08
+1387,Adcap Balanceado XVII,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,1683.29,449.003,61,2.7785e+07
 1332,Optimum Balanced Strategy,Santander Asset Management G.F.C.I.S.A.,Renta Fija,1674.25,446.593,60,2.7785e+07
 1978,Fundcorp Renta Pesos,CMF Asset Management S.A.U.,Renta Mixta,3860.28,268.927,60,6.4267e+07
 1431,Allaria Gestion IV,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,3882.22,270.456,60,6.4267e+07
-1745,Wise Capital Legacy,Wise Capital Asset Management S.A.,Renta Mixta,3700.48,257.795,58,6.4267e+07
 1005,Alamerica Renta Fija Argentina,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,3704.2,258.053,58,6.4267e+07
 1270,1822 Raices Infraestructura,Provinfondos S.A.S.G.F.C.I.,Infraestructura,12061.1,83.1142,58,2.07403e+08
+1745,Wise Capital Legacy,Wise Capital Asset Management S.A.,Renta Mixta,3700.48,257.795,58,6.4267e+07
 146,Super Ahorro U$S,Santander Asset Management G.F.C.I.S.A.,Mercado de Dinero,1408.83,234.568,56,2.52066e+07
 1379,GMC Retorno Total II,GMC Asset Management S.A.U.,Retorno Total,10111.1,528.308,56,1.82163e+08
 572,Adcap Financiamiento Abierto Pymes,Adcap Asset Management S.G.F.C.I.S.A.,PyMEs,15705.7,78.9043,55,2.87351e+08
 1435,Allaria Sustentable ASG,Allaria Fondos Administrados S.G.F.C.I.S.A.,ASG,144.012,27.5362,55,2.60652e+06
-1099,Valiant Abierto Pymes,Valiant Asset Management S.G.F.C.I.S.A.U.,PyMEs,15593,78.3382,54,2.87351e+08
 1855,Chimpay Pesos Moderado,Chimpay S.A.,Renta Mixta,3498.15,243.699,54,6.4267e+07
+1099,Valiant Abierto Pymes,Valiant Asset Management S.G.F.C.I.S.A.U.,PyMEs,15593,78.3382,54,2.87351e+08
 1707,Consultatio Estrategia I,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,73670.5,0,53,1.38372e+09
-1277,ConoSur Visus,Cono Sur S.G.F.C.I.S.A.,Retorno Total,9575.75,500.334,53,1.82163e+08
-1320,Adcap Desarrollo e Infraestructura,Adcap Asset Management S.G.F.C.I.S.A.,Infraestructura,10889.8,75.0423,53,2.07403e+08
-1184,SMR Fondo Comun de Inversion,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,4378.64,235.489,53,8.21212e+07
 1337,Alycbur Renta Cobertura,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,1473.45,393.032,53,2.7785e+07
+1277,ConoSur Visus,Cono Sur S.G.F.C.I.S.A.,Retorno Total,9575.75,500.334,53,1.82163e+08
+1184,SMR Fondo Comun de Inversion,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,4378.64,235.489,53,8.21212e+07
+1320,Adcap Desarrollo e Infraestructura,Adcap Asset Management S.G.F.C.I.S.A.,Infraestructura,10889.8,75.0423,53,2.07403e+08
 1346,Ciclo Nova Renta Fija Dólar 2,Ciclo Nova Asset Management S.A.,Renta Fija,1463.99,390.474,53,2.77872e+07
 1788,Bull Market Abierto Pymes,Bull Market Asset Management S.A.,PyMEs,14714.5,73.9246,51,2.87351e+08
 1478,BAVSA Ahorro Plus,BAVSA Fondos S.A.,Renta Fija,1417.68,378.156,51,2.7785e+07
 682,MAF Renta Fija Cobertura,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,1418.21,378.296,51,2.7785e+07
 1385,Zofingen Infraestructura,Zofingen Investment S.A.,Infraestructura,10310.3,71.0493,50,2.07403e+08
 655,Argenfunds Ahorro Pesos,Argenfunds S.A.,Renta Fija,1368.07,364.921,49,2.7785e+07
-1744,Wise Capital Focus I,Wise Capital Asset Management S.A.,Renta Mixta,3170.64,220.883,49,6.4267e+07
-1453,Axis Estrategia 21,Axis S.G.F.C.I.S.A.,Renta Mixta,3166.6,220.602,49,6.4267e+07
 795,CMA Performance,Capital Markets Argentina Asset Management S.A.,Renta Fija,1360.93,363.018,49,2.7785e+07
+1453,Axis Estrategia 21,Axis S.G.F.C.I.S.A.,Renta Mixta,3166.6,220.602,49,6.4267e+07
+1744,Wise Capital Focus I,Wise Capital Asset Management S.A.,Renta Mixta,3170.64,220.883,49,6.4267e+07
 1547,BAVSA Retorno Total,BAVSA Fondos S.A.,Renta Mixta,3017.67,210.226,47,6.4267e+07
 1973,ConoSur Financiamiento II,Cono Sur S.G.F.C.I.S.A.,Renta Fija,1282.71,342.152,46,2.7785e+07
 575,Arpenta Acciones Argentina,Mercofond S.G.F.C.I.S.A.,Renta Variable,496.996,205.1,46,1.078e+07
 1154,First Abierto Pymes II,First Capital Markets S.A.,PyMEs,12925.2,64.9353,45,2.87351e+08
-1336,Adcap Patrimonio IV,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,1235.05,329.439,44,2.7785e+07
 1708,Consultatio Estrategia II,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,20297.2,0,44,4.64453e+08
+1336,Adcap Patrimonio IV,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,1235.05,329.439,44,2.7785e+07
 1155,Balanz Infraestructura,Balanz S.G.F.C.I.S.A.U.,Infraestructura,9157.05,63.102,44,2.07403e+08
 1794,Valiant Renta Fija Balanceado VI,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,1182.72,315.481,43,2.7785e+07
-1682,Compass Renta Mixta Dólares II,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,2721.83,189.617,42,6.4267e+07
 1924,Tango Ahorro Plus,Tango Asset Management S.A.,Renta Fija,1158.46,309.009,42,2.7785e+07
-1068,Argenfunds Renta Mixta Plus,Argenfunds S.A.,Renta Mixta,2614.23,182.12,41,6.4267e+07
+1682,Compass Renta Mixta Dólares II,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,2721.83,189.617,42,6.4267e+07
 1397,Max Dinamico V,Max Capital Asset Management S.A.,Renta Fija,19026.3,0,41,4.64453e+08
-1484,Toronto Trust Infraestructura,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,8475.11,58.4026,41,2.07403e+08
+1068,Argenfunds Renta Mixta Plus,Argenfunds S.A.,Renta Mixta,2614.23,182.12,41,6.4267e+07
 1191,Lombard Abierto Pymes,Patagonia Inversora S.A.S.G.F.C.I,PyMEs,11667.7,58.6179,41,2.87351e+08
+1484,Toronto Trust Infraestructura,Investis Asset Management S.A.S.G.F.C.I.,Infraestructura,8475.11,58.4026,41,2.07403e+08
 2008,Unico Liquidez Pesos,Comafi Administradora de Inversiones S.G.F.C.I.S.A.U.,Mercado de Dinero,1007.57,167.759,40,2.52066e+07
 620,Allaria Desarrollo e Infraestructura,Allaria Fondos Administrados S.G.F.C.I.S.A.,Infraestructura,8239.74,56.7807,40,2.07403e+08
-644,SBS Retorno Total,SBS Asset Management S.A.S.G.F.C.I.,Retorno Total,7183.99,375.365,39,1.82163e+08
 1342,Schroder Patrimonio Dos,Schroder S.A.S.G.F.C.I.,Retorno Total,120882,0.000197175,39,3.07596e+09
-1167,Alpha Abierto Pymes,ICBC Investments Argentina S.A.U.S.G.F.C.I.,PyMEs,10947.6,55.0002,38,2.87351e+08
-1148,First Renta Mixta III,First Capital Markets S.A.,Renta Fija,1045.38,278.847,38,2.7785e+07
-1317,Ciclo Nova Multiestrategia IV,Ciclo Nova Asset Management S.A.,Renta Mixta,2464.22,171.67,38,6.4267e+07
-855,Allaria Renta Mixta Dólares,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,2454.63,171.002,38,6.4267e+07
+644,SBS Retorno Total,SBS Asset Management S.A.S.G.F.C.I.,Retorno Total,7183.99,375.365,39,1.82163e+08
 1716,Parakeet Multimercado III,Parakeet S.G.F.C.I.S.A.,Renta Mixta,2418.83,168.508,38,6.4267e+07
+1148,First Renta Mixta III,First Capital Markets S.A.,Renta Fija,1045.38,278.847,38,2.7785e+07
 446,SBS Tavelli Renta,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,1055.49,281.544,38,2.7785e+07
+1167,Alpha Abierto Pymes,ICBC Investments Argentina S.A.U.S.G.F.C.I.,PyMEs,10947.6,55.0002,38,2.87351e+08
+855,Allaria Renta Mixta Dólares,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,2454.63,171.002,38,6.4267e+07
+1317,Ciclo Nova Multiestrategia IV,Ciclo Nova Asset Management S.A.,Renta Mixta,2464.22,171.67,38,6.4267e+07
 1308,Zofingen Multi Strategy II,Zofingen Investment S.A.,Renta Mixta,50782.1,0,37,1.38372e+09
-1140,Champaquí FCI Abierto Pymes,Bancor Fondos S.G.F.C.I.S.A.U.,PyMEs,16642.9,46.2403,37,4.50207e+08
 666,SBS Tavelli Abierto Pymes,SBS Asset Management S.A.S.G.F.C.I.,PyMEs,10574.3,53.1248,37,2.87351e+08
+1140,Champaquí FCI Abierto Pymes,Bancor Fondos S.G.F.C.I.S.A.U.,PyMEs,16642.9,46.2403,37,4.50207e+08
 1195,Consultatio Multimercado I,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,16710.2,0.000464601,36,4.64453e+08
 1911,DXA Retorno Total,Dracma Asset Management S.A.,Retorno Total,6376.69,333.183,35,1.82163e+08
 1430,Allaria Agro,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,935.446,249.523,34,2.7785e+07
 1260,Novus Renta Balanceado,Novus Asset Management S.A.,Renta Mixta,2211.75,154.082,34,6.4267e+07
 1164,Alpha Infraestructura,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Infraestructura,6940.67,47.8287,33,2.07403e+08
-1553,Novus Gestion II,Novus Asset Management S.A.,Renta Mixta,2061.42,143.609,32,6.4267e+07
 1200,Abierto Pymes Veta,Zofingen Investment S.A.,PyMEs,10118.9,45.123,32,3.16105e+08
-639,Alpha Renta Balanceada Global,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Mixta,2036.59,141.879,32,6.4267e+07
 1239,Argenfunds Infraestructura,Argenfunds S.A.,Infraestructura,6719.05,46.3015,32,2.07403e+08
+639,Alpha Renta Balanceada Global,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Mixta,2036.59,141.879,32,6.4267e+07
+1553,Novus Gestion II,Novus Asset Management S.A.,Renta Mixta,2061.42,143.609,32,6.4267e+07
 618,Compass Renta Plus,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,1971.79,137.365,31,6.4267e+07
-1556,Adcap Gestión Estratégica I,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,43126.6,0,31,1.38372e+09
 1593,Valiant Renta Fija Balanceado III,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,851.736,227.194,31,2.7785e+07
+1556,Adcap Gestión Estratégica I,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,43126.6,0,31,1.38372e+09
 989,GMC Retorno Total,GMC Asset Management S.A.U.,Retorno Total,5126.44,267.857,28,1.82163e+08
-251,SBS Tavelli Mix,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,789.857,210.688,28,2.7785e+07
 1693,Axis Estrategia Dólar 6,Axis S.G.F.C.I.S.A.,Renta Mixta,1814.05,126.376,28,6.4267e+07
+251,SBS Tavelli Mix,SBS Asset Management S.A.S.G.F.C.I.,Renta Fija,789.857,210.688,28,2.7785e+07
 1705,BAVSA Multiestrategia I,BAVSA Fondos S.A.,Renta Mixta,1770.34,123.331,28,6.4267e+07
 1424,Galileo Multimercado VIII,Delta Asset Management S.A.,Renta Mixta,1705.32,118.801,27,6.4267e+07
 1906,Wise Capital Dollar Money Market,Wise Capital Asset Management S.A.,Mercado de Dinero,665.996,110.887,26,2.52066e+07
-1690,Axis Estrategia 33,Axis S.G.F.C.I.S.A.,Renta Mixta,1625.74,113.257,25,6.4267e+07
 1133,Allaria Capital,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,1619.73,112.839,25,6.4267e+07
 1033,Julio A. Roca Ahorro Pesos,Tutelar Inversora S.A.,Renta Fija,700.911,186.962,25,2.7785e+07
-1557,Adcap Gestión Estratégica II,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,11042,0,24,4.64453e+08
-63,Arpenta (ex Mercosur),Mercofond S.G.F.C.I.S.A.,Renta Mixta,1535.33,106.959,24,6.4267e+07
-722,Delta Crecimiento Infraestructura,Delta Asset Management S.A.,Infraestructura,4898.4,33.7553,24,2.07403e+08
-1481,Axis Producir FCIA Pymes,Axis S.G.F.C.I.S.A.,PyMEs,6894.74,34.6387,24,2.87351e+08
-532,Delta Internacional,Delta Asset Management S.A.,Renta Variable,261.318,107.841,24,1.078e+07
+1690,Axis Estrategia 33,Axis S.G.F.C.I.S.A.,Renta Mixta,1625.74,113.257,25,6.4267e+07
 1831,Allaria Calificado II,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,33109.9,0,24,1.38372e+09
+1481,Axis Producir FCIA Pymes,Axis S.G.F.C.I.S.A.,PyMEs,6894.74,34.6387,24,2.87351e+08
+63,Arpenta (ex Mercosur),Mercofond S.G.F.C.I.S.A.,Renta Mixta,1535.33,106.959,24,6.4267e+07
+1557,Adcap Gestión Estratégica II,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,11042,0,24,4.64453e+08
+532,Delta Internacional,Delta Asset Management S.A.,Renta Variable,261.318,107.841,24,1.078e+07
+722,Delta Crecimiento Infraestructura,Delta Asset Management S.A.,Infraestructura,4898.4,33.7553,24,2.07403e+08
 1753,Max Retorno Total Pesos II,Max Capital Asset Management S.A.,Retorno Total,69278.7,0,23,3.07596e+09
 1185,First Renta Mixta VI,First Capital Markets S.A.,Renta Fija,641.47,171.107,23,2.7785e+07
-1406,Axis Estrategia 8,Axis S.G.F.C.I.S.A.,Renta Mixta,1363.68,95.0013,21,6.4267e+07
 1259,Novus Balanceado,Novus Asset Management S.A.,Renta Mixta,1372.47,95.6135,21,6.4267e+07
+1406,Axis Estrategia 8,Axis S.G.F.C.I.S.A.,Renta Mixta,1363.68,95.0013,21,6.4267e+07
 1178,Pionero Infraestructura,Macro Fondos S.G.F.C.I.S.A.,Infraestructura,4345.04,29.942,21,2.07403e+08
-808,IAM Renta Mixta,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,1277.72,89.0126,20,6.4267e+07
-1205,Allaria Unicred Cobertura,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,550.797,146.921,20,2.7785e+07
 1945,Allaria Selection II Abierto Pymes,Allaria Fondos Administrados S.G.F.C.I.S.A.,PyMEs,5863.37,29.4572,20,2.87351e+08
-1875,Allaria Dólar Renta Internacional,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,26609.1,0,19,1.38372e+09
-1780,BAVSA Renta Balanceado III,BAVSA Fondos S.A.,Renta Mixta,25606.9,0,19,1.38372e+09
+1205,Allaria Unicred Cobertura,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,550.797,146.921,20,2.7785e+07
+808,IAM Renta Mixta,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,1277.72,89.0126,20,6.4267e+07
 1891,GMC Retorno Total VI,GMC Asset Management S.A.U.,Renta Mixta,1219.02,84.9235,19,6.4267e+07
-1006,CYC Renta Fija en Dolares,C y C Administradora de Fondos S.A.,Renta Fija,530.927,141.621,19,2.7785e+07
+1780,BAVSA Renta Balanceado III,BAVSA Fondos S.A.,Renta Mixta,25606.9,0,19,1.38372e+09
+1875,Allaria Dólar Renta Internacional,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,26609.1,0,19,1.38372e+09
 634,MAF Renta Argentina 2,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Fija,518.534,138.315,19,2.7785e+07
+1006,CYC Renta Fija en Dolares,C y C Administradora de Fondos S.A.,Renta Fija,530.927,141.621,19,2.7785e+07
 1979,Parakeet Gestion Activa III,Parakeet S.G.F.C.I.S.A.,Renta Fija,8223.81,0,18,4.64453e+08
-669,MEGAQM Performance II,MEGA QM S.A.,Renta Fija,493.953,131.758,18,2.7785e+07
-1179,Consultatio Gestion III,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,8579.59,0,18,4.64453e+08
 828,Pionero Retorno Total,Macro Fondos S.G.F.C.I.S.A.,Retorno Total,3264.64,170.578,18,1.82163e+08
-1829,Allaria Calificado,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,23495.7,0,17,1.38372e+09
-758,Chaco FCI Abierto Pymes,Nuevo Chaco Fondos S.A.S.G.F.C.I.,PyMEs,4835.73,24.2944,17,2.87351e+08
+1179,Consultatio Gestion III,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,8579.59,0,18,4.64453e+08
+669,MEGAQM Performance II,MEGA QM S.A.,Renta Fija,493.953,131.758,18,2.7785e+07
 951,MEGAQM Provincial,MEGA QM S.A.,Renta Fija,464.342,123.86,17,2.7785e+07
-1594,Valiant Renta Fija Balanceado IV,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,438.371,116.932,16,2.7785e+07
+758,Chaco FCI Abierto Pymes,Nuevo Chaco Fondos S.A.S.G.F.C.I.,PyMEs,4835.73,24.2944,17,2.87351e+08
+1829,Allaria Calificado,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,23495.7,0,17,1.38372e+09
+232,Premier Renta Fija Crecimiento,Supervielle Asset Management S.A.,Renta Fija,444.465,118.558,16,2.7785e+07
+996,Delta Patrimonio I,Delta Asset Management S.A.,Renta Fija,440.575,117.52,16,2.7785e+07
 854,Allaria Renta Dolar Ley 27260,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Fija,440.028,117.374,16,2.7785e+07
 1480,Axis FCIA Pymes 1,Axis S.G.F.C.I.S.A.,PyMEs,4475.79,22.4861,16,2.87351e+08
-996,Delta Patrimonio I,Delta Asset Management S.A.,Renta Fija,440.575,117.52,16,2.7785e+07
-232,Premier Renta Fija Crecimiento,Supervielle Asset Management S.A.,Renta Fija,444.465,118.558,16,2.7785e+07
-1573,Parakeet Capital Plus,Parakeet S.G.F.C.I.S.A.,Renta Variable,162.638,67.1174,15,1.078e+07
-738,Adcap Gestion Estrategica VI,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,984.455,68.5822,15,6.4267e+07
+1594,Valiant Renta Fija Balanceado IV,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,438.371,116.932,16,2.7785e+07
 1702,Max Retorno Total Pesos,Max Capital Asset Management S.A.,Retorno Total,46438.1,0,15,3.07596e+09
-1818,FBA Acciones Globales Dólar I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Variable,151.367,62.4663,14,1.078e+07
+738,Adcap Gestion Estrategica VI,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,984.455,68.5822,15,6.4267e+07
+1573,Parakeet Capital Plus,Parakeet S.G.F.C.I.S.A.,Renta Variable,162.638,67.1174,15,1.078e+07
 734,Adcap Cima Renta Fija Nacional,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,377.52,100.7,14,2.7785e+07
-1384,Adcap Balanceado XXVI,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,18175,0,13,1.38372e+09
+1818,FBA Acciones Globales Dólar I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Variable,151.367,62.4663,14,1.078e+07
 194,Alpha Renta Crecimiento,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,372.908,99.4703,13,2.7785e+07
 805,MEGAQM Acciones Latam,MEGA QM S.A.,Renta Mixta,856.714,59.6831,13,6.4267e+07
-1630,Axis Abierto Pymes 3,Axis S.G.F.C.I.S.A.,PyMEs,3549.64,17.8331,12,2.87351e+08
-1564,Ualintec Retorno Total,Ualá Fondos S.A.U.,Retorno Total,2187.47,114.296,12,1.82163e+08
+1384,Adcap Balanceado XXVI,Adcap Asset Management S.G.F.C.I.S.A.,Renta Mixta,18175,0,13,1.38372e+09
 1281,Max Estrategico I,Max Capital Asset Management S.A.,Renta Mixta,15918,0,12,1.38372e+09
+1630,Axis Abierto Pymes 3,Axis S.G.F.C.I.S.A.,PyMEs,3549.64,17.8331,12,2.87351e+08
 648,Arpenta Ahorro Pesos,Mercofond S.G.F.C.I.S.A.,Renta Fija,323.075,86.1778,12,2.7785e+07
-745,Adcap Cima Abierto Pymes,Adcap Asset Management S.G.F.C.I.S.A.,PyMEs,3241.09,16.283,11,2.87351e+08
-759,Chaco FCI Abierto Infraestructura,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Infraestructura,2335.28,16.0926,11,2.07403e+08
-1612,Cocos Medalla,Cocos Asset Management S.A.,Retorno Total,1985.54,103.745,11,1.82163e+08
-114,Alpha Renta Fija Serie 6,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,307.035,81.899,11,2.7785e+07
+1564,Ualintec Retorno Total,Ualá Fondos S.A.U.,Retorno Total,2187.47,114.296,12,1.82163e+08
 1261,Novus Pyme Abierto,Novus Asset Management S.A.,PyMEs,3275.78,16.4573,11,2.87351e+08
+759,Chaco FCI Abierto Infraestructura,Nuevo Chaco Fondos S.A.S.G.F.C.I.,Infraestructura,2335.28,16.0926,11,2.07403e+08
 1755,Max Retorno Total Pesos IV,Max Capital Asset Management S.A.,Retorno Total,32847.8,0,11,3.07596e+09
-1735,Cocos Renta Dólar,Cocos Asset Management S.A.,Renta Mixta,615.91,42.9074,10,6.4267e+07
-1192,Fundcorp Capital Abierto Pymes,CMF Asset Management S.A.U.,PyMEs,2876.74,14.4526,10,2.87351e+08
-1894,Wise Capital Foreign Equity,Wise Capital Asset Management S.A.,Renta Mixta,619.536,43.16,10,6.4267e+07
+745,Adcap Cima Abierto Pymes,Adcap Asset Management S.G.F.C.I.S.A.,PyMEs,3241.09,16.283,11,2.87351e+08
+114,Alpha Renta Fija Serie 6,ICBC Investments Argentina S.A.U.S.G.F.C.I.,Renta Fija,307.035,81.899,11,2.7785e+07
+1612,Cocos Medalla,Cocos Asset Management S.A.,Retorno Total,1985.54,103.745,11,1.82163e+08
 1843,Axis Gestión 2,Axis S.G.F.C.I.S.A.,Renta Mixta,14302.5,0,10,1.38372e+09
-1407,Ecopymes FCI Abierto Pymes,Axis S.G.F.C.I.S.A.,PyMEs,2768.64,13.9095,10,2.87351e+08
+1192,Fundcorp Capital Abierto Pymes,CMF Asset Management S.A.U.,PyMEs,2876.74,14.4526,10,2.87351e+08
+1735,Cocos Renta Dólar,Cocos Asset Management S.A.,Renta Mixta,615.91,42.9074,10,6.4267e+07
 1638,Parakeet Abierto Pymes,Parakeet S.G.F.C.I.S.A.,PyMEs,2840.27,14.2693,10,2.87351e+08
+1894,Wise Capital Foreign Equity,Wise Capital Asset Management S.A.,Renta Mixta,619.536,43.16,10,6.4267e+07
+1407,Ecopymes FCI Abierto Pymes,Axis S.G.F.C.I.S.A.,PyMEs,2768.64,13.9095,10,2.87351e+08
 1910,DXA Multicobertura,Dracma Asset Management S.A.,Retorno Total,1867.52,97.5781,10,1.82163e+08
+744,Gainvest Crecimiento,StoneX Asset Management S.A.,Renta Mixta,568.267,39.5884,9,6.4267e+07
 1247,Adcap Balanceado V,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,4252.24,0,9,4.64453e+08
 1928,Parakeet Gestion Activa II,Parakeet S.G.F.C.I.S.A.,Renta Fija,4151.58,0,9,4.64453e+08
-744,Gainvest Crecimiento,StoneX Asset Management S.A.,Renta Mixta,568.267,39.5884,9,6.4267e+07
+1631,Axis Gestión 1,Axis S.G.F.C.I.S.A.,Renta Mixta,10429.9,0,8,1.38372e+09
+561,Probolsa,Mercofond S.G.F.C.I.S.A.,Renta Mixta,540.442,37.6499,8,6.4267e+07
+1826,Parakeet Global Opportunities Fund,Parakeet S.G.F.C.I.S.A.,Renta Fija,3650.69,0,8,4.64453e+08
 1323,Dracma Insider Renta Pymes,Dracma Asset Management S.A.,PyMEs,2194.9,11.0271,8,2.87351e+08
 1372,Pionero Multiestrategia Plus,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,537.516,37.4461,8,6.4267e+07
 1754,Max Retorno Total Pesos III,Max Capital Asset Management S.A.,Retorno Total,23351.9,0,8,3.07596e+09
-1826,Parakeet Global Opportunities Fund,Parakeet S.G.F.C.I.S.A.,Renta Fija,3650.69,0,8,4.64453e+08
-1631,Axis Gestión 1,Axis S.G.F.C.I.S.A.,Renta Mixta,10429.9,0,8,1.38372e+09
-561,Probolsa,Mercofond S.G.F.C.I.S.A.,Renta Mixta,540.442,37.6499,8,6.4267e+07
-649,Gainvest Infraestructura FCI Abierto,StoneX Asset Management S.A.,Infraestructura,1534.57,10.5748,7,2.07403e+08
-1285,Max Abierto PyMEs,Max Capital Asset Management S.A.,PyMEs,1938.8,9.74042,7,2.87351e+08
-1849,Pionero Internacional,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,3308.01,0,7,4.64453e+08
-1947,Puente Acciones Argentinas,Puente Asset Management S.A.,Renta Variable,76.1011,31.4054,7,1.078e+07
 1917,Argenfunds Calificado I,Argenfunds S.A.,Renta Fija,3457.25,0,7,4.64453e+08
 1926,Argenfunds Calificado III,Argenfunds S.A.,Renta Fija,3060.32,0,7,4.64453e+08
-1791,Compass Renta Mixta VII,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,365.133,25.4371,6,6.4267e+07
-1316,Ciclo Nova Multiestrategia III,Ciclo Nova Asset Management S.A.,Renta Mixta,369.846,25.7654,6,6.4267e+07
+1947,Puente Acciones Argentinas,Puente Asset Management S.A.,Renta Variable,76.1011,31.4054,7,1.078e+07
+1849,Pionero Internacional,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,3308.01,0,7,4.64453e+08
+1285,Max Abierto PyMEs,Max Capital Asset Management S.A.,PyMEs,1938.8,9.74042,7,2.87351e+08
+649,Gainvest Infraestructura FCI Abierto,StoneX Asset Management S.A.,Infraestructura,1534.57,10.5748,7,2.07403e+08
 1125,Consultatio Infraestructura,One618 Asset Management S.G.F.C.I.S.A.,Infraestructura,4676.97,6.18882,6,8.06891e+08
-1813,Ciclo Nova Retorno Total III,Ciclo Nova Asset Management S.A.,Retorno Total,17170.5,0,6,3.07596e+09
-1230,SBS Retorno Sustentable ASG,SBS Asset Management S.A.S.G.F.C.I.,ASG,16.5448,3.16351,6,2.60652e+06
+1791,Compass Renta Mixta VII,Investis Asset Management S.A.S.G.F.C.I.,Renta Mixta,365.133,25.4371,6,6.4267e+07
 1916,Tandem Global II,Tandem Capital S.A.,Renta Mixta,382.176,26.6243,6,6.4267e+07
-581,Galileo Argentina,Delta Asset Management S.A.,Retorno Total,982.906,51.357,5,1.82163e+08
-1817,FBA Renta Fija Dólar Latam I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,151.832,40.5,5,2.7785e+07
-1864,FBA Renta Fija Dolar II,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,151.634,40.4473,5,2.7785e+07
-1793,Valiant Renta Fija Balanceado V,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,146.224,39.004,5,2.7785e+07
+1230,SBS Retorno Sustentable ASG,SBS Asset Management S.A.S.G.F.C.I.,ASG,16.5448,3.16351,6,2.60652e+06
+1813,Ciclo Nova Retorno Total III,Ciclo Nova Asset Management S.A.,Retorno Total,17170.5,0,6,3.07596e+09
+1316,Ciclo Nova Multiestrategia III,Ciclo Nova Asset Management S.A.,Renta Mixta,369.846,25.7654,6,6.4267e+07
 1959,Adcap Patrimonio III,Adcap Asset Management S.G.F.C.I.S.A.,Renta Fija,151.644,40.4499,5,2.7785e+07
+1817,FBA Renta Fija Dólar Latam I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,151.832,40.5,5,2.7785e+07
+615,Quiron PYMEs,Quiron Asset Management S.A.,PyMEs,1505.59,7.56399,5,2.87351e+08
 1971,BAVSA Abierto Pymes Deuda Argentina,BAVSA Fondos S.A.,PyMEs,1394.76,7.0072,5,2.87351e+08
 728,MEGAQM Retorno Total,MEGA QM S.A.,Retorno Total,906.556,47.3677,5,1.82163e+08
+581,Galileo Argentina,Delta Asset Management S.A.,Retorno Total,982.906,51.357,5,1.82163e+08
 1475,Ciclo Nova Estructurado III,Ciclo Nova Asset Management S.A.,Renta Mixta,7500.59,0,5,1.38372e+09
-615,Quiron PYMEs,Quiron Asset Management S.A.,PyMEs,1505.59,7.56399,5,2.87351e+08
+1793,Valiant Renta Fija Balanceado V,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,146.224,39.004,5,2.7785e+07
 1709,Consultatio Estrategia III,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,6842.17,0,5,1.38372e+09
+1864,FBA Renta Fija Dolar II,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,151.634,40.4473,5,2.7785e+07
 1888,Argenfunds Estrategia III,Argenfunds S.A.,Renta Fija,124.501,33.2097,4,2.7785e+07
 1983,Ciclo Nova Ahorro II,Ciclo Nova Asset Management S.A.,Mercado de Dinero,101.878,16.9624,4,2.52066e+07
-1830,Tandem Balanceado II,Tandem Capital S.A.,Renta Mixta,202.195,14.0859,3,6.4267e+07
-1974,Special Situations Fund,CMF Asset Management S.A.U.,Retorno Total,8716.31,0,3,3.07596e+09
-780,Consultatio Estrategia,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,83.2744,22.2128,3,2.7785e+07
-797,Premier Inversion,Supervielle Asset Management S.A.,Renta Mixta,220.662,15.3724,3,6.4267e+07
-1925,Argenfunds Calificado II,Argenfunds S.A.,Renta Fija,1206.22,0,3,4.64453e+08
-247,Lombard Ahorro,Patagonia Inversora S.A.S.G.F.C.I,Mercado de Dinero,83.3462,13.877,3,2.52066e+07
-1393,Max Dinamico I,Max Capital Asset Management S.A.,Renta Fija,1254.28,0,3,4.64453e+08
 1681,Balanz Renta Variable Global,Balanz S.G.F.C.I.S.A.U.,Renta Variable,568.179,0,3,2.00189e+08
-1715,Parakeet Blend,Parakeet S.G.F.C.I.S.A.,Renta Mixta,215.225,14.9937,3,6.4267e+07
 1276,Adcap Financiamiento 1,Adcap Asset Management S.G.F.C.I.S.A.,Retorno Total,10643.2,0,3,3.07596e+09
-1218,Quiron Agro Pymes,Quiron Asset Management S.A.,PyMEs,521.23,2.61863,2,2.87351e+08
-163,Pellegrini Renta,Pellegrini S.A.S.G.F.C.I.,Mercado de Dinero,62.2735,10.3684,2,2.52066e+07
-1060,MAF Abiertos Pymes,Mariva Asset Management S.A.U.S.G.F.C.I.,PyMEs,663.387,3.33282,2,2.87351e+08
+247,Lombard Ahorro,Patagonia Inversora S.A.S.G.F.C.I,Mercado de Dinero,83.3462,13.877,3,2.52066e+07
+1925,Argenfunds Calificado II,Argenfunds S.A.,Renta Fija,1206.22,0,3,4.64453e+08
+1974,Special Situations Fund,CMF Asset Management S.A.U.,Retorno Total,8716.31,0,3,3.07596e+09
+1393,Max Dinamico I,Max Capital Asset Management S.A.,Renta Fija,1254.28,0,3,4.64453e+08
+1830,Tandem Balanceado II,Tandem Capital S.A.,Renta Mixta,202.195,14.0859,3,6.4267e+07
+797,Premier Inversion,Supervielle Asset Management S.A.,Renta Mixta,220.662,15.3724,3,6.4267e+07
+1715,Parakeet Blend,Parakeet S.G.F.C.I.S.A.,Renta Mixta,215.225,14.9937,3,6.4267e+07
+780,Consultatio Estrategia,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,83.2744,22.2128,3,2.7785e+07
 1819,FBA Renta Mixta Dólar I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,151.599,10.5612,2,6.4267e+07
+163,Pellegrini Renta,Pellegrini S.A.S.G.F.C.I.,Mercado de Dinero,62.2735,10.3684,2,2.52066e+07
+1218,Quiron Agro Pymes,Quiron Asset Management S.A.,PyMEs,521.23,2.61863,2,2.87351e+08
+1060,MAF Abiertos Pymes,Mariva Asset Management S.A.U.S.G.F.C.I.,PyMEs,663.387,3.33282,2,2.87351e+08
 980,Allaria Estrategico,Allaria Fondos Administrados S.G.F.C.I.S.A.,Retorno Total,335.724,17.5416,2,1.82163e+08
 818,Consultatio Retorno Total,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,116.213,8.0597,2,6.45428e+07
-1680,Balanz Renta Fija Global,Balanz S.G.F.C.I.S.A.U.,Renta Fija,378.402,0,1,4.64453e+08
 1073,Valiant Total Return,Valiant Asset Management S.G.F.C.I.S.A.U.,Retorno Total,136.53,7.13373,1,1.82163e+08
 1847,Parakeet Gestion Activa,Parakeet S.G.F.C.I.S.A.,Renta Fija,265.269,0,1,4.64453e+08
 1845,Axis Gestión 4,Axis S.G.F.C.I.S.A.,Renta Mixta,1619.18,0,1,1.38372e+09
 1833,Consultatio Multimercado X,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,14.053,3.74853,1,2.7785e+07
 1832,Consultatio Multimercado IX,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,14.0531,3.74855,1,2.7785e+07
-1271,IAM Renta Global,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,38.1204,2.65566,1,6.4267e+07
 823,Argenfunds Renta Global,Argenfunds S.A.,Renta Fija,22.6648,6.04566,1,2.7785e+07
-1057,MEGAQM Estrategia 10,MEGA QM S.A.,Renta Fija,20.4123,5.44482,1,2.7785e+07
+1271,IAM Renta Global,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,38.1204,2.65566,1,6.4267e+07
 1001,Premier Global Dolares,Supervielle Asset Management S.A.,Renta Mixta,52.5913,3.66378,1,6.4267e+07
 305,Optimum Dynamic Balanced Fund,SAM Argentina S.G.F.C.I.S.A.U.,Renta Fija,28.6525,7.64282,1,2.7785e+07
 1307,Zofingen Faro Fund,Zofingen Investment S.A.,Renta Fija,505.397,0,1,4.64453e+08
-1941,Ciclo Nova Retorno Total IV,Ciclo Nova Asset Management S.A.,Retorno Total,0.001,0,0,3.07596e+09
-1970,BAVSA Fiel,BAVSA Fondos S.A.,Renta Fija,0.499957,0,0,4.64453e+08
-1229,Delta Gestion XII,Delta Asset Management S.A.,Renta Fija,0.001,0.000266742,0,2.7785e+07
+1680,Balanz Renta Fija Global,Balanz S.G.F.C.I.S.A.U.,Renta Fija,378.402,0,1,4.64453e+08
+1057,MEGAQM Estrategia 10,MEGA QM S.A.,Renta Fija,20.4123,5.44482,1,2.7785e+07
 1982,BAVSA Credito Productivo I,BAVSA Fondos S.A.,Renta Fija,0.0998879,0,0,4.64453e+08
-1950,Puente Renta Fija Dolares,Puente Asset Management S.A.,Renta Fija,1.51752,0.404786,0,2.7785e+07
-1952,Max Retorno Total Pesos V,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
-1954,Max Retorno Total Pesos VII,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
-1953,Max Retorno Total Pesos VI,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
-1963,Pionero Horizonte II,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,0.1,0,0,1.38372e+09
-1866,FBA Renta Mixta III,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,1.0299,0.0717483,0,6.4267e+07
-1899,Pellegrini Renta Dolares III,Pellegrini S.A.S.G.F.C.I.,Renta Fija,227.757,0,0,4.64453e+08
-866,MEGAQM Gestión Dólares 5,MEGA QM S.A.,Renta Fija,1.50263,0.400815,0,2.7785e+07
-978,FBA Retorno Total I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,1.92458,0.134076,0,6.4267e+07
-1988,Puente Renta Fija Pesos II,Puente Asset Management S.A.,Renta Fija,0.0250538,0.00668291,0,2.7785e+07
-933,FBA Horizonte Plus,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,10.2627,2.73749,0,2.7785e+07
-1529,Schroder Crecimiento Dos,Schroder S.A.S.G.F.C.I.,Renta Fija,0.00307499,0.000820229,0,2.7785e+07
-1554,Novus Low Volatility,Novus Asset Management S.A.,Renta Fija,0.113897,0.0303812,0,2.7785e+07
-1561,Allaria Ahorro Dinámico,Allaria Fondos Administrados S.G.F.C.I.S.A.,Mercado de Dinero,0.1,0.0166498,0,2.52066e+07
-1425,Galileo Multimercado IX,Delta Asset Management S.A.,Renta Mixta,0.01,0.000696651,0,6.4267e+07
-1420,Valiant Renta Fija Balanceado I,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,1.85453,0.49468,0,2.7785e+07
-1417,Pionero Abierto,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,0.1,0.0266742,0,2.7785e+07
-1418,Pionero Oportunidad,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,0.1,0.0266742,0,2.7785e+07
-726,MEGAQM Estrategia 8,MEGA QM S.A.,Renta Mixta,0.482842,0.0336372,0,6.4267e+07
-730,Pionero Performance,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
-1399,Max Multigestión II,Max Capital Asset Management S.A.,Renta Fija,0.001,0.000266742,0,2.7785e+07
-1404,Balanz Desarrollo FCI Ab para Financ Infra y Econ Real,Balanz S.G.F.C.I.S.A.U.,Infraestructura,88.1188,0.607234,0,2.07403e+08
-723,Argenfunds Renta Pesos,Argenfunds S.A.,Renta Fija,1.94355,0.518425,0,2.7785e+07
-770,MEGAQM Estrategia 6,MEGA QM S.A.,Renta Fija,2.03635,0.543181,0,2.7785e+07
+1941,Ciclo Nova Retorno Total IV,Ciclo Nova Asset Management S.A.,Retorno Total,0.001,0,0,3.07596e+09
 1608,Allaria Performance,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,0.01,0.000696651,0,6.4267e+07
-1040,IAM Lider Renta Pesos,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,0.136381,0.00950098,0,6.4267e+07
-988,Consultatio Gestion IX,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.9164,2.91186,0,2.7785e+07
-716,Schroder Pesos,Schroder S.A.S.G.F.C.I.,Renta Fija,0.237655,0.0633925,0,2.7785e+07
-964,MEGAQM Estrategia 9,MEGA QM S.A.,Renta Fija,0.0512119,0.0136604,0,2.7785e+07
-968,Consultatio Arbitraje,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,9.42462,0.656567,0,6.4267e+07
-781,Consultatio Renta y Capital,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.3256,2.75427,0,2.7785e+07
-779,Consultatio Retorno Absoluto,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,7.3928,0.51502,0,6.4267e+07
-826,Pionero Performance II,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
-743,Gainvest Capital,StoneX Asset Management S.A.,Renta Fija,2.46886,0.658549,0,2.7785e+07
-1017,FCI Abierto Pymes Potencia Pyme,Zofingen Investment S.A.,PyMEs,2.26255,0.0113669,0,2.87351e+08
-827,Pionero Performance III,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
-830,FBA Gestion I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,3.10778,0.828977,0,2.7785e+07
-845,MAF Gestión Activa,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,31.0002,2.15963,0,6.4267e+07
-1476,Ciclo Nova Estructurado IV,Ciclo Nova Asset Management S.A.,Renta Mixta,0.00163839,0,0,1.38372e+09
-1392,Max Estrategico V,Max Capital Asset Management S.A.,Renta Fija,0.00441224,0,0,4.64453e+08
-1066,Argenfunds Retorno Absoluto,Argenfunds S.A.,Renta Mixta,2.01142,0.140126,0,6.4267e+07
-1667,Gainvest Performance II,StoneX Asset Management S.A.,Renta Mixta,0.643747,0.0448467,0,6.4267e+07
-625,Delta Gestion II,Delta Asset Management S.A.,Renta Mixta,1.6839,0.117309,0,6.4267e+07
-689,Schroder Renta Global Tres,Schroder S.A.S.G.F.C.I.,Retorno Total,0.0189019,0.000987628,0,1.82163e+08
-647,Allaria Renta Mixta,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,11.6686,0.812896,0,6.4267e+07
-1215,Gainvest Balanceado II,StoneX Asset Management S.A.,Renta Mixta,0.0213751,0.0014891,0,6.4267e+07
-533,Delta Gestion IV,Delta Asset Management S.A.,Renta Fija,8.8707,2.36619,0,2.7785e+07
-601,Gainvest Ahorro,StoneX Asset Management S.A.,Renta Fija,2.05472,0.54808,0,2.7785e+07
-1713,Parakeet Dinámico III,Parakeet S.G.F.C.I.S.A.,Renta Fija,0.002,0.000533484,0,2.7785e+07
-1734,Cocos Premium Equity,Cocos Asset Management S.A.,Retorno Total,0.0324122,0.00169354,0,1.82163e+08
-1711,Consultatio Estrategia V,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,14.5553,0,0,4.64453e+08
-1219,Consultatio Fondo de Dinero,One618 Asset Management S.G.F.C.I.S.A.,Mercado de Dinero,11.1142,1.8505,0,2.52066e+07
-1220,Schroder Renta Global Cuatro,Schroder S.A.S.G.F.C.I.,Renta Fija,0.0474164,0.0126479,0,2.7785e+07
 654,Argenfunds Renta Fija,Argenfunds S.A.,Renta Fija,2.50889,0.669225,0,2.7785e+07
-1137,Optimum Abierto Pymes,SAM Argentina S.G.F.C.I.S.A.U.,PyMEs,0.0291342,0.000146368,0,2.87351e+08
-556,FBA Bonos Globales,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,7.82465,2.08716,0,2.7785e+07
-1756,Consultatio Multimercado VI,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.584,0,0,4.64453e+08
-1757,Consultatio Multimercado VII,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.5846,0,0,4.64453e+08
-1758,Consultatio Multimercado VIII,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.584,0,0,4.64453e+08
-1773,FBA Money Market Pesos Plus,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Mercado de Dinero,5.54206,0.922744,0,2.52066e+07
-1795,Numancia Pesos IV,Zofingen Investment S.A.,Renta Fija,18.772,0,0,4.64453e+08
-1796,Numancia Pesos V,Zofingen Investment S.A.,Renta Fija,0.00998964,0,0,4.64453e+08
-1274,Gainvest Balanceado IV,StoneX Asset Management S.A.,Renta Fija,0.111436,0.0297247,0,2.7785e+07
-1809,Ciclo Nova Retorno Total II,Ciclo Nova Asset Management S.A.,Retorno Total,0.00108028,0,0,3.07596e+09
-1233,Quiron Pymes Capital Plus,Quiron Asset Management S.A.,PyMEs,52.1436,0.261966,0,2.87351e+08
 1241,MEGAQM Estrategia 3,MEGA QM S.A.,Renta Mixta,0.001,6.96651e-05,0,6.4267e+07
+1233,Quiron Pymes Capital Plus,Quiron Asset Management S.A.,PyMEs,52.1436,0.261966,0,2.87351e+08
+1229,Delta Gestion XII,Delta Asset Management S.A.,Renta Fija,0.001,0.000266742,0,2.7785e+07
+1219,Consultatio Fondo de Dinero,One618 Asset Management S.G.F.C.I.S.A.,Mercado de Dinero,11.1142,1.8505,0,2.52066e+07
+1215,Gainvest Balanceado II,StoneX Asset Management S.A.,Renta Mixta,0.0213751,0.0014891,0,6.4267e+07
+647,Allaria Renta Mixta,Allaria Fondos Administrados S.G.F.C.I.S.A.,Renta Mixta,11.6686,0.812896,0,6.4267e+07
+1220,Schroder Renta Global Cuatro,Schroder S.A.S.G.F.C.I.,Renta Fija,0.0474164,0.0126479,0,2.7785e+07
+1988,Puente Renta Fija Pesos II,Puente Asset Management S.A.,Renta Fija,0.0250538,0.00668291,0,2.7785e+07
+625,Delta Gestion II,Delta Asset Management S.A.,Renta Mixta,1.6839,0.117309,0,6.4267e+07
+1667,Gainvest Performance II,StoneX Asset Management S.A.,Renta Mixta,0.643747,0.0448467,0,6.4267e+07
+1954,Max Retorno Total Pesos VII,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
+1274,Gainvest Balanceado IV,StoneX Asset Management S.A.,Renta Fija,0.111436,0.0297247,0,2.7785e+07
 1282,Max Estrategico II,Max Capital Asset Management S.A.,Renta Fija,0.00311201,0,0,4.64453e+08
-1827,Tandem Balanceado I,Tandem Capital S.A.,Renta Mixta,0.102044,0.00710889,0,6.4267e+07
-1820,Superfondo Renta Balance II,Santander Asset Management G.F.C.I.S.A.,Renta Mixta,0.00118465,8.25288e-05,0,6.4267e+07
+723,Argenfunds Renta Pesos,Argenfunds S.A.,Renta Fija,1.94355,0.518425,0,2.7785e+07
+1795,Numancia Pesos IV,Zofingen Investment S.A.,Renta Fija,18.772,0,0,4.64453e+08
+492,Optimum Renta Fija Argentina,Santander Asset Management G.F.C.I.S.A.,Renta Fija,0.0167938,0.0044796,0,2.7785e+07
+1773,FBA Money Market Pesos Plus,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Mercado de Dinero,5.54206,0.922744,0,2.52066e+07
+491,Optimum Global Renta Mixta,SAM Argentina S.G.F.C.I.S.A.U.,Renta Mixta,17.4988,1.21906,0,6.4267e+07
+1758,Consultatio Multimercado VIII,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.584,0,0,4.64453e+08
+1757,Consultatio Multimercado VII,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.5846,0,0,4.64453e+08
+1476,Ciclo Nova Estructurado IV,Ciclo Nova Asset Management S.A.,Renta Mixta,0.00163839,0,0,1.38372e+09
+1756,Consultatio Multimercado VI,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.584,0,0,4.64453e+08
+779,Consultatio Retorno Absoluto,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,7.3928,0.51502,0,6.4267e+07
+781,Consultatio Renta y Capital,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.3256,2.75427,0,2.7785e+07
+770,MEGAQM Estrategia 6,MEGA QM S.A.,Renta Fija,2.03635,0.543181,0,2.7785e+07
+743,Gainvest Capital,StoneX Asset Management S.A.,Renta Fija,2.46886,0.658549,0,2.7785e+07
+1066,Argenfunds Retorno Absoluto,Argenfunds S.A.,Renta Mixta,2.01142,0.140126,0,6.4267e+07
+1734,Cocos Premium Equity,Cocos Asset Management S.A.,Retorno Total,0.0324122,0.00169354,0,1.82163e+08
+533,Delta Gestion IV,Delta Asset Management S.A.,Renta Fija,8.8707,2.36619,0,2.7785e+07
+988,Consultatio Gestion IX,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,10.9164,2.91186,0,2.7785e+07
+1529,Schroder Crecimiento Dos,Schroder S.A.S.G.F.C.I.,Renta Fija,0.00307499,0.000820229,0,2.7785e+07
+716,Schroder Pesos,Schroder S.A.S.G.F.C.I.,Renta Fija,0.237655,0.0633925,0,2.7785e+07
+1561,Allaria Ahorro Dinámico,Allaria Fondos Administrados S.G.F.C.I.S.A.,Mercado de Dinero,0.1,0.0166498,0,2.52066e+07
+1554,Novus Low Volatility,Novus Asset Management S.A.,Renta Fija,0.113897,0.0303812,0,2.7785e+07
+601,Gainvest Ahorro,StoneX Asset Management S.A.,Renta Fija,2.05472,0.54808,0,2.7785e+07
+1040,IAM Lider Renta Pesos,Industrial Asset Management S.G.F.C.I.S.A.,Renta Mixta,0.136381,0.00950098,0,6.4267e+07
+1017,FCI Abierto Pymes Potencia Pyme,Zofingen Investment S.A.,PyMEs,2.26255,0.0113669,0,2.87351e+08
+689,Schroder Renta Global Tres,Schroder S.A.S.G.F.C.I.,Retorno Total,0.0189019,0.000987628,0,1.82163e+08
+556,FBA Bonos Globales,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,7.82465,2.08716,0,2.7785e+07
+1713,Parakeet Dinámico III,Parakeet S.G.F.C.I.S.A.,Renta Fija,0.002,0.000533484,0,2.7785e+07
+1711,Consultatio Estrategia V,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,14.5553,0,0,4.64453e+08
+730,Pionero Performance,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
+726,MEGAQM Estrategia 8,MEGA QM S.A.,Renta Mixta,0.482842,0.0336372,0,6.4267e+07
 1196,Consultatio Multimercado II,One618 Asset Management S.G.F.C.I.S.A.,Renta Fija,11.0683,2.95238,0,2.7785e+07
-1828,Tandem Renta Pesos,Tandem Capital S.A.,Mercado de Dinero,1.09314,0.182006,0,2.52066e+07
+1796,Numancia Pesos V,Zofingen Investment S.A.,Renta Fija,0.00998964,0,0,4.64453e+08
+968,Consultatio Arbitraje,One618 Asset Management S.G.F.C.I.S.A.,Renta Mixta,9.42462,0.656567,0,6.4267e+07
+830,FBA Gestion I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,3.10778,0.828977,0,2.7785e+07
+827,Pionero Performance III,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
+826,Pionero Performance II,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,7.5876,2.02393,0,2.7785e+07
+1425,Galileo Multimercado IX,Delta Asset Management S.A.,Renta Mixta,0.01,0.000696651,0,6.4267e+07
 1848,Parakeet Global Opportunities Fund II,Parakeet S.G.F.C.I.S.A.,Renta Fija,0.305325,0,0,4.64453e+08
+1828,Tandem Renta Pesos,Tandem Capital S.A.,Mercado de Dinero,1.09314,0.182006,0,2.52066e+07
+1827,Tandem Balanceado I,Tandem Capital S.A.,Renta Mixta,0.102044,0.00710889,0,6.4267e+07
+978,FBA Retorno Total I,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,1.92458,0.134076,0,6.4267e+07
+964,MEGAQM Estrategia 9,MEGA QM S.A.,Renta Fija,0.0512119,0.0136604,0,2.7785e+07
+1820,Superfondo Renta Balance II,Santander Asset Management G.F.C.I.S.A.,Renta Mixta,0.00118465,8.25288e-05,0,6.4267e+07
+1809,Ciclo Nova Retorno Total II,Ciclo Nova Asset Management S.A.,Retorno Total,0.00108028,0,0,3.07596e+09
+1404,Balanz Desarrollo FCI Ab para Financ Infra y Econ Real,Balanz S.G.F.C.I.S.A.U.,Infraestructura,88.1188,0.607234,0,2.07403e+08
+1866,FBA Renta Mixta III,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,1.0299,0.0717483,0,6.4267e+07
 1850,Tandem Crecimiento I,Tandem Capital S.A.,Renta Mixta,0.1,0.00696651,0,6.4267e+07
 1863,Argenfunds Financiamiento Pesos II,Argenfunds S.A.,Renta Fija,0.952229,0.253999,0,2.7785e+07
 1865,FBA Renta Mixta II,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Mixta,1.0299,0.0717483,0,6.4267e+07
-491,Optimum Global Renta Mixta,SAM Argentina S.G.F.C.I.S.A.U.,Renta Mixta,17.4988,1.21906,0,6.4267e+07
-492,Optimum Renta Fija Argentina,Santander Asset Management G.F.C.I.S.A.,Renta Fija,0.0167938,0.0044796,0,2.7785e+07
+1392,Max Estrategico V,Max Capital Asset Management S.A.,Renta Fija,0.00441224,0,0,4.64453e+08
+1420,Valiant Renta Fija Balanceado I,Valiant Asset Management S.G.F.C.I.S.A.U.,Renta Fija,1.85453,0.49468,0,2.7785e+07
+1417,Pionero Abierto,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,0.1,0.0266742,0,2.7785e+07
+1418,Pionero Oportunidad,Macro Fondos S.G.F.C.I.S.A.,Renta Fija,0.1,0.0266742,0,2.7785e+07
+1950,Puente Renta Fija Dolares,Puente Asset Management S.A.,Renta Fija,1.51752,0.404786,0,2.7785e+07
+1952,Max Retorno Total Pesos V,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
+1399,Max Multigestión II,Max Capital Asset Management S.A.,Renta Fija,0.001,0.000266742,0,2.7785e+07
+845,MAF Gestión Activa,Mariva Asset Management S.A.U.S.G.F.C.I.,Renta Mixta,31.0002,2.15963,0,6.4267e+07
+933,FBA Horizonte Plus,BBVA Asset Management Argentina S.A.U.S.G.F.C.I.,Renta Fija,10.2627,2.73749,0,2.7785e+07
+1953,Max Retorno Total Pesos VI,Max Capital Asset Management S.A.,Retorno Total,0.001,5.22501e-05,0,1.82163e+08
+1899,Pellegrini Renta Dolares III,Pellegrini S.A.S.G.F.C.I.,Renta Fija,227.757,0,0,4.64453e+08
+866,MEGAQM Gestión Dólares 5,MEGA QM S.A.,Renta Fija,1.50263,0.400815,0,2.7785e+07
+1137,Optimum Abierto Pymes,SAM Argentina S.G.F.C.I.S.A.U.,PyMEs,0.0291342,0.000146368,0,2.87351e+08
+1970,BAVSA Fiel,BAVSA Fondos S.A.,Renta Fija,0.499957,0,0,4.64453e+08
+1963,Pionero Horizonte II,Macro Fondos S.G.F.C.I.S.A.,Renta Mixta,0.1,0,0,1.38372e+09
 1993,Puente Renta Fija Pesos IV,Puente Asset Management S.A.,Renta Fija,0.01,0.00266742,0,2.7785e+07
