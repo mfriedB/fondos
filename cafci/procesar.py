@@ -139,7 +139,16 @@ def main():
     D = pd.concat(dfs, ignore_index=True)
     # Panel por FECHA DEL DATO (como 1816): si un fondo informa con rezago, su dato del dia t aparece en la
     # planilla de t+1; se toma esa version (la de la planilla mas nueva que lo contenga).
-    D = D.rename(columns={"fecha": "planilla"}).sort_values("planilla")
+    D = D.rename(columns={"fecha": "planilla"})
+    D["prio"] = 1
+    # Dias sin planilla propia (ej. 30/06/2026): se reconstruyen con las columnas "dia anterior" de la planilla
+    # siguiente (valor de cuotaparte, cuotapartes y patrimonio a la fecha del encabezado). Prioridad menor.
+    A = D[D.fecha_dato == D.planilla].copy()
+    A["fecha_dato"] = A.fecha_ant
+    for a, b in [("vcp", "vcp_ant"), ("ccp", "ccp_ant"), ("patrimonio", "patrimonio_ant")]: A[a] = A[b]
+    A[["vcp_ant", "ccp_ant", "patrimonio_ant", "vcp_reexp_ars"]] = None
+    A["prio"] = 0
+    D = pd.concat([D, A], ignore_index=True).sort_values(["prio", "planilla"])
     D = D.drop_duplicates(["codigo_cafci", "fecha_dato"], keep="last")
     D["fecha"] = D.fecha_dato
     D = limpiar(D)
@@ -169,7 +178,14 @@ def main():
     D = D.sort_values(["codigo_cafci", "fecha"])
     prev = D.groupby("codigo_cafci").ccp.shift()
     ccp_prev = prev.where(prev.notna(), D.ccp_ant)
-    D["flujo_ars"] = (D.ccp - ccp_prev) * D.vcp / 1000 * D.fx
+    D["flujo_ars"] = ((D.ccp - ccp_prev) * D.vcp / 1000 * D.fx).fillna(0.0)
+    # control: un flujo no puede superar el patrimonio de la clase; si pasa (error de cuotapartes o VCP en la
+    # planilla) se toma la variacion de patrimonio descontado el rendimiento del dia
+    pprev = D.groupby("codigo_cafci").patrimonio_ars.shift()
+    vprev = D.groupby("codigo_cafci").vcp.shift()
+    tope = 1.5 * pd.concat([D.patrimonio_ars, pprev], axis=1).max(axis=1)
+    alt = (D.patrimonio_ars - pprev * (D.vcp / vprev.where(vprev > 0))).fillna(0.0)
+    D.loc[D.flujo_ars.abs() > tope, "flujo_ars"] = alt
     D["mes"] = pd.to_datetime(D.fecha).dt.to_period("M")
     keep = ["fecha", "planilla", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
             "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx", "fx_planilla",
