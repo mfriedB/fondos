@@ -86,6 +86,27 @@ def leer(path):
     df["fecha"] = fp
     return fp, df
 
+def limpiar(D):
+    """Saca datos puntuales erroneos de la planilla: un dia en que la clase informa patrimonio, cuotapartes o
+    valor de cuotaparte que salta mas de 40% y al dia siguiente vuelve (o informa 0 entre dos dias con dato)."""
+    for c in ["vcp", "ccp", "patrimonio"]: D[c] = pd.to_numeric(D[c], errors="coerce")
+    D = D.sort_values(["codigo_cafci", "fecha"])
+    total = 0
+    for _ in range(3):
+        malo = pd.Series(False, index=D.index)
+        g = D.groupby("codigo_cafci")
+        for c in ["patrimonio", "ccp", "vcp"]:
+            x = D[c]; a = g[c].shift(); b = g[c].shift(-1)
+            ok = (a > 0) & (b > 0)
+            r1, r2 = x / a, b / x.where(x != 0)
+            salto = ok & (((r1 < 0.6) & (r2 > 1.6)) | ((r1 > 1.6) & (r2 < 0.6)) | (x <= 0))
+            salto &= ((b / a) - 1).abs() < 0.25            # vuelve a un nivel parecido al anterior
+            malo |= salto.fillna(False)
+        if not malo.any(): break
+        total += int(malo.sum()); D = D[~malo]
+    print("datos puntuales descartados:", total)
+    return D
+
 def categoria_1816(r):
     c = r.clasificacion_cafci or ""
     if c.startswith("Mercado de Dinero"): return "Money Market"
@@ -121,6 +142,7 @@ def main():
     D = D.rename(columns={"fecha": "planilla"}).sort_values("planilla")
     D = D.drop_duplicates(["codigo_cafci", "fecha_dato"], keep="last")
     D["fecha"] = D.fecha_dato
+    D = limpiar(D)
     for c in ["vcp", "vcp_ant", "vcp_reexp_ars", "ccp", "ccp_ant", "patrimonio", "patrimonio_ant", "hon_sg", "hon_sd"]:
         D[c] = pd.to_numeric(D[c], errors="coerce").fillna(0.0)
     D["categoria_1816"] = D.apply(categoria_1816, axis=1)
