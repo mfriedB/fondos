@@ -7,8 +7,8 @@ Salidas (cafci/procesado/):
 
 Metodologia (montos en millones de ARS, como 1816):
   - Suscripciones netas del dia = (cuotapartes hoy - cuotapartes dia anterior) x valor de cuotaparte de hoy.
-  - Fondos en otra moneda: se pasan a pesos con el tipo de cambio implicito de la planilla
-    (columna "Reexp.Pesos" / valor de cuotaparte), mediana por moneda y fecha.
+  - Clases en dolares: se pasan a pesos con el dolar MEP de cierre del dia (cafci/procesado/dolar.csv).
+    Se guarda tambien el implicito de la planilla (fx_planilla, igual al BCRA A3500).
   - AUM_Inicial / AUM_Final: patrimonio al cierre del mes anterior y del mes (o ultima fecha disponible).
   - Rendimiento = AUM_Final - AUM_Inicial - Suscripciones netas.
   - AUM_promedio: promedio por dia calendario (fines de semana y feriados repiten el ultimo dato).
@@ -29,16 +29,50 @@ COLS = {0: "fondo_clase", 1: "moneda", 2: "region", 3: "horizonte", 4: "fecha_tx
         23: "gerente", 24: "codigo_clasificacion", 30: "hon_sg", 31: "hon_sd", 36: "moneda_fondo", 37: "plazo_liq",
         38: "decreto_596", 43: "minimo_inversion", 44: "ley_27743", 45: "tipo_dinero", 46: "calificado"}
 
+import unicodedata
+def _n(x): return unicodedata.normalize("NFKD", str(x or "")).encode("ascii", "ignore").decode().lower().strip()
+# (grupo de la fila 8, subencabezado de la fila 9 o None, orden dentro del grupo) -> nombre interno
+BUSCAR = {"fondo_clase": ("fondo", None, 0), "moneda": ("clasificacion", "moneda", 0), "region": ("clasificacion", "region", 0),
+          "horizonte": ("clasificacion", "horizonte", 0), "fecha_txt": ("fecha", None, 0), "vcp": ("valor (mil cuotapartes)", "actual", 0),
+          "vcp_ant": ("valor (mil cuotapartes)", None, 1), "vcp_reexp_ars": ("valor (mil cuotapartes)", "reexp", 0),
+          "ccp": ("cantidad de cuotapartes", "actual", 0), "ccp_ant": ("cantidad de cuotapartes", None, 1),
+          "patrimonio": ("patrimonio", "actual", 0), "patrimonio_ant": ("patrimonio", None, 1), "depositaria": ("sociedad depositaria", None, 0),
+          "codigo_cnv": ("codigo cnv", None, 0), "codigo_cafci": ("codigo cafci", None, 0), "gerente": ("sociedad gerente", None, 0),
+          "codigo_clasificacion": ("codigo de clasificacion", None, 0), "hon_sg": ("honorarios adm. sg", None, 0), "hon_sd": ("honorarios adm. sd", None, 0),
+          "moneda_fondo": ("moneda fondo", None, 0), "plazo_liq": ("plazo liq", None, 0), "decreto_596": ("decreto 596", None, 0),
+          "minimo_inversion": ("minimo de inversion", None, 0), "ley_27743": ("regularizacion", None, 0), "tipo_dinero": ("tipo de dinero", None, 0),
+          "calificado": ("calificado", None, 0)}
+
+def columnas(rows):
+    """Ubica cada columna por su encabezado (las planillas viejas tienen otro orden); si no aparece usa la posicion actual."""
+    g, grupos = "", []
+    for v in rows[7]:
+        if v is not None: g = _n(v)
+        grupos.append(g)
+    subs = [_n(v) for v in rows[8]]
+    out = {}
+    for nombre, (grp, sub, k) in BUSCAR.items():
+        idx = [i for i, gg in enumerate(grupos) if gg.startswith(grp)]
+        if sub: idx = [i for i in idx if subs[i].startswith(sub)] or ([i for i in idx][k:k + 1] if k else [])
+        elif k: idx = idx[k:k + 1]
+        if idx: out[idx[0]] = nombre
+    faltan = set(BUSCAR) - set(out.values())
+    for i, nombre in COLS.items():
+        if nombre in faltan and i not in out: out[i] = nombre
+    return out
+
 def leer(path):
     ws = openpyxl.load_workbook(path, read_only=True, data_only=True).active
     rows = list(ws.iter_rows(values_only=True))
-    fecha_ant = datetime.strptime(str(rows[8][6]), "%d/%m/%y").date()
+    cols = columnas(rows)
+    ic = {v: k for k, v in cols.items()}
+    fecha_ant = datetime.strptime(str(rows[8][ic["vcp_ant"]]), "%d/%m/%y").date()
     out, clasif = [], None
     for r in rows[10:]:
         if r[0] and all(v is None for v in r[1:6]):
             clasif = str(r[0]).strip(); continue
-        if not r[0] or not r[4] or r[20] is None: continue
-        d = {v: r[k] for k, v in COLS.items()}
+        if not r[0] or not r[ic["fecha_txt"]] or r[ic["codigo_cafci"]] is None: continue
+        d = {v: (r[k] if k < len(r) else None) for k, v in cols.items()}
         d["clasificacion_cafci"] = clasif
         out.append(d)
     df = pd.DataFrame(out)
@@ -70,8 +104,17 @@ def nombre_fondo(s):
 def main():
     files = sorted(glob.glob(os.path.join(RAW, "*_Planilla_Diaria_A.xlsx")))
     dfs = []
+    cache = os.path.join(BASE, "raw", "parsed"); os.makedirs(cache, exist_ok=True)
     for f in files:
-        fp, df = leer(f); dfs.append(df); print("leido", os.path.basename(f), fp, len(df))
+        pk = os.path.join(cache, os.path.basename(f) + ".v2.pkl.gz")     # lectura cacheada (las planillas no cambian)
+        if os.path.exists(pk) and os.path.getmtime(pk) >= os.path.getmtime(f):
+            df = pd.read_pickle(pk)
+        else:
+            try:
+                fp, df = leer(f); df.to_pickle(pk); print("leido", os.path.basename(f), fp, len(df))
+            except Exception as e:
+                print("NO SE PUDO LEER", os.path.basename(f), repr(e)); continue
+        dfs.append(df)
     D = pd.concat(dfs, ignore_index=True)
     # Panel por FECHA DEL DATO (como 1816): si un fondo informa con rezago, su dato del dia t aparece en la
     # planilla de t+1; se toma esa version (la de la planilla mas nueva que lo contenga).
@@ -89,6 +132,16 @@ def main():
     D = D.merge(fx, on=["fecha", "moneda"], how="left")
     D.loc[D.moneda == "ARS", "fx"] = 1.0
     D["fx"] = D.groupby("moneda").fx.transform(lambda s: s.ffill().bfill())
+    D["fx_planilla"] = D.fx
+    # tipo de cambio de conversion: dolar MEP de cierre del dia del dato (cafci/procesado/dolar.csv);
+    # si falta el dia se usa el ultimo MEP disponible; sin serie MEP queda el implicito de la planilla (= BCRA A3500)
+    dolar = os.path.join(PROC, "dolar.csv")
+    if os.path.exists(dolar):
+        mep = pd.read_csv(dolar, parse_dates=["fecha"]).set_index("fecha").mep.dropna().sort_index()
+        f = pd.to_datetime(D.fecha)
+        D["fx_mep"] = mep.reindex(pd.date_range(mep.index.min(), max(mep.index.max(), f.max()))).ffill().reindex(f).values
+        usd = D.moneda != "ARS"
+        D.loc[usd & D.fx_mep.notna(), "fx"] = D.loc[usd & D.fx_mep.notna(), "fx_mep"]
     D["patrimonio_ars"] = D.patrimonio * D.fx
     # flujo = variacion de cuotapartes entre planillas consecutivas (un dato rezagado repetido no suma dos veces)
     D = D.sort_values(["codigo_cafci", "fecha"])
@@ -97,7 +150,7 @@ def main():
     D["flujo_ars"] = (D.ccp - ccp_prev) * D.vcp / 1000 * D.fx
     D["mes"] = pd.to_datetime(D.fecha).dt.to_period("M")
     keep = ["fecha", "planilla", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
-            "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx",
+            "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx", "fx_planilla",
             "patrimonio_ars", "flujo_ars", "hon_sg", "hon_sd", "minimo_inversion", "calificado"]
     for m, g in D.groupby("mes"):
         g[keep].sort_values(["fecha", "codigo_cafci"]).to_csv(os.path.join(PROC, "clases_diario", f"{m}.csv.gz"), index=False, compression="gzip")

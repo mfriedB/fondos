@@ -64,8 +64,11 @@ def main():
     man = {r["fecha"]: r for r in csv.DictReader(open(man_p))} if os.path.exists(man_p) else {}
     pend = [f for f in sorted(docs) if desde <= f <= hasta]
     log("fechas en rango:", len(pend))
-    ok = err = 0
-    for f in pend:
+    ok = err = seguidos = 0
+    limite = time.time() + float(os.environ.get("MINUTOS_DESCARGA", "100")) * 60
+    for f in sorted(pend, reverse=True):          # primero lo mas reciente; el historial se completa en varias corridas
+        if time.time() > limite: log("corte por tiempo; sigue en la proxima corrida"); break
+        if seguidos >= 8: log("la CNV no responde (8 errores seguidos); sigue en la proxima corrida"); break
         doc = docs[f]; key = f.isoformat()
         dest = os.path.join(RAW, f"{f:%Y%m%d}_Planilla_Diaria_A.xlsx")
         if key in man and man[key]["id_cnv"] == doc["id"] and os.path.exists(dest): continue
@@ -74,9 +77,9 @@ def main():
             open(dest, "wb").write(data)
             man[key] = {"fecha": key, "id_cnv": doc["id"], "recepcion_cnv": doc["recepcion"].isoformat() if doc["recepcion"] else "",
                         "link_cnv": doc["href"], "archivo_original": nombre, "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
-            ok += 1; log("OK", key, doc["id"], nombre, len(data))
+            ok += 1; seguidos = 0; log("OK", key, doc["id"], nombre, len(data))
         except Exception as e:
-            err += 1; log("ERROR", key, doc["id"], repr(e))
+            err += 1; seguidos += 1; log("ERROR", key, doc["id"], repr(e))
         time.sleep(0.5)
     with open(man_p, "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=["fecha", "id_cnv", "recepcion_cnv", "link_cnv", "archivo_original", "sha256", "bytes"])

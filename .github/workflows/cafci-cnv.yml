@@ -18,7 +18,7 @@ concurrency:
 jobs:
   descargar:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v5
         with:
@@ -36,11 +36,14 @@ jobs:
       - name: Descargar
         continue-on-error: true   # un timeout puntual de la CNV no frena el resto; se reintenta en la proxima corrida
         run: |
-          timeout 1500 python -u cafci/descargar_cnv.py
+          timeout 7200 python -u cafci/descargar_cnv.py
       - name: Informes mensuales CAFCI (cuotapartistas)
         run: |
           sudo apt-get install -y -qq poppler-utils >/dev/null
           python -u cafci/bajar_informes.py
+      - name: Dolar MEP y BCRA A3500
+        continue-on-error: true
+        run: python -u cafci/dolar.py
       - name: Procesar (formato 1816)
         run: python -u cafci/procesar.py
       - name: Cuotapartistas (serie CAFCI y estimacion por fondo)
