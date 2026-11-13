@@ -27,8 +27,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install requests openpyxl pandas
-      - name: Cache de planillas originales
-        uses: actions/cache@v4
+      - name: Recuperar planillas originales (cache)
+        uses: actions/cache/restore@v4
         with:
           path: cafci/raw
           key: planillas-${{ github.run_id }}
@@ -48,6 +48,12 @@ jobs:
         run: python -u cafci/procesar.py
       - name: Cuotapartistas (serie CAFCI y estimacion por fondo)
         run: python -u cafci/cuotapartistas.py
+      - name: Guardar planillas originales (cache, aunque falle algo despues)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: cafci/raw
+          key: planillas-${{ github.run_id }}
       - name: Commitear resultados
         run: |
           git config user.name  "github-actions[bot]"
@@ -55,5 +61,5 @@ jobs:
           for d in cafci/procesado cafci/informes; do [ -e "$d" ] && git add "$d"; done
           if ! git diff --cached --quiet; then
             git commit -m "Planillas CAFCI-CNV: actualizacion automatica"
-            git push origin HEAD:cafci-datos
+            for i in 1 2 3; do git pull --rebase -X theirs origin cafci-datos && git push origin HEAD:cafci-datos && break; sleep 10; done
           fi
