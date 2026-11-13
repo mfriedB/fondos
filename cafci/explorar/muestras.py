@@ -1,24 +1,36 @@
-"""Baja planillas de muestra de distintos anios para revisar el formato (encabezados)."""
-import os, sys
+"""Prueba fuentes: API historica CAFCI, AIF con timeout largo y APIs de dolar MEP."""
+import os, sys, json, requests
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-import descargar_cnv as d
-import openpyxl
-from datetime import date
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out"); os.makedirs(OUT, exist_ok=True)
-docs = d.indice()
-fechas = sorted(docs)
-quiero = [date(2020, 1, 2), date(2020, 12, 30), date(2021, 12, 30), date(2022, 6, 30), date(2023, 6, 30), date(2024, 6, 28), date(2025, 6, 30)]
-log = open(os.path.join(OUT, "headers.txt"), "w")
-for q in quiero:
-    f = min(fechas, key=lambda x: abs((x - q).days))
+S = requests.Session(); S.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36"
+log = open(os.path.join(OUT, "fuentes.txt"), "w")
+def t(name, url, n=600, **kw):
     try:
-        nombre, data, _ = d.bajar(docs[f])
-        p = os.path.join(OUT, f"{f}.xlsx"); open(p, "wb").write(data)
-        ws = openpyxl.load_workbook(p, read_only=True).active
-        rows = list(ws.iter_rows(min_row=1, max_row=14, values_only=True))
-        log.write(f"== {f} {nombre} ncols={len(rows[8])}\n")
-        for i in range(len(rows[8])):
-            log.write(f"  {i} {rows[7][i]!r} | {rows[8][i]!r} | {rows[11][i]!r}\n")
+        r = S.get(url, timeout=(15, 90), **kw)
+        log.write(f"== {name} {r.status_code} {len(r.content)} {r.headers.get('content-type')} {url}\n{r.text[:n]!r}\n")
+        return r
     except Exception as e:
-        log.write(f"== {f} ERROR {e!r}\n")
+        log.write(f"== {name} ERR {e!r} {url}\n")
+for u in ["https://api.pub.cafci.org.ar/pb_get?fecha=2020-01-02", "https://api.pub.cafci.org.ar/pb_get/2020-01-02",
+          "https://api.pub.cafci.org.ar/estadisticas/informacion/diaria/4/2020-01-02",
+          "https://api.cafci.org.ar/estadisticas/informacion/diaria/4/2020-01-02",
+          "https://api.pub.cafci.org.ar/estadisticas/informacion/diaria/2/2024-06-28",
+          "https://api.pub.cafci.org.ar/fondo?estado=1&include=entidad;depositaria,entidad;gerente,tipoRenta,region,benchmark,horizonte,duration,tipo_fondo,clase_fondo&limit=0&order=clase_fondos.nombre",
+          "https://api.pub.cafci.org.ar/pb_get?ano=2020&mes=1&dia=2"]:
+    t("cafci", u, headers={"Referer": "https://www.cafci.org.ar/"})
+import descargar_cnv as d
+d.S.headers["User-Agent"] = S.headers["User-Agent"]
+docs = d.indice(); f = sorted(docs)[0]
+try:
+    r = S.get(docs[f]["href"], timeout=(15, 300)); log.write(f"== AIF {f} {r.status_code} {len(r.content)}\n")
+except Exception as e: log.write(f"== AIF ERR {e!r}\n")
+for name, u in [("ambito_mep", "https://mercados.ambito.com//dolarrava/mep/historico-general/2026-09-25/2026-11-12"),
+                ("ambito_mep2", "https://mercados.ambito.com/dolarrava/mep/historico-general/01-10-2026/12-11-2026"),
+                ("argdatos_bolsa", "https://api.argentinadatos.com/v1/cotizaciones/dolares/bolsa"),
+                ("dolarito_hist", "https://www.dolarito.ar/cotizacion/dolar-hoy"),
+                ("dolarito_api", "https://api.dolarito.ar/api/frontend/history"),
+                ("dolarapi_mep", "https://dolarapi.com/v1/dolares/bolsa"),
+                ("bcra_api", "https://api.bcra.gob.ar/estadisticascambiarias/v1.0/Cotizaciones/USD?fechadesde=2026-10-01&fechahasta=2026-10-31"),
+                ("byma", "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/bnown/seriesHistoricas/iamc/bonos")]:
+    t(name, u, 800)
 log.close()
