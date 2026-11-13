@@ -34,6 +34,7 @@ jobs:
           key: planillas-${{ github.run_id }}
           restore-keys: planillas-
       - name: Descargar
+        continue-on-error: true   # un timeout puntual de la CNV no frena el resto; se reintenta en la proxima corrida
         run: |
           timeout 1500 python -u cafci/descargar_cnv.py
       - name: Informes mensuales CAFCI (cuotapartistas)
