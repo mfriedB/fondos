@@ -43,6 +43,8 @@ jobs:
           python -u cafci/bajar_informes.py
       - name: Procesar (formato 1816)
         run: python -u cafci/procesar.py
+      - name: Cuotapartistas (serie CAFCI y estimacion por fondo)
+        run: python -u cafci/cuotapartistas.py
       - name: Commitear resultados
         run: |
           git config user.name  "github-actions[bot]"

@@ -27,7 +27,7 @@ os.makedirs(os.path.join(PROC, "clases_diario"), exist_ok=True)
 COLS = {0: "fondo_clase", 1: "moneda", 2: "region", 3: "horizonte", 4: "fecha_txt", 5: "vcp", 6: "vcp_ant", 8: "vcp_reexp_ars",
         12: "ccp", 13: "ccp_ant", 14: "patrimonio", 15: "patrimonio_ant", 17: "depositaria", 18: "codigo_cnv", 20: "codigo_cafci",
         23: "gerente", 24: "codigo_clasificacion", 30: "hon_sg", 31: "hon_sd", 36: "moneda_fondo", 37: "plazo_liq",
-        38: "decreto_596", 44: "ley_27743", 45: "tipo_dinero"}
+        38: "decreto_596", 43: "minimo_inversion", 44: "ley_27743", 45: "tipo_dinero", 46: "calificado"}
 
 def leer(path):
     ws = openpyxl.load_workbook(path, read_only=True, data_only=True).active
@@ -98,7 +98,7 @@ def main():
     D["mes"] = pd.to_datetime(D.fecha).dt.to_period("M")
     keep = ["fecha", "planilla", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
             "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx",
-            "patrimonio_ars", "flujo_ars", "hon_sg", "hon_sd"]
+            "patrimonio_ars", "flujo_ars", "hon_sg", "hon_sd", "minimo_inversion", "calificado"]
     for m, g in D.groupby("mes"):
         g[keep].sort_values(["fecha", "codigo_cafci"]).to_csv(os.path.join(PROC, "clases_diario", f"{m}.csv.gz"), index=False, compression="gzip")
 
