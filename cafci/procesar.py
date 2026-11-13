@@ -66,7 +66,10 @@ def leer(path):
     rows = list(ws.iter_rows(values_only=True))
     cols = columnas(rows)
     ic = {v: k for k, v in cols.items()}
-    fecha_ant = datetime.strptime(str(rows[8][ic["vcp_ant"]]), "%d/%m/%y").date()
+    try:
+        fecha_ant = datetime.strptime(str(rows[8][ic["vcp_ant"]]), "%d/%m/%y").date()
+    except ValueError:
+        fecha_ant = None          # algunas planillas no traen la fecha del dia anterior en el encabezado
     out, clasif = [], None
     for r in rows[10:]:
         if r[0] and all(v is None for v in r[1:6]):
@@ -143,7 +146,7 @@ def main():
     D["prio"] = 1
     # Dias sin planilla propia (ej. 30/06/2026): se reconstruyen con las columnas "dia anterior" de la planilla
     # siguiente (valor de cuotaparte, cuotapartes y patrimonio a la fecha del encabezado). Prioridad menor.
-    A = D[D.fecha_dato == D.planilla].copy()
+    A = D[(D.fecha_dato == D.planilla) & D.fecha_ant.notna()].copy()
     A["fecha_dato"] = A.fecha_ant
     for a, b in [("vcp", "vcp_ant"), ("ccp", "ccp_ant"), ("patrimonio", "patrimonio_ant")]: A[a] = A[b]
     A[["vcp_ant", "ccp_ant", "patrimonio_ant", "vcp_reexp_ars"]] = None
@@ -186,6 +189,8 @@ def main():
     tope = 1.5 * pd.concat([D.patrimonio_ars, pprev], axis=1).max(axis=1)
     alt = (D.patrimonio_ars - pprev * (D.vcp / vprev.where(vprev > 0))).fillna(0.0)
     D.loc[D.flujo_ars.abs() > tope, "flujo_ars"] = alt
+    simple = (D.patrimonio_ars - pprev).fillna(0.0)          # cambio de escala de cuotapartes (split): variacion simple
+    D.loc[D.flujo_ars.abs() > tope, "flujo_ars"] = simple
     D["mes"] = pd.to_datetime(D.fecha).dt.to_period("M")
     keep = ["fecha", "planilla", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
             "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx", "fx_planilla",
