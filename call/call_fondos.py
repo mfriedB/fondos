@@ -255,12 +255,15 @@ def actualizar_pptx(ruta, salida, imgs, corte, info4, cajas9):
         big._element.addprevious(pic._element)          # mismo orden z que la imagen vieja
         rid = big._element.blipFill.blip.rEmbed if hasattr(big._element, "blipFill") else None
         big._element.getparent().remove(big._element)
-        for sh in s.shapes:                              # pie con la fecha
+        for sh in s.shapes:                              # pie con la fecha (el texto puede venir partido en varios runs)
             if sh.has_text_frame:
                 for p in sh.text_frame.paragraphs:
-                    for r in p.runs:
-                        r.text = re.sub(r"al \d{1,2} de [A-Za-zé]+ de \d{4}", "al " + fecha_larga(corte), r.text)
-                        r.text = r.text.replace("fuente 1816", "fuente CAFCI / CNV")
+                    if not p.runs: continue
+                    t = "".join(r.text for r in p.runs)
+                    t2 = re.sub(r"al \d{1,2} de [A-Za-zé]+ de \d{4}", "al " + fecha_larga(corte), t).replace("fuente 1816", "fuente CAFCI / CNV")
+                    if t2 != t:
+                        p.runs[0].text = t2
+                        for r in p.runs[1:]: r.text = ""
         if n == 4 and info4.get("puesto_balanz"):
             for sh in s.shapes:
                 if sh.has_text_frame and sh.text_frame.text.strip().startswith("TOP"):
