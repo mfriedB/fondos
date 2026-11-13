@@ -36,13 +36,17 @@ jobs:
       - name: Descargar
         run: |
           timeout 1500 python -u cafci/descargar_cnv.py
+      - name: Informes mensuales CAFCI (cuotapartistas)
+        run: |
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          python -u cafci/bajar_informes.py
       - name: Procesar (formato 1816)
         run: python -u cafci/procesar.py
       - name: Commitear resultados
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for d in cafci/procesado; do [ -e "$d" ] && git add "$d"; done
+          for d in cafci/procesado cafci/informes; do [ -e "$d" ] && git add "$d"; done
           if ! git diff --cached --quiet; then
             git commit -m "Planillas CAFCI-CNV: actualizacion automatica"
             git push origin HEAD:cafci-datos

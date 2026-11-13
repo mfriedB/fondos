@@ -73,6 +73,11 @@ def main():
     for f in files:
         fp, df = leer(f); dfs.append(df); print("leido", os.path.basename(f), fp, len(df))
     D = pd.concat(dfs, ignore_index=True)
+    # Panel por FECHA DEL DATO (como 1816): si un fondo informa con rezago, su dato del dia t aparece en la
+    # planilla de t+1; se toma esa version (la de la planilla mas nueva que lo contenga).
+    D = D.rename(columns={"fecha": "planilla"}).sort_values("planilla")
+    D = D.drop_duplicates(["codigo_cafci", "fecha_dato"], keep="last")
+    D["fecha"] = D.fecha_dato
     for c in ["vcp", "vcp_ant", "vcp_reexp_ars", "ccp", "ccp_ant", "patrimonio", "patrimonio_ant", "hon_sg", "hon_sd"]:
         D[c] = pd.to_numeric(D[c], errors="coerce").fillna(0.0)
     D["categoria_1816"] = D.apply(categoria_1816, axis=1)
@@ -88,11 +93,10 @@ def main():
     # flujo = variacion de cuotapartes entre planillas consecutivas (un dato rezagado repetido no suma dos veces)
     D = D.sort_values(["codigo_cafci", "fecha"])
     prev = D.groupby("codigo_cafci").ccp.shift()
-    prev_dato = D.groupby("codigo_cafci").fecha_dato.shift()
     ccp_prev = prev.where(prev.notna(), D.ccp_ant)
-    D["flujo_ars"] = ((D.ccp - ccp_prev) * D.vcp / 1000 * D.fx).where(D.fecha_dato != prev_dato, 0.0)
+    D["flujo_ars"] = (D.ccp - ccp_prev) * D.vcp / 1000 * D.fx
     D["mes"] = pd.to_datetime(D.fecha).dt.to_period("M")
-    keep = ["fecha", "fecha_dato", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
+    keep = ["fecha", "planilla", "fecha_ant", "codigo_cafci", "codigo_cnv", "fondo_clase", "fondo", "gerente", "clasificacion_cafci", "categoria_1816",
             "moneda", "moneda_fondo", "horizonte", "plazo_liq", "decreto_596", "ley_27743", "tipo_dinero", "vcp", "ccp", "patrimonio", "fx",
             "patrimonio_ars", "flujo_ars", "hon_sg", "hon_sd"]
     for m, g in D.groupby("mes"):
@@ -100,37 +104,40 @@ def main():
 
     U = D[(D.decreto_596 != "S") & D.categoria_1816.notna()].copy()
     fechas = sorted(U.fecha.unique())
+    # foto diaria por dia calendario: cada clase con su ultimo dato disponible (hasta 7 dias de antiguedad)
+    cal_all = pd.date_range(pd.Timestamp(fechas[0]), pd.Timestamp(fechas[-1]), freq="D")
+    W = U.pivot_table(index="fecha", columns="codigo_cafci", values="patrimonio_ars", aggfunc="last")
+    W.index = pd.to_datetime(W.index)
+    W = W.reindex(cal_all).ffill(limit=7).fillna(0.0)
+    clase = U.sort_values("fecha").drop_duplicates("codigo_cafci", keep="last").set_index("codigo_cafci")
+    hon = U.sort_values("fecha").pivot_table(index="fecha", columns="codigo_cafci", values=["hon_sg", "hon_sd"], aggfunc="last")
+    hon.index = pd.to_datetime(hon.index); hon = hon.reindex(cal_all).ffill().bfill().fillna(0.0)
+    fondo_de = clase.codigo_cnv
     salidas = []
     for viejo in glob.glob(os.path.join(PROC, "fondos_cafci_*.csv")): os.remove(viejo)  # el mes parcial cambia de nombre cada dia
     for m in sorted(U.mes.unique()):
         ini = (m.start_time - timedelta(days=1)).date(); fin_mes = m.end_time.date()
         f_mes = [f for f in fechas if ini < f <= fin_mes]
-        f_prev = [f for f in fechas if f <= ini]
-        if not f_mes or not f_prev: continue
-        f0, f1 = f_prev[-1], f_mes[-1]
-        cal = [ini + timedelta(days=i) for i in range(1, (f1 - ini).days + 1)]
-        # dia calendario -> ultima planilla disponible
-        idx = pd.Series(pd.to_datetime(fechas), index=pd.to_datetime(fechas))
-        pick = idx.reindex(pd.to_datetime(cal), method="ffill").dt.date
-        w = pick.value_counts().rename("dias").rename_axis("fecha").reset_index()
-        P = U[U.fecha.isin(w.fecha)].merge(w, on="fecha")
-        P["numeral"] = P.patrimonio_ars * P.dias
-        P["fac_g"] = P.numeral * P.hon_sg / 100 / 365
-        P["fac_d"] = P.numeral * P.hon_sd / 100 / 365
+        if not f_mes or pd.Timestamp(ini) < cal_all[0]: continue
+        f1 = fin_mes if fin_mes <= fechas[-1] else f_mes[-1]
+        cal = pd.date_range(pd.Timestamp(ini) + timedelta(days=1), pd.Timestamp(f1), freq="D")
         k = ["codigo_cnv"]
-        a = P.groupby(k).agg(numeral=("numeral", "sum"), fac_g=("fac_g", "sum"), fac_d=("fac_d", "sum"))
+        num = W.loc[cal].sum().groupby(fondo_de).sum()
+        a = pd.DataFrame({"numeral": num})
+        a.index.name = "codigo_cnv"
+        a["fac_g"] = (W.loc[cal] * hon["hon_sg"].loc[cal]).sum().groupby(fondo_de).sum() / 100 / 365
+        a["fac_d"] = (W.loc[cal] * hon["hon_sd"].loc[cal]).sum().groupby(fondo_de).sum() / 100 / 365
         a["AUM_promedio"] = a.numeral / len(cal)
-        a["AUM_Inicial"] = U[U.fecha == f0].groupby(k).patrimonio_ars.sum()
-        a["AUM_Final"] = U[U.fecha == f1].groupby(k).patrimonio_ars.sum()
-        a["Susc_Netas"] = U[U.fecha.isin(f_mes)].groupby(k).flujo_ars.sum()
+        a["AUM_Inicial"] = W.loc[pd.Timestamp(ini)].groupby(fondo_de).sum()
+        a["AUM_Final"] = W.loc[pd.Timestamp(f1)].groupby(fondo_de).sum()
+        a["Susc_Netas"] = U[(U.fecha > ini) & (U.fecha <= f1)].groupby(k).flujo_ars.sum()
         a = a.fillna(0.0)
         a["Rendimiento"] = a.AUM_Final - a.AUM_Inicial - a.Susc_Netas
-        meta = U[U.fecha == f1].sort_values("patrimonio_ars", ascending=False).drop_duplicates("codigo_cnv").set_index("codigo_cnv")
-        meta0 = U[U.fecha.isin(f_mes + [f0])].sort_values("fecha").drop_duplicates("codigo_cnv", keep="last").set_index("codigo_cnv")
-        meta = meta.combine_first(meta0)
+        f0 = ini
+        meta = U[U.fecha <= f1].sort_values(["fecha", "patrimonio_ars"]).drop_duplicates("codigo_cnv", keep="last").set_index("codigo_cnv")
         a = a.join(meta[["fondo", "gerente", "categoria_1816", "clasificacion_cafci"]])
         out = pd.DataFrame({
-            "Fecha": f1.isoformat() if str(m) == str(U.mes.max()) else fin_mes.isoformat(),
+            "Fecha": f1.isoformat(),
             "Categoria": a.categoria_1816, "Subcategoria": a.clasificacion_cafci, "Fondo": a.fondo, "Gerente": a.gerente,
             "AUM_promedio": a.AUM_promedio / 1e6, "AUM_Inicial": a.AUM_Inicial / 1e6, "AUM_Final": a.AUM_Final / 1e6,
             "Susc_Netas": a.Susc_Netas / 1e6, "Rendimiento": a.Rendimiento / 1e6,
