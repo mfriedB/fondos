@@ -5,7 +5,7 @@ name: Planillas CAFCI-CNV
 on:
   push:
     branches: [cafci-datos]
-    paths: ['cafci/**', '.github/workflows/cafci-cnv.yml']
+    paths: ['cafci/*.py', 'cafci/config.json', '.github/workflows/cafci-cnv.yml']
   workflow_dispatch:
 
 permissions:
