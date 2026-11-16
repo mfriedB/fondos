@@ -1580,9 +1580,9 @@
 
       <div class="bench-row" id="histBenchRow" style="display:none;">
         <span class="bench-label">Comparar con</span>
-        <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#C43D3D; border-top-style:dotted;"></i>Inflación</label>
-        <label class="bench-check" data-bench="oficial"><input type="checkbox" data-bench="oficial" /><i style="border-color:#B7791F;"></i>Dólar oficial</label>
-        <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#0F8A5F;"></i>Dólar MEP</label>
+        <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#7C3AED;"></i>Inflación</label>
+        <label class="bench-check" data-bench="oficial"><input type="checkbox" data-bench="oficial" /><i style="border-color:#E07B00;"></i>Dólar oficial</label>
+        <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#5B6478;"></i>Dólar MEP</label>
       </div>
       <div class="hist-chart-wrap"><canvas id="histChart"></canvas></div>
       <p class="foot-note bench-nota" id="histBenchNota" style="display:none;"></p>
@@ -1645,9 +1645,9 @@
 
         <div class="bench-row" id="fundBenchRow" style="display:none;">
           <span class="bench-label">Comparar con</span>
-          <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#C43D3D; border-top-style:dotted;"></i>Inflación</label>
-          <label class="bench-check" data-bench="oficial"><input type="checkbox" data-bench="oficial" /><i style="border-color:#B7791F;"></i>Dólar oficial</label>
-          <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#0F8A5F;"></i>Dólar MEP</label>
+          <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#7C3AED;"></i>Inflación</label>
+          <label class="bench-check" data-bench="oficial"><input type="checkbox" data-bench="oficial" /><i style="border-color:#E07B00;"></i>Dólar oficial</label>
+          <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#5B6478;"></i>Dólar MEP</label>
         </div>
         <div class="hist-chart-wrap"><canvas id="fundHistChart"></canvas></div>
         <p class="foot-note bench-nota" id="fundBenchNota" style="display:none;"></p>
@@ -3083,9 +3083,9 @@ const BENCH = { inflacion: null, oficial: null, mep: null, actualizado: null };
 const BENCH_CLAVES = ['inflacion', 'oficial', 'mep'];
 const BENCH_SEL = { hist: { inflacion: false, oficial: false, mep: false }, fund: { inflacion: false, oficial: false, mep: false } };
 const BENCH_ESTILO = {
-  inflacion: { label: 'Inflación', color: '#C43D3D', dash: [2, 3] },
-  oficial: { label: 'Dólar oficial', color: '#B7791F', dash: [9, 3, 2, 3] },
-  mep: { label: 'Dólar MEP', color: '#0F8A5F', dash: [6, 4] },
+  inflacion: { label: 'Inflación', color: '#7C3AED', dash: [6, 4] },
+  oficial: { label: 'Dólar oficial', color: '#E07B00', dash: [6, 4] },
+  mep: { label: 'Dólar MEP', color: '#5B6478', dash: [6, 4] },
 };
 const BENCH_FUENTE = {
   inflacion: 'inflación, INDEC (IPC Nivel General Nacional; dato mensual, distribuido dentro de cada mes)',
