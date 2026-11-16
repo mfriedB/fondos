@@ -3075,7 +3075,7 @@ function monthLabel(iso){
    (ver scripts/actualizar-benchmarks.mjs):
      - Inflacion: indice IPC Nivel General Nacional del INDEC.
      - Dolar oficial: tipo de cambio mayorista de referencia del BCRA (Com. A 3500).
-     - Dolar MEP: API de ArgentinaDatos (no es una fuente oficial).
+     - Dolar MEP: API de ArgentinaDatos.
    Si el archivo no esta o una serie falta, esa opcion no se muestra y el
    resto de la pagina sigue igual.
 ===================================================================== */
@@ -3090,7 +3090,7 @@ const BENCH_ESTILO = {
 const BENCH_FUENTE = {
   inflacion: 'inflación, INDEC (IPC Nivel General Nacional; dato mensual, distribuido dentro de cada mes)',
   oficial: 'dólar oficial, BCRA (tipo de cambio mayorista de referencia, Com. A 3500)',
-  mep: 'dólar MEP, ArgentinaDatos (precio de venta; no es una fuente oficial)',
+  mep: 'dólar MEP, ArgentinaDatos',
 };
 
 function cargarBenchmarks(){
