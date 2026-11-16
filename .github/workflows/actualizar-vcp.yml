@@ -1,0 +1,55 @@
+# Actualiza los VCP de data.xlsx desde la base CAFCI/CNV de mfriedB/cafci
+# (la misma que lee la API cafci.vercel.app).
+#
+# Corre de lunes a viernes 50 minutos despues de cada actualizacion de la base
+# CAFCI (12:47 y 18:47 de Buenos Aires) y tambien se puede correr a mano desde
+# la pestaña Actions. Si no hay VCP nuevos, no commitea nada.
+
+name: Actualizar VCP
+
+on:
+  schedule:
+    - cron: '37 16 * * 1-5'   # 13:37 de Buenos Aires
+    - cron: '37 22 * * 1-5'   # 19:37 de Buenos Aires
+  push:
+    paths:
+      - 'scripts/actualizar-vcp.py'
+      - 'scripts/mapeo-vcp.csv'
+      - '.github/workflows/actualizar-vcp.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vcp-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Instalar openpyxl
+        run: pip install openpyxl==3.1.5
+
+      - name: Actualizar data.xlsx
+        run: python scripts/actualizar-vcp.py
+
+      - name: Commitear si cambió
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ -n "$(git status --porcelain data.xlsx)" ]]; then
+            git add data.xlsx
+            git commit -m "Actualizar VCP (base CAFCI/CNV)"
+            git pull --rebase
+            git push
+          else
+            echo "Sin cambios en data.xlsx"
+          fi
