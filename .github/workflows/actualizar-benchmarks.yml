@@ -1,4 +1,4 @@
-# Actualiza benchmarks.json (inflacion INDEC y dolar MEP) para las lineas de
+# Actualiza benchmarks.json (inflacion INDEC, dolar oficial BCRA y dolar MEP) para las lineas de
 # referencia de los graficos de la calculadora.
 #
 # Corre solo todos los dias habiles a la noche y tambien se puede correr a
@@ -37,9 +37,6 @@ jobs:
         run: node scripts/actualizar-benchmarks.mjs --probar
 
       - name: Generar benchmarks.json
-        env:
-          BYMA_CLIENT_ID: ${{ secrets.BYMA_CLIENT_ID }}
-          BYMA_CLIENT_SECRET: ${{ secrets.BYMA_CLIENT_SECRET }}
         run: node scripts/actualizar-benchmarks.mjs
 
       - name: Commitear si cambió
@@ -48,7 +45,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if [[ -n "$(git status --porcelain benchmarks.json)" ]]; then
             git add benchmarks.json
-            git commit -m "Actualizar benchmarks (inflación y dólar MEP)"
+            git commit -m "Actualizar benchmarks (inflación, dólar oficial y dólar MEP)"
             git push
           else
             echo "Sin cambios en benchmarks.json"
