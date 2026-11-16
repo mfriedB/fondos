@@ -637,6 +637,13 @@
   .range-btn.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
   /* Selectores de fecha inicio / fin (rango personalizado), al lado de los botones de periodo */
   .range-filters{ align-items:center; }
+  /* Lineas de referencia (inflacion y dolar MEP) sobre los graficos de rendimiento */
+  .bench-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:2px 0 10px; font-size:12.5px; color:var(--muted); }
+  .bench-row .bench-label{ font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:11px; }
+  .bench-check{ display:inline-flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); font-weight:600; }
+  .bench-check input{ accent-color:var(--navy); width:15px; height:15px; cursor:pointer; }
+  .bench-check i{ display:inline-block; width:18px; height:0; border-top:2.5px dashed; }
+  .bench-nota{ margin-top:10px; }
   .range-date{
     display:inline-flex;
     align-items:center;
@@ -1571,7 +1578,13 @@
         </div>
       </div>
 
+      <div class="bench-row" id="histBenchRow" style="display:none;">
+        <span class="bench-label">Comparar con</span>
+        <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#C43D3D; border-top-style:dotted;"></i>Inflación</label>
+        <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#0F8A5F;"></i>Dólar MEP</label>
+      </div>
       <div class="hist-chart-wrap"><canvas id="histChart"></canvas></div>
+      <p class="foot-note bench-nota" id="histBenchNota" style="display:none;"></p>
     </section>
 
     <section class="card" id="carteraFondosSection">
@@ -1629,7 +1642,13 @@
           </div>
         </div>
 
+        <div class="bench-row" id="fundBenchRow" style="display:none;">
+          <span class="bench-label">Comparar con</span>
+          <label class="bench-check" data-bench="inflacion"><input type="checkbox" data-bench="inflacion" /><i style="border-color:#C43D3D; border-top-style:dotted;"></i>Inflación</label>
+          <label class="bench-check" data-bench="mep"><input type="checkbox" data-bench="mep" /><i style="border-color:#0F8A5F;"></i>Dólar MEP</label>
+        </div>
         <div class="hist-chart-wrap"><canvas id="fundHistChart"></canvas></div>
+        <p class="foot-note bench-nota" id="fundBenchNota" style="display:none;"></p>
         <p class="foot-note">* Todas las líneas parten del mismo día: el primer día con datos disponibles del fondo incorporado más recientemente entre los seleccionados, dentro de la ventana elegida.</p>
       </div>
     </section>
@@ -1851,6 +1870,7 @@
       <h3>Rendimiento histórico de la cartera</h3>
       <div class="print-perf-grid" id="printPerfGrid"></div>
       <img id="printHistChart" class="print-hist-img" alt="Rendimiento histórico de la cartera" />
+      <p id="printBenchNota" style="display:none; font-size:9px; color:#5B6478; margin:6px 0 0;"></p>
     </div>
   </div>
 
@@ -3044,6 +3064,142 @@ function monthLabel(iso){
   return `${MESES_ABR[parseInt(m, 10) - 1]} '${y.slice(2)}`;
 }
 
+/* =====================================================================
+   BENCHMARKS: lineas de referencia sobre los graficos de rendimiento
+
+   Inflacion y dolar MEP se pueden sumar al grafico de la cartera y al del
+   comparador de fondos, cuando son en pesos. Los datos salen de
+   benchmarks.json, que un proceso programado del repositorio actualiza solo
+   (ver scripts/actualizar-benchmarks.mjs) con fuentes oficiales:
+     - Inflacion: indice IPC Nivel General Nacional del INDEC.
+     - Dolar MEP: Indice Dolar BYMA, cierre diario.
+   Si el archivo no esta o una serie falta, esa opcion no se muestra y el
+   resto de la pagina sigue igual.
+===================================================================== */
+const BENCH = { inflacion: null, mep: null, actualizado: null };
+const BENCH_SEL = { hist: { inflacion: false, mep: false }, fund: { inflacion: false, mep: false } };
+const BENCH_ESTILO = {
+  inflacion: { label: 'Inflación', color: '#C43D3D', dash: [2, 3] },
+  mep: { label: 'Dólar MEP', color: '#0F8A5F', dash: [6, 4] },
+};
+
+function cargarBenchmarks(){
+  return fetch('benchmarks.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(j=>{
+      if(!j) return;
+      const serie = (x)=> (x && Array.isArray(x.datos) && x.datos.length > 1) ? x : null;
+      BENCH.inflacion = serie(j.inflacion);
+      BENCH.mep = serie(j.mep);
+      BENCH.actualizado = j.actualizado || null;
+      if(BENCH.inflacion){
+        BENCH.inflacion.porMes = {};
+        BENCH.inflacion.datos.forEach(([mes, v]) => { BENCH.inflacion.porMes[mes] = v; });
+        BENCH.inflacion.ultimoMes = BENCH.inflacion.datos[BENCH.inflacion.datos.length - 1][0];
+      }
+    })
+    .catch(()=>{ /* sin benchmarks: las opciones no se muestran */ });
+}
+
+function benchMesPrevio(ym){
+  const y = Number(ym.slice(0, 4)), m = Number(ym.slice(5, 7));
+  return m === 1 ? `${y - 1}-12` : `${y}-${dosDigitos(m - 1)}`;
+}
+
+/* Nivel del IPC a una fecha. El INDEC publica un valor por mes: dentro del mes
+   se interpola a ritmo constante entre el nivel del mes anterior y el del mes.
+   Devuelve null si el mes todavia no esta publicado (no se estima). */
+function benchIpcA(iso){
+  const pm = BENCH.inflacion.porMes;
+  const ym = iso.slice(0, 7);
+  const fin = pm[ym], ini = pm[benchMesPrevio(ym)];
+  if(fin == null || ini == null) return null;
+  const dias = new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0).getDate();
+  return ini * Math.pow(fin / ini, Number(iso.slice(8, 10)) / dias);
+}
+
+// Inflacion acumulada (%) desde el primer dia del grafico
+function benchSerieInflacion(isoDates){
+  if(!BENCH.inflacion || !isoDates.length) return null;
+  const base = benchIpcA(isoDates[0]);
+  if(base == null) return null;
+  const data = isoDates.map(iso=>{
+    const v = benchIpcA(iso);
+    return v == null ? null : +((v / base - 1) * 100).toFixed(3);
+  });
+  return { data, incompleta: data[data.length - 1] == null };
+}
+
+// Variacion (%) del dolar MEP desde el primer dia del grafico; cada dia toma el ultimo cierre disponible
+function benchSerieMep(isoDates){
+  if(!BENCH.mep || !isoDates.length) return null;
+  const mep = BENCH.mep.datos;
+  let j = 0, ultimo = null, base = null;
+  const data = [];
+  for(const iso of isoDates){
+    while(j < mep.length && mep[j][0] <= iso){ ultimo = mep[j][1]; j++; }
+    if(base == null && ultimo != null) base = ultimo;
+    data.push((ultimo == null || base == null) ? null : +((ultimo / base - 1) * 100).toFixed(3));
+  }
+  if(data[0] == null) return null;      // el grafico arranca antes de que exista la serie
+  return { data };
+}
+
+function benchFechaTexto(iso){ return iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : ''; }
+
+/* Devuelve los datasets extra para un grafico y deja armadas la fila de
+   opciones y la nota de fuentes. "donde" es 'hist' (cartera) o 'fund' (comparador). */
+function benchDatasets(donde, isoDates, enPesos){
+  const row = document.getElementById(donde + 'BenchRow');
+  const nota = document.getElementById(donde + 'BenchNota');
+  const disponibles = ['inflacion', 'mep'].filter(k => BENCH[k]);
+  const visible = enPesos && disponibles.length > 0;
+  row.style.display = visible ? '' : 'none';
+  row.querySelectorAll('label[data-bench]').forEach(l => { l.style.display = BENCH[l.dataset.bench] ? '' : 'none'; });
+  const out = [];
+  const avisos = [];
+  if(visible){
+    const sel = BENCH_SEL[donde];
+    const base = { borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, fill: false, tension: 0.15, datalabels: { display: false } };
+    if(sel.inflacion && BENCH.inflacion){
+      const r = benchSerieInflacion(isoDates);
+      if(r){
+        const e = BENCH_ESTILO.inflacion;
+        out.push(Object.assign({ label: e.label, data: r.data, borderColor: e.color, backgroundColor: e.color, borderDash: e.dash }, base));
+        if(r.incompleta) avisos.push(`La línea de inflación llega hasta ${monthLabel(BENCH.inflacion.ultimoMes + '-01')}, el último mes publicado por el INDEC.`);
+      } else avisos.push('No hay datos de inflación para el inicio de este período.');
+    }
+    if(sel.mep && BENCH.mep){
+      const r = benchSerieMep(isoDates);
+      if(r){
+        const e = BENCH_ESTILO.mep;
+        out.push(Object.assign({ label: e.label, data: r.data, borderColor: e.color, backgroundColor: e.color, borderDash: e.dash }, base));
+      } else avisos.push(`El dólar MEP tiene datos desde el ${benchFechaTexto(BENCH.mep.datos[0][0])}: elegí un inicio posterior para verlo.`);
+    }
+  }
+  if(visible){
+    const fuentes = [];
+    if(BENCH.inflacion) fuentes.push('inflación, INDEC (IPC Nivel General Nacional; dato mensual, distribuido dentro de cada mes)');
+    if(BENCH.mep) fuentes.push('dólar MEP, Índice Dólar BYMA (cierre diario)');
+    nota.textContent = `Fuentes: ${fuentes.join('; ')}. `
+      + (BENCH.actualizado ? `Datos actualizados al ${benchFechaTexto(BENCH.actualizado.slice(0, 10))}. ` : '')
+      + avisos.join(' ');
+    nota.style.display = '';
+  } else {
+    nota.style.display = 'none';
+  }
+  return out;
+}
+
+function conectarBenchmarks(donde, redibujar){
+  document.querySelectorAll(`#${donde}BenchRow input[type="checkbox"]`).forEach(chk=>{
+    chk.addEventListener('change', ()=>{
+      BENCH_SEL[donde][chk.dataset.bench] = chk.checked;
+      redibujar();
+    });
+  });
+}
+
 function renderHistChart(rows){
   const csIdx = commonStartIdx(rows);
   const { startIdx, endIdx } = resolveChartWindow(currentRange, histCustom, csIdx);
@@ -3068,6 +3224,9 @@ function renderHistChart(rows){
   document.getElementById('histSubtitle').innerHTML =
     `${fmtDateShort(DATES[startIdx])} → ${fmtDateShort(DATES[endIdx])} · Retorno cartera: <strong class="${retClass(totalRet)}">${fmtPct(totalRet)}</strong>`;
 
+  // Lineas de referencia opcionales (solo carteras en pesos)
+  const benchHist = benchDatasets('hist', isoDates, selection.moneda === 'Pesos');
+
   const ctx = document.getElementById('histChart').getContext('2d');
   if(histChartInstance) histChartInstance.destroy();
   histChartInstance = new Chart(ctx, {
@@ -3075,6 +3234,7 @@ function renderHistChart(rows){
     data:{
       labels,
       datasets:[{
+        label:'Cartera',
         data: dataPoints,
         borderColor:'#131E42',
         backgroundColor:'rgba(19,30,66,0.08)',
@@ -3095,7 +3255,7 @@ function renderHistChart(rows){
           font:{ size:10.5, weight:'700', family:"'JetBrains Mono', monospace" },
           formatter:(value)=> `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`,
         }
-      }]
+      }].concat(benchHist)
     },
     options:{
       responsive:true,
@@ -3103,8 +3263,8 @@ function renderHistChart(rows){
       layout:{ padding:{ top:22 } },
       interaction:{ mode:'index', intersect:false },
       plugins:{
-        legend:{ display:false },
-        tooltip:{ callbacks:{ label:(c)=> `Cartera: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } }
+        legend:{ display: benchHist.length > 0, position:'bottom', labels:{ boxWidth:10, boxHeight:10, padding:16, font:{size:11.5, weight:'700'}, color:'#14182B', usePointStyle:true, pointStyle:'circle' } },
+        tooltip:{ callbacks:{ label:(c)=> c.parsed.y == null ? null : ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` } }
       },
       scales:{
         x:{
@@ -3144,6 +3304,8 @@ setupDateRange('hist', 'histFilters', (start, end)=>{
   histCustom = { start, end };
   if(lastRows.length) renderHistChart(lastRows);
 });
+conectarBenchmarks('hist', ()=>{ if(lastRows.length) renderHistChart(lastRows); });
+conectarBenchmarks('fund', ()=> renderFundComparison());
 
 /* ---------------------------------------------------------------------
    Comparacion de rendimiento historico entre varios fondos
@@ -3251,6 +3413,9 @@ function renderFundComparison(){
     };
   });
 
+  // Lineas de referencia opcionales (solo fondos en pesos)
+  benchDatasets('fund', isoDates, fondosMoneda === 'Pesos').forEach(ds => datasets.push(ds));
+
   document.getElementById('fundHistSubtitle').innerHTML = `${fmtDateShort(DATES[baseIdx])} → ${fmtDateShort(DATES[endIdx])}`;
 
   const ctx = document.getElementById('fundHistChart').getContext('2d');
@@ -3271,7 +3436,7 @@ function renderFundComparison(){
         },
         datalabels:{ display:false },
         tooltip:{
-          callbacks:{ label:(c)=> ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` }
+          callbacks:{ label:(c)=> c.parsed.y == null ? null : ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(2)}%` }
         }
       },
       scales:{
@@ -4082,6 +4247,7 @@ Promise.all([
   cargarFactsheets(),   // si falla, los fondos quedan sin link y no bloquea el resto
   cargarTirFondos(),    // si falla, la cartera queda con TIR y Duration en "s/d"
   cargarHonorarios(),   // si falla, la solapa de honorarios avisa el error y no bloquea el resto
+  cargarBenchmarks(),   // si falla, las lineas de inflacion y dolar MEP no se ofrecen
 ])
   .then(([parsed])=>{
     applyParsedDataset(parsed);
@@ -4754,6 +4920,11 @@ function buildPrintReport(clientName){
   if(chartFondoInstance) document.getElementById('printChartFondo').src = chartFondoInstance.toBase64Image();
   if(chartCategoriaInstance) document.getElementById('printChartCategoria').src = chartCategoriaInstance.toBase64Image();
   if(histChartInstance) document.getElementById('printHistChart').src = histChartInstance.toBase64Image();
+  // Si el grafico lleva lineas de inflacion o dolar MEP, el PDF aclara las fuentes
+  const printBenchNota = document.getElementById('printBenchNota');
+  const conLineas = histChartInstance && histChartInstance.data.datasets.length > 1;
+  printBenchNota.textContent = conLineas ? document.getElementById('histBenchNota').textContent : '';
+  printBenchNota.style.display = conLineas ? '' : 'none';
 
   const perfGridEl = document.getElementById('perfGrid');
   document.getElementById('printPerfGrid').innerHTML = perfGridEl ? perfGridEl.innerHTML : '';

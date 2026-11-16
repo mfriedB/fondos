@@ -1,0 +1,55 @@
+# Actualiza benchmarks.json (inflacion INDEC y dolar MEP) para las lineas de
+# referencia de los graficos de la calculadora.
+#
+# Corre solo todos los dias habiles a la noche y tambien se puede correr a
+# mano desde la pestaña Actions. Si los datos no cambiaron, no commitea nada.
+
+name: Actualizar benchmarks
+
+on:
+  schedule:
+    - cron: '47 0 * * 2-6'    # 21:47 de Buenos Aires, de lunes a viernes
+    - cron: '17 20 10-20 * *' # refuerzo a las 17:17 en los dias en que el INDEC publica el IPC
+  push:
+    paths:
+      - 'scripts/actualizar-benchmarks.mjs'
+      - '.github/workflows/actualizar-benchmarks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: benchmarks-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Probar fuentes
+        run: node scripts/actualizar-benchmarks.mjs --probar
+
+      - name: Generar benchmarks.json
+        env:
+          BYMA_CLIENT_ID: ${{ secrets.BYMA_CLIENT_ID }}
+          BYMA_CLIENT_SECRET: ${{ secrets.BYMA_CLIENT_SECRET }}
+        run: node scripts/actualizar-benchmarks.mjs
+
+      - name: Commitear si cambió
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ -n "$(git status --porcelain benchmarks.json)" ]]; then
+            git add benchmarks.json
+            git commit -m "Actualizar benchmarks (inflación y dólar MEP)"
+            git push
+          else
+            echo "Sin cambios en benchmarks.json"
+          fi
