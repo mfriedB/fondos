@@ -1665,29 +1665,38 @@
   .cup-volver:hover{ text-decoration:underline; }
   /* Pago destacado: tarjeta chica centrada arriba de la solapa y aviso al entrar */
   #cupGraficosCard{ position:relative; }
-  .cup-destacado{ position:absolute; top:17px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; max-width:calc(100% - 560px); }
-  .cup-dest-chip{ display:flex; align-items:center; gap:10px; font:inherit; text-align:left; cursor:pointer; background:#fff; border:2px solid var(--pos); border-radius:10px; padding:5px 12px; box-shadow:0 0 0 3px rgba(15,138,95,0.12); max-width:100%; white-space:nowrap; }
-  .cup-dest-chip:hover{ box-shadow:0 0 0 4px rgba(15,138,95,0.22); }
-  .cup-dest-chip:hover .cup-dest-ver{ text-decoration:underline; }
+  .cup-destacado{ position:absolute; top:17px; left:50%; transform:translateX(-50%); display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; gap:10px; max-width:calc(100% - 440px); }
+  .cup-dest-chip{ display:flex; align-items:center; gap:9px; font:inherit; text-align:left; background:#fff; border:2px solid var(--pos); border-radius:10px; padding:5px 12px; box-shadow:0 0 0 3px rgba(15,138,95,0.12); white-space:nowrap; }
+  button.cup-dest-chip{ cursor:pointer; }
+  button.cup-dest-chip:hover{ box-shadow:0 0 0 4px rgba(15,138,95,0.22); }
+  button.cup-dest-chip:hover .cup-dest-ver{ text-decoration:underline; }
   .cup-dest-chip:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
   .cup-dest-chip i, .cup-aviso-eti i{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--pos); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
+  .cup-dest-chip.pagado i{ animation:none; }
   @keyframes cup-dest-pulso{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
   @media (prefers-reduced-motion: reduce){ .cup-dest-chip i, .cup-aviso-eti i{ animation:none; } }
-  .cup-dest-chip strong{ font-size:12.5px; font-weight:800; color:var(--navy); overflow:hidden; text-overflow:ellipsis; }
+  .cup-dest-chip strong{ font-size:12.5px; font-weight:800; color:var(--navy); }
   .cup-dest-ver{ font-size:12px; font-weight:700; color:var(--accent); }
-  @media (max-width:980px){ .cup-destacado{ position:static; transform:none; max-width:none; margin:0 0 12px; } .cup-dest-chip{ white-space:normal; } }
-  .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:10px; }
+  @media (max-width:1180px){ .cup-destacado{ position:static; transform:none; max-width:none; flex-wrap:wrap; justify-content:flex-start; margin:0 0 12px; } }
+  .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:16px; }
   .cup-aviso-eti i{ background:var(--accent); }
-  .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; }
+  .cup-dest-btn{ font:inherit; font-size:13.5px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:10px 16px; cursor:pointer; white-space:nowrap; }
   .cup-dest-btn:hover{ background:var(--accent); }
   .cup-dest-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
-  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; background:#fff; border:4px solid var(--pos); box-shadow:0 0 0 5px rgba(31,138,91,0.25), 0 20px 60px rgba(0,0,0,0.35) !important; }
-  .cup-aviso-cab{ background:#fff; padding:24px 28px 0; }
-  .cup-aviso-box .cup-aviso-cab h1{ color:var(--navy); font-size:23px; line-height:1.25; margin:0; text-align:center; }
-  .cup-aviso-box .cup-aviso-cab h1 span{ display:block; }
-  @media (min-width:480px){ .cup-aviso-box .cup-aviso-cab h1 span:first-child{ white-space:nowrap; } }
-  .cup-aviso-pie{ padding:12px 28px 24px; }
-  .cup-aviso-box .cup-dest-fondo{ font-size:16px; font-weight:800; color:var(--accent); margin:0; }
+  .cup-aviso-box{ max-width:900px !important; padding:24px 28px !important; background:#fff; border:4px solid var(--pos); box-shadow:0 0 0 5px rgba(15,138,95,0.25), 0 20px 60px rgba(0,0,0,0.35) !important; max-height:calc(100vh - 40px); overflow:auto; }
+  .cup-aviso-cols{ display:grid; grid-template-columns:1fr 1fr; gap:0; }
+  .cup-aviso-cols.uno{ grid-template-columns:1fr; }
+  .cup-aviso-col{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:4px 22px; min-width:0; }
+  .cup-aviso-col + .cup-aviso-col{ border-left:1px solid var(--line); }
+  .cup-aviso-mon{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .cup-aviso-col h2{ font-size:19px; font-weight:800; line-height:1.25; color:var(--navy); margin:0; letter-spacing:-0.01em; }
+  .cup-aviso-col h2 span{ display:block; }
+  .cup-aviso-col .cup-dest-fondo{ margin:0; color:var(--accent); }
+  .cup-aviso-col .cup-dest-fondo span{ display:block; font-size:12.5px; font-weight:700; }
+  .cup-aviso-col .cup-dest-fondo strong{ display:block; font-size:16px; font-weight:800; }
+  @media (min-width:860px){ .cup-aviso-col h2 span:first-child{ white-space:nowrap; } }
+  .cup-aviso-col .cup-dest-btn{ margin-top:auto; }
+  @media (max-width:640px){ .cup-aviso-cols{ grid-template-columns:1fr; } .cup-aviso-col{ padding:14px 4px; } .cup-aviso-col + .cup-aviso-col{ border-left:0; border-top:1px solid var(--line); } }
   .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:20px; }
   .cg-estrella{ color:#D99A00; font-size:13px; font-weight:400; }
   /* Todas las filas reservan el lugar de la estrella, asi los tickers arrancan en la misma columna */
@@ -2183,16 +2192,10 @@
 
   <div id="cupAvisoModal" class="client-modal-overlay" aria-hidden="true">
     <div class="login-box cup-aviso-box" role="dialog" aria-modal="true" aria-labelledby="cupAvisoTitulo">
-      <div class="cup-aviso-cab">
-        <span class="cup-aviso-eti"><i></i>Pago destacado</span>
-        <h1 id="cupAvisoTitulo"></h1>
-      </div>
-      <div class="cup-aviso-pie">
-        <div id="cupAvisoCuerpo"></div>
-        <div class="cup-aviso-botones">
-          <button type="button" id="cupAvisoCerrar" class="btn btn-outline">Entendido</button>
-          <button type="button" id="cupAvisoVer" class="cup-dest-btn">Ver el pago ›</button>
-        </div>
+      <span class="cup-aviso-eti"><i></i><span id="cupAvisoTitulo">Pagos destacados</span></span>
+      <div id="cupAvisoCuerpo" class="cup-aviso-cols"></div>
+      <div class="cup-aviso-botones">
+        <button type="button" id="cupAvisoCerrar" class="btn btn-outline">Entendido</button>
       </div>
     </div>
   </div>
@@ -5152,27 +5155,40 @@ function renderCupones(){
    Se muestran hasta que termina la semana del pago.
 --------------------------------------------------------------------- */
 const CUP_DESTACADOS = [
-  { ticker: 'DNC3O' },
+  // Datos de respaldo (1816, calendario consultado el 17/11/2026): se usan cuando el pago ya salio del calendario cargado
+  { ticker: 'DNC3O', fecha: '2026-11-24', nombre: 'Edenor', tipo: 'ON USD MEP', evento: 'Vencimiento', moneda: 'Dólar', duration: 0 },
+  { ticker: 'S30N6', fecha: '2026-11-30', nombre: 'Tesoro Nacional', tipo: 'Tasa fija', evento: 'Vencimiento', moneda: 'Pesos', duration: null },
 ];
+const CUP_DEST_DIAS_DESPUES = 14;      // cuantos dias queda la tarjeta en "Pagó" despues del pago
 function cupDestacadosVigentes(){
   if(!REINV.ok) return [];
-  const desde = cupSemanas()[0].ini;
-  return CUP_DESTACADOS.map(d=>{
-    const e = REINV.eventos.find(x => x.ticker === d.ticker && x.fecha >= desde);
-    return e ? { ...d, e } : null;
+  const hoy = isoLocal(new Date());
+  const lista = CUP_DESTACADOS.map(d=>{
+    // Si el pago esta en el calendario cargado, mandan sus datos; si ya salio, queda el respaldo
+    const enCal = REINV.eventos.find(x => x.ticker === d.ticker && x.fecha === d.fecha) || REINV.eventos.find(x => x.ticker === d.ticker && x.fecha >= hoy);
+    const e = enCal || d;
+    const limite = fechaDeIso(e.fecha); limite.setDate(limite.getDate() + CUP_DEST_DIAS_DESPUES);
+    return hoy <= isoLocal(limite) ? { ticker: d.ticker, e, enCalendario: !!enCal, pagado: e.fecha < hoy } : null;
   }).filter(Boolean);
+  // Dolares a la izquierda, pesos a la derecha
+  return lista.sort((a, b)=> (a.e.moneda === 'Dólar' ? 0 : 1) - (b.e.moneda === 'Dólar' ? 0 : 1));
 }
 function cupDestacadoTextos(d){
   const e = d.e, hoy = isoLocal(new Date());
   const dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][fechaDeIso(e.fecha).getDay()];
-  const verbo = e.fecha < hoy ? 'pagó' : (e.fecha === hoy ? 'paga hoy,' : 'paga');
+  const verbo = d.pagado ? 'pagó' : (e.fecha === hoy ? 'paga hoy,' : 'paga');
   const sug = cupFondoDeEvento(e);
   return {
-    titulo: `${e.ticker} · ${e.nombre} ${verbo} el ${dia} ${fechaCorta(e.fecha)}`,
+    corto: `${e.ticker} ${verbo} el ${dia} ${fechaCorta(e.fecha).slice(0, 5)}`,
     tituloSinFecha: `${e.ticker} · ${e.nombre} ${verbo} el ${dia}`,
     fecha: fechaCorta(e.fecha),
-    fondo: sug && sug.fondo ? `Fondo sugerido para reinvertir: ${sug.fondo}` : '',
+    moneda: e.moneda === 'Dólar' ? 'En dólares' : 'En pesos',
+    fondo: sug && sug.fondo ? sug.fondo : '',
   };
+}
+// La semana del pago, si todavia esta entre las que muestra la solapa
+function cupSemanaDeDestacado(d){
+  return d.enCalendario ? cupSemanas().find(x => d.e.fecha >= x.ini && d.e.fecha <= x.fin) : null;
 }
 function cupRenderDestacados(){
   const caja = document.getElementById('cupDestacado');
@@ -5181,15 +5197,16 @@ function cupRenderDestacados(){
   caja.style.display = lista.length ? '' : 'none';
   caja.innerHTML = lista.map(d=>{
     const x = cupDestacadoTextos(d);
-    return `<button type="button" class="cup-dest-chip" data-cup-dest="${escHtml(d.ticker)}" title="Ver el pago y cargar nominales">
-      <i></i><strong>${escHtml(x.titulo)}</strong><span class="cup-dest-ver">Ver pago ›</span></button>`;
+    const cls = `cup-dest-chip${d.pagado ? ' pagado' : ''}`;
+    if(!cupSemanaDeDestacado(d)) return `<span class="${cls}"><i></i><strong>${escHtml(x.corto)}</strong></span>`;
+    return `<button type="button" class="${cls}" data-cup-dest="${escHtml(d.ticker)}" title="Ver el pago y cargar nominales">
+      <i></i><strong>${escHtml(x.corto)}</strong><span class="cup-dest-ver">Ver pago ›</span></button>`;
   }).join('');
 }
 // Va a la semana del pago y deja el cursor en los nominales de ese instrumento
 function cupIrADestacado(ticker){
   const d = cupDestacadosVigentes().find(x => x.ticker === ticker);
-  if(!d) return;
-  const s = cupSemanas().find(x => d.e.fecha >= x.ini && d.e.fecha <= x.fin);
+  const s = d && cupSemanaDeDestacado(d);
   if(!s) return;
   if(CUP.busca){ CUP.busca = ''; document.getElementById('cupBuscar').value = ''; }
   CUP.soloDestacados = false;
@@ -5198,21 +5215,29 @@ function cupIrADestacado(ticker){
   const inp = [...document.querySelectorAll('#cupGraficos .cup-input')].find(i => i.dataset.k === k);
   if(inp){ inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); inp.focus({ preventScroll: true }); }
 }
-// Aviso al entrar: una vez por sesion y por pago, mientras el pago no haya pasado
+// Aviso al entrar: una vez por sesion, mientras quede algun pago destacado sin pagar
 function cupMostrarAviso(){
-  const hoy = isoLocal(new Date());
-  const d = cupDestacadosVigentes().find(x => x.e.fecha >= hoy);
-  if(!d) return;
-  const clave = `cupAviso:${d.ticker}:${d.e.fecha}`;
+  const lista = cupDestacadosVigentes();
+  const pendientes = lista.filter(d => !d.pagado);
+  if(!pendientes.length) return;
+  const clave = `cupAviso:${pendientes.map(d => `${d.ticker}:${d.e.fecha}`).join('|')}`;
   try{ if(sessionStorage.getItem(clave)) return; sessionStorage.setItem(clave, '1'); }catch(err){ if(cupMostrarAviso.visto === clave) return; cupMostrarAviso.visto = clave; }
-  const x = cupDestacadoTextos(d);
   const modal = document.getElementById('cupAvisoModal');
-  document.getElementById('cupAvisoTitulo').innerHTML = `<span>${escHtml(x.tituloSinFecha)}</span><span>${escHtml(x.fecha)}</span>`;
-  document.getElementById('cupAvisoCuerpo').innerHTML = x.fondo ? `<p class="cup-dest-fondo">${escHtml(x.fondo)}</p>` : '';
-  modal.dataset.ticker = d.ticker;
+  document.getElementById('cupAvisoTitulo').textContent = lista.length > 1 ? 'Pagos destacados' : 'Pago destacado';
+  const cuerpo = document.getElementById('cupAvisoCuerpo');
+  cuerpo.classList.toggle('uno', lista.length === 1);
+  cuerpo.innerHTML = lista.map(d=>{
+    const x = cupDestacadoTextos(d);
+    return `<div class="cup-aviso-col${d.pagado ? ' pagado' : ''}">
+      <span class="cup-aviso-mon">${escHtml(x.moneda)}</span>
+      <h2><span>${escHtml(x.tituloSinFecha)}</span><span>${escHtml(x.fecha)}</span></h2>
+      ${x.fondo ? `<p class="cup-dest-fondo"><span>Fondo sugerido para reinvertir</span><strong>${escHtml(x.fondo)}</strong></p>` : ''}
+      ${cupSemanaDeDestacado(d) ? `<button type="button" class="cup-dest-btn" data-cup-dest="${escHtml(d.ticker)}">Ver el pago ›</button>` : ''}
+    </div>`;
+  }).join('');
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
-  document.getElementById('cupAvisoVer').focus();
+  document.getElementById('cupAvisoCerrar').focus();
 }
 function cupCerrarAviso(){
   const modal = document.getElementById('cupAvisoModal');
@@ -5220,7 +5245,7 @@ function cupCerrarAviso(){
   modal.setAttribute('aria-hidden', 'true');
 }
 document.getElementById('cupAvisoCerrar').addEventListener('click', cupCerrarAviso);
-document.getElementById('cupAvisoVer').addEventListener('click', ()=>{ const t = document.getElementById('cupAvisoModal').dataset.ticker; cupCerrarAviso(); cupIrADestacado(t); });
+document.getElementById('cupAvisoCuerpo').addEventListener('click', (e)=>{ const b = e.target.closest('[data-cup-dest]'); if(b){ cupCerrarAviso(); cupIrADestacado(b.dataset.cupDest); } });
 document.getElementById('cupAvisoModal').addEventListener('mousedown', (e)=>{ if(e.target.id === 'cupAvisoModal') cupCerrarAviso(); });
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && document.getElementById('cupAvisoModal').classList.contains('open')) cupCerrarAviso(); });
 document.getElementById('cupDestacado').addEventListener('click', (e)=>{ const b = e.target.closest('[data-cup-dest]'); if(b) cupIrADestacado(b.dataset.cupDest); });
