@@ -1637,6 +1637,9 @@
   .inf-hoja .print-section{ margin-bottom:16px; }
   .inf-tabla{ font-size:10.5px; }
   .inf-tabla td{ vertical-align:top; }
+  .inf-pagos{ table-layout:fixed; }
+  .inf-pagos td:nth-child(4), .inf-pagos td:nth-child(5), .inf-pagos td:nth-child(6), .inf-pagos tfoot td{ white-space:nowrap; }
+  .inf-pagos td:last-child, .inf-pagos th:last-child{ padding-left:14px; }
   .inf-tabla tfoot td{ font-size:10.5px; }
   .inf-emisor{ color:var(--muted); font-size:9.5px; }
   .inf-por{ color:var(--muted); font-size:9.5px; max-width:170px; }
@@ -6512,7 +6515,8 @@ function infNotasCartera(c, eventos){
   return notas.map(n => `<p class="inf-nota">${n}</p>`).join('');
 }
 
-// Bloque de una semana: pagos y cartera sugerida, por moneda
+// Bloque de una semana: los pagos por moneda, cada uno con el fondo en el que se sugiere reinvertirlo.
+// La cartera de fondos va una sola vez, para el total del periodo (infBloqueResumen).
 function infBloqueSemana(x, n, hoy){
   const s = x.semana;
   const titulo = `<h3>Semana ${n} · ${infFechaLarga(s)}</h3>`;
@@ -6524,6 +6528,7 @@ function infBloqueSemana(x, n, hoy){
       const pago = cupPagoCada100(e);
       const est = e.dato !== 'Publicado' && e.fecha > hoy;
       if(est) hayEstimado = true;
+      const sug = cupFondoDeEvento(e);      // fondo sugerido para ese instrumento
       return `<tr>
         <td>${CUP_DIAS[d.getDay()]} ${dosDigitos(d.getDate())}/${dosDigitos(d.getMonth() + 1)}</td>
         <td><strong>${escHtml(e.ticker)}</strong> <span class="inf-emisor">${escHtml(e.nombre)}</span></td>
@@ -6531,17 +6536,16 @@ function infBloqueSemana(x, n, hoy){
         <td style="text-align:right;">${infNominales(e)}</td>
         <td style="text-align:right;">${pago == null ? '—' : (m.moneda === 'Dólar' ? 'USD ' : '$ ') + fmtNumCom(pago, 2)}${est ? ' *' : ''}</td>
         <td style="text-align:right;font-family:'JetBrains Mono',monospace;">${fmtMoney(cupCobro(e), m.moneda)}</td>
+        <td><strong>${sug ? escHtml(nombreFondoVisible(sug.fondo)) : '—'}</strong></td>
       </tr>`;
     }).join('');
     return `<h4 class="inf-moneda">Cobros en ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h4>
-      <table class="print-table inf-tabla">
-        <thead><tr><th>Fecha</th><th>Instrumento</th><th>Concepto</th><th style="text-align:right;">Nominales</th><th style="text-align:right;">Paga c/100 VN</th><th style="text-align:right;">Cobro</th></tr></thead>
+      <table class="print-table inf-tabla inf-pagos">
+        <colgroup><col style="width:9%"><col style="width:23%"><col style="width:13%"><col style="width:11%"><col style="width:12%"><col style="width:16%"><col style="width:16%"></colgroup>
+        <thead><tr><th>Fecha</th><th>Instrumento</th><th>Concepto</th><th style="text-align:right;">Nominales</th><th style="text-align:right;">Paga c/100 VN</th><th style="text-align:right;">Cobro</th><th>Reinvertir en</th></tr></thead>
         <tbody>${filas}</tbody>
-        <tfoot><tr><td colspan="5">Total de la semana en ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</td><td style="text-align:right;">${fmtMoney(m.total, m.moneda)}</td></tr></tfoot>
-      </table>
-      <h4 class="inf-moneda sub">Cartera de fondos sugerida para reinvertir · ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h4>
-      ${infTablaCartera(m.cartera)}
-      ${infNotasCartera(m.cartera, m.eventos)}`;
+        <tfoot><tr><td colspan="5">Total de la semana en ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</td><td style="text-align:right;">${fmtMoney(m.total, m.moneda)}</td><td></td></tr></tfoot>
+      </table>`;
   }).join('');
   return `<div class="print-section inf-semana">${titulo}${cuerpo}${hayEstimado ? '<p class="inf-nota">* Monto estimado: el instrumento ajusta por inflación (CER o UVA) o por tipo de cambio oficial, y el valor final se conoce al momento del pago.</p>' : ''}</div>`;
 }
