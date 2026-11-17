@@ -1691,6 +1691,7 @@
   .cup-aviso-mon{ font-size:12.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#000; }
   .cup-aviso-col h2{ font-size:19px; font-weight:800; line-height:1.25; color:var(--navy); margin:0; letter-spacing:-0.01em; }
   .cup-aviso-col h2 span{ display:block; }
+  .cup-aviso-col h2 em{ font-style:normal; color:var(--pos); white-space:nowrap; }
   .cup-aviso-col .cup-dest-fondo{ margin:0; color:var(--accent); }
   .cup-aviso-col .cup-dest-fondo span{ display:block; font-size:12.5px; font-weight:700; }
   .cup-aviso-col .cup-dest-fondo strong{ display:block; font-size:16px; font-weight:800; }
@@ -5156,8 +5157,8 @@ function renderCupones(){
 --------------------------------------------------------------------- */
 const CUP_DESTACADOS = [
   // Datos de respaldo (1816, calendario consultado el 17/11/2026): se usan cuando el pago ya salio del calendario cargado
-  { ticker: 'DNC3O', fecha: '2026-11-24', nombre: 'Edenor', tipo: 'ON USD MEP', evento: 'Vencimiento', moneda: 'Dólar', duration: 0 },
-  { ticker: 'S30N6', fecha: '2026-11-30', nombre: 'Tesoro Nacional', tipo: 'Tasa fija', evento: 'Vencimiento', moneda: 'Pesos', duration: null },
+  { ticker: 'DNC3O', fecha: '2026-11-24', nombre: 'Edenor', tipo: 'ON USD MEP', evento: 'Vencimiento', moneda: 'Dólar', duration: 0, renta: 4.9685, amort: 100 },
+  { ticker: 'S30N6', fecha: '2026-11-30', nombre: 'Tesoro Nacional', tipo: 'Tasa fija', evento: 'Vencimiento', moneda: 'Pesos', duration: null, renta: 29.888, amort: 100 },
 ];
 const CUP_DEST_DIAS_DESPUES = 14;      // cuantos dias queda la tarjeta en "Pagó" despues del pago
 function cupDestacadosVigentes(){
@@ -5182,6 +5183,8 @@ function cupDestacadoTextos(d){
     corto: `${e.ticker} ${verbo} el ${dia} ${fechaCorta(e.fecha).slice(0, 5)}`,
     tituloSinFecha: `${e.ticker} · ${e.nombre} ${verbo} el ${dia}`,
     fecha: fechaCorta(e.fecha),
+    // Lo que paga cada 100 nominales (renta + capital) es el % sobre el valor nominal
+    pctVN: ((e.renta || 0) + (e.amort || 0)) > 0 ? `${fmtNumCom((e.renta || 0) + (e.amort || 0), 2)}% del VN` : '',
     moneda: e.moneda === 'Dólar' ? 'En dólares' : 'En pesos',
     fondo: sug && sug.fondo ? sug.fondo : '',
   };
@@ -5230,7 +5233,7 @@ function cupMostrarAviso(){
     const x = cupDestacadoTextos(d);
     return `<div class="cup-aviso-col${d.pagado ? ' pagado' : ''}">
       <span class="cup-aviso-mon">${escHtml(x.moneda)}</span>
-      <h2><span>${escHtml(x.tituloSinFecha)}</span><span>${escHtml(x.fecha)}</span></h2>
+      <h2><span>${escHtml(x.tituloSinFecha)}</span><span>${escHtml(x.fecha)}${x.pctVN ? ` <em>· ${escHtml(x.pctVN)}</em>` : ''}</span></h2>
       ${x.fondo ? `<p class="cup-dest-fondo"><span>Fondo sugerido para reinvertir</span><strong>${escHtml(x.fondo)}</strong></p>` : ''}
       ${cupSemanaDeDestacado(d) ? `<button type="button" class="cup-dest-btn" data-cup-dest="${escHtml(d.ticker)}">Ver el pago ›</button>` : ''}
     </div>`;
