@@ -1664,25 +1664,24 @@
   .cup-volver{ font:inherit; font-size:12.5px; font-weight:700; color:var(--accent); background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; }
   .cup-volver:hover{ text-decoration:underline; }
   /* Pago destacado: tarjeta arriba de la solapa y aviso al entrar */
-  .cup-destacado{ display:flex; gap:14px 22px; flex-wrap:wrap; align-items:center; justify-content:space-between; border-radius:12px; padding:18px 22px; margin:0 0 18px; color:#fff;
-    background:linear-gradient(100deg, #0E1A45 0%, #1B2F7A 60%, #3457D5 100%); border-left:6px solid #FFC83D; box-shadow:0 8px 24px rgba(20,34,90,0.28); }
+  .cup-destacado{ display:flex; gap:14px 22px; flex-wrap:wrap; align-items:center; justify-content:space-between; border-radius:12px; padding:18px 22px; margin:0 0 18px;
+    background:#fff; border:2px solid var(--accent); border-left-width:8px; box-shadow:0 0 0 4px rgba(52,87,213,0.12), 0 8px 22px rgba(20,34,90,0.14); }
   .cup-dest-txt{ min-width:0; flex:1 1 320px; }
-  .cup-dest-eti, .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:#1A1400; background:#FFC83D; border-radius:5px; padding:4px 10px; margin-bottom:10px; }
-  .cup-dest-eti i, .cup-aviso-eti i{ width:8px; height:8px; border-radius:50%; background:#1A1400; animation:cup-dest-pulso 1.4s ease-in-out infinite; }
+  .cup-dest-eti, .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:10px; }
+  .cup-dest-eti i, .cup-aviso-eti i{ width:8px; height:8px; border-radius:50%; background:var(--accent); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
   @keyframes cup-dest-pulso{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
   @media (prefers-reduced-motion: reduce){ .cup-dest-eti i, .cup-aviso-eti i{ animation:none; } }
-  .cup-dest-txt h3{ font-size:21px; font-weight:800; color:#fff; margin:0 0 6px; letter-spacing:-0.01em; line-height:1.25; }
-  .cup-destacado .cup-dest-fondo{ font-size:14.5px; font-weight:700; color:#FFE08A; margin:0; }
-  .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#14225A; background:#FFC83D; border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; box-shadow:0 2px 0 rgba(0,0,0,0.18); }
-  .cup-dest-btn:hover{ background:#FFD566; }
-  .cup-dest-btn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
-  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; border:2px solid #FFC83D; }
-  .cup-aviso-cab{ background:linear-gradient(100deg, #0E1A45 0%, #1B2F7A 60%, #3457D5 100%); padding:24px 28px 22px; }
-  .cup-aviso-box .cup-aviso-cab h1{ color:#fff; font-size:23px; line-height:1.25; margin:0; }
-  .cup-aviso-pie{ padding:20px 28px 24px; }
-  .cup-aviso-box .cup-dest-fondo{ font-size:16px; font-weight:800; color:var(--navy); margin:0; }
-  .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:18px; }
-  .cup-aviso-botones .cup-dest-btn{ box-shadow:none; }
+  .cup-dest-txt h3{ font-size:21px; font-weight:800; color:var(--navy); margin:0 0 6px; letter-spacing:-0.01em; line-height:1.25; }
+  .cup-destacado .cup-dest-fondo{ font-size:14.5px; font-weight:700; color:var(--accent); margin:0; }
+  .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; }
+  .cup-dest-btn:hover{ background:var(--accent); }
+  .cup-dest-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; background:#fff; border:2px solid var(--accent); border-top-width:8px; }
+  .cup-aviso-cab{ background:#fff; padding:24px 28px 0; }
+  .cup-aviso-box .cup-aviso-cab h1{ color:var(--navy); font-size:23px; line-height:1.25; margin:0; }
+  .cup-aviso-pie{ padding:12px 28px 24px; }
+  .cup-aviso-box .cup-dest-fondo{ font-size:16px; font-weight:800; color:var(--accent); margin:0; }
+  .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:20px; }
   .cg-estrella{ color:#D99A00; font-size:13px; font-weight:400; }
   /* Todas las filas reservan el lugar de la estrella, asi los tickers arrancan en la misma columna */
   .cg-inst{ position:relative; padding-left:20px; }
