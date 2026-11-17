@@ -1006,6 +1006,11 @@
   .client-modal-overlay .login-box{ max-width:420px; animation:client-modal-pop .18s ease; }
   @keyframes client-modal-pop{ from{ transform:translateY(8px); opacity:.6; } to{ transform:none; opacity:1; } }
   .client-modal-overlay .login-box input{ margin-bottom:6px; }
+  .inf-sem-opciones{ display:flex; gap:8px; margin-bottom:6px; }
+  .inf-sem-opciones button{ flex:1; font:inherit; font-size:14px; font-weight:700; padding:9px 0; border-radius:8px; border:1.5px solid var(--line); background:#fff; color:var(--navy); cursor:pointer; }
+  .inf-sem-opciones button:hover{ border-color:#B9C4E8; background:#F6F8FE; }
+  .inf-sem-opciones button.selected{ background:var(--navy); border-color:var(--navy); color:#fff; }
+  #clientModalSemanas{ margin-top:10px; }
   .client-modal-hint{ font-size:11.5px; color:var(--muted); margin:0 0 18px; }
   .client-modal-overlay .login-error{ margin:8px 0 14px; }
   .client-modal-actions{ display:flex; gap:10px; justify-content:flex-end; }
@@ -1929,7 +1934,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de esta semana y las 3 siguientes y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de las próximas semanas (de 1 a 4, a elección) y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
@@ -2151,6 +2156,12 @@
       <label for="clientNameInput">Nombre del cliente</label>
       <input type="text" id="clientNameInput" maxlength="80" placeholder="Ej.: Juan Pérez" autocomplete="off" spellcheck="false" />
       <p class="client-modal-hint">Máximo 80 caracteres.</p>
+
+      <div id="clientModalSemanas" style="display:none;">
+        <label id="infSemanasLabel">Semanas a incluir en el informe</label>
+        <div class="inf-sem-opciones" id="infSemanasOpciones" role="radiogroup" aria-labelledby="infSemanasLabel"></div>
+        <p class="client-modal-hint" id="infSemanasHint"></p>
+      </div>
 
       <div id="clientModalError" class="login-error" style="display:none;"></div>
 
@@ -5503,7 +5514,7 @@ function cupRenderEstadoArchivo(){
     + (faltan ? `<span class="cup-arch-aviso">No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     + `<span class="cup-pdf-det" style="color:var(--text);">${faltan ? 'Columnas' : 'Columnas detectadas (se pueden cambiar)'}:</span>${columnas}`
-    + (a.con.length ? `<span class="cup-pdf-det">${a.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>` : '')
+    + (a.con.length ? `<span class="cup-pdf-det">${a.con.slice(0, 14).map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}${a.con.length > 14 ? ` · y ${a.con.length - 14} más` : ''}</span>` : '')
     + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
     + sin;
 }
@@ -6262,6 +6273,8 @@ function openClientModal(destino){
     : 'Indicá a quién le vas a enviar la cartera. El nombre aparece al inicio del reporte.';
   document.querySelector('label[for="clientNameInput"]').textContent = paraCupones ? 'Destinatario (opcional)' : 'Nombre del cliente';
   clientNameInput.placeholder = paraCupones ? 'Ej.: Juan Pérez · Familia Pérez' : 'Ej.: Juan Pérez';
+  document.getElementById('clientModalSemanas').style.display = paraCupones ? '' : 'none';
+  if(paraCupones) infPintarSemanas();
   clientNameInput.value = lastClientName;
   clientModalError.style.display = 'none';
   clientModal.classList.add('open');
@@ -6294,7 +6307,7 @@ clientModalForm.addEventListener('submit', (e)=>{
   }
   if(clientModalDestino !== 'cupones' || nombre) lastClientName = nombre;
   closeClientModal();
-  if(clientModalDestino === 'cupones') generarInformeCupones(nombre); else generarPdf(nombre);
+  if(clientModalDestino === 'cupones') generarInformeCupones(nombre, infSemanas); else generarPdf(nombre);
 });
 
 // Slug para el nombre del archivo: sin tildes ni caracteres especiales
@@ -6403,12 +6416,28 @@ async function generarPdf(clientName){
    con el aviso legal). Cada hoja se arma por separado para que ninguna
    semana quede cortada entre dos hojas.
 --------------------------------------------------------------------- */
-const INF_SEMANAS = 4;      // la semana en curso y las 3 siguientes
+const INF_SEMANAS_MAX = 4;      // la semana en curso y hasta las 3 siguientes
+let infSemanas = INF_SEMANAS_MAX;     // cuantas semanas elige el asesor para el informe (1 a 4)
+
+// Botones 1 a 4 de la ventana de descarga, con el periodo y los cobros que abarca cada opcion
+function infPintarSemanas(){
+  const cont = document.getElementById('infSemanasOpciones');
+  cont.innerHTML = [1, 2, 3, 4].map(n => `<button type="button" role="radio" aria-checked="${n === infSemanas}" class="${n === infSemanas ? 'selected' : ''}" data-n="${n}">${n}</button>`).join('');
+  const d = infDatos(infSemanas);
+  const fin = d.semanas[d.semanas.length - 1];
+  document.getElementById('infSemanasHint').textContent = `${infSemanas === 1 ? 'Solo la semana en curso' : 'La semana en curso y ' + (infSemanas === 2 ? 'la siguiente' : 'las ' + (infSemanas - 1) + ' siguientes')}: del ${fechaCorta(d.semanas[0].ini)} al ${fechaCorta(fin.fin)} · ${d.todos.length} ${d.todos.length === 1 ? 'pago' : 'pagos'} con nominales cargados.`;
+}
+document.getElementById('infSemanasOpciones').addEventListener('click', (e)=>{
+  const b = e.target.closest('button[data-n]');
+  if(!b) return;
+  infSemanas = parseInt(b.dataset.n, 10) || INF_SEMANAS_MAX;
+  infPintarSemanas();
+});
 const INF_ANCHO = 794, INF_ALTO = 1123, INF_MARGEN = 32;      // hoja A4 a 96 dpi
 
-function infDatos(){
+function infDatos(cuantas){
   const hoy = isoLocal(new Date());
-  const semanas = cupSemanas().slice(0, INF_SEMANAS);
+  const semanas = cupSemanas().slice(0, Math.max(1, Math.min(INF_SEMANAS_MAX, cuantas || INF_SEMANAS_MAX)));
   const porSemana = semanas.map(s=>{
     const evs = REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && e.fecha >= hoy && cupCobro(e) > 0);
     const monedas = ['Pesos', 'Dólar'].map(m=>{
@@ -6538,7 +6567,7 @@ function infBloqueResumen(d){
       <table class="print-table inf-tabla">
         <thead><tr><th>Semana</th><th>Fechas</th><th style="text-align:right;">Pagos</th><th style="text-align:right;">Cobros en pesos</th><th style="text-align:right;">Cobros en dólares</th></tr></thead>
         <tbody>${filas}</tbody>
-        <tfoot><tr><td colspan="2">Total de las ${d.semanas.length} semanas</td><td style="text-align:right;">${d.todos.length}</td><td style="text-align:right;">${P.total > 0 ? fmtMoney(P.total, 'Pesos') : '—'}</td><td style="text-align:right;">${U.total > 0 ? fmtMoney(U.total, 'Dólar') : '—'}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">${d.semanas.length === 1 ? 'Total de la semana' : 'Total de las ' + d.semanas.length + ' semanas'}</td><td style="text-align:right;">${d.todos.length}</td><td style="text-align:right;">${P.total > 0 ? fmtMoney(P.total, 'Pesos') : '—'}</td><td style="text-align:right;">${U.total > 0 ? fmtMoney(U.total, 'Dólar') : '—'}</td></tr></tfoot>
       </table>
     </div>
     ${carteras}`;
@@ -6551,15 +6580,16 @@ function infEncabezado(clientName, primera){
     + (primera ? `<div class="print-client"><div><div class="print-client-label">Cobros de cupones y vencimientos, y fondos sugeridos para reinvertir${clientName ? ' · preparado para:' : ''}</div><div class="print-client-name">${escHtml(clientName || 'Informe de cobros y reinversión')}</div></div></div>` : '');
 }
 
-async function generarInformeCupones(clientName){
+async function generarInformeCupones(clientName, cuantas){
   const btn = document.getElementById('cupInformeBtn');
   const original = btn.innerHTML;
   btn.disabled = true; btn.innerHTML = 'Generando informe…';
+  const d0 = infDatos(cuantas);
   const lienzo = document.createElement('div');
   lienzo.className = 'inf-lienzo';
   document.body.appendChild(lienzo);
   try{
-    const d = infDatos();
+    const d = infDatos(cuantas);
     if(!d.todos.length) throw new Error('sin-cobros');
     const pie = `<p class="inf-nota inf-fuente">Calendario de pagos: 1816${REINV.actualizado ? ', actualizado al ' + escHtml(REINV.actualizado) : ''}. Los montos por cada 100 nominales son los que informa 1816 y pueden diferir del aviso de pago de cada emisor. TIR y duration de los fondos: datos de la cartera a la fecha del informe; no constituyen una promesa de rendimiento.</p>`;
     const bloques = [infBloqueResumen(d)].concat(d.porSemana.map((x, i)=> infBloqueSemana(x, i + 1, d.hoy))).concat([pie]);
@@ -6621,7 +6651,7 @@ async function generarInformeCupones(clientName){
     const cliente = slugNombreArchivo(clientName);
     pdf.save(`informe-cobros${cliente ? '-' + cliente : ''}-${d.hoy}.pdf`);
   } catch(err){
-    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados no hay cobros en esta semana ni en las ${INF_SEMANAS - 1} siguientes.`);
+    if(err && err.message === 'sin-cobros') alert(d0.semanas.length === 1 ? 'Con los nominales cargados no hay cobros en la semana en curso.' : `Con los nominales cargados no hay cobros en las ${d0.semanas.length} semanas elegidas.`);
     else { console.error('Error generando el informe de cobros:', err); alert('No se pudo generar el informe. Probá de nuevo en unos segundos.'); }
   } finally{
     lienzo.remove();
