@@ -1664,19 +1664,25 @@
   .cup-volver{ font:inherit; font-size:12.5px; font-weight:700; color:var(--accent); background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; }
   .cup-volver:hover{ text-decoration:underline; }
   /* Pago destacado: tarjeta arriba de la solapa y aviso al entrar */
-  .cup-destacado{ display:flex; gap:14px 20px; flex-wrap:wrap; align-items:center; justify-content:space-between; border:1px solid #C9D3F2; border-left:4px solid var(--navy); border-radius:10px; background:#F6F8FE; padding:14px 16px; margin:0 0 16px; }
-  .cup-destacado + .cup-destacado{ margin-top:-6px; }
+  .cup-destacado{ display:flex; gap:14px 22px; flex-wrap:wrap; align-items:center; justify-content:space-between; border-radius:12px; padding:18px 22px; margin:0 0 18px; color:#fff;
+    background:linear-gradient(100deg, #0E1A45 0%, #1B2F7A 60%, #3457D5 100%); border-left:6px solid #FFC83D; box-shadow:0 8px 24px rgba(20,34,90,0.28); }
   .cup-dest-txt{ min-width:0; flex:1 1 320px; }
-  .cup-dest-eti, .cup-aviso-eti{ display:inline-block; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#fff; background:var(--navy); border-radius:4px; padding:2px 7px; margin-bottom:6px; }
-  .cup-dest-txt h3{ font-size:15.5px; font-weight:800; color:var(--navy); margin:0 0 4px; }
-  .cup-dest-txt p{ font-size:12.5px; line-height:1.5; color:var(--text); margin:0; }
-  .cup-dest-txt p + p{ margin-top:3px; }
-  .cup-dest-txt .cup-dest-fuente{ color:var(--muted); font-size:11.5px; }
-  .cup-aviso-box{ max-width:460px !important; }
-  .cup-aviso-box h1{ margin-bottom:10px; }
-  .cup-aviso-box p{ font-size:13.5px; line-height:1.55; color:var(--text); margin:0 0 8px; }
-  .cup-aviso-box .cup-dest-fuente{ color:var(--muted); font-size:12px; }
-  .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:16px; }
+  .cup-dest-eti, .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:#1A1400; background:#FFC83D; border-radius:5px; padding:4px 10px; margin-bottom:10px; }
+  .cup-dest-eti i, .cup-aviso-eti i{ width:8px; height:8px; border-radius:50%; background:#1A1400; animation:cup-dest-pulso 1.4s ease-in-out infinite; }
+  @keyframes cup-dest-pulso{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
+  @media (prefers-reduced-motion: reduce){ .cup-dest-eti i, .cup-aviso-eti i{ animation:none; } }
+  .cup-dest-txt h3{ font-size:21px; font-weight:800; color:#fff; margin:0 0 6px; letter-spacing:-0.01em; line-height:1.25; }
+  .cup-destacado .cup-dest-fondo{ font-size:14.5px; font-weight:700; color:#FFE08A; margin:0; }
+  .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#14225A; background:#FFC83D; border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; box-shadow:0 2px 0 rgba(0,0,0,0.18); }
+  .cup-dest-btn:hover{ background:#FFD566; }
+  .cup-dest-btn:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; border:2px solid #FFC83D; }
+  .cup-aviso-cab{ background:linear-gradient(100deg, #0E1A45 0%, #1B2F7A 60%, #3457D5 100%); padding:24px 28px 22px; }
+  .cup-aviso-box .cup-aviso-cab h1{ color:#fff; font-size:23px; line-height:1.25; margin:0; }
+  .cup-aviso-pie{ padding:20px 28px 24px; }
+  .cup-aviso-box .cup-dest-fondo{ font-size:16px; font-weight:800; color:var(--navy); margin:0; }
+  .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:18px; }
+  .cup-aviso-botones .cup-dest-btn{ box-shadow:none; }
   .cg-estrella{ color:#D99A00; font-size:13px; font-weight:400; }
   /* Todas las filas reservan el lugar de la estrella, asi los tickers arrancan en la misma columna */
   .cg-inst{ position:relative; padding-left:20px; }
@@ -2171,12 +2177,16 @@
 
   <div id="cupAvisoModal" class="client-modal-overlay" aria-hidden="true">
     <div class="login-box cup-aviso-box" role="dialog" aria-modal="true" aria-labelledby="cupAvisoTitulo">
-      <span class="cup-aviso-eti">Pago destacado</span>
-      <h1 id="cupAvisoTitulo"></h1>
-      <div id="cupAvisoCuerpo"></div>
-      <div class="cup-aviso-botones">
-        <button type="button" id="cupAvisoCerrar" class="btn btn-outline">Entendido</button>
-        <button type="button" id="cupAvisoVer" class="btn-com">Ver el pago</button>
+      <div class="cup-aviso-cab">
+        <span class="cup-aviso-eti"><i></i>Pago destacado</span>
+        <h1 id="cupAvisoTitulo"></h1>
+      </div>
+      <div class="cup-aviso-pie">
+        <div id="cupAvisoCuerpo"></div>
+        <div class="cup-aviso-botones">
+          <button type="button" id="cupAvisoCerrar" class="btn btn-outline">Entendido</button>
+          <button type="button" id="cupAvisoVer" class="cup-dest-btn">Ver el pago ›</button>
+        </div>
       </div>
     </div>
   </div>
@@ -5131,12 +5141,12 @@ function renderCupones(){
 
 /* ---------------------------------------------------------------------
    Pagos destacados: aviso al entrar a la solapa y tarjeta fija arriba.
-   Aca solo se elige el ticker y el motivo; fecha, montos cada 100
-   nominales y fondo sugerido salen del calendario (vencimientos.xlsx).
+   Aca solo se elige el ticker; la fecha y el fondo sugerido salen del
+   calendario (vencimientos.xlsx).
    Se muestran hasta que termina la semana del pago.
 --------------------------------------------------------------------- */
 const CUP_DESTACADOS = [
-  { ticker: 'DNC3O', motivo: 'Es uno de los instrumentos que más pagan en noviembre entre las tenencias de clientes.' },
+  { ticker: 'DNC3O' },
 ];
 function cupDestacadosVigentes(){
   if(!REINV.ok) return [];
@@ -5148,22 +5158,12 @@ function cupDestacadosVigentes(){
 }
 function cupDestacadoTextos(d){
   const e = d.e, hoy = isoLocal(new Date());
-  const usd = e.moneda === 'Dólar';
-  const sig = usd ? 'US$' : '$';
   const dia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][fechaDeIso(e.fecha).getDay()];
   const verbo = e.fecha < hoy ? 'pagó' : (e.fecha === hoy ? 'paga hoy,' : 'paga');
-  const partes = [];
-  if(e.amort) partes.push(`${sig} ${fmtNumCom(e.amort, 2)} de capital`);
-  if(e.renta) partes.push(`${sig} ${fmtNumCom(e.renta, 4)} de interés`);
-  const cobra = (REINV.tipos[e.tipo] && REINV.tipos[e.tipo].cobra) || (usd ? 'Dólares' : 'Pesos');
   const sug = cupFondoDeEvento(e);
   return {
     titulo: `${e.ticker} · ${e.nombre} ${verbo} el ${dia} ${fechaCorta(e.fecha)}`,
-    detalle: `${e.evento}: ${partes.join(' y ')} cada 100 nominales. Se cobra en ${cobra.charAt(0).toLowerCase() + cobra.slice(1)}.` +
-      (e.total ? ` En total el instrumento paga ${sig} ${fmtNumCom(e.total, 1)} millones.` : ''),
-    motivo: d.motivo,
-    fondo: sug && sug.fondo ? `Fondo sugerido para reinvertir: ${sug.fondo}.` : '',
-    fuente: `Fuente: 1816, calendario de pagos${REINV.actualizado ? ` al ${REINV.actualizado}` : ''}${e.dato && e.dato !== 'Publicado' ? ' (monto estimado)' : ''}.`,
+    fondo: sug && sug.fondo ? `Fondo sugerido para reinvertir: ${sug.fondo}` : '',
   };
 }
 function cupRenderDestacados(){
@@ -5173,12 +5173,10 @@ function cupRenderDestacados(){
   caja.style.display = lista.length ? '' : 'none';
   caja.innerHTML = lista.map(d=>{
     const x = cupDestacadoTextos(d);
-    return `<div class="cup-dest-txt"><span class="cup-dest-eti">Pago destacado</span>
+    return `<div class="cup-dest-txt"><span class="cup-dest-eti"><i></i>Pago destacado</span>
       <h3>${escHtml(x.titulo)}</h3>
-      <p>${escHtml(x.motivo)} ${escHtml(x.detalle)}</p>
-      ${x.fondo ? `<p><strong>${escHtml(x.fondo)}</strong></p>` : ''}
-      <p class="cup-dest-fuente">${escHtml(x.fuente)}</p></div>
-      <button type="button" class="btn-com" data-cup-dest="${escHtml(d.ticker)}">Ver el pago y cargar nominales</button>`;
+      ${x.fondo ? `<p class="cup-dest-fondo">${escHtml(x.fondo)}</p>` : ''}</div>
+      <button type="button" class="cup-dest-btn" data-cup-dest="${escHtml(d.ticker)}">Ver el pago y cargar nominales ›</button>`;
   }).join('');
 }
 // Va a la semana del pago y deja el cursor en los nominales de ese instrumento
@@ -5204,8 +5202,7 @@ function cupMostrarAviso(){
   const x = cupDestacadoTextos(d);
   const modal = document.getElementById('cupAvisoModal');
   document.getElementById('cupAvisoTitulo').textContent = x.titulo;
-  document.getElementById('cupAvisoCuerpo').innerHTML = `<p>${escHtml(x.motivo)}</p><p>${escHtml(x.detalle)}</p>` +
-    (x.fondo ? `<p><strong>${escHtml(x.fondo)}</strong></p>` : '') + `<p class="cup-dest-fuente">${escHtml(x.fuente)}</p>`;
+  document.getElementById('cupAvisoCuerpo').innerHTML = x.fondo ? `<p class="cup-dest-fondo">${escHtml(x.fondo)}</p>` : '';
   modal.dataset.ticker = d.ticker;
   modal.classList.add('open');
   modal.setAttribute('aria-hidden', 'false');
