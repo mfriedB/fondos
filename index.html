@@ -5213,8 +5213,17 @@ function cargarPdfJs(){
 const ARCH_RE_MONEDA = /^(?:\$|U\$S|US\$|€)$/i;      // signo suelto, separado de su numero
 const ARCH_RE_NUM = /^(\$|U\$S|US\$|USD|ARS|EUR|€)?\s*\(?-?\s*\d[\d.,]*\)?\s*(%)?$/i;
 
-/* Celda -> numero. Entiende "17.166,00", "17,166.00", "1.080", "$ 4.740,00"
-   y los numeros de Excel. Devuelve null si la celda no es un numero. */
+/* Celda -> numero, sin dar por sentado que significan el punto y la coma.
+   Cada numero escrito como texto se clasifica por lo que el mismo demuestra:
+     - con punto y coma: el ultimo de los dos es el decimal ("1.234,50", "1,234.50");
+     - un separador repetido es de miles ("1.234.567");
+     - un separador seguido de 1, 2, 4 o mas digitos, o con mas de 3 digitos
+       adelante, o con un cero adelante, es decimal ("12,5", "1083.00", "0,125");
+     - un unico separador seguido de exactamente 3 digitos ("1.234", "34,918")
+       no se puede saber solo: queda "ambiguo" y lo resuelve archConvenciones
+       mirando el resto de la columna, de la tabla y del archivo.
+   "evidencia" es el caracter que ese numero demuestra que es el decimal.
+   Devuelve null si la celda no es un numero. */
 function archNumero(v){
   if(v == null || v === '') return null;
   if(typeof v === 'number') return isFinite(v) ? { n: v, moneda: false } : null;
@@ -5222,17 +5231,43 @@ function archNumero(v){
   const s = String(v).trim();
   const m = s.match(ARCH_RE_NUM);
   if(!m) return null;
-  let t = s.replace(/[^\d.,-]/g, '');
-  const p = t.lastIndexOf('.'), c = t.lastIndexOf(',');
-  if(p >= 0 && c >= 0){
-    t = c > p ? t.replace(/\./g, '').replace(',', '.') : t.replace(/,/g, '');
-  } else if(c >= 0){
-    t = /^-?\d{1,3}(,\d{3})+$/.test(t) ? t.replace(/,/g, '') : t.replace(',', '.');
-  } else if(p >= 0){
-    if(/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, '');
+  const neg = /-|\(.*\)/.test(s) ? -1 : 1;
+  const t = s.replace(/[^\d.,]/g, '');
+  const moneda = !!(m[1] || m[2]);
+  const puntos = (t.match(/\./g) || []).length, comas = (t.match(/,/g) || []).length;
+  const num = (txt)=>{ const n = parseFloat(txt); return isFinite(n) ? n * neg : null; };
+  const fijo = (n, evidencia)=> n == null ? null : { n, moneda, evidencia: evidencia || null };
+  if(!puntos && !comas) return fijo(num(t), null) && Object.assign(fijo(num(t), null), { sinSeparador: true, digitos: t.length });
+  if(puntos && comas){
+    const dec = t.lastIndexOf(',') > t.lastIndexOf('.') ? ',' : '.';
+    const miles = dec === ',' ? '.' : ',';
+    return fijo(num(t.split(miles).join('').replace(dec, '.')), dec);
   }
-  const n = parseFloat(t);
-  return isFinite(n) ? { n, moneda: !!(m[1] || m[2]) } : null;
+  const sep = puntos ? '.' : ',', otro = puntos ? ',' : '.';
+  if(puntos + comas > 1) return fijo(num(t.split(sep).join('')), otro);      // repetido: es de miles
+  const [antes, despues] = t.split(sep);
+  const comoDecimal = num((antes || '0') + '.' + despues), comoMiles = num(antes + despues);
+  if(despues.length !== 3 || antes.length > 3 || antes.length === 0 || /^0/.test(antes)) return fijo(comoDecimal, sep);
+  if(comoMiles == null) return null;
+  // Ambiguo: mientras no se resuelva vale como miles, pero queda marcado
+  return { n: comoMiles, moneda, evidencia: null, ambiguo: true, sep, comoMiles, comoDecimal };
+}
+
+/* Convencion de punto y coma de una lista de numeros: cuantos demuestran que
+   el decimal es la coma y cuantos que es el punto. */
+function archVotos(numeros){
+  const v = { ',': 0, '.': 0 };
+  numeros.forEach(x => { if(x && x.evidencia) v[x.evidencia]++; });
+  return v;
+}
+function archGanador(v){ return v[','] > v['.'] ? ',' : (v['.'] > v[','] ? '.' : null); }
+function archVotosDeTabla(tabla){
+  if(!tabla._votos){
+    const lista = [];
+    tabla.filas.forEach(f => (f || []).forEach(c => { if(typeof c === 'string'){ const n = archNumero(c); if(n) lista.push(n); } }));
+    tabla._votos = archVotos(lista);
+  }
+  return tabla._votos;
 }
 
 // Ticker tal como puede venir en una celda: "AL30", "al30 ", "GD35 - BONOS REP...", "YM34O.BA"
@@ -5328,7 +5363,7 @@ function archTipoEncabezado(enc){
 
 /* Analiza una tabla: columna de tickers, columnas numericas candidatas a
    nominales (ordenadas de la mas probable a la menos) y filas con ticker. */
-function archAnalizarTabla(tabla, conocidos){
+function archAnalizarTabla(tabla, conocidos, votosArchivo){
   const esConocido = (t)=> conocidos.has(t) || (/[DC]$/.test(t) && conocidos.has(t.slice(0, -1)));
   // 1) Columna de tickers: la posicion con mas tickers del calendario
   const aciertos = new Map();
@@ -5338,7 +5373,7 @@ function archAnalizarTabla(tabla, conocidos){
   }));
   if(!aciertos.size) return null;
   const colsTicker = [...aciertos.entries()].sort((a, b)=> b[1] - a[1] || a[0] - b[0]);
-  return { colsTicker, analizar: (colT)=>{
+  return { colsTicker, analizar: (colT, decUsuario)=>{
     // 2) Filas con ticker (del calendario o con forma de ticker) y sus celdas numericas
     const filas = [], sinNumeros = [];
     tabla.filas.forEach((f, idx)=>{
@@ -5346,12 +5381,12 @@ function archAnalizarTabla(tabla, conocidos){
       if(!t) return;
       const nums = [];
       if(tabla.modo === 'columna'){
-        f.forEach((c, i)=>{ if(i !== colT){ const n = archNumero(c); if(n) nums.push({ clave: 'c' + i, orden: i, n: n.n, moneda: n.moneda, crudo: c }); } });
+        f.forEach((c, i)=>{ if(i !== colT){ const n = archNumero(c); if(n) nums.push({ clave: 'c' + i, orden: i, n: n.n, moneda: n.moneda, crudo: c, lec: n }); } });
       } else {
         for(let i = f.length - 1, k = 1; i > colT; i--, k++){
           const n = archNumero(f[i]);
           if(!n) break;      // se cuentan las columnas numericas del final del renglon
-          nums.push({ clave: 'r' + k, orden: -k, n: n.n, moneda: n.moneda, crudo: f[i], total: f.length });
+          nums.push({ clave: 'r' + k, orden: -k, n: n.n, moneda: n.moneda, crudo: f[i], total: f.length, lec: n });
         }
       }
       if(nums.length) filas.push({ idx, ticker: t, conocido: esConocido(t), nums, largo: f.length });
@@ -5359,6 +5394,63 @@ function archAnalizarTabla(tabla, conocidos){
     });
     const base = filas.filter(f => f.conocido);
     if(!base.length) return { filas: [], candidatos: [], sinNumeros };
+    const valor = (f, clave)=>{ const n = f.nums.find(x => x.clave === clave); return n ? n.n : null; };
+    // Una columna que es el producto de otras dos (cantidad x precio, o /100) es un monto
+    const esProducto = (c, a, b)=>{
+      let filasOk = 0, total = 0;
+      base.forEach(f=>{
+        const vc = valor(f, c.clave), va = valor(f, a.clave), vb = valor(f, b.clave);
+        if(vc == null || va == null || vb == null || !vc || !va || !vb) return;
+        total++;
+        const p = va * vb;
+        if(Math.abs(p - vc) <= Math.abs(vc) * 0.03 || Math.abs(p / 100 - vc) <= Math.abs(vc) * 0.03) filasOk++;
+      });
+      return total >= 2 && filasOk / total >= 0.8;
+    };
+
+    /* PUNTO Y COMA: que separador es el decimal en cada columna. No hay una
+       regla fija; se decide con la evidencia, de la mas cercana a la mas lejana:
+         1. los numeros de la propia columna que no dejan dudas;
+         2. en la columna hay enteros de 4 o mas digitos escritos sin separador:
+            entonces el archivo no usa separador de miles y el ambiguo es decimal;
+         3. lo que demuestran los demas numeros de la tabla;
+         4. lo que demuestran los demas numeros del archivo;
+         5. las cuentas: con que lectura cierra cantidad x precio = monto;
+         6. lo que elija el asesor. Si nada alcanza, la columna queda "dudosa". */
+    const porClave = new Map();
+    filas.forEach(f => f.nums.forEach(n => { if(!porClave.has(n.clave)) porClave.set(n.clave, []); porClave.get(n.clave).push(n); }));
+    const decDe = new Map(), dudosas = new Map();
+    const aplicarDec = (lista, dec)=> lista.forEach(n => { if(n.lec.ambiguo) n.n = (dec && n.lec.sep === dec) ? n.lec.comoDecimal : n.lec.comoMiles; });
+    porClave.forEach((lista, clave)=>{
+      const ambiguos = lista.filter(n => n.lec.ambiguo);
+      if(!ambiguos.length) return;
+      let dec = archGanador(archVotos(lista.map(n => n.lec)));
+      let motivo = dec ? 'columna' : null;
+      if(!dec){
+        const seps = new Set(ambiguos.map(n => n.lec.sep));
+        if(seps.size === 1 && lista.some(n => typeof n.crudo === 'string' && n.lec.sinSeparador && n.lec.digitos >= 4)){ dec = [...seps][0]; motivo = 'sin-miles'; }
+      }
+      if(!dec){ dec = archGanador(archVotosDeTabla(tabla)); if(dec) motivo = 'tabla'; }
+      if(!dec && votosArchivo){ dec = archGanador(votosArchivo); if(dec) motivo = 'archivo'; }
+      if(dec){ decDe.set(clave, { dec, motivo }); aplicarDec(lista, dec); }
+      else dudosas.set(clave, ambiguos[0]);
+    });
+    // 5. Las cuentas: se prueba cada lectura y se queda con la unica que hace cerrar un producto
+    const clavesBase = [...new Set(base.flatMap(f => f.nums.map(n => n.clave)))].map(clave => ({ clave }));
+    const cierra = (clave)=> clavesBase.some(a => clavesBase.some(b=>{
+      if(a.clave >= b.clave) return false;
+      const c = clavesBase.filter(x => x.clave !== a.clave && x.clave !== b.clave);
+      if(a.clave !== clave && b.clave !== clave) return c.some(x => x.clave === clave && esProducto(x, a, b));
+      return c.some(x => esProducto(x, a, b));
+    }));
+    [...dudosas.keys()].forEach(clave=>{
+      const lista = porClave.get(clave), sep = dudosas.get(clave).lec.sep, otro = sep === '.' ? ',' : '.';
+      aplicarDec(lista, otro); const conMiles = cierra(clave);
+      aplicarDec(lista, sep); const conDecimal = cierra(clave);
+      if(conMiles !== conDecimal){ const dec = conMiles ? otro : sep; aplicarDec(lista, dec); decDe.set(clave, { dec, motivo: 'cuentas' }); dudosas.delete(clave); }
+      else if(decUsuario){ aplicarDec(lista, decUsuario); decDe.set(clave, { dec: decUsuario, motivo: 'asesor' }); dudosas.delete(clave); }
+      else aplicarDec(lista, null);
+    });
     // Encabezado: el renglon de texto mas cercano por encima de la primera fila con ticker
     const encabezadoDe = (fila, cand)=>{
       for(let i = fila.idx - 1; i >= Math.max(0, fila.idx - 12); i--){
@@ -5379,19 +5471,6 @@ function archAnalizarTabla(tabla, conocidos){
       claves.set(n.clave, c);
     }));
     const cols = [...claves.values()].filter(c => c.vals.length >= Math.max(1, base.length * 0.5));
-    // Una columna que es el producto de otras dos (cantidad x precio, o /100) es un monto
-    const valor = (f, clave)=>{ const n = f.nums.find(x => x.clave === clave); return n ? n.n : null; };
-    const esProducto = (c, a, b)=>{
-      let filasOk = 0, total = 0;
-      base.forEach(f=>{
-        const vc = valor(f, c.clave), va = valor(f, a.clave), vb = valor(f, b.clave);
-        if(vc == null || va == null || vb == null || !vc || !va || !vb) return;
-        total++;
-        const p = va * vb;
-        if(Math.abs(p - vc) <= Math.abs(vc) * 0.03 || Math.abs(p / 100 - vc) <= Math.abs(vc) * 0.03) filasOk++;
-      });
-      return total >= 2 && filasOk / total >= 0.8;
-    };
     const producto = new Map();      // clave del monto -> [factor, factor]
     cols.forEach(c => cols.forEach(a => cols.forEach(b=>{
       if(a === c || b === c || a.clave >= b.clave || producto.has(c.clave)) return;
@@ -5409,7 +5488,7 @@ function archAnalizarTabla(tabla, conocidos){
       // Plata: lo dice el encabezado, trae signo de moneda o es cantidad x precio
       const plata = tipoEnc === 'plata' || (tipoEnc !== 'cantidad' && (moneda > 0.5 || producto.has(c.clave)));
       const puntaje = enteros * 2 + positivos * 2 - (distintos === 1 && total > 2 ? 1.5 : 0) + (tipoEnc === 'cantidad' ? 6 : 0) - (plata ? 8 : 0);
-      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo, plata, tipoEnc, enteros, moneda, factor: factores.has(c.clave), positivos };
+      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo, plata, tipoEnc, enteros, moneda, factor: factores.has(c.clave), positivos, dudosa: dudosas.get(c.clave) || null, dec: decDe.get(c.clave) || null };
     });
     // A igual puntaje, la columna mas cercana al ticker
     candidatos.sort((a, b)=> b.puntaje - a.puntaje || a.orden - b.orden);
@@ -5438,7 +5517,7 @@ function archAnalizarTabla(tabla, conocidos){
       const celda = filaEnc != null ? (tabla.filas[filaEnc] || [])[colT] : null;
       if(celda != null && String(celda).trim() && !archNumero(celda)) encT = String(celda).trim();
     }
-    return { filas, candidatos, seguro, encabezadoTicker: encT, sinNumeros };
+    return { filas, candidatos, seguro, encabezadoTicker: encT, sinNumeros, dudosas };
   } };
 }
 function archTickerDeCeldaConocida(c, esConocido){
@@ -5465,18 +5544,23 @@ function archAplicar(){
   const conPagos = new Map(futuros.map(e => [archNormTicker(e.ticker), e.ticker]));      // normalizado -> ticker del calendario
   const tenencias = new Map(), otros = new Set();
   a.detalle = []; a.sinNominal = [];
+  // Lo que demuestran sobre punto y coma todos los numeros del archivo
+  const votosArchivo = { ',': 0, '.': 0 };
+  a.tablas.forEach(t => { const v = archVotosDeTabla(t); votosArchivo[','] += v[',']; votosArchivo['.'] += v['.']; });
   a.tablas.forEach((tabla, i)=>{
-    const an = archAnalizarTabla(tabla, conocidos);
+    const an = archAnalizarTabla(tabla, conocidos, votosArchivo);
     if(!an) return;
     const el = a.eleccion[i] || (a.eleccion[i] = {});
     if(el.colT == null || !an.colsTicker.some(c => c[0] === el.colT)) el.colT = an.colsTicker[0][0];
-    const r = an.analizar(el.colT);
+    const r = an.analizar(el.colT, a.decUsuario || null);
     (r.sinNumeros || []).forEach(t => a.sinNominal.push(t));
     if(!r.candidatos.length) return;
     if(el.clave && !r.candidatos.some(c => c.clave === el.clave)) el.clave = null;
     if(!el.clave && !el.manual) el.clave = r.seguro;      // sin certeza queda sin elegir
-    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el });
-    if(!el.clave) return;
+    // Si en la columna de nominales no se sabe que es el punto o la coma, no se carga hasta que el asesor lo diga
+    const dudosa = el.clave ? (r.dudosas.get(el.clave) || null) : null;
+    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el, dudosa });
+    if(!el.clave || dudosa) return;
     r.filas.forEach(f=>{
       const n = f.nums.find(x => x.clave === el.clave);
       if(!n || !(n.n > 0)){ if(f.conocido) a.sinNominal.push(f.ticker); return; }
@@ -5560,17 +5644,27 @@ function cupRenderEstadoArchivo(){
       <label>Nominales <select data-arch-n="${d.i}"${(d.candidatos.length < 2 && d.eleccion.clave) ? ' disabled' : ''}${d.eleccion.clave ? '' : ' class="falta"'}>${optsN}</select></label></span>`;
   }).join('');
   const faltan = a.detalle.filter(d => !d.eleccion.clave).length;
+  const dudosa = (a.detalle.find(d => d.dudosa) || {}).dudosa || null;      // numero de ejemplo que no se sabe leer
   const elegidaPlata = a.detalle.some(d => d.eleccion.clave && (d.candidatos.find(c => c.clave === d.eleccion.clave) || {}).plata);
   const semanas = cupSemanasConCobros();
   const sin = a.sin.length ? `<span class="cup-pdf-det">${a.sin.length} ${a.sin.length === 1 ? 'instrumento del archivo no tiene' : 'instrumentos del archivo no tienen'} pagos en el calendario.</span>` : '';
   el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
     + (a.con.length
       ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del archivo tiene' : 'instrumentos del archivo tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
-      : (faltan ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
+      : ((faltan || dudosa) ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
     + (faltan ? `<span class="cup-arch-aviso">⚠ No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
+    + (dudosa ? (()=>{
+        const sep = dudosa.lec.sep, otro = sep === '.' ? ',' : '.', ej = escHtml(String(dudosa.crudo).trim());
+        return `<span class="cup-arch-aviso">⚠ No se pudo determinar si en los nominales ${sep === '.' ? 'el punto' : 'la coma'} separa los miles o los decimales (por ejemplo, «${ej}»). Para no cargar un número equivocado, elegí cómo se lee:
+          <span class="cup-arch-cols"><label>«${ej}» es <select data-arch-dec class="falta">
+            <option value="" selected disabled>Elegí…</option>
+            <option value="${otro}">${fmtNumCom(dudosa.lec.comoMiles, 0)} — ${sep === '.' ? 'el punto' : 'la coma'} separa los miles</option>
+            <option value="${sep}">${fmtNumCom(dudosa.lec.comoDecimal, 3)} — ${sep === '.' ? 'el punto' : 'la coma'} es el decimal</option>
+          </select></label></span></span>`;
+      })() : '')
     + (elegidaPlata ? `<span class="cup-arch-aviso">⚠ La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     + ((!faltan && a.sinNominal.length) ? `<span class="cup-arch-aviso">⚠ ${a.sinNominal.length} ${a.sinNominal.length === 1 ? 'instrumento del calendario figura' : 'instrumentos del calendario figuran'} en el archivo sin un nominal que se pueda leer (celda vacía, en cero o con texto) y no ${a.sinNominal.length === 1 ? 'se cargó' : 'se cargaron'}: ${escHtml(a.sinNominal.slice(0, 12).join(', '))}${a.sinNominal.length > 12 ? ` y ${a.sinNominal.length - 12} más` : ''}.</span>` : '')
-    + ((!faltan && !a.con.length) ? `<span class="cup-arch-aviso">⚠ No se cargó ningún nominal: revisá que el archivo sea el de tenencias.</span>` : '')
+    + ((!faltan && !dudosa && !a.con.length) ? `<span class="cup-arch-aviso">⚠ No se cargó ningún nominal: revisá que el archivo sea el de tenencias.</span>` : '')
     // Los desplegables de columnas solo aparecen cuando hace falta elegir (o si ya se eligio a mano)
     + ((faltan || a.detalle.some(d => d.eleccion.manual)) ? columnas : '')
     + (semanas.length ? '<span class="cup-pdf-det cup-pdf-semanas" id="cupPdfSemanas"></span>' : '')
@@ -5608,7 +5702,8 @@ document.getElementById('cupPdfEstado').addEventListener('click', (e)=>{
 document.getElementById('cupPdfEstado').addEventListener('change', (e)=>{
   const s = e.target.closest('select');
   if(!s || !CUP.arch || CUP.arch.error) return;
-  if(s.dataset.archT != null){ CUP.arch.eleccion[s.dataset.archT] = { colT: parseInt(s.value, 10) }; }
+  if(s.dataset.archDec != null){ CUP.arch.decUsuario = s.value; }
+  else if(s.dataset.archT != null){ CUP.arch.eleccion[s.dataset.archT] = { colT: parseInt(s.value, 10) }; }
   else if(s.dataset.archN != null){ const e2 = CUP.arch.eleccion[s.dataset.archN]; e2.clave = s.value; e2.manual = true; }
   archAplicar();
   renderCupones();
