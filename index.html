@@ -1621,6 +1621,10 @@
   .cup-pdf-estado.err{ background:var(--neg-bg); border-color:#F0C4C4; color:var(--neg); }
   .cup-pdf-estado strong{ color:var(--navy); }
   .cup-pdf-estado .cup-pdf-det{ display:block; color:var(--muted); margin-top:2px; }
+  .cup-arch-cols{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:4px 0 6px; }
+  .cup-arch-cols label{ display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--navy); font-size:12px; }
+  .cup-arch-cols select{ font:inherit; font-size:12px; font-weight:500; padding:4px 8px; border:1px solid #C9D2EA; border-radius:6px; background:#fff; color:var(--text); max-width:340px; }
+  .cup-arch-cols select:disabled{ opacity:1; background:#F6F8FE; }
   .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
   .tab-toolbar{ gap:10px; }
@@ -1896,9 +1900,9 @@
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
         <div class="cup-cab-der">
-        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee el resumen de cuenta del cliente (PDF) y completa los nominales de los instrumentos que tiene">
+        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con las tenencias del cliente (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que tiene">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
-          <span id="cupPdfBtnTxt">Cargar resumen de cuenta (PDF)</span></button><input type="file" id="cupPdfInput" accept="application/pdf,.pdf" style="display:none;" />
+          <span id="cupPdfBtnTxt">Cargar tenencias del cliente (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
@@ -4649,7 +4653,7 @@ function activarTab(nombre){
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
 let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
-const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '', pdf: null };
+const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '', arch: null };
 const CUP_SEMANAS_MAX = 30;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -5041,14 +5045,14 @@ function renderCupones(){
 
   document.getElementById('cupSemanaSelect').innerHTML = semanas.map(x=>{
     const n = cupEventosDeSemana(x).length;
-    const delCliente = CUP.pdf && cupEventosDeSemana(x).some(e => CUP.montos[cupClave(e)]);
+    const delCliente = CUP.arch && !CUP.arch.error && cupEventosDeSemana(x).some(e => CUP.montos[cupClave(e)]);
     return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${delCliente ? '● ' : ''}${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
   }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado} · Fuente: 1816` : 'Fuente: 1816';
 
-  cupRenderEstadoPdf();
+  cupRenderEstadoArchivo();
 
   const aviso = document.getElementById('cupAvisoCobertura');
   const avisos = [];
@@ -5122,15 +5126,21 @@ document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   if(v > 0) CUP.montos[inp.dataset.k] = v; else delete CUP.montos[inp.dataset.k];
   actualizarCup();
 });
-document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; CUP.pdf = null; renderCupones(); });
+document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; CUP.arch = null; renderCupones(); });
 
 /* ---------------------------------------------------------------------
-   Resumen de cuenta del cliente (PDF)
+   Tenencias del cliente desde un archivo (PDF, Excel o CSV)
 
-   El asesor carga el PDF de "Posicion consolidada" y la pagina completa los
-   nominales de los instrumentos que el cliente tiene y que figuran en el
-   calendario, en todos sus pagos. El archivo se lee en el navegador: no se
-   sube ni se guarda en ningun lado. Los casilleros siguen siendo editables.
+   El asesor carga cualquier archivo que tenga tickers y nominales (un
+   resumen de cuenta, una planilla de posiciones) y la pagina busca sola en
+   que columna estan los tickers y en cual los nominales:
+     - Tickers: la columna donde mas celdas coinciden con los tickers del
+       calendario de pagos.
+     - Nominales: entre las columnas numericas de esas filas, la que tiene
+       encabezado de cantidad o, si no hay encabezado claro, la que mas se
+       parece a una cantidad (numeros enteros, sin signo de moneda).
+   Lo detectado se muestra y se puede cambiar. El archivo se lee en el
+   navegador: no se sube ni se guarda. Los casilleros siguen siendo editables.
 --------------------------------------------------------------------- */
 const PDFJS_URLS = [
   ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'],
@@ -5156,91 +5166,232 @@ function cargarPdfJs(){
   return pdfjsCarga;
 }
 
-// Texto del PDF, renglon por renglon (se agrupa por altura y se ordena de izquierda a derecha)
-async function cupLineasDePdf(buffer){
+const ARCH_RE_MONEDA = /^(?:\$|U\$S|US\$|€)$/i;      // signo suelto, separado de su numero
+const ARCH_RE_NUM = /^(\$|U\$S|US\$|USD|ARS|EUR|€)?\s*\(?-?\s*\d[\d.,]*\)?\s*(%)?$/i;
+
+/* Celda -> numero. Entiende "17.166,00", "17,166.00", "1.080", "$ 4.740,00"
+   y los numeros de Excel. Devuelve null si la celda no es un numero. */
+function archNumero(v){
+  if(v == null || v === '') return null;
+  if(typeof v === 'number') return isFinite(v) ? { n: v, moneda: false } : null;
+  if(v instanceof Date) return null;
+  const s = String(v).trim();
+  const m = s.match(ARCH_RE_NUM);
+  if(!m) return null;
+  let t = s.replace(/[^\d.,-]/g, '');
+  const p = t.lastIndexOf('.'), c = t.lastIndexOf(',');
+  if(p >= 0 && c >= 0){
+    t = c > p ? t.replace(/\./g, '').replace(',', '.') : t.replace(/,/g, '');
+  } else if(c >= 0){
+    t = /^-?\d{1,3}(,\d{3})+$/.test(t) ? t.replace(/,/g, '') : t.replace(',', '.');
+  } else if(p >= 0){
+    if(/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, '');
+  }
+  const n = parseFloat(t);
+  return isFinite(n) ? { n, moneda: !!(m[1] || m[2]) } : null;
+}
+
+// Ticker tal como puede venir en una celda: "AL30", "al30 ", "GD35 - BONOS REP...", "YM34O.BA"
+function archTickerDeCelda(v){
+  if(v == null || typeof v === 'number' || v instanceof Date) return null;
+  const t = String(v).trim().toUpperCase().split(/[\s\-–:·|\/]+/)[0].replace(/\.BA$/, '');
+  return /^(?=.*[A-Z])[A-Z0-9]{2,8}$/.test(t) ? t : null;
+}
+
+/* Tablas de un PDF: cada renglon es una fila y cada bloque de texto, una
+   celda (ordenadas de izquierda a derecha). Las columnas se cuentan desde la
+   derecha, porque las descripciones pueden venir partidas en varios bloques. */
+async function archTablasDePdf(buffer){
   const lib = await cargarPdfJs();
   const doc = await lib.getDocument({ data: buffer }).promise;
-  const lineas = [];
+  const filas = [];
   for(let n = 1; n <= doc.numPages; n++){
     const pagina = await doc.getPage(n);
     const contenido = await pagina.getTextContent();
-    const filas = [];
+    const renglones = [];
     contenido.items.forEach(it=>{
-      const txt = (it.str || '').trim();
-      if(!txt) return;
+      if(!(it.str || '').trim()) return;
       const x = it.transform[4], y = it.transform[5];
-      let fila = filas.find(f => Math.abs(f.y - y) < 2.5);
-      if(!fila){ fila = { y, items: [] }; filas.push(fila); }
-      fila.items.push({ x, txt });
+      let r = renglones.find(f => Math.abs(f.y - y) < 2.5);
+      if(!r){ r = { y, items: [] }; renglones.push(r); }
+      r.items.push({ x, txt: it.str });
     });
-    filas.sort((a, b)=> b.y - a.y);
-    filas.forEach(f => lineas.push(f.items.sort((a, b)=> a.x - b.x).map(i => i.txt).join(' ').replace(/\s+/g, ' ').trim()));
+    renglones.sort((a, b)=> b.y - a.y);
+    renglones.forEach(r=>{
+      let celdas = [];
+      r.items.sort((a, b)=> a.x - b.x).forEach(i => i.txt.split(/\s{2,}/).forEach(t => { if(t.trim()) celdas.push(t.trim()); }));
+      // Todo el renglon en un solo bloque: se separa por espacios
+      if(celdas.length === 1 && celdas[0].split(/\s+/).filter(t => archNumero(t)).length >= 2) celdas = celdas[0].split(/\s+/);
+      // "$" suelto seguido del numero -> una sola celda
+      const unidas = [];
+      celdas.forEach(c=>{
+        const ant = unidas[unidas.length - 1];
+        if(ant != null && ARCH_RE_MONEDA.test(ant) && archNumero(c)) unidas[unidas.length - 1] = ant + ' ' + c;
+        else unidas.push(c);
+      });
+      filas.push(unidas);
+    });
   }
-  return lineas;
+  return [{ nombre: '', modo: 'derecha', filas }];
 }
 
-/* Tenencias del resumen: { especie -> cantidad }. Cada renglon de las tablas
-   trae Especie | Descripcion | Cantidad | Garantia | Precio | Valor actual.
-   No se toman acciones, cedears ni fondos: no pagan cupon. */
-const CUP_PDF_SECCIONES_FUERA = ['acciones', 'cedears', 'fondos'];
-function cupTenenciasDeLineas(lineas){
-  const reFila = /^(\S+)\s+(.*?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+\d+[.,]\d{2}\s+(?:\$|U\$S|USD)\s*-?[\d.,]+\s+(?:\$|U\$S|USD)\s*-?[\d.,]+$/;
-  const tenencias = new Map();
-  let seccion = '', previa = '', tablas = 0;
-  lineas.forEach(l=>{
-    if(/^Especie\s+Descripci/i.test(l)){
-      tablas++;
-      // El titulo de la tabla es el renglon anterior; si la tabla sigue de otra hoja, se mantiene la seccion
-      if(previa && previa.length < 40 && !/\d/.test(previa) && !/INVESTMENT|consolidada|distribuci/i.test(previa) && !reFila.test(previa)) seccion = claveTxt(previa);
-    } else {
-      const m = l.match(reFila);
-      if(m && !CUP_PDF_SECCIONES_FUERA.includes(seccion)){
-        const cant = parseFloat(m[3].replace(/\./g, '').replace(',', '.'));
-        if(cant > 0) tenencias.set(m[1].toUpperCase(), (tenencias.get(m[1].toUpperCase()) || 0) + cant);
+// Tablas de un Excel o CSV: una por hoja, con las columnas tal cual
+function archTablasDeExcel(buffer){
+  if(typeof XLSX === 'undefined') throw new Error('No se pudo cargar el lector de Excel.');
+  const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+  return wb.SheetNames.map(nombre => ({
+    nombre, modo: 'columna',
+    filas: XLSX.utils.sheet_to_json(wb.Sheets[nombre], { header: 1, raw: true, defval: null }),
+  }));
+}
+
+function archLetraColumna(i){
+  let s = ''; i++;
+  while(i > 0){ s = String.fromCharCode(65 + (i - 1) % 26) + s; i = Math.floor((i - 1) / 26); }
+  return s;
+}
+
+const ARCH_ENC_SI = /cantidad|cant\.|nominal|\bv\.?\s?n\.?\b|tenencia|posici[oó]n|t[ií]tulos|l[aá]minas|unidades|qty|quantity|holding|saldo/i;
+const ARCH_ENC_NO = /precio|price|valor|monto|importe|total|garant|variaci|costo|ppc|rendim|\btir\b|\btna\b|%|cotiz|paridad|mercado|market|pesos|d[oó]lar/i;
+
+/* Analiza una tabla: columna de tickers, columnas numericas candidatas a
+   nominales (ordenadas de la mas probable a la menos) y filas con ticker. */
+function archAnalizarTabla(tabla, conocidos){
+  const esConocido = (t)=> conocidos.has(t) || (/[DC]$/.test(t) && conocidos.has(t.slice(0, -1)));
+  // 1) Columna de tickers: la posicion con mas tickers del calendario
+  const aciertos = new Map();
+  tabla.filas.forEach(f => f.forEach((c, i)=>{
+    const t = archTickerDeCelda(c);
+    if(t && esConocido(t)) aciertos.set(i, (aciertos.get(i) || 0) + 1);
+  }));
+  if(!aciertos.size) return null;
+  const colsTicker = [...aciertos.entries()].sort((a, b)=> b[1] - a[1] || a[0] - b[0]);
+  return { colsTicker, analizar: (colT)=>{
+    // 2) Filas con ticker (del calendario o con forma de ticker) y sus celdas numericas
+    const filas = [];
+    tabla.filas.forEach((f, idx)=>{
+      const t = archTickerDeCelda(f[colT]);
+      if(!t) return;
+      const nums = [];
+      if(tabla.modo === 'columna'){
+        f.forEach((c, i)=>{ if(i !== colT){ const n = archNumero(c); if(n) nums.push({ clave: 'c' + i, orden: i, n: n.n, moneda: n.moneda, crudo: c }); } });
+      } else {
+        for(let i = f.length - 1, k = 1; i > colT; i--, k++){
+          const n = archNumero(f[i]);
+          if(!n) break;      // se cuentan las columnas numericas del final del renglon
+          nums.push({ clave: 'r' + k, orden: -k, n: n.n, moneda: n.moneda, crudo: f[i], total: f.length });
+        }
       }
-    }
-    previa = l;
-  });
-  return { tenencias, tablas };
-}
-
-// Ticker del calendario para una especie del resumen (la misma especie puede venir con sufijo D o C)
-function cupTickerDeEspecie(especie, tickers){
-  if(tickers.has(especie)) return especie;
-  if(/[DC]$/.test(especie) && tickers.has(especie.slice(0, -1))) return especie.slice(0, -1);
-  return null;
-}
-
-async function cupCargarResumen(archivo){
-  const btn = document.getElementById('cupPdfBtn'), txt = document.getElementById('cupPdfBtnTxt');
-  btn.disabled = true; txt.textContent = 'Leyendo el resumen…';
-  try{
-    const lineas = await cupLineasDePdf(await archivo.arrayBuffer());
-    const { tenencias, tablas } = cupTenenciasDeLineas(lineas);
-    if(!tablas) throw new Error('No se reconoció el archivo como un resumen de cuenta: no se encontraron las tablas de tenencias (Especie, Descripción, Cantidad).');
-    const desde = cupSemanas()[0].ini;
-    const futuros = REINV.eventos.filter(e => e.fecha >= desde);
-    const tickers = new Set(futuros.map(e => e.ticker));
-    const con = [], sin = [];
-    CUP.montos = {};      // el resumen reemplaza lo cargado antes
-    tenencias.forEach((cant, especie)=>{
-      const t = cupTickerDeEspecie(especie, tickers);
-      if(!t){ sin.push(especie); return; }
-      const pagos = futuros.filter(e => e.ticker === t);
-      pagos.forEach(e => { CUP.montos[cupClave(e)] = Math.round(cant); });
-      con.push({ ticker: t, cantidad: cant, pagos: pagos.length, proximo: pagos[0].fecha });
+      if(nums.length) filas.push({ idx, ticker: t, conocido: esConocido(t), nums, largo: f.length });
     });
-    con.sort((a, b)=> a.proximo < b.proximo ? -1 : (a.proximo > b.proximo ? 1 : a.ticker.localeCompare(b.ticker)));
-    CUP.pdf = { archivo: archivo.name, con, sin: sin.sort() };
+    const base = filas.filter(f => f.conocido);
+    if(!base.length) return { filas: [], candidatos: [] };
+    // Encabezado: el renglon de texto mas cercano por encima de la primera fila con ticker
+    const encabezadoDe = (fila, cand)=>{
+      for(let i = fila.idx - 1; i >= Math.max(0, fila.idx - 12); i--){
+        const f = tabla.filas[i] || [];
+        let celda;
+        if(tabla.modo === 'columna') celda = f[cand.orden];
+        else { if(f.length !== fila.largo || f.some(c => archNumero(c))) continue; celda = f[f.length + cand.orden]; }
+        if(celda != null && String(celda).trim() && !archNumero(celda) && !(celda instanceof Date)) return String(celda).trim();
+      }
+      return '';
+    };
+    // 3) Columnas numericas candidatas, con puntaje
+    const claves = new Map();
+    base.forEach(f => f.nums.forEach(n=>{
+      const c = claves.get(n.clave) || { clave: n.clave, orden: n.orden, vals: [], moneda: 0, ejemplo: n.crudo, fila: f, num: n };
+      c.vals.push(n.n); if(n.moneda) c.moneda++;
+      claves.set(n.clave, c);
+    }));
+    const candidatos = [...claves.values()].filter(c => c.vals.length >= Math.max(1, base.length * 0.5)).map(c=>{
+      const total = c.vals.length;
+      const enteros = c.vals.filter(v => Math.abs(v - Math.round(v)) < 1e-6).length / total;
+      const positivos = c.vals.filter(v => v > 0).length / total;
+      const distintos = new Set(c.vals).size;
+      const enc = encabezadoDe(c.fila, c.num);
+      let puntaje = enteros * 2 + positivos * 2 - (c.moneda / total) * 4 - (distintos === 1 && total > 2 ? 1.5 : 0);
+      if(enc && ARCH_ENC_SI.test(enc)) puntaje += 6;
+      if(enc && ARCH_ENC_NO.test(enc)) puntaje -= 4;
+      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo };
+    });
+    // A igual puntaje, la columna mas cercana al ticker
+    candidatos.sort((a, b)=> b.puntaje - a.puntaje || (tabla.modo === 'columna' ? a.orden - b.orden : a.orden - b.orden));
+    const encT = (()=>{ const f0 = base[0]; for(let i = f0.idx - 1; i >= Math.max(0, f0.idx - 12); i--){ const c = (tabla.filas[i] || [])[colT]; if(c != null && String(c).trim() && !archTickerDeCeldaConocida(c, esConocido) && !archNumero(c)) return String(c).trim(); } return ''; })();
+    return { filas, candidatos, encabezadoTicker: encT };
+  } };
+}
+function archTickerDeCeldaConocida(c, esConocido){
+  const t = archTickerDeCelda(c);
+  return !!(t && esConocido(t));
+}
+
+function archNombreColumna(tabla, tipo, col, encabezado, ejemplo){
+  const pos = tabla.modo === 'columna'
+    ? `columna ${archLetraColumna(tipo === 'ticker' ? col : parseInt(String(col).slice(1), 10))}`
+    : (tipo === 'ticker' ? `${col + 1}.ª columna` : (String(col) === 'r1' ? 'última columna' : `${String(col).slice(1)}.ª columna desde la derecha`));
+  const ej = ejemplo != null && ejemplo !== '' ? ` · ej.: ${typeof ejemplo === 'number' ? fmtNumCom(ejemplo, Number.isInteger(ejemplo) ? 0 : 2) : ejemplo}` : '';
+  return encabezado ? `«${encabezado}» (${pos}${ej})` : `${pos.charAt(0).toUpperCase() + pos.slice(1)}${ej}`;
+}
+
+/* Aplica lo elegido (o lo detectado) y carga los nominales en el calendario.
+   CUP.arch.eleccion[i] = { colT, clave } por tabla. */
+function archAplicar(){
+  const a = CUP.arch;
+  const desde = cupSemanas()[0].ini;
+  const futuros = REINV.eventos.filter(e => e.fecha >= desde);
+  const conocidos = new Set(REINV.eventos.map(e => e.ticker));
+  const conPagos = new Set(futuros.map(e => e.ticker));
+  const tenencias = new Map(), otros = new Set();
+  a.detalle = [];
+  a.tablas.forEach((tabla, i)=>{
+    const an = archAnalizarTabla(tabla, conocidos);
+    if(!an) return;
+    const el = a.eleccion[i] || (a.eleccion[i] = {});
+    if(el.colT == null || !an.colsTicker.some(c => c[0] === el.colT)) el.colT = an.colsTicker[0][0];
+    const r = an.analizar(el.colT);
+    if(!r.candidatos.length) return;
+    if(!el.clave || !r.candidatos.some(c => c.clave === el.clave)) el.clave = r.candidatos[0].clave;
+    r.filas.forEach(f=>{
+      const n = f.nums.find(x => x.clave === el.clave);
+      if(!n || !(n.n > 0)) return;
+      const t = conPagos.has(f.ticker) ? f.ticker : ((/[DC]$/.test(f.ticker) && conPagos.has(f.ticker.slice(0, -1))) ? f.ticker.slice(0, -1) : null);
+      if(t) tenencias.set(t, (tenencias.get(t) || 0) + n.n);
+      else otros.add(f.ticker);
+    });
+    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el });
+  });
+  CUP.montos = {};      // el archivo reemplaza lo cargado antes
+  a.con = [];
+  tenencias.forEach((cant, t)=>{
+    const pagos = futuros.filter(e => e.ticker === t);
+    pagos.forEach(e => { CUP.montos[cupClave(e)] = Math.round(cant); });
+    a.con.push({ ticker: t, cantidad: cant, pagos: pagos.length, proximo: pagos[0].fecha });
+  });
+  a.con.sort((x, y)=> x.proximo < y.proximo ? -1 : (x.proximo > y.proximo ? 1 : x.ticker.localeCompare(y.ticker)));
+  a.sin = [...otros].filter(t => !tenencias.has(t)).sort();
+}
+
+async function cupCargarArchivo(archivo){
+  const btn = document.getElementById('cupPdfBtn'), txt = document.getElementById('cupPdfBtnTxt');
+  const rotulo = txt.textContent;
+  btn.disabled = true; txt.textContent = 'Leyendo el archivo…';
+  try{
+    const buffer = await archivo.arrayBuffer();
+    const esPdf = /\.pdf$/i.test(archivo.name) || archivo.type === 'application/pdf';
+    const tablas = esPdf ? await archTablasDePdf(buffer) : archTablasDeExcel(buffer);
+    CUP.arch = { archivo: archivo.name, tablas, eleccion: {} };
+    archAplicar();
+    if(!CUP.arch.detalle.length) throw new Error('No se encontró en el archivo ninguna columna con tickers del calendario de pagos junto a una columna de nominales.');
     // Se va a la primera semana en la que el cliente cobra
     const primera = cupSemanas().find(s => cupEventosDeSemana(s).some(e => CUP.montos[cupClave(e)]));
     if(primera) CUP.semana = primera.idx;
     CUP.busca = ''; document.getElementById('cupBuscar').value = '';
   } catch(err){
-    console.warn('No se pudo leer el resumen de cuenta.', err);
-    CUP.pdf = { error: (err && err.message) || 'No se pudo leer el archivo.' };
+    console.warn('No se pudo leer el archivo de tenencias.', err);
+    CUP.arch = { error: (err && err.message) || 'No se pudo leer el archivo.' };
   }
-  btn.disabled = false; txt.textContent = 'Cargar resumen de cuenta (PDF)';
+  btn.disabled = false; txt.textContent = rotulo;
   renderCupones();
 }
 
@@ -5249,34 +5400,51 @@ function cupSemanasConCobros(){
   return cupSemanas().filter(s => REINV.eventos.some(e => e.fecha >= s.ini && e.fecha <= s.fin && CUP.montos[cupClave(e)]));
 }
 
-function cupRenderEstadoPdf(){
+function cupRenderEstadoArchivo(){
   const el = document.getElementById('cupPdfEstado');
-  const p = CUP.pdf;
-  if(!p){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  const a = CUP.arch;
+  if(!a){ el.style.display = 'none'; el.innerHTML = ''; return; }
   el.style.display = '';
-  el.classList.toggle('err', !!p.error);
-  if(p.error){ el.textContent = p.error; return; }
-  if(!p.con.length){
-    el.innerHTML = `<strong>Resumen cargado.</strong> Ninguno de los instrumentos del cliente tiene pagos en el calendario.`
-      + (p.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario: ${escHtml(p.sin.join(', '))}.</span>` : '');
-    return;
-  }
+  el.classList.toggle('err', !!a.error);
+  if(a.error){ el.textContent = a.error; return; }
+  // Que columnas se tomaron, con la opcion de cambiarlas
+  const columnas = a.detalle.map(d=>{
+    const t = d.tabla;
+    const optsT = d.colsTicker.map(([col, n]) => `<option value="${col}"${col === d.eleccion.colT ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'ticker', col, col === d.eleccion.colT ? d.encabezadoTicker : '', ''))} · ${n} ${n === 1 ? 'ticker' : 'tickers'} del calendario</option>`).join('');
+    const optsN = d.candidatos.map(c => `<option value="${c.clave}"${c.clave === d.eleccion.clave ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'num', c.clave, c.encabezado, c.ejemplo))}</option>`).join('');
+    return `<span class="cup-arch-cols">${t.nombre && a.detalle.length > 1 ? `<b>Hoja ${escHtml(t.nombre)}</b>` : ''}
+      <label>Tickers <select data-arch-t="${d.i}"${d.colsTicker.length < 2 ? ' disabled' : ''}>${optsT}</select></label>
+      <label>Nominales <select data-arch-n="${d.i}"${d.candidatos.length < 2 ? ' disabled' : ''}>${optsN}</select></label></span>`;
+  }).join('');
   const semanas = cupSemanasConCobros();
-  el.innerHTML = `<strong>Resumen cargado:</strong> ${p.con.length} ${p.con.length === 1 ? 'instrumento del cliente tiene' : 'instrumentos del cliente tienen'} pagos en el calendario y ya ${p.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
-    + `<span class="cup-pdf-det">${p.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>`
+  const sin = a.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario (${a.sin.length}): ${escHtml(a.sin.slice(0, 14).join(', '))}${a.sin.length > 14 ? ` y ${a.sin.length - 14} más` : ''}.</span>` : '';
+  el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
+    + (a.con.length
+      ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del cliente tiene' : 'instrumentos del cliente tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
+      : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.')
+    + `<span class="cup-pdf-det" style="color:var(--text);">Columnas detectadas (se pueden cambiar):</span>${columnas}`
+    + (a.con.length ? `<span class="cup-pdf-det">${a.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>` : '')
     + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros del cliente: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
-    + (p.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario: ${escHtml(p.sin.join(', '))}.</span>` : '');
+    + sin;
 }
 
 document.getElementById('cupPdfBtn').addEventListener('click', ()=> document.getElementById('cupPdfInput').click());
 document.getElementById('cupPdfInput').addEventListener('change', (e)=>{
   const archivo = e.target.files && e.target.files[0];
   e.target.value = '';      // permite volver a elegir el mismo archivo
-  if(archivo) cupCargarResumen(archivo);
+  if(archivo) cupCargarArchivo(archivo);
 });
 document.getElementById('cupPdfEstado').addEventListener('click', (e)=>{
   const b = e.target.closest('[data-sem]');
   if(b) cupElegirSemana(parseInt(b.dataset.sem, 10) || 0);
+});
+document.getElementById('cupPdfEstado').addEventListener('change', (e)=>{
+  const s = e.target.closest('select');
+  if(!s || !CUP.arch || CUP.arch.error) return;
+  if(s.dataset.archT != null){ CUP.arch.eleccion[s.dataset.archT] = { colT: parseInt(s.value, 10) }; }
+  else if(s.dataset.archN != null){ CUP.arch.eleccion[s.dataset.archN].clave = s.value; }
+  archAplicar();
+  renderCupones();
 });
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
