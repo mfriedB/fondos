@@ -5522,7 +5522,8 @@ function cupRenderEstadoArchivo(){
       : (faltan ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
     + (faltan ? `<span class="cup-arch-aviso">No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
-    + `<span class="cup-pdf-det" style="color:var(--text);">${faltan ? 'Columnas' : 'Columnas detectadas (se pueden cambiar)'}:</span>${columnas}`
+    // Los desplegables de columnas solo aparecen cuando hace falta elegir (o si ya se eligio a mano)
+    + ((faltan || a.detalle.some(d => d.eleccion.manual)) ? columnas : '')
     + (semanas.length ? (semanas.length <= 10
         ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>`
         : `<span class="cup-pdf-det">Hay cobros en ${semanas.length} semanas: en el selector de semanas están marcadas con ●.</span>`) : '')
