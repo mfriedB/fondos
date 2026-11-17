@@ -1671,15 +1671,15 @@
   button.cup-dest-chip:hover{ box-shadow:0 0 0 4px rgba(15,138,95,0.22); }
   button.cup-dest-chip:hover .cup-dest-ver{ text-decoration:underline; }
   .cup-dest-chip:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
-  .cup-dest-chip i, .cup-aviso-eti i{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--pos); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
+  .cup-dest-chip i{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--pos); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
   .cup-dest-chip.pagado i{ animation:none; }
   @keyframes cup-dest-pulso{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
-  @media (prefers-reduced-motion: reduce){ .cup-dest-chip i, .cup-aviso-eti i{ animation:none; } }
+  @media (prefers-reduced-motion: reduce){ .cup-dest-chip i{ animation:none; } }
   .cup-dest-chip strong{ font-size:12.5px; font-weight:800; color:var(--navy); }
   .cup-dest-ver{ font-size:12px; font-weight:700; color:var(--accent); }
   @media (max-width:1180px){ .cup-destacado{ position:static; transform:none; max-width:none; flex-wrap:wrap; justify-content:flex-start; margin:0 0 12px; } }
-  .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:16px; }
-  .cup-aviso-eti i{ background:var(--accent); }
+  .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:#8A6100; background:#fff; border:1.5px solid #B8860B; border-radius:5px; padding:3px 10px; margin-bottom:16px; }
+  .cup-aviso-eti b{ font-size:14px; line-height:1; color:#B8860B; }
   .cup-dest-btn{ font:inherit; font-size:13.5px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:10px 16px; cursor:pointer; white-space:nowrap; }
   .cup-dest-btn:hover{ background:var(--accent); }
   .cup-dest-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
@@ -1687,8 +1687,8 @@
   .cup-aviso-cols{ display:grid; grid-template-columns:1fr 1fr; gap:0; }
   .cup-aviso-cols.uno{ grid-template-columns:1fr; }
   .cup-aviso-col{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:4px 22px; min-width:0; }
-  .cup-aviso-col + .cup-aviso-col{ border-left:1px solid var(--line); }
-  .cup-aviso-mon{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .cup-aviso-col + .cup-aviso-col{ border-left:3px solid var(--pos); }
+  .cup-aviso-mon{ font-size:12.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#000; }
   .cup-aviso-col h2{ font-size:19px; font-weight:800; line-height:1.25; color:var(--navy); margin:0; letter-spacing:-0.01em; }
   .cup-aviso-col h2 span{ display:block; }
   .cup-aviso-col .cup-dest-fondo{ margin:0; color:var(--accent); }
@@ -1696,7 +1696,7 @@
   .cup-aviso-col .cup-dest-fondo strong{ display:block; font-size:16px; font-weight:800; }
   @media (min-width:860px){ .cup-aviso-col h2 span:first-child{ white-space:nowrap; } }
   .cup-aviso-col .cup-dest-btn{ margin-top:auto; }
-  @media (max-width:640px){ .cup-aviso-cols{ grid-template-columns:1fr; } .cup-aviso-col{ padding:14px 4px; } .cup-aviso-col + .cup-aviso-col{ border-left:0; border-top:1px solid var(--line); } }
+  @media (max-width:640px){ .cup-aviso-cols{ grid-template-columns:1fr; } .cup-aviso-col{ padding:14px 4px; } .cup-aviso-col + .cup-aviso-col{ border-left:0; border-top:3px solid var(--pos); } }
   .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:20px; }
   .cg-estrella{ color:#D99A00; font-size:13px; font-weight:400; }
   /* Todas las filas reservan el lugar de la estrella, asi los tickers arrancan en la misma columna */
@@ -2192,7 +2192,7 @@
 
   <div id="cupAvisoModal" class="client-modal-overlay" aria-hidden="true">
     <div class="login-box cup-aviso-box" role="dialog" aria-modal="true" aria-labelledby="cupAvisoTitulo">
-      <span class="cup-aviso-eti"><i></i><span id="cupAvisoTitulo">Pagos destacados</span></span>
+      <span class="cup-aviso-eti"><b aria-hidden="true">★</b><span id="cupAvisoTitulo">Pagos destacados</span></span>
       <div id="cupAvisoCuerpo" class="cup-aviso-cols"></div>
       <div class="cup-aviso-botones">
         <button type="button" id="cupAvisoCerrar" class="btn btn-outline">Entendido</button>
