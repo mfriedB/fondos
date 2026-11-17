@@ -1683,7 +1683,9 @@
   .cup-dest-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
   .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; background:#fff; border:4px solid var(--pos); box-shadow:0 0 0 5px rgba(31,138,91,0.25), 0 20px 60px rgba(0,0,0,0.35) !important; }
   .cup-aviso-cab{ background:#fff; padding:24px 28px 0; }
-  .cup-aviso-box .cup-aviso-cab h1{ color:var(--navy); font-size:23px; line-height:1.25; margin:0; text-align:center; text-wrap:balance; }
+  .cup-aviso-box .cup-aviso-cab h1{ color:var(--navy); font-size:23px; line-height:1.25; margin:0; text-align:center; }
+  .cup-aviso-box .cup-aviso-cab h1 span{ display:block; }
+  @media (min-width:480px){ .cup-aviso-box .cup-aviso-cab h1 span:first-child{ white-space:nowrap; } }
   .cup-aviso-pie{ padding:12px 28px 24px; }
   .cup-aviso-box .cup-dest-fondo{ font-size:16px; font-weight:800; color:var(--accent); margin:0; }
   .cup-aviso-botones{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; margin-top:20px; }
@@ -5167,6 +5169,8 @@ function cupDestacadoTextos(d){
   const sug = cupFondoDeEvento(e);
   return {
     titulo: `${e.ticker} · ${e.nombre} ${verbo} el ${dia} ${fechaCorta(e.fecha)}`,
+    tituloSinFecha: `${e.ticker} · ${e.nombre} ${verbo} el ${dia}`,
+    fecha: fechaCorta(e.fecha),
     fondo: sug && sug.fondo ? `Fondo sugerido para reinvertir: ${sug.fondo}` : '',
   };
 }
@@ -5203,7 +5207,7 @@ function cupMostrarAviso(){
   try{ if(sessionStorage.getItem(clave)) return; sessionStorage.setItem(clave, '1'); }catch(err){ if(cupMostrarAviso.visto === clave) return; cupMostrarAviso.visto = clave; }
   const x = cupDestacadoTextos(d);
   const modal = document.getElementById('cupAvisoModal');
-  document.getElementById('cupAvisoTitulo').textContent = x.titulo;
+  document.getElementById('cupAvisoTitulo').innerHTML = `<span>${escHtml(x.tituloSinFecha)}</span><span>${escHtml(x.fecha)}</span>`;
   document.getElementById('cupAvisoCuerpo').innerHTML = x.fondo ? `<p class="cup-dest-fondo">${escHtml(x.fondo)}</p>` : '';
   modal.dataset.ticker = d.ticker;
   modal.classList.add('open');
