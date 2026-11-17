@@ -6439,7 +6439,8 @@ function infDatos(cuantas){
   const hoy = isoLocal(new Date());
   const semanas = cupSemanas().slice(0, Math.max(1, Math.min(INF_SEMANAS_MAX, cuantas || INF_SEMANAS_MAX)));
   const porSemana = semanas.map(s=>{
-    const evs = REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && e.fecha >= hoy && cupCobro(e) > 0);
+    // La semana en curso va completa (de lunes a domingo): lo que ya se pago esta semana tambien se cobro
+    const evs = REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && cupCobro(e) > 0);
     const monedas = ['Pesos', 'Dólar'].map(m=>{
       const lista = evs.filter(e => e.moneda === m);
       return { moneda: m, eventos: lista, total: lista.reduce((a, e)=> a + cupCobro(e), 0), cartera: lista.length ? cupCarteraSugerida(lista, m) : null };
