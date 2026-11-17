@@ -1929,7 +1929,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de las próximas 8 semanas y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de esta semana y las 3 siguientes y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
@@ -6397,13 +6397,13 @@ async function generarPdf(clientName){
    Informe de pagos y reinversion (PDF para el cliente)
 
    Con los nominales cargados, el asesor baja un informe con los cobros del
-   cliente en las proximas 8 semanas y la cartera de fondos sugerida para
+   cliente en la semana en curso y las 3 siguientes, y la cartera de fondos sugerida para
    reinvertir cada semana. Usa el mismo formato que el PDF de la Calculadora
    de Carteras (franja superior, recuadro del cliente, tablas y hoja final
    con el aviso legal). Cada hoja se arma por separado para que ninguna
    semana quede cortada entre dos hojas.
 --------------------------------------------------------------------- */
-const INF_SEMANAS = 8;
+const INF_SEMANAS = 4;      // la semana en curso y las 3 siguientes
 const INF_ANCHO = 794, INF_ALTO = 1123, INF_MARGEN = 32;      // hoja A4 a 96 dpi
 
 function infDatos(){
@@ -6505,7 +6505,7 @@ function infBloqueSemana(x, n, hoy){
   return `<div class="print-section inf-semana">${titulo}${cuerpo}${hayEstimado ? '<p class="inf-nota">* Monto estimado: el instrumento ajusta por inflación (CER o UVA) o por tipo de cambio oficial, y el valor final se conoce al momento del pago.</p>' : ''}</div>`;
 }
 
-// Primera parte: resumen de las 8 semanas y cartera para el total de los cobros
+// Primera parte: resumen del periodo y cartera para el total de los cobros
 function infBloqueResumen(d){
   const filas = d.porSemana.map((x, i)=>{
     const p = x.monedas[0], u = x.monedas[1];
@@ -6621,7 +6621,7 @@ async function generarInformeCupones(clientName){
     const cliente = slugNombreArchivo(clientName);
     pdf.save(`informe-cobros${cliente ? '-' + cliente : ''}-${d.hoy}.pdf`);
   } catch(err){
-    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados no hay cobros en las próximas ${INF_SEMANAS} semanas.`);
+    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados no hay cobros en esta semana ni en las ${INF_SEMANAS - 1} siguientes.`);
     else { console.error('Error generando el informe de cobros:', err); alert('No se pudo generar el informe. Probá de nuevo en unos segundos.'); }
   } finally{
     lienzo.remove();
