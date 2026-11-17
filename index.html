@@ -1625,6 +1625,8 @@
   .cup-arch-cols label{ display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--navy); font-size:12px; }
   .cup-arch-cols select{ font:inherit; font-size:12px; font-weight:500; padding:4px 8px; border:1px solid #C9D2EA; border-radius:6px; background:#fff; color:var(--text); max-width:340px; }
   .cup-arch-cols select:disabled{ opacity:1; background:#F6F8FE; }
+  .cup-arch-cols select.falta{ border-color:#E0A100; background:#FFF8E1; font-weight:700; }
+  .cup-arch-aviso{ display:block; margin-top:6px; padding:7px 10px; border-radius:7px; background:#FFF6E5; border:1px solid #F1D48A; color:#8A5A0F; font-weight:600; }
   .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
   .tab-toolbar{ gap:10px; }
@@ -5251,8 +5253,16 @@ function archLetraColumna(i){
   return s;
 }
 
-const ARCH_ENC_SI = /cantidad|cant\.|nominal|\bv\.?\s?n\.?\b|tenencia|posici[oó]n|t[ií]tulos|l[aá]minas|unidades|qty|quantity|holding|saldo/i;
-const ARCH_ENC_NO = /precio|price|valor|monto|importe|total|garant|variaci|costo|ppc|rendim|\btir\b|\btna\b|%|cotiz|paridad|mercado|market|pesos|d[oó]lar/i;
+// Encabezados: que es una cantidad de titulos y que es plata (precio, monto, importe, valuacion)
+const ARCH_ENC_NOMINAL = /nominal|\bv\.?\s?n\.?\b/i;
+const ARCH_ENC_SI = /cantidad|\bcant\b|tenencia|t[ií]tulos|l[aá]minas|unidades|qty|quantity/i;
+const ARCH_ENC_NO = /precio|price|monto|importe|amount|total|saldo|valor|value|valuaci|valoriz|garant|variaci|costo|ppc|rendim|\btir\b|\btna\b|%|cotiz|paridad|mercado|market|pesos|d[oó]lar|\busd\b|\bars\b|\$/i;
+function archTipoEncabezado(enc){
+  if(!enc) return '';
+  if(ARCH_ENC_NOMINAL.test(enc)) return 'cantidad';      // "Valor nominal", "Monto nominal", "VN"
+  if(ARCH_ENC_NO.test(enc)) return 'plata';
+  return ARCH_ENC_SI.test(enc) ? 'cantidad' : '';
+}
 
 /* Analiza una tabla: columna de tickers, columnas numericas candidatas a
    nominales (ordenadas de la mas probable a la menos) y filas con ticker. */
@@ -5304,21 +5314,59 @@ function archAnalizarTabla(tabla, conocidos){
       c.vals.push(n.n); if(n.moneda) c.moneda++;
       claves.set(n.clave, c);
     }));
-    const candidatos = [...claves.values()].filter(c => c.vals.length >= Math.max(1, base.length * 0.5)).map(c=>{
+    const cols = [...claves.values()].filter(c => c.vals.length >= Math.max(1, base.length * 0.5));
+    // Una columna que es el producto de otras dos (cantidad x precio, o /100) es un monto
+    const valor = (f, clave)=>{ const n = f.nums.find(x => x.clave === clave); return n ? n.n : null; };
+    const esProducto = (c, a, b)=>{
+      let filasOk = 0, total = 0;
+      base.forEach(f=>{
+        const vc = valor(f, c.clave), va = valor(f, a.clave), vb = valor(f, b.clave);
+        if(vc == null || va == null || vb == null || !vc || !va || !vb) return;
+        total++;
+        const p = va * vb;
+        if(Math.abs(p - vc) <= Math.abs(vc) * 0.03 || Math.abs(p / 100 - vc) <= Math.abs(vc) * 0.03) filasOk++;
+      });
+      return total >= 2 && filasOk / total >= 0.8;
+    };
+    const producto = new Map();      // clave del monto -> [factor, factor]
+    cols.forEach(c => cols.forEach(a => cols.forEach(b=>{
+      if(a === c || b === c || a.clave >= b.clave || producto.has(c.clave)) return;
+      if(esProducto(c, a, b)) producto.set(c.clave, [a.clave, b.clave]);
+    })));
+    const factores = new Set([...producto.values()].flat());
+    const candidatos = cols.map(c=>{
       const total = c.vals.length;
       const enteros = c.vals.filter(v => Math.abs(v - Math.round(v)) < 1e-6).length / total;
       const positivos = c.vals.filter(v => v > 0).length / total;
       const distintos = new Set(c.vals).size;
+      const moneda = c.moneda / total;
       const enc = encabezadoDe(c.fila, c.num);
-      let puntaje = enteros * 2 + positivos * 2 - (c.moneda / total) * 4 - (distintos === 1 && total > 2 ? 1.5 : 0);
-      if(enc && ARCH_ENC_SI.test(enc)) puntaje += 6;
-      if(enc && ARCH_ENC_NO.test(enc)) puntaje -= 4;
-      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo };
+      const tipoEnc = archTipoEncabezado(enc);
+      // Plata: lo dice el encabezado, trae signo de moneda o es cantidad x precio
+      const plata = tipoEnc === 'plata' || (tipoEnc !== 'cantidad' && (moneda > 0.5 || producto.has(c.clave)));
+      const puntaje = enteros * 2 + positivos * 2 - (distintos === 1 && total > 2 ? 1.5 : 0) + (tipoEnc === 'cantidad' ? 6 : 0) - (plata ? 8 : 0);
+      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo, plata, tipoEnc, enteros, moneda, factor: factores.has(c.clave), positivos };
     });
     // A igual puntaje, la columna mas cercana al ticker
-    candidatos.sort((a, b)=> b.puntaje - a.puntaje || (tabla.modo === 'columna' ? a.orden - b.orden : a.orden - b.orden));
+    candidatos.sort((a, b)=> b.puntaje - a.puntaje || a.orden - b.orden);
+    /* Solo se cargan nominales solos cuando hay certeza de que la columna es
+       una cantidad y no un monto: lo dice el encabezado, o el archivo trae
+       cantidad, precio y monto y las cuentas cierran. Si no, elige el asesor. */
+    let seguro = null;
+    const conEnc = candidatos.filter(c => c.tipoEnc === 'cantidad' && c.positivos > 0);
+    if(conEnc.length) seguro = conEnc[0].clave;
+    else {
+      const fs = candidatos.filter(c => c.factor && !c.plata);
+      // De los dos factores, la cantidad es la de numeros enteros y sin signo de moneda
+      if(fs.length === 1) seguro = fs[0].clave;
+      else if(fs.length === 2){
+        const [x, y] = fs;
+        if(x.enteros >= 0.95 && y.enteros < 0.6) seguro = x.clave;
+        else if(y.enteros >= 0.95 && x.enteros < 0.6) seguro = y.clave;
+      }
+    }
     const encT = (()=>{ const f0 = base[0]; for(let i = f0.idx - 1; i >= Math.max(0, f0.idx - 12); i--){ const c = (tabla.filas[i] || [])[colT]; if(c != null && String(c).trim() && !archTickerDeCeldaConocida(c, esConocido) && !archNumero(c)) return String(c).trim(); } return ''; })();
-    return { filas, candidatos, encabezadoTicker: encT };
+    return { filas, candidatos, seguro, encabezadoTicker: encT };
   } };
 }
 function archTickerDeCeldaConocida(c, esConocido){
@@ -5351,7 +5399,10 @@ function archAplicar(){
     if(el.colT == null || !an.colsTicker.some(c => c[0] === el.colT)) el.colT = an.colsTicker[0][0];
     const r = an.analizar(el.colT);
     if(!r.candidatos.length) return;
-    if(!el.clave || !r.candidatos.some(c => c.clave === el.clave)) el.clave = r.candidatos[0].clave;
+    if(el.clave && !r.candidatos.some(c => c.clave === el.clave)) el.clave = null;
+    if(!el.clave && !el.manual) el.clave = r.seguro;      // sin certeza queda sin elegir
+    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el });
+    if(!el.clave) return;
     r.filas.forEach(f=>{
       const n = f.nums.find(x => x.clave === el.clave);
       if(!n || !(n.n > 0)) return;
@@ -5359,7 +5410,6 @@ function archAplicar(){
       if(t) tenencias.set(t, (tenencias.get(t) || 0) + n.n);
       else otros.add(f.ticker);
     });
-    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el });
   });
   CUP.montos = {};      // el archivo reemplaza lo cargado antes
   a.con = [];
@@ -5411,18 +5461,23 @@ function cupRenderEstadoArchivo(){
   const columnas = a.detalle.map(d=>{
     const t = d.tabla;
     const optsT = d.colsTicker.map(([col, n]) => `<option value="${col}"${col === d.eleccion.colT ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'ticker', col, col === d.eleccion.colT ? d.encabezadoTicker : '', ''))} · ${n} ${n === 1 ? 'ticker' : 'tickers'} del calendario</option>`).join('');
-    const optsN = d.candidatos.map(c => `<option value="${c.clave}"${c.clave === d.eleccion.clave ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'num', c.clave, c.encabezado, c.ejemplo))}</option>`).join('');
+    const optsN = (d.eleccion.clave ? '' : '<option value="" selected disabled>Elegí la columna de nominales…</option>')
+      + d.candidatos.map(c => `<option value="${c.clave}"${c.clave === d.eleccion.clave ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'num', c.clave, c.encabezado, c.ejemplo))}${c.plata ? ' · parece un monto o precio' : ''}</option>`).join('');
     return `<span class="cup-arch-cols">${t.nombre && a.detalle.length > 1 ? `<b>Hoja ${escHtml(t.nombre)}</b>` : ''}
       <label>Tickers <select data-arch-t="${d.i}"${d.colsTicker.length < 2 ? ' disabled' : ''}>${optsT}</select></label>
-      <label>Nominales <select data-arch-n="${d.i}"${d.candidatos.length < 2 ? ' disabled' : ''}>${optsN}</select></label></span>`;
+      <label>Nominales <select data-arch-n="${d.i}"${(d.candidatos.length < 2 && d.eleccion.clave) ? ' disabled' : ''}${d.eleccion.clave ? '' : ' class="falta"'}>${optsN}</select></label></span>`;
   }).join('');
+  const faltan = a.detalle.filter(d => !d.eleccion.clave).length;
+  const elegidaPlata = a.detalle.some(d => d.eleccion.clave && (d.candidatos.find(c => c.clave === d.eleccion.clave) || {}).plata);
   const semanas = cupSemanasConCobros();
   const sin = a.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario (${a.sin.length}): ${escHtml(a.sin.slice(0, 14).join(', '))}${a.sin.length > 14 ? ` y ${a.sin.length - 14} más` : ''}.</span>` : '';
   el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
     + (a.con.length
       ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del cliente tiene' : 'instrumentos del cliente tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
-      : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.')
-    + `<span class="cup-pdf-det" style="color:var(--text);">Columnas detectadas (se pueden cambiar):</span>${columnas}`
+      : (faltan ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
+    + (faltan ? `<span class="cup-arch-aviso">No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
+    + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
+    + `<span class="cup-pdf-det" style="color:var(--text);">${faltan ? 'Columnas' : 'Columnas detectadas (se pueden cambiar)'}:</span>${columnas}`
     + (a.con.length ? `<span class="cup-pdf-det">${a.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>` : '')
     + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros del cliente: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
     + sin;
@@ -5442,7 +5497,7 @@ document.getElementById('cupPdfEstado').addEventListener('change', (e)=>{
   const s = e.target.closest('select');
   if(!s || !CUP.arch || CUP.arch.error) return;
   if(s.dataset.archT != null){ CUP.arch.eleccion[s.dataset.archT] = { colT: parseInt(s.value, 10) }; }
-  else if(s.dataset.archN != null){ CUP.arch.eleccion[s.dataset.archN].clave = s.value; }
+  else if(s.dataset.archN != null){ const e2 = CUP.arch.eleccion[s.dataset.archN]; e2.clave = s.value; e2.manual = true; }
   archAplicar();
   renderCupones();
 });
