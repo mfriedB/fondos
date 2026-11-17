@@ -1619,7 +1619,6 @@
   /* Carga del resumen de cuenta del cliente (PDF) */
   .cup-pdf-btn{ display:inline-flex; align-items:center; gap:7px; }
   .cup-cab-der{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
-  .cup-priv{ font-size:11px; color:var(--muted); margin-top:-3px; }
   .cup-cab-der .cup-pdf-btn{ padding:8px 14px; font-size:13px; }
   @media (max-width:700px){ .cup-cab-der{ align-items:flex-start; } }
   .cup-pdf-btn[disabled]{ opacity:.6; cursor:default; }
@@ -1925,8 +1924,7 @@
         <div class="cup-cab-der">
         <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con tenencias (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que figuran">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
-          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button>
-        <span class="cup-priv">El archivo se lee en tu computadora: no se sube ni se guarda.</span><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
+          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
