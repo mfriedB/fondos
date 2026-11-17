@@ -1613,6 +1613,9 @@
   .cup-buscar-fila .btn-com{ padding:7px 14px; font-size:13px; }
   /* Carga del resumen de cuenta del cliente (PDF) */
   .cup-pdf-btn{ display:inline-flex; align-items:center; gap:7px; }
+  .cup-cab-der{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+  .cup-cab-der .cup-pdf-btn{ padding:8px 14px; font-size:13px; }
+  @media (max-width:700px){ .cup-cab-der{ align-items:flex-start; } }
   .cup-pdf-btn[disabled]{ opacity:.6; cursor:default; }
   .cup-pdf-estado{ margin:0 0 12px; padding:10px 14px; border-radius:9px; font-size:12.5px; line-height:1.5; background:#EEF1FC; border:1px solid #C9D2EA; color:var(--text); }
   .cup-pdf-estado.err{ background:var(--neg-bg); border-color:#F0C4C4; color:var(--neg); }
@@ -1892,17 +1895,20 @@
       <button type="button" class="cup-volver" id="cupVolver">‹ Volver a la Calculadora de Carteras</button>
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
+        <div class="cup-cab-der">
+        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee el resumen de cuenta del cliente (PDF) y completa los nominales de los instrumentos que tiene">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+          <span id="cupPdfBtnTxt">Cargar resumen de cuenta (PDF)</span></button><input type="file" id="cupPdfInput" accept="application/pdf,.pdf" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
           <button type="button" class="range-btn" id="cupNext" aria-label="Semana siguiente">Siguiente ›</button>
         </div>
+        </div>
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee el resumen de cuenta del cliente (PDF) y completa los nominales de los instrumentos que tiene">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
-          <span id="cupPdfBtnTxt">Cargar resumen de cuenta (PDF)</span></button><input type="file" id="cupPdfInput" accept="application/pdf,.pdf" style="display:none;" /><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
