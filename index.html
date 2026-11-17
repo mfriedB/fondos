@@ -1663,20 +1663,25 @@
   .tab-toolbar{ align-items:center; flex-wrap:wrap; }
   .cup-volver{ font:inherit; font-size:12.5px; font-weight:700; color:var(--accent); background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; }
   .cup-volver:hover{ text-decoration:underline; }
-  /* Pago destacado: tarjeta arriba de la solapa y aviso al entrar */
-  .cup-destacado{ display:flex; gap:14px 22px; flex-wrap:wrap; align-items:center; justify-content:space-between; border-radius:12px; padding:18px 22px; margin:0 0 18px;
-    background:#fff; border:2px solid var(--accent); border-left-width:8px; box-shadow:0 0 0 4px rgba(52,87,213,0.12), 0 8px 22px rgba(20,34,90,0.14); }
-  .cup-dest-txt{ min-width:0; flex:1 1 320px; }
-  .cup-dest-eti, .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:10px; }
-  .cup-dest-eti i, .cup-aviso-eti i{ width:8px; height:8px; border-radius:50%; background:var(--accent); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
+  /* Pago destacado: tarjeta chica arriba a la derecha de la solapa y aviso al entrar */
+  #cupGraficosCard{ position:relative; }
+  .cup-destacado{ position:absolute; top:5px; right:24px; display:flex; flex-direction:column; align-items:flex-end; gap:6px; max-width:min(440px, calc(100% - 300px)); }
+  .cup-dest-chip{ display:flex; align-items:center; gap:10px; font:inherit; text-align:left; cursor:pointer; background:#fff; border:2px solid var(--pos); border-radius:10px; padding:6px 12px; box-shadow:0 0 0 3px rgba(31,138,91,0.12); max-width:100%; }
+  .cup-dest-chip:hover{ box-shadow:0 0 0 4px rgba(31,138,91,0.22); }
+  .cup-dest-chip:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+  .cup-dest-chip i, .cup-aviso-eti i{ flex:none; width:8px; height:8px; border-radius:50%; background:var(--pos); animation:cup-dest-pulso 1.4s ease-in-out infinite; }
   @keyframes cup-dest-pulso{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
-  @media (prefers-reduced-motion: reduce){ .cup-dest-eti i, .cup-aviso-eti i{ animation:none; } }
-  .cup-dest-txt h3{ font-size:21px; font-weight:800; color:var(--navy); margin:0 0 6px; letter-spacing:-0.01em; line-height:1.25; }
-  .cup-destacado .cup-dest-fondo{ font-size:14.5px; font-weight:700; color:var(--accent); margin:0; }
+  @media (prefers-reduced-motion: reduce){ .cup-dest-chip i, .cup-aviso-eti i{ animation:none; } }
+  .cup-dest-txt{ display:flex; flex-direction:column; min-width:0; line-height:1.3; }
+  .cup-dest-txt strong{ font-size:12.5px; font-weight:800; color:var(--navy); }
+  .cup-dest-chip .cup-dest-fondo{ font-size:11.5px; font-weight:700; color:var(--accent); }
+  @media (max-width:760px){ .cup-destacado{ position:static; max-width:none; align-items:stretch; margin:0 0 12px; } }
+  .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:10px; }
+  .cup-aviso-eti i{ background:var(--accent); }
   .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; }
   .cup-dest-btn:hover{ background:var(--accent); }
   .cup-dest-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
-  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; background:#fff; border:2px solid var(--accent); border-top-width:8px; }
+  .cup-aviso-box{ max-width:480px !important; padding:0 !important; overflow:hidden; background:#fff; border:4px solid var(--pos); box-shadow:0 0 0 5px rgba(31,138,91,0.25), 0 20px 60px rgba(0,0,0,0.35) !important; }
   .cup-aviso-cab{ background:#fff; padding:24px 28px 0; }
   .cup-aviso-box .cup-aviso-cab h1{ color:var(--navy); font-size:23px; line-height:1.25; margin:0; }
   .cup-aviso-pie{ padding:12px 28px 24px; }
@@ -5172,10 +5177,9 @@ function cupRenderDestacados(){
   caja.style.display = lista.length ? '' : 'none';
   caja.innerHTML = lista.map(d=>{
     const x = cupDestacadoTextos(d);
-    return `<div class="cup-dest-txt"><span class="cup-dest-eti"><i></i>Pago destacado</span>
-      <h3>${escHtml(x.titulo)}</h3>
-      ${x.fondo ? `<p class="cup-dest-fondo">${escHtml(x.fondo)}</p>` : ''}</div>
-      <button type="button" class="cup-dest-btn" data-cup-dest="${escHtml(d.ticker)}">Ver el pago y cargar nominales ›</button>`;
+    return `<button type="button" class="cup-dest-chip" data-cup-dest="${escHtml(d.ticker)}" title="Ver el pago y cargar nominales">
+      <i></i><span class="cup-dest-txt"><strong>${escHtml(x.titulo)}</strong>
+      ${x.fondo ? `<span class="cup-dest-fondo">${escHtml(x.fondo)} ›</span>` : ''}</span></button>`;
   }).join('');
 }
 // Va a la semana del pago y deja el cursor en los nominales de ese instrumento
