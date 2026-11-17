@@ -1619,6 +1619,7 @@
   /* Carga del resumen de cuenta del cliente (PDF) */
   .cup-pdf-btn{ display:inline-flex; align-items:center; gap:7px; }
   .cup-cab-der{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+  .cup-priv{ font-size:11px; color:var(--muted); margin-top:-3px; }
   .cup-cab-der .cup-pdf-btn{ padding:8px 14px; font-size:13px; }
   @media (max-width:700px){ .cup-cab-der{ align-items:flex-start; } }
   .cup-pdf-btn[disabled]{ opacity:.6; cursor:default; }
@@ -1924,7 +1925,8 @@
         <div class="cup-cab-der">
         <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con tenencias (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que figuran">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
-          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
+          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button>
+        <span class="cup-priv">El archivo se lee en tu computadora: no se sube ni se guarda.</span><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
@@ -5168,10 +5170,20 @@ document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos
      - Nominales: entre las columnas numericas de esas filas, la que tiene
        encabezado de cantidad o, si no hay encabezado claro, la que mas se
        parece a una cantidad (numeros enteros, sin signo de moneda).
-   Lo detectado se muestra y se puede cambiar. El archivo se lee en el
-   navegador: no se sube ni se guarda. Los casilleros siguen siendo editables.
+   Lo detectado se muestra y se puede cambiar. Los casilleros siguen siendo
+   editables.
+
+   PRIVACIDAD: los datos de clientes no salen de la computadora del asesor.
+   El archivo se lee en el navegador y las tenencias quedan solo en la memoria
+   de esa pestaña (CUP.montos / CUP.arch): no se suben a ningun servidor, no se
+   guardan en el almacenamiento del navegador, no van en la direccion de la
+   pagina y se pierden al cerrarla o recargarla. No agregar aca nada que envie
+   o persista esos datos. Como no hay nada compartido entre navegadores, cada
+   asesor que entra a la pagina trabaja con lo suyo sin ver lo de otro.
 --------------------------------------------------------------------- */
+// El lector de PDF se sirve desde esta misma pagina (libs/pdfjs), sin terceros; los CDN quedan solo como respaldo
 const PDFJS_URLS = [
+  ['libs/pdfjs/pdf.min.js', 'libs/pdfjs/pdf.worker.min.js'],
   ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'],
   ['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'],
 ];
