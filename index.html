@@ -1934,7 +1934,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de las próximas semanas (de 1 a 4, a elección) y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" title="Descarga un informe en PDF con los cobros de las próximas semanas (de 1 a 4, a elección) y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
@@ -5062,7 +5062,6 @@ function actualizarCup(){
   });
 
   document.getElementById('cupLimpiar').style.display = Object.keys(CUP.montos).length ? '' : 'none';
-  document.getElementById('cupInformeBtn').style.display = Object.keys(CUP.montos).length ? '' : 'none';
 }
 
 function renderCupones(){
@@ -6671,7 +6670,14 @@ async function generarInformeCupones(clientName, cuantas){
   }
 }
 
-document.getElementById('cupInformeBtn').addEventListener('click', ()=> openClientModal('cupones'));
+// El boton esta siempre a la vista; sin nominales cargados avisa que hace falta para armar el informe
+document.getElementById('cupInformeBtn').addEventListener('click', ()=>{
+  if(!Object.keys(CUP.montos).length){
+    alert('Para armar el informe, primero cargá los nominales: con el botón "Cargar tenencias (PDF o Excel)" o escribiéndolos en los instrumentos.');
+    return;
+  }
+  openClientModal('cupones');
+});
 
 </script>
 </body>
