@@ -5186,7 +5186,8 @@ function cupDestacadoTextos(d){
     fecha: fechaCorta(e.fecha),
     // Lo que paga cada 100 nominales (renta + capital) es el % sobre el valor nominal
     pctVN: ((e.renta || 0) + (e.amort || 0)) > 0 ? `${fmtNumCom((e.renta || 0) + (e.amort || 0), 2)}%` : '',
-    moneda: e.moneda === 'Dólar' ? 'En dólares' : 'En pesos',
+    // En dolares se aclara MEP o cable, segun el tipo del instrumento en el calendario
+    moneda: e.moneda !== 'Dólar' ? 'En pesos' : (/CABLE/i.test(e.tipo) ? 'En dólares cable' : (/MEP/i.test(e.tipo) ? 'En dólares MEP' : 'En dólares')),
     fondo: sug && sug.fondo ? sug.fondo : '',
   };
 }
