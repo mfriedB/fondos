@@ -1611,6 +1611,14 @@
 
   .cup-buscar-fila{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .cup-buscar-fila .btn-com{ padding:7px 14px; font-size:13px; }
+  /* Carga del resumen de cuenta del cliente (PDF) */
+  .cup-pdf-btn{ display:inline-flex; align-items:center; gap:7px; }
+  .cup-pdf-btn[disabled]{ opacity:.6; cursor:default; }
+  .cup-pdf-estado{ margin:0 0 12px; padding:10px 14px; border-radius:9px; font-size:12.5px; line-height:1.5; background:#EEF1FC; border:1px solid #C9D2EA; color:var(--text); }
+  .cup-pdf-estado.err{ background:var(--neg-bg); border-color:#F0C4C4; color:var(--neg); }
+  .cup-pdf-estado strong{ color:var(--navy); }
+  .cup-pdf-estado .cup-pdf-det{ display:block; color:var(--muted); margin-top:2px; }
+  .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
   .tab-toolbar{ gap:10px; }
   .btn-cupones{ margin-right:auto; display:inline-flex; align-items:center; gap:9px; background:linear-gradient(135deg, #2F4BD8 0%, #131E42 100%); color:#fff; border:none; padding:11px 20px; font-size:14px; font-weight:800; border-radius:10px; box-shadow:0 6px 16px rgba(47,75,216,.32); transition:transform .12s ease, box-shadow .12s ease; }
@@ -1892,9 +1900,12 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
+        <div class="cup-buscar-fila"><button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee el resumen de cuenta del cliente (PDF) y completa los nominales de los instrumentos que tiene">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+          <span id="cupPdfBtnTxt">Cargar resumen de cuenta (PDF)</span></button><input type="file" id="cupPdfInput" accept="application/pdf,.pdf" style="display:none;" /><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
+      <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
       <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
       <div class="cg-grid" id="cupGraficos"></div>
       <div class="tl-leyenda" style="margin:14px 0 0;">
@@ -4632,7 +4643,7 @@ function activarTab(nombre){
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
 let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
-const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '' };
+const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '', pdf: null };
 const CUP_SEMANAS_MAX = 30;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -5024,11 +5035,14 @@ function renderCupones(){
 
   document.getElementById('cupSemanaSelect').innerHTML = semanas.map(x=>{
     const n = cupEventosDeSemana(x).length;
-    return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
+    const delCliente = CUP.pdf && cupEventosDeSemana(x).some(e => CUP.montos[cupClave(e)]);
+    return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${delCliente ? '● ' : ''}${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
   }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado} · Fuente: 1816` : 'Fuente: 1816';
+
+  cupRenderEstadoPdf();
 
   const aviso = document.getElementById('cupAvisoCobertura');
   const avisos = [];
@@ -5102,7 +5116,162 @@ document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   if(v > 0) CUP.montos[inp.dataset.k] = v; else delete CUP.montos[inp.dataset.k];
   actualizarCup();
 });
-document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; renderCupones(); });
+document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; CUP.pdf = null; renderCupones(); });
+
+/* ---------------------------------------------------------------------
+   Resumen de cuenta del cliente (PDF)
+
+   El asesor carga el PDF de "Posicion consolidada" y la pagina completa los
+   nominales de los instrumentos que el cliente tiene y que figuran en el
+   calendario, en todos sus pagos. El archivo se lee en el navegador: no se
+   sube ni se guarda en ningun lado. Los casilleros siguen siendo editables.
+--------------------------------------------------------------------- */
+const PDFJS_URLS = [
+  ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'],
+  ['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'],
+];
+let pdfjsCarga = null;
+function cargarPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if(pdfjsCarga) return pdfjsCarga;
+  const intentar = (i)=> new Promise((ok, mal)=>{
+    if(i >= PDFJS_URLS.length) return mal(new Error('No se pudo cargar el lector de PDF. Revisá la conexión y probá de nuevo.'));
+    const sc = document.createElement('script');
+    sc.src = PDFJS_URLS[i][0];
+    sc.onload = ()=>{
+      if(!window.pdfjsLib) return intentar(i + 1).then(ok, mal);
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_URLS[i][1];
+      ok(window.pdfjsLib);
+    };
+    sc.onerror = ()=> intentar(i + 1).then(ok, mal);
+    document.head.appendChild(sc);
+  });
+  pdfjsCarga = intentar(0).catch(e=>{ pdfjsCarga = null; throw e; });
+  return pdfjsCarga;
+}
+
+// Texto del PDF, renglon por renglon (se agrupa por altura y se ordena de izquierda a derecha)
+async function cupLineasDePdf(buffer){
+  const lib = await cargarPdfJs();
+  const doc = await lib.getDocument({ data: buffer }).promise;
+  const lineas = [];
+  for(let n = 1; n <= doc.numPages; n++){
+    const pagina = await doc.getPage(n);
+    const contenido = await pagina.getTextContent();
+    const filas = [];
+    contenido.items.forEach(it=>{
+      const txt = (it.str || '').trim();
+      if(!txt) return;
+      const x = it.transform[4], y = it.transform[5];
+      let fila = filas.find(f => Math.abs(f.y - y) < 2.5);
+      if(!fila){ fila = { y, items: [] }; filas.push(fila); }
+      fila.items.push({ x, txt });
+    });
+    filas.sort((a, b)=> b.y - a.y);
+    filas.forEach(f => lineas.push(f.items.sort((a, b)=> a.x - b.x).map(i => i.txt).join(' ').replace(/\s+/g, ' ').trim()));
+  }
+  return lineas;
+}
+
+/* Tenencias del resumen: { especie -> cantidad }. Cada renglon de las tablas
+   trae Especie | Descripcion | Cantidad | Garantia | Precio | Valor actual.
+   No se toman acciones, cedears ni fondos: no pagan cupon. */
+const CUP_PDF_SECCIONES_FUERA = ['acciones', 'cedears', 'fondos'];
+function cupTenenciasDeLineas(lineas){
+  const reFila = /^(\S+)\s+(.*?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+\d+[.,]\d{2}\s+(?:\$|U\$S|USD)\s*-?[\d.,]+\s+(?:\$|U\$S|USD)\s*-?[\d.,]+$/;
+  const tenencias = new Map();
+  let seccion = '', previa = '', tablas = 0;
+  lineas.forEach(l=>{
+    if(/^Especie\s+Descripci/i.test(l)){
+      tablas++;
+      // El titulo de la tabla es el renglon anterior; si la tabla sigue de otra hoja, se mantiene la seccion
+      if(previa && previa.length < 40 && !/\d/.test(previa) && !/INVESTMENT|consolidada|distribuci/i.test(previa) && !reFila.test(previa)) seccion = claveTxt(previa);
+    } else {
+      const m = l.match(reFila);
+      if(m && !CUP_PDF_SECCIONES_FUERA.includes(seccion)){
+        const cant = parseFloat(m[3].replace(/\./g, '').replace(',', '.'));
+        if(cant > 0) tenencias.set(m[1].toUpperCase(), (tenencias.get(m[1].toUpperCase()) || 0) + cant);
+      }
+    }
+    previa = l;
+  });
+  return { tenencias, tablas };
+}
+
+// Ticker del calendario para una especie del resumen (la misma especie puede venir con sufijo D o C)
+function cupTickerDeEspecie(especie, tickers){
+  if(tickers.has(especie)) return especie;
+  if(/[DC]$/.test(especie) && tickers.has(especie.slice(0, -1))) return especie.slice(0, -1);
+  return null;
+}
+
+async function cupCargarResumen(archivo){
+  const btn = document.getElementById('cupPdfBtn'), txt = document.getElementById('cupPdfBtnTxt');
+  btn.disabled = true; txt.textContent = 'Leyendo el resumen…';
+  try{
+    const lineas = await cupLineasDePdf(await archivo.arrayBuffer());
+    const { tenencias, tablas } = cupTenenciasDeLineas(lineas);
+    if(!tablas) throw new Error('No se reconoció el archivo como un resumen de cuenta: no se encontraron las tablas de tenencias (Especie, Descripción, Cantidad).');
+    const desde = cupSemanas()[0].ini;
+    const futuros = REINV.eventos.filter(e => e.fecha >= desde);
+    const tickers = new Set(futuros.map(e => e.ticker));
+    const con = [], sin = [];
+    CUP.montos = {};      // el resumen reemplaza lo cargado antes
+    tenencias.forEach((cant, especie)=>{
+      const t = cupTickerDeEspecie(especie, tickers);
+      if(!t){ sin.push(especie); return; }
+      const pagos = futuros.filter(e => e.ticker === t);
+      pagos.forEach(e => { CUP.montos[cupClave(e)] = Math.round(cant); });
+      con.push({ ticker: t, cantidad: cant, pagos: pagos.length, proximo: pagos[0].fecha });
+    });
+    con.sort((a, b)=> a.proximo < b.proximo ? -1 : (a.proximo > b.proximo ? 1 : a.ticker.localeCompare(b.ticker)));
+    CUP.pdf = { archivo: archivo.name, con, sin: sin.sort() };
+    // Se va a la primera semana en la que el cliente cobra
+    const primera = cupSemanas().find(s => cupEventosDeSemana(s).some(e => CUP.montos[cupClave(e)]));
+    if(primera) CUP.semana = primera.idx;
+    CUP.busca = ''; document.getElementById('cupBuscar').value = '';
+  } catch(err){
+    console.warn('No se pudo leer el resumen de cuenta.', err);
+    CUP.pdf = { error: (err && err.message) || 'No se pudo leer el archivo.' };
+  }
+  btn.disabled = false; txt.textContent = 'Cargar resumen de cuenta (PDF)';
+  renderCupones();
+}
+
+// Semanas (desde la actual) en las que el cliente tiene cobros cargados
+function cupSemanasConCobros(){
+  return cupSemanas().filter(s => REINV.eventos.some(e => e.fecha >= s.ini && e.fecha <= s.fin && CUP.montos[cupClave(e)]));
+}
+
+function cupRenderEstadoPdf(){
+  const el = document.getElementById('cupPdfEstado');
+  const p = CUP.pdf;
+  if(!p){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = '';
+  el.classList.toggle('err', !!p.error);
+  if(p.error){ el.textContent = p.error; return; }
+  if(!p.con.length){
+    el.innerHTML = `<strong>Resumen cargado.</strong> Ninguno de los instrumentos del cliente tiene pagos en el calendario.`
+      + (p.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario: ${escHtml(p.sin.join(', '))}.</span>` : '');
+    return;
+  }
+  const semanas = cupSemanasConCobros();
+  el.innerHTML = `<strong>Resumen cargado:</strong> ${p.con.length} ${p.con.length === 1 ? 'instrumento del cliente tiene' : 'instrumentos del cliente tienen'} pagos en el calendario y ya ${p.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
+    + `<span class="cup-pdf-det">${p.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>`
+    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros del cliente: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
+    + (p.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario: ${escHtml(p.sin.join(', '))}.</span>` : '');
+}
+
+document.getElementById('cupPdfBtn').addEventListener('click', ()=> document.getElementById('cupPdfInput').click());
+document.getElementById('cupPdfInput').addEventListener('change', (e)=>{
+  const archivo = e.target.files && e.target.files[0];
+  e.target.value = '';      // permite volver a elegir el mismo archivo
+  if(archivo) cupCargarResumen(archivo);
+});
+document.getElementById('cupPdfEstado').addEventListener('click', (e)=>{
+  const b = e.target.closest('[data-sem]');
+  if(b) cupElegirSemana(parseInt(b.dataset.sem, 10) || 0);
+});
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
 });
