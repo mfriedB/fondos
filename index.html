@@ -5156,9 +5156,10 @@ function renderCupones(){
    Se muestran hasta que termina la semana del pago.
 --------------------------------------------------------------------- */
 const CUP_DESTACADOS = [
+  // "etiqueta" reemplaza al emisor en el aviso (por ejemplo Lecap en lugar de Tesoro Nacional).
   // Datos de respaldo (1816, calendario consultado el 17/11/2026): se usan cuando el pago ya salio del calendario cargado
   { ticker: 'DNC3O', fecha: '2026-11-24', nombre: 'Edenor', tipo: 'ON USD MEP', evento: 'Vencimiento', moneda: 'Dólar', duration: 0, renta: 4.9685, amort: 100 },
-  { ticker: 'S30N6', fecha: '2026-11-30', nombre: 'Tesoro Nacional', tipo: 'Tasa fija', evento: 'Vencimiento', moneda: 'Pesos', duration: null, renta: 29.888, amort: 100 },
+  { ticker: 'S30N6', etiqueta: 'Lecap', fecha: '2026-11-30', nombre: 'Tesoro Nacional', tipo: 'Tasa fija', evento: 'Vencimiento', moneda: 'Pesos', duration: null, renta: 29.888, amort: 100 },
 ];
 const CUP_DEST_DIAS_DESPUES = 14;      // cuantos dias queda la tarjeta en "Pagó" despues del pago
 function cupDestacadosVigentes(){
@@ -5169,7 +5170,7 @@ function cupDestacadosVigentes(){
     const enCal = REINV.eventos.find(x => x.ticker === d.ticker && x.fecha === d.fecha) || REINV.eventos.find(x => x.ticker === d.ticker && x.fecha >= hoy);
     const e = enCal || d;
     const limite = fechaDeIso(e.fecha); limite.setDate(limite.getDate() + CUP_DEST_DIAS_DESPUES);
-    return hoy <= isoLocal(limite) ? { ticker: d.ticker, e, enCalendario: !!enCal, pagado: e.fecha < hoy } : null;
+    return hoy <= isoLocal(limite) ? { ticker: d.ticker, etiqueta: d.etiqueta, e, enCalendario: !!enCal, pagado: e.fecha < hoy } : null;
   }).filter(Boolean);
   // Dolares a la izquierda, pesos a la derecha
   return lista.sort((a, b)=> (a.e.moneda === 'Dólar' ? 0 : 1) - (b.e.moneda === 'Dólar' ? 0 : 1));
@@ -5181,7 +5182,7 @@ function cupDestacadoTextos(d){
   const sug = cupFondoDeEvento(e);
   return {
     corto: `${e.ticker} ${verbo} el ${dia} ${fechaCorta(e.fecha).slice(0, 5)}`,
-    tituloSinFecha: `${e.ticker} · ${e.nombre} ${verbo} el ${dia}`,
+    tituloSinFecha: `${e.ticker} · ${d.etiqueta || e.nombre} ${verbo} el ${dia}`,
     fecha: fechaCorta(e.fecha),
     // Lo que paga cada 100 nominales (renta + capital) es el % sobre el valor nominal
     pctVN: ((e.renta || 0) + (e.amort || 0)) > 0 ? `${fmtNumCom((e.renta || 0) + (e.amort || 0), 2)}%` : '',
