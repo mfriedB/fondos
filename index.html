@@ -1650,6 +1650,7 @@
   .inf-vacio{ font-size:11px; color:var(--muted); margin:0; }
   .inf-pagina{ position:absolute; left:32px; right:32px; bottom:18px; font-size:8.5px; color:#8A93A8; text-align:right; border-top:1px solid #EBEFF9; padding-top:6px; }
   .cup-arch-aviso{ display:block; margin-top:6px; padding:7px 10px; border-radius:7px; background:#FFF6E5; border:1px solid #F1D48A; color:#8A5A0F; font-weight:600; }
+  .cup-pdf-estado .cup-pdf-semanas{ white-space:nowrap; overflow:hidden; }
   .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
   .tab-toolbar{ gap:10px; }
@@ -5527,9 +5528,27 @@ function cupRenderEstadoArchivo(){
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     // Los desplegables de columnas solo aparecen cuando hace falta elegir (o si ya se eligio a mano)
     + ((faltan || a.detalle.some(d => d.eleccion.manual)) ? columnas : '')
-    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.slice(0, 10).map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}${semanas.length > 10 ? ` · y ${semanas.length - 10} más, marcadas con ● en el selector de semanas` : ''}</span>` : '')
+    + (semanas.length ? '<span class="cup-pdf-det cup-pdf-semanas" id="cupPdfSemanas"></span>' : '')
     + sin;
+  cupAjustarSemanasConCobros(semanas);
 }
+
+/* Enlaces a las semanas con cobros, en un solo renglon: se muestran todas las
+   que entran a lo ancho y el resto se resume en "y N más". */
+function cupAjustarSemanasConCobros(semanas){
+  const el = document.getElementById('cupPdfSemanas');
+  if(!el) return;
+  semanas = semanas || cupSemanasConCobros();
+  const armar = (k)=>{
+    el.innerHTML = 'Semanas con cobros: '
+      + semanas.slice(0, k).map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')
+      + (semanas.length > k ? `${k ? ' · y ' : ''}${semanas.length - k} más (marcadas con ● en el selector)` : '');
+  };
+  let k = semanas.length;
+  armar(k);
+  while(k > 1 && el.scrollWidth > el.clientWidth){ k--; armar(k); }
+}
+window.addEventListener('resize', ()=> cupAjustarSemanasConCobros());
 
 document.getElementById('cupPdfBtn').addEventListener('click', ()=> document.getElementById('cupPdfInput').click());
 document.getElementById('cupPdfInput').addEventListener('change', (e)=>{
