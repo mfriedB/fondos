@@ -1663,9 +1663,8 @@
   .tab-toolbar{ align-items:center; flex-wrap:wrap; }
   .cup-volver{ font:inherit; font-size:12.5px; font-weight:700; color:var(--accent); background:none; border:none; padding:0; margin:0 0 10px; cursor:pointer; }
   .cup-volver:hover{ text-decoration:underline; }
-  /* Pago destacado: tarjeta chica arriba a la derecha de la solapa y aviso al entrar */
-  #cupGraficosCard{ position:relative; }
-  .cup-destacado{ position:absolute; top:5px; right:24px; display:flex; flex-direction:column; align-items:flex-end; gap:6px; max-width:min(440px, calc(100% - 300px)); }
+  /* Pago destacado: tarjeta chica centrada al final de la solapa y aviso al entrar */
+  .cup-destacado{ display:flex; flex-direction:column; align-items:center; gap:8px; margin:18px 0 28px; }
   .cup-dest-chip{ display:flex; align-items:center; gap:10px; font:inherit; text-align:left; cursor:pointer; background:#fff; border:2px solid var(--pos); border-radius:10px; padding:6px 12px; box-shadow:0 0 0 3px rgba(31,138,91,0.12); max-width:100%; }
   .cup-dest-chip:hover{ box-shadow:0 0 0 4px rgba(31,138,91,0.22); }
   .cup-dest-chip:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
@@ -1675,7 +1674,6 @@
   .cup-dest-txt{ display:flex; flex-direction:column; min-width:0; line-height:1.3; }
   .cup-dest-txt strong{ font-size:12.5px; font-weight:800; color:var(--navy); }
   .cup-dest-chip .cup-dest-fondo{ font-size:11.5px; font-weight:700; color:var(--accent); }
-  @media (max-width:760px){ .cup-destacado{ position:static; max-width:none; align-items:stretch; margin:0 0 12px; } }
   .cup-aviso-eti{ display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); background:#fff; border:1.5px solid var(--accent); border-radius:5px; padding:3px 10px; margin-bottom:10px; }
   .cup-aviso-eti i{ background:var(--accent); }
   .cup-dest-btn{ font:inherit; font-size:14px; font-weight:800; color:#fff; background:var(--navy); border:none; border-radius:9px; padding:12px 18px; cursor:pointer; white-space:nowrap; }
@@ -1949,7 +1947,6 @@
 
     <section class="card" id="cupGraficosCard">
       <button type="button" class="cup-volver" id="cupVolver">‹ Volver a la Calculadora de Carteras</button>
-      <div id="cupDestacado" class="cup-destacado" style="display:none;"></div>
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
         <div class="cup-cab-der">
@@ -1982,6 +1979,8 @@
     <div class="page-disclaimer">
       <p class="disc-legal">Herramienta de uso interno para el asesor. El calendario de pagos es informativo y se arma con datos de 1816; no reemplaza los avisos de pago de cada emisor. Los fondos sugeridos son una referencia y no contemplan la situación particular de cada cliente. No constituye una oferta, invitación ni recomendación de inversión.</p>
     </div>
+
+    <div id="cupDestacado" class="cup-destacado" style="display:none;"></div>
 
     </div>
 
