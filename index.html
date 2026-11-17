@@ -5319,10 +5319,11 @@ function archAnalizarTabla(tabla, conocidos){
         let celda;
         if(tabla.modo === 'columna') celda = f[cand.orden];
         else { if(f.length !== fila.largo || f.some(c => archNumero(c))) continue; celda = f[f.length + cand.orden]; }
-        if(celda != null && String(celda).trim() && !archNumero(celda) && !(celda instanceof Date)) return String(celda).trim();
+        if(celda != null && String(celda).trim() && !archNumero(celda) && !(celda instanceof Date)){ filaEnc = i; return String(celda).trim(); }
       }
       return '';
     };
+    let filaEnc = null;      // renglon donde se encontro el ultimo encabezado
     // 3) Columnas numericas candidatas, con puntaje
     const claves = new Map();
     base.forEach(f => f.nums.forEach(n=>{
@@ -5381,7 +5382,15 @@ function archAnalizarTabla(tabla, conocidos){
         else if(y.enteros >= 0.95 && x.enteros < 0.6) seguro = y.clave;
       }
     }
-    const encT = (()=>{ const f0 = base[0]; for(let i = f0.idx - 1; i >= Math.max(0, f0.idx - 12); i--){ const c = (tabla.filas[i] || [])[colT]; if(c != null && String(c).trim() && !archTickerDeCeldaConocida(c, esConocido) && !archNumero(c)) return String(c).trim(); } return ''; })();
+    // El encabezado de los tickers es la celda de esa columna en el renglon de encabezados
+    let encT = '';
+    const conEncabezado = candidatos.find(c => c.encabezado);
+    if(conEncabezado){
+      const col = cols.find(c => c.clave === conEncabezado.clave);
+      filaEnc = null; encabezadoDe(col.fila, col.num);
+      const celda = filaEnc != null ? (tabla.filas[filaEnc] || [])[colT] : null;
+      if(celda != null && String(celda).trim() && !archNumero(celda)) encT = String(celda).trim();
+    }
     return { filas, candidatos, seguro, encabezadoTicker: encT };
   } };
 }
