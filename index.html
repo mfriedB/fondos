@@ -1626,6 +1626,21 @@
   .cup-arch-cols select{ font:inherit; font-size:12px; font-weight:500; padding:4px 8px; border:1px solid #C9D2EA; border-radius:6px; background:#fff; color:var(--text); max-width:340px; }
   .cup-arch-cols select:disabled{ opacity:1; background:#F6F8FE; }
   .cup-arch-cols select.falta{ border-color:#E0A100; background:#FFF8E1; font-weight:700; }
+  /* Informe de cobros (PDF): hojas A4 armadas fuera de pantalla, con el estilo del PDF de la cartera */
+  .inf-lienzo{ position:fixed; left:-9999px; top:0; }
+  .inf-hoja{ position:relative; width:794px; min-height:1123px; padding:32px 32px 46px; margin-bottom:20px; background:#fff; font-family:'Inter',system-ui,sans-serif; color:var(--text); box-sizing:border-box; }
+  .inf-hoja .print-section{ margin-bottom:16px; }
+  .inf-tabla{ font-size:10.5px; }
+  .inf-tabla td{ vertical-align:top; }
+  .inf-tabla tfoot td{ font-size:10.5px; }
+  .inf-emisor{ color:var(--muted); font-size:9.5px; }
+  .inf-por{ color:var(--muted); font-size:9.5px; max-width:170px; }
+  .inf-moneda{ font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:10px 0 5px; font-weight:700; }
+  .inf-moneda.sub{ color:var(--brand-blue); }
+  .inf-nota{ font-size:9px; color:#5B6478; margin:5px 0 0; line-height:1.45; }
+  .inf-fuente{ border-top:1px solid var(--line); padding-top:8px; margin-top:4px; }
+  .inf-vacio{ font-size:11px; color:var(--muted); margin:0; }
+  .inf-pagina{ position:absolute; left:32px; right:32px; bottom:18px; font-size:8.5px; color:#8A93A8; text-align:right; border-top:1px solid #EBEFF9; padding-top:6px; }
   .cup-arch-aviso{ display:block; margin-top:6px; padding:7px 10px; border-radius:7px; background:#FFF6E5; border:1px solid #F1D48A; color:#8A5A0F; font-weight:600; }
   .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
@@ -1914,7 +1929,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF para el cliente con sus cobros de las próximas 8 semanas y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
@@ -5036,6 +5051,7 @@ function actualizarCup(){
   });
 
   document.getElementById('cupLimpiar').style.display = Object.keys(CUP.montos).length ? '' : 'none';
+  document.getElementById('cupInformeBtn').style.display = Object.keys(CUP.montos).length ? '' : 'none';
 }
 
 function renderCupones(){
@@ -6223,12 +6239,17 @@ const clientModalForm = document.getElementById('clientModalForm');
 const clientNameInput = document.getElementById('clientNameInput');
 const clientModalError = document.getElementById('clientModalError');
 let lastClientName = '';
+let clientModalDestino = 'cartera';      // 'cartera' (PDF de la calculadora) o 'cupones' (informe de cobros)
 
 function normalizarNombreCliente(txt){
   return String(txt || '').replace(/\s+/g, ' ').trim();
 }
 
-function openClientModal(){
+function openClientModal(destino){
+  clientModalDestino = destino === 'cupones' ? 'cupones' : 'cartera';
+  document.querySelector('#clientModalForm .login-sub').textContent = clientModalDestino === 'cupones'
+    ? 'Indicá a quién le vas a enviar el informe de cobros. El nombre aparece al inicio del informe.'
+    : 'Indicá a quién le vas a enviar la cartera. El nombre aparece al inicio del reporte.';
   clientNameInput.value = lastClientName;
   clientModalError.style.display = 'none';
   clientModal.classList.add('open');
@@ -6239,10 +6260,10 @@ function openClientModal(){
 function closeClientModal(){
   clientModal.classList.remove('open');
   clientModal.setAttribute('aria-hidden', 'true');
-  document.getElementById('downloadPdfBtn').focus();
+  document.getElementById(clientModalDestino === 'cupones' ? 'cupInformeBtn' : 'downloadPdfBtn').focus();
 }
 
-document.getElementById('downloadPdfBtn').addEventListener('click', openClientModal);
+document.getElementById('downloadPdfBtn').addEventListener('click', ()=> openClientModal('cartera'));
 document.getElementById('clientModalCancel').addEventListener('click', closeClientModal);
 clientModal.addEventListener('mousedown', (e)=>{ if(e.target === clientModal) closeClientModal(); });
 document.addEventListener('keydown', (e)=>{
@@ -6261,7 +6282,7 @@ clientModalForm.addEventListener('submit', (e)=>{
   }
   lastClientName = nombre;
   closeClientModal();
-  generarPdf(nombre);
+  if(clientModalDestino === 'cupones') generarInformeCupones(nombre); else generarPdf(nombre);
 });
 
 // Slug para el nombre del archivo: sin tildes ni caracteres especiales
@@ -6358,6 +6379,245 @@ async function generarPdf(clientName){
     btn.innerHTML = originalHtml;
   }
 }
+
+
+/* ---------------------------------------------------------------------
+   Informe de pagos y reinversion (PDF para el cliente)
+
+   Con los nominales cargados, el asesor baja un informe con los cobros del
+   cliente en las proximas 8 semanas y la cartera de fondos sugerida para
+   reinvertir cada semana. Usa el mismo formato que el PDF de la Calculadora
+   de Carteras (franja superior, recuadro del cliente, tablas y hoja final
+   con el aviso legal). Cada hoja se arma por separado para que ninguna
+   semana quede cortada entre dos hojas.
+--------------------------------------------------------------------- */
+const INF_SEMANAS = 8;
+const INF_ANCHO = 794, INF_ALTO = 1123, INF_MARGEN = 32;      // hoja A4 a 96 dpi
+
+function infDatos(){
+  const hoy = isoLocal(new Date());
+  const semanas = cupSemanas().slice(0, INF_SEMANAS);
+  const porSemana = semanas.map(s=>{
+    const evs = REINV.eventos.filter(e => e.fecha >= s.ini && e.fecha <= s.fin && e.fecha >= hoy && cupCobro(e) > 0);
+    const monedas = ['Pesos', 'Dólar'].map(m=>{
+      const lista = evs.filter(e => e.moneda === m);
+      return { moneda: m, eventos: lista, total: lista.reduce((a, e)=> a + cupCobro(e), 0), cartera: lista.length ? cupCarteraSugerida(lista, m) : null };
+    });
+    return { semana: s, eventos: evs, monedas };
+  });
+  const todos = porSemana.flatMap(x => x.eventos);
+  const totales = ['Pesos', 'Dólar'].map(m=>{
+    const lista = todos.filter(e => e.moneda === m);
+    return { moneda: m, eventos: lista, total: lista.reduce((a, e)=> a + cupCobro(e), 0), cartera: lista.length ? cupCarteraSugerida(lista, m) : null };
+  });
+  return { hoy, semanas, porSemana, todos, totales };
+}
+
+function infFechaLarga(s){
+  const a = s.dIni, b = s.dFin;
+  return `${a.getDate()} de ${CUP_MESES[a.getMonth()]} al ${b.getDate()} de ${CUP_MESES[b.getMonth()]} de ${b.getFullYear()}`;
+}
+function infNominales(e){
+  const v = Number(CUP.montos[cupClave(e)]) || 0;
+  return cupPagoCada100(e) == null ? '—' : fmtNumCom(v, 0);
+}
+
+// Tabla de la cartera de fondos sugerida para una moneda
+function infTablaCartera(c){
+  const filas = c.fondos.map(f=>{
+    const base = f.base ? ' ' + f.base : '';
+    return `<tr>
+      <td><strong>${escHtml(nombreFondoVisible(f.nombre))}</strong></td>
+      <td style="text-align:right;">${f.pct}%</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;">${fmtMoney(f.monto, c.moneda)}</td>
+      <td style="text-align:right;">${(f.tir != null && isFinite(f.tir)) ? fmtTir(f.tir) + base : 's/d'}</td>
+      <td style="text-align:right;">${(f.duration != null && isFinite(f.duration)) ? fmtDuration(f.duration) : 's/d'}</td>
+      <td class="inf-por">${escHtml(f.tickers.join(', '))}</td>
+    </tr>`;
+  }).join('');
+  return `<table class="print-table inf-tabla">
+    <thead><tr><th>Fondo sugerido</th><th style="text-align:right;">% del cobro</th><th style="text-align:right;">Monto</th><th style="text-align:right;">TIR</th><th style="text-align:right;">Duration</th><th>Por el cobro de</th></tr></thead>
+    <tbody>${filas}</tbody>
+    <tfoot><tr><td>Total a reinvertir</td><td style="text-align:right;">100%</td><td style="text-align:right;">${fmtMoney(c.total, c.moneda)}</td><td colspan="3"></td></tr></tfoot>
+  </table>`;
+}
+
+// Notas al pie de una cartera: liquidez, dolar cable y minimos de suscripcion
+function infNotasCartera(c, eventos){
+  const notas = [];
+  const mm = nombreFondoVisible(resolverFondo(c.moneda === 'Dólar' ? 'Money Market USD' : 'Money Market'));
+  notas.push(`Para mantener liquidez inmediata, el cobro también se puede invertir en el fondo ${escHtml(mm)}.`);
+  const cable = [...new Set(eventos.filter(e => /CABLE$/.test(e.tipo)).map(e => e.ticker))];
+  if(cable.length){
+    const alt = c.fondos.map(f => f.cable && f.cable.nombre).filter(Boolean)[0];
+    notas.push(`${escHtml(cable.join(', '))} ${cable.length === 1 ? 'paga' : 'pagan'} en dólar cable: para suscribir los fondos sugeridos hay que convertirlo a dólar MEP`
+      + (alt ? `, o se puede suscribir directamente en dólar cable el fondo ${escHtml(nombreFondoVisible(alt))}.` : '.'));
+  }
+  const minimo = c.moneda === 'Dólar' ? 100 : 1000;
+  const bajo = c.fondos.filter(f => f.monto > 0 && f.monto < minimo).map(f => nombreFondoVisible(f.nombre));
+  if(bajo.length) notas.push(`El mínimo de suscripción de los fondos en ${c.moneda === 'Dólar' ? 'dólares es de USD 100' : 'pesos es de $ 1.000'}: no lo alcanza el monto de ${escHtml(bajo.join(', '))}.`);
+  return notas.map(n => `<p class="inf-nota">${n}</p>`).join('');
+}
+
+// Bloque de una semana: pagos y cartera sugerida, por moneda
+function infBloqueSemana(x, n, hoy){
+  const s = x.semana;
+  const titulo = `<h3>Semana ${n} · ${infFechaLarga(s)}</h3>`;
+  if(!x.eventos.length) return `<div class="print-section inf-semana">${titulo}<p class="inf-vacio">Sin cobros en esta semana.</p></div>`;
+  let hayEstimado = false;
+  const cuerpo = x.monedas.filter(m => m.eventos.length).map(m=>{
+    const filas = m.eventos.map(e=>{
+      const d = fechaDeIso(e.fecha);
+      const pago = cupPagoCada100(e);
+      const est = e.dato !== 'Publicado' && e.fecha > hoy;
+      if(est) hayEstimado = true;
+      return `<tr>
+        <td>${CUP_DIAS[d.getDay()]} ${dosDigitos(d.getDate())}/${dosDigitos(d.getMonth() + 1)}</td>
+        <td><strong>${escHtml(e.ticker)}</strong> <span class="inf-emisor">${escHtml(e.nombre)}</span></td>
+        <td>${escHtml(e.evento)}</td>
+        <td style="text-align:right;">${infNominales(e)}</td>
+        <td style="text-align:right;">${pago == null ? '—' : (m.moneda === 'Dólar' ? 'USD ' : '$ ') + fmtNumCom(pago, 2)}${est ? ' *' : ''}</td>
+        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">${fmtMoney(cupCobro(e), m.moneda)}</td>
+      </tr>`;
+    }).join('');
+    return `<h4 class="inf-moneda">Cobros en ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h4>
+      <table class="print-table inf-tabla">
+        <thead><tr><th>Fecha</th><th>Instrumento</th><th>Concepto</th><th style="text-align:right;">Nominales</th><th style="text-align:right;">Paga c/100 VN</th><th style="text-align:right;">Cobro</th></tr></thead>
+        <tbody>${filas}</tbody>
+        <tfoot><tr><td colspan="5">Total de la semana en ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</td><td style="text-align:right;">${fmtMoney(m.total, m.moneda)}</td></tr></tfoot>
+      </table>
+      <h4 class="inf-moneda sub">Cartera de fondos sugerida para reinvertir · ${m.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h4>
+      ${infTablaCartera(m.cartera)}
+      ${infNotasCartera(m.cartera, m.eventos)}`;
+  }).join('');
+  return `<div class="print-section inf-semana">${titulo}${cuerpo}${hayEstimado ? '<p class="inf-nota">* Monto estimado: el instrumento ajusta por inflación (CER o UVA) o por tipo de cambio oficial, y el valor final se conoce al momento del pago.</p>' : ''}</div>`;
+}
+
+// Primera parte: resumen de las 8 semanas y cartera para el total de los cobros
+function infBloqueResumen(d){
+  const filas = d.porSemana.map((x, i)=>{
+    const p = x.monedas[0], u = x.monedas[1];
+    return `<tr>
+      <td>Semana ${i + 1}</td><td>${infFechaLarga(x.semana)}</td>
+      <td style="text-align:right;">${x.eventos.length || '—'}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;">${p.total > 0 ? fmtMoney(p.total, 'Pesos') : '—'}</td>
+      <td style="text-align:right;font-family:'JetBrains Mono',monospace;">${u.total > 0 ? fmtMoney(u.total, 'Dólar') : '—'}</td>
+    </tr>`;
+  }).join('');
+  const P = d.totales[0], U = d.totales[1];
+  const carteras = d.totales.filter(t => t.cartera).map(t => `
+    <div class="print-section">
+      <h3>Cartera de fondos sugerida para el total de los cobros · ${t.moneda === 'Dólar' ? 'dólares' : 'pesos'}</h3>
+      ${infTablaCartera(t.cartera)}
+      ${infNotasCartera(t.cartera, t.eventos)}
+    </div>`).join('');
+  return `
+    <div class="print-section">
+      <h3>Resumen</h3>
+      <div class="print-params">
+        <div><div class="param-label">Período</div><div class="param-value">${fechaCorta(d.semanas[0].ini)} al ${fechaCorta(d.semanas[d.semanas.length - 1].fin)}</div></div>
+        <div><div class="param-label">Pagos a cobrar</div><div class="param-value">${d.todos.length}</div></div>
+        <div><div class="param-label">Cobros en pesos</div><div class="param-value">${P.total > 0 ? fmtMoney(P.total, 'Pesos') : '—'}</div></div>
+        <div><div class="param-label">Cobros en dólares</div><div class="param-value">${U.total > 0 ? fmtMoney(U.total, 'Dólar') : '—'}</div></div>
+      </div>
+    </div>
+    <div class="print-section">
+      <h3>Cobros por semana</h3>
+      <table class="print-table inf-tabla">
+        <thead><tr><th>Semana</th><th>Fechas</th><th style="text-align:right;">Pagos</th><th style="text-align:right;">Cobros en pesos</th><th style="text-align:right;">Cobros en dólares</th></tr></thead>
+        <tbody>${filas}</tbody>
+        <tfoot><tr><td colspan="2">Total de las ${d.semanas.length} semanas</td><td style="text-align:right;">${d.todos.length}</td><td style="text-align:right;">${P.total > 0 ? fmtMoney(P.total, 'Pesos') : '—'}</td><td style="text-align:right;">${U.total > 0 ? fmtMoney(U.total, 'Dólar') : '—'}</td></tr></tfoot>
+      </table>
+    </div>
+    ${carteras}`;
+}
+
+function infEncabezado(clientName, primera){
+  const hoy = new Date();
+  const meta = `<strong>Informe de cobros y reinversión</strong><br>Emitido el ${dosDigitos(hoy.getDate())}/${dosDigitos(hoy.getMonth() + 1)}/${hoy.getFullYear()}`;
+  return `<div class="print-header"><div class="print-header-gap"></div><div class="print-meta">${meta}</div></div>`
+    + (primera ? `<div class="print-client"><div><div class="print-client-label">Cobros de cupones y vencimientos, y fondos sugeridos para reinvertir, para el cliente:</div><div class="print-client-name">${escHtml(clientName)}</div></div></div>` : '');
+}
+
+async function generarInformeCupones(clientName){
+  const btn = document.getElementById('cupInformeBtn');
+  const original = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = 'Generando informe…';
+  const lienzo = document.createElement('div');
+  lienzo.className = 'inf-lienzo';
+  document.body.appendChild(lienzo);
+  try{
+    const d = infDatos();
+    if(!d.todos.length) throw new Error('sin-cobros');
+    const pie = `<p class="inf-nota inf-fuente">Calendario de pagos: 1816${REINV.actualizado ? ', actualizado al ' + escHtml(REINV.actualizado) : ''}. Los montos por cada 100 nominales son los que informa 1816 y pueden diferir del aviso de pago de cada emisor. TIR y duration de los fondos: datos de la cartera a la fecha del informe; no constituyen una promesa de rendimiento.</p>`;
+    const bloques = [infBloqueResumen(d)].concat(d.porSemana.map((x, i)=> infBloqueSemana(x, i + 1, d.hoy))).concat([pie]);
+
+    // Se reparten los bloques en hojas, midiendo cada uno: ninguna semana se corta
+    const nuevaHoja = (primera)=>{
+      const h = document.createElement('div');
+      h.className = 'inf-hoja';
+      h.innerHTML = infEncabezado(clientName, primera) + '<div class="inf-cuerpo"></div>';
+      lienzo.appendChild(h);
+      return h;
+    };
+    const hojas = [];
+    let hoja = nuevaHoja(true); hojas.push(hoja);
+    bloques.forEach(html=>{
+      const cuerpo = hoja.querySelector('.inf-cuerpo');
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      cuerpo.appendChild(tmp);
+      if(hoja.scrollHeight > INF_ALTO && cuerpo.children.length > 1){
+        cuerpo.removeChild(tmp);
+        hoja = nuevaHoja(false); hojas.push(hoja);
+        hoja.querySelector('.inf-cuerpo').appendChild(tmp);
+      }
+    });
+    hojas.forEach((h, i)=>{
+      const p = document.createElement('div');
+      p.className = 'inf-pagina';
+      p.textContent = `${clientName} · hoja ${i + 1} de ${hojas.length + 1}`;
+      h.appendChild(p);
+    });
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(res => setTimeout(res, 80));
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const ancho = pdf.internal.pageSize.getWidth(), alto = pdf.internal.pageSize.getHeight();
+    for(let i = 0; i < hojas.length; i++){
+      const canvas = await html2canvas(hojas[i], { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+      const img = canvas.toDataURL('image/jpeg', 0.92);      // JPEG: el PDF pesa poco y se puede mandar por mail o WhatsApp
+      const altoImg = canvas.height * ancho / canvas.width;
+      if(i > 0) pdf.addPage();
+      // Una semana con muchisimos pagos puede no entrar en una hoja: en ese caso sigue en la siguiente
+      let resto = altoImg, pos = 0;
+      pdf.addImage(img, 'JPEG', 0, pos, ancho, altoImg, 'h' + i, 'FAST');
+      resto -= alto;
+      while(resto > 1){ pos -= alto; pdf.addPage(); pdf.addImage(img, 'JPEG', 0, pos, ancho, altoImg, 'h' + i, 'FAST'); resto -= alto; }
+    }
+    // Hoja final con el aviso legal, igual que en el PDF de la cartera
+    const disc = document.getElementById('printDisclaimer');
+    const discPrev = disc.getAttribute('style') || '';
+    disc.style.display = 'block'; disc.style.position = 'fixed'; disc.style.left = '-9999px'; disc.style.top = '0';
+    disc.style.width = INF_ANCHO + 'px'; disc.style.background = '#ffffff'; disc.style.padding = INF_MARGEN + 'px';
+    const canvasDisc = await html2canvas(disc, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+    disc.setAttribute('style', discPrev);
+    pdf.addPage();
+    pdf.addImage(canvasDisc.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, ancho, Math.min(canvasDisc.height * ancho / canvasDisc.width, alto), 'legal', 'FAST');
+
+    const cliente = slugNombreArchivo(clientName);
+    pdf.save(`informe-cobros${cliente ? '-' + cliente : ''}-${d.hoy}.pdf`);
+  } catch(err){
+    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados, el cliente no tiene cobros en las próximas ${INF_SEMANAS} semanas.`);
+    else { console.error('Error generando el informe de cobros:', err); alert('No se pudo generar el informe. Probá de nuevo en unos segundos.'); }
+  } finally{
+    lienzo.remove();
+    btn.disabled = false; btn.innerHTML = original;
+  }
+}
+
+document.getElementById('cupInformeBtn').addEventListener('click', ()=> openClientModal('cupones'));
 
 </script>
 </body>
