@@ -5506,7 +5506,7 @@ function cupRenderEstadoArchivo(){
   const faltan = a.detalle.filter(d => !d.eleccion.clave).length;
   const elegidaPlata = a.detalle.some(d => d.eleccion.clave && (d.candidatos.find(c => c.clave === d.eleccion.clave) || {}).plata);
   const semanas = cupSemanasConCobros();
-  const sin = a.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario (${a.sin.length}): ${escHtml(a.sin.slice(0, 14).join(', '))}${a.sin.length > 14 ? ` y ${a.sin.length - 14} más` : ''}.</span>` : '';
+  const sin = a.sin.length ? `<span class="cup-pdf-det">${a.sin.length} ${a.sin.length === 1 ? 'instrumento del archivo no tiene' : 'instrumentos del archivo no tienen'} pagos en el calendario.</span>` : '';
   el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
     + (a.con.length
       ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del archivo tiene' : 'instrumentos del archivo tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
@@ -5514,8 +5514,9 @@ function cupRenderEstadoArchivo(){
     + (faltan ? `<span class="cup-arch-aviso">No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     + `<span class="cup-pdf-det" style="color:var(--text);">${faltan ? 'Columnas' : 'Columnas detectadas (se pueden cambiar)'}:</span>${columnas}`
-    + (a.con.length ? `<span class="cup-pdf-det">${a.con.slice(0, 14).map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}${a.con.length > 14 ? ` · y ${a.con.length - 14} más` : ''}</span>` : '')
-    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
+    + (semanas.length ? (semanas.length <= 10
+        ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>`
+        : `<span class="cup-pdf-det">Hay cobros en ${semanas.length} semanas: en el selector de semanas están marcadas con ●.</span>`) : '')
     + sin;
 }
 
