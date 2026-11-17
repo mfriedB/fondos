@@ -5527,9 +5527,7 @@ function cupRenderEstadoArchivo(){
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     // Los desplegables de columnas solo aparecen cuando hace falta elegir (o si ya se eligio a mano)
     + ((faltan || a.detalle.some(d => d.eleccion.manual)) ? columnas : '')
-    + (semanas.length ? (semanas.length <= 10
-        ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>`
-        : `<span class="cup-pdf-det">Hay cobros en ${semanas.length} semanas: en el selector de semanas están marcadas con ●.</span>`) : '')
+    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.slice(0, 10).map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}${semanas.length > 10 ? ` · y ${semanas.length - 10} más, marcadas con ● en el selector de semanas` : ''}</span>` : '')
     + sin;
 }
 
