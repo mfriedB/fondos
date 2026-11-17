@@ -1917,9 +1917,9 @@
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
         <div class="cup-cab-der">
-        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con las tenencias del cliente (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que tiene">
+        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con tenencias (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que figuran">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
-          <span id="cupPdfBtnTxt">Cargar tenencias del cliente (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
+          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
@@ -1929,7 +1929,7 @@
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
       <div class="cg-opciones">
-        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF para el cliente con sus cobros de las próximas 8 semanas y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
+        <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button><button type="button" class="btn-com cup-pdf-btn" id="cupInformeBtn" style="display:none;" title="Descarga un informe en PDF con los cobros de las próximas 8 semanas y los fondos sugeridos para reinvertirlos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Descargar informe de cobros (PDF)</span></button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
       <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
@@ -5498,13 +5498,13 @@ function cupRenderEstadoArchivo(){
   const sin = a.sin.length ? `<span class="cup-pdf-det">Sin pagos en el calendario (${a.sin.length}): ${escHtml(a.sin.slice(0, 14).join(', '))}${a.sin.length > 14 ? ` y ${a.sin.length - 14} más` : ''}.</span>` : '';
   el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
     + (a.con.length
-      ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del cliente tiene' : 'instrumentos del cliente tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
+      ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del archivo tiene' : 'instrumentos del archivo tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
       : (faltan ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
     + (faltan ? `<span class="cup-arch-aviso">No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
     + (elegidaPlata ? `<span class="cup-arch-aviso">La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
     + `<span class="cup-pdf-det" style="color:var(--text);">${faltan ? 'Columnas' : 'Columnas detectadas (se pueden cambiar)'}:</span>${columnas}`
     + (a.con.length ? `<span class="cup-pdf-det">${a.con.map(c => `${escHtml(c.ticker)} (${fmtNumCom(c.cantidad, 0)} VN · próximo pago ${fechaCorta(c.proximo).slice(0, 5)})`).join(' · ')}</span>` : '')
-    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros del cliente: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
+    + (semanas.length ? `<span class="cup-pdf-det">Semanas con cobros: ${semanas.map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')}</span>` : '')
     + sin;
 }
 
@@ -6256,9 +6256,12 @@ function normalizarNombreCliente(txt){
 
 function openClientModal(destino){
   clientModalDestino = destino === 'cupones' ? 'cupones' : 'cartera';
-  document.querySelector('#clientModalForm .login-sub').textContent = clientModalDestino === 'cupones'
-    ? 'Indicá a quién le vas a enviar el informe de cobros. El nombre aparece al inicio del informe.'
+  const paraCupones = clientModalDestino === 'cupones';
+  document.querySelector('#clientModalForm .login-sub').textContent = paraCupones
+    ? 'Si querés, indicá para quién es el informe de cobros: el nombre aparece al inicio. Se puede dejar vacío.'
     : 'Indicá a quién le vas a enviar la cartera. El nombre aparece al inicio del reporte.';
+  document.querySelector('label[for="clientNameInput"]').textContent = paraCupones ? 'Destinatario (opcional)' : 'Nombre del cliente';
+  clientNameInput.placeholder = paraCupones ? 'Ej.: Juan Pérez · Familia Pérez' : 'Ej.: Juan Pérez';
   clientNameInput.value = lastClientName;
   clientModalError.style.display = 'none';
   clientModal.classList.add('open');
@@ -6283,13 +6286,13 @@ clientNameInput.addEventListener('input', ()=>{ clientModalError.style.display =
 clientModalForm.addEventListener('submit', (e)=>{
   e.preventDefault();
   const nombre = normalizarNombreCliente(clientNameInput.value);
-  if(!nombre){
+  if(!nombre && clientModalDestino !== 'cupones'){
     clientModalError.textContent = 'Ingresá el nombre del cliente para continuar.';
     clientModalError.style.display = 'block';
     clientNameInput.focus();
     return;
   }
-  lastClientName = nombre;
+  if(clientModalDestino !== 'cupones' || nombre) lastClientName = nombre;
   closeClientModal();
   if(clientModalDestino === 'cupones') generarInformeCupones(nombre); else generarPdf(nombre);
 });
@@ -6545,7 +6548,7 @@ function infEncabezado(clientName, primera){
   const hoy = new Date();
   const meta = `<strong>Informe de cobros y reinversión</strong><br>Emitido el ${dosDigitos(hoy.getDate())}/${dosDigitos(hoy.getMonth() + 1)}/${hoy.getFullYear()}`;
   return `<div class="print-header"><div class="print-header-gap"></div><div class="print-meta">${meta}</div></div>`
-    + (primera ? `<div class="print-client"><div><div class="print-client-label">Cobros de cupones y vencimientos, y fondos sugeridos para reinvertir, para el cliente:</div><div class="print-client-name">${escHtml(clientName)}</div></div></div>` : '');
+    + (primera ? `<div class="print-client"><div><div class="print-client-label">Cobros de cupones y vencimientos, y fondos sugeridos para reinvertir${clientName ? ' · preparado para:' : ''}</div><div class="print-client-name">${escHtml(clientName || 'Informe de cobros y reinversión')}</div></div></div>` : '');
 }
 
 async function generarInformeCupones(clientName){
@@ -6585,7 +6588,7 @@ async function generarInformeCupones(clientName){
     hojas.forEach((h, i)=>{
       const p = document.createElement('div');
       p.className = 'inf-pagina';
-      p.textContent = `${clientName} · hoja ${i + 1} de ${hojas.length + 1}`;
+      p.textContent = `${clientName ? clientName + ' · ' : ''}hoja ${i + 1} de ${hojas.length + 1}`;
       h.appendChild(p);
     });
     if(document.fonts && document.fonts.ready) await document.fonts.ready;
@@ -6618,7 +6621,7 @@ async function generarInformeCupones(clientName){
     const cliente = slugNombreArchivo(clientName);
     pdf.save(`informe-cobros${cliente ? '-' + cliente : ''}-${d.hoy}.pdf`);
   } catch(err){
-    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados, el cliente no tiene cobros en las próximas ${INF_SEMANAS} semanas.`);
+    if(err && err.message === 'sin-cobros') alert(`Con los nominales cargados no hay cobros en las próximas ${INF_SEMANAS} semanas.`);
     else { console.error('Error generando el informe de cobros:', err); alert('No se pudo generar el informe. Probá de nuevo en unos segundos.'); }
   } finally{
     lienzo.remove();
