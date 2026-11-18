@@ -1611,6 +1611,26 @@
 
   .cup-buscar-fila{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .cup-buscar-fila .btn-com{ padding:7px 14px; font-size:13px; }
+  /* Carga del resumen de cuenta del cliente (PDF) */
+  .cup-pdf-btn{ display:inline-flex; align-items:center; gap:7px; }
+  .cup-cab-der{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+  .cup-cab-der .cup-pdf-btn{ padding:8px 14px; font-size:13px; }
+  @media (max-width:700px){ .cup-cab-der{ align-items:flex-start; } }
+  .cup-pdf-btn[disabled]{ opacity:.6; cursor:default; }
+  .cup-pdf-estado{ margin:0 0 12px; padding:10px 14px; border-radius:9px; font-size:12.5px; line-height:1.5; background:#EEF1FC; border:1px solid #C9D2EA; color:var(--text); }
+  .cup-pdf-estado.err{ background:var(--neg-bg); border-color:#E7A3A3; color:var(--neg); }
+  .cup-arch-alerta{ display:block; font-weight:600; }
+  .cup-arch-alerta b{ display:block; font-size:13.5px; font-weight:800; margin-bottom:2px; }
+  .cup-pdf-estado strong{ color:var(--navy); }
+  .cup-pdf-estado .cup-pdf-det{ display:block; color:var(--muted); margin-top:2px; }
+  .cup-arch-cols{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:4px 0 6px; }
+  .cup-arch-cols label{ display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--navy); font-size:12px; }
+  .cup-arch-cols select{ font:inherit; font-size:12px; font-weight:500; padding:4px 8px; border:1px solid #C9D2EA; border-radius:6px; background:#fff; color:var(--text); max-width:340px; }
+  .cup-arch-cols select:disabled{ opacity:1; background:#F6F8FE; }
+  .cup-arch-cols select.falta{ border-color:#E0A100; background:#FFF8E1; font-weight:700; }
+  .cup-arch-aviso{ display:block; margin-top:6px; padding:7px 10px; border-radius:7px; background:#FFF6E5; border:1px solid #F1D48A; color:#8A5A0F; font-weight:600; }
+  .cup-pdf-estado .cup-pdf-semanas{ white-space:nowrap; overflow:hidden; }
+  .cup-pdf-estado .cup-pdf-sem{ font:inherit; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
 
   .tab-toolbar{ gap:10px; }
   .btn-cupones{ margin-right:auto; display:inline-flex; align-items:center; gap:9px; background:linear-gradient(135deg, #2F4BD8 0%, #131E42 100%); color:#fff; border:none; padding:11px 20px; font-size:14px; font-weight:800; border-radius:10px; box-shadow:0 6px 16px rgba(47,75,216,.32); transition:transform .12s ease, box-shadow .12s ease; }
@@ -1884,10 +1904,15 @@
       <button type="button" class="cup-volver" id="cupVolver">‹ Volver a la Calculadora de Carteras</button>
       <div class="chart-header" style="margin-bottom:6px;">
         <h2 style="margin:0;">Reinversión de cupones · cobros de la semana, día por día</h2>
+        <div class="cup-cab-der">
+        <button type="button" class="btn-com cup-pdf-btn" id="cupPdfBtn" title="Lee un archivo con tenencias (resumen de cuenta en PDF, o Excel) y completa los nominales de los instrumentos que figuran">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+          <span id="cupPdfBtnTxt">Cargar tenencias (PDF o Excel)</span></button><input type="file" id="cupPdfInput" accept=".pdf,.xlsx,.xls,.xlsm,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none;" />
         <div class="cg-nav">
           <button type="button" class="range-btn" id="cupPrev" aria-label="Semana anterior">‹ Anterior</button>
           <select id="cupSemanaSelect" aria-label="Semana"></select>
           <button type="button" class="range-btn" id="cupNext" aria-label="Semana siguiente">Siguiente ›</button>
+        </div>
         </div>
       </div>
       <p class="sub">Cargá los nominales del cliente en cada instrumento y abajo aparece el fondo sugerido para reinvertir.</p>
@@ -1895,6 +1920,7 @@
         <div class="cup-buscar-fila"><input type="search" id="cupBuscar" class="cup-buscar" placeholder="Buscar por ticker o emisor en todas las semanas" aria-label="Buscar instrumento" autocomplete="off" /><button type="button" class="btn-com sec" id="cupLimpiar" style="display:none;">Borrar nominales</button></div>
         <span class="termo-fecha" id="cupActualizado"></span>
       </div>
+      <div id="cupPdfEstado" class="cup-pdf-estado" style="display:none;"></div>
       <div id="cupAvisoCobertura" class="pct-warning warn" style="display:none;margin:0 0 12px;"></div>
       <div class="cg-grid" id="cupGraficos"></div>
       <div class="tl-leyenda" style="margin:14px 0 0;">
@@ -4632,7 +4658,7 @@ function activarTab(nombre){
    Si el archivo falta, la solapa no se muestra y el resto sigue igual.
 ===================================================================== */
 let REINV = { ok: false, eventos: [], tipos: {}, reglas: {}, completoHasta: null, actualizado: '', corteDuration: 2 };
-const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '' };
+const CUP = { semana: 0, soloDestacados: false, montos: {}, busca: '', arch: null };
 const CUP_SEMANAS_MAX = 30;
 const CUP_DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const CUP_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -4905,7 +4931,7 @@ function cupPanelHtml(evs, moneda){
     return sep + `
       <div class="cg-fila${e.destacado ? ' rel' : ''}">
         <div class="cg-inst">
-          ${e.destacado ? '<span class="cg-estrella" title="Entre los más relevantes: operó en los últimos días y tiene un monto en circulación alto">★</span>' : ''}<span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}${marca}
+          ${e.destacado ? '<span class="cg-estrella" title="Entre los más relevantes: operó en los últimos días y tiene un monto en circulación alto o paga US$ 50 millones o más en una fecha">★</span>' : ''}<span class="cg-ticker">${escHtml(e.ticker)}</span>${cupTipoChip(e.tipo, e.moneda)}${marca}
           <span class="cg-nombre">${escHtml(e.nombre)} · ${escHtml(e.evento)}</span>
         </div>
         ${barra}
@@ -5024,11 +5050,14 @@ function renderCupones(){
 
   document.getElementById('cupSemanaSelect').innerHTML = semanas.map(x=>{
     const n = cupEventosDeSemana(x).length;
-    return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
+    const delCliente = CUP.arch && !CUP.arch.error && cupEventosDeSemana(x).some(e => CUP.montos[cupClave(e)]);
+    return `<option value="${x.idx}"${x.idx === CUP.semana ? ' selected' : ''}>${delCliente ? '● ' : ''}${cupTituloSemana(x)} · ${cupRangoTexto(x)}${n ? ` (${n})` : ''}</option>`;
   }).join('');
   document.getElementById('cupPrev').disabled = CUP.semana <= 0;
   document.getElementById('cupNext').disabled = CUP.semana >= semanas.length - 1;
   document.getElementById('cupActualizado').textContent = REINV.actualizado ? `Calendario actualizado al ${REINV.actualizado} · Fuente: 1816` : 'Fuente: 1816';
+
+  cupRenderEstadoArchivo();
 
   const aviso = document.getElementById('cupAvisoCobertura');
   const avisos = [];
@@ -5102,7 +5131,554 @@ document.getElementById('cupGraficos').addEventListener('input', (e)=>{
   if(v > 0) CUP.montos[inp.dataset.k] = v; else delete CUP.montos[inp.dataset.k];
   actualizarCup();
 });
-document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; renderCupones(); });
+document.getElementById('cupLimpiar').addEventListener('click', ()=>{ CUP.montos = {}; CUP.arch = null; renderCupones(); });
+
+/* ---------------------------------------------------------------------
+   Tenencias del cliente desde un archivo (PDF, Excel o CSV)
+
+   El asesor carga cualquier archivo que tenga tickers y nominales (un
+   resumen de cuenta, una planilla de posiciones) y la pagina busca sola en
+   que columna estan los tickers y en cual los nominales:
+     - Tickers: la columna donde mas celdas coinciden con los tickers del
+       calendario de pagos.
+     - Nominales: entre las columnas numericas de esas filas, la que tiene
+       encabezado de cantidad o, si no hay encabezado claro, la que mas se
+       parece a una cantidad (numeros enteros, sin signo de moneda).
+   Lo detectado se muestra y se puede cambiar. Los casilleros siguen siendo
+   editables.
+
+   PRIVACIDAD: los datos de clientes no salen de la computadora del asesor.
+   El archivo se lee en el navegador y las tenencias quedan solo en la memoria
+   de esa pestaña (CUP.montos / CUP.arch): no se suben a ningun servidor, no se
+   guardan en el almacenamiento del navegador, no van en la direccion de la
+   pagina y se pierden al cerrarla o recargarla. No agregar aca nada que envie
+   o persista esos datos. Como no hay nada compartido entre navegadores, cada
+   asesor que entra a la pagina trabaja con lo suyo sin ver lo de otro.
+--------------------------------------------------------------------- */
+// El lector de PDF se sirve desde esta misma pagina (libs/pdfjs), sin terceros; los CDN quedan solo como respaldo
+const PDFJS_URLS = [
+  ['libs/pdfjs/pdf.min.js', 'libs/pdfjs/pdf.worker.min.js'],
+  ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'],
+  ['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js', 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'],
+];
+let pdfjsCarga = null;
+function cargarPdfJs(){
+  if(window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if(pdfjsCarga) return pdfjsCarga;
+  const intentar = (i)=> new Promise((ok, mal)=>{
+    if(i >= PDFJS_URLS.length) return mal(new Error('No se pudo cargar el lector de PDF. Revisá la conexión y probá de nuevo.'));
+    const sc = document.createElement('script');
+    sc.src = PDFJS_URLS[i][0];
+    sc.onload = ()=>{
+      if(!window.pdfjsLib) return intentar(i + 1).then(ok, mal);
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_URLS[i][1];
+      ok(window.pdfjsLib);
+    };
+    sc.onerror = ()=> intentar(i + 1).then(ok, mal);
+    document.head.appendChild(sc);
+  });
+  pdfjsCarga = intentar(0).catch(e=>{ pdfjsCarga = null; throw e; });
+  return pdfjsCarga;
+}
+
+const ARCH_RE_MONEDA = /^(?:\$|U\$S|US\$|€)$/i;      // signo suelto, separado de su numero
+const ARCH_RE_NUM = /^(\$|U\$S|US\$|USD|ARS|EUR|€)?\s*\(?-?\s*\d[\d.,]*\)?\s*(%)?$/i;
+
+/* Celda -> numero, sin dar por sentado que significan el punto y la coma.
+   Cada numero escrito como texto se clasifica por lo que el mismo demuestra:
+     - con punto y coma: el ultimo de los dos es el decimal ("1.234,50", "1,234.50");
+     - un separador repetido es de miles ("1.234.567");
+     - un separador seguido de 1, 2, 4 o mas digitos, o con mas de 3 digitos
+       adelante, o con un cero adelante, es decimal ("12,5", "1083.00", "0,125");
+     - un unico separador seguido de exactamente 3 digitos ("1.234", "34,918")
+       no se puede saber solo: queda "ambiguo" y lo resuelve archConvenciones
+       mirando el resto de la columna, de la tabla y del archivo.
+   "evidencia" es el caracter que ese numero demuestra que es el decimal.
+   Devuelve null si la celda no es un numero. */
+function archNumero(v){
+  if(v == null || v === '') return null;
+  if(typeof v === 'number') return isFinite(v) ? { n: v, moneda: false } : null;
+  if(v instanceof Date) return null;
+  const s = String(v).trim();
+  const m = s.match(ARCH_RE_NUM);
+  if(!m) return null;
+  const neg = /-|\(.*\)/.test(s) ? -1 : 1;
+  const t = s.replace(/[^\d.,]/g, '');
+  const moneda = !!(m[1] || m[2]);
+  const puntos = (t.match(/\./g) || []).length, comas = (t.match(/,/g) || []).length;
+  const num = (txt)=>{ const n = parseFloat(txt); return isFinite(n) ? n * neg : null; };
+  const fijo = (n, evidencia)=> n == null ? null : { n, moneda, evidencia: evidencia || null };
+  if(!puntos && !comas) return fijo(num(t), null) && Object.assign(fijo(num(t), null), { sinSeparador: true, digitos: t.length });
+  if(puntos && comas){
+    const dec = t.lastIndexOf(',') > t.lastIndexOf('.') ? ',' : '.';
+    const miles = dec === ',' ? '.' : ',';
+    return fijo(num(t.split(miles).join('').replace(dec, '.')), dec);
+  }
+  const sep = puntos ? '.' : ',', otro = puntos ? ',' : '.';
+  if(puntos + comas > 1) return fijo(num(t.split(sep).join('')), otro);      // repetido: es de miles
+  const [antes, despues] = t.split(sep);
+  const comoDecimal = num((antes || '0') + '.' + despues), comoMiles = num(antes + despues);
+  if(despues.length !== 3 || antes.length > 3 || antes.length === 0 || /^0/.test(antes)) return fijo(comoDecimal, sep);
+  if(comoMiles == null) return null;
+  // Ambiguo: mientras no se resuelva vale como miles, pero queda marcado
+  return { n: comoMiles, moneda, evidencia: null, ambiguo: true, sep, comoMiles, comoDecimal };
+}
+
+/* Convencion de punto y coma de una lista de numeros: cuantos demuestran que
+   el decimal es la coma y cuantos que es el punto. */
+function archVotos(numeros){
+  const v = { ',': 0, '.': 0 };
+  numeros.forEach(x => { if(x && x.evidencia) v[x.evidencia]++; });
+  return v;
+}
+function archGanador(v){ return v[','] > v['.'] ? ',' : (v['.'] > v[','] ? '.' : null); }
+function archVotosDeTabla(tabla){
+  if(!tabla._votos){
+    const lista = [];
+    tabla.filas.forEach(f => (f || []).forEach(c => { if(typeof c === 'string'){ const n = archNumero(c); if(n) lista.push(n); } }));
+    tabla._votos = archVotos(lista);
+  }
+  return tabla._votos;
+}
+
+// Ticker tal como puede venir en una celda: "AL30", "al30 ", "GD35 - BONOS REP...", "YM34O.BA"
+// Los tickers se comparan en mayusculas y sin espacios: en el calendario hay algunos como "Bueair27" o "PBA 2028"
+function archNormTicker(t){ return String(t).toUpperCase().replace(/\s+/g, ''); }
+let ARCH_ESPECIALES = new Set();      // tickers del calendario que no tienen la forma habitual (se arma al analizar)
+function archTickerDeCelda(v){
+  if(v == null || typeof v === 'number' || v instanceof Date) return null;
+  const entero = archNormTicker(String(v).trim());
+  if(ARCH_ESPECIALES.has(entero)) return entero;
+  const t = String(v).trim().toUpperCase().split(/[\s\-–:·|\/]+/)[0].replace(/\.BA$/, '');
+  return /^(?=.*[A-Z])[A-Z0-9]{2,8}$/.test(t) ? t : null;
+}
+
+/* Tablas de un PDF: cada renglon es una fila y cada bloque de texto, una
+   celda (ordenadas de izquierda a derecha). Las columnas se cuentan desde la
+   derecha, porque las descripciones pueden venir partidas en varios bloques. */
+async function archTablasDePdf(buffer){
+  const lib = await cargarPdfJs();
+  let doc;
+  try{ doc = await lib.getDocument({ data: buffer }).promise; }
+  catch(e){
+    if(e && e.name === 'PasswordException') throw new Error('El PDF está protegido con contraseña: no se puede leer. Guardalo sin contraseña y volvé a cargarlo.');
+    throw new Error('El archivo no se pudo abrir como PDF: puede estar dañado o no ser un PDF.');
+  }
+  const filas = [];
+  for(let n = 1; n <= doc.numPages; n++){
+    const pagina = await doc.getPage(n);
+    const contenido = await pagina.getTextContent();
+    const renglones = [];
+    contenido.items.forEach(it=>{
+      if(!(it.str || '').trim()) return;
+      const x = it.transform[4], y = it.transform[5];
+      let r = renglones.find(f => Math.abs(f.y - y) < 2.5);
+      if(!r){ r = { y, items: [] }; renglones.push(r); }
+      r.items.push({ x, txt: it.str });
+    });
+    renglones.sort((a, b)=> b.y - a.y);
+    renglones.forEach(r=>{
+      let celdas = [];
+      r.items.sort((a, b)=> a.x - b.x).forEach(i => i.txt.split(/\s{2,}/).forEach(t => { if(t.trim()) celdas.push(t.trim()); }));
+      // Todo el renglon en un solo bloque: se separa por espacios
+      if(celdas.length === 1 && celdas[0].split(/\s+/).filter(t => archNumero(t)).length >= 2) celdas = celdas[0].split(/\s+/);
+      // "$" suelto seguido del numero -> una sola celda
+      const unidas = [];
+      celdas.forEach(c=>{
+        const ant = unidas[unidas.length - 1];
+        if(ant != null && ARCH_RE_MONEDA.test(ant) && archNumero(c)) unidas[unidas.length - 1] = ant + ' ' + c;
+        else unidas.push(c);
+      });
+      filas.push(unidas);
+    });
+  }
+  if(!filas.length) throw new Error('El PDF no tiene texto para leer: parece una imagen o un documento escaneado. Hace falta el PDF original (no una foto ni un escaneo) o un Excel.');
+  return [{ nombre: '', modo: 'derecha', filas }];
+}
+
+// Tablas de un Excel o CSV: una por hoja, con las columnas tal cual
+function archTablasDeExcel(buffer, esCsv){
+  if(typeof XLSX === 'undefined') throw new Error('No se pudo cargar el lector de Excel. Revisá la conexión y recargá la página.');
+  let wb;
+  if(esCsv){
+    /* CSV: las celdas se leen como texto, tal cual estan escritas. Si no, el
+       lector interpreta "37,00" o "290.518,00" a la inglesa y cambia el numero. */
+    let texto = new TextDecoder('utf-8').decode(buffer);
+    if(texto.includes('\uFFFD')) texto = new TextDecoder('windows-1252').decode(buffer);
+    wb = XLSX.read(texto, { type: 'string', raw: true });
+  } else {
+    wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+  }
+  return wb.SheetNames.map(nombre => ({
+    nombre, modo: 'columna',
+    filas: XLSX.utils.sheet_to_json(wb.Sheets[nombre], { header: 1, raw: true, defval: null }),
+  }));
+}
+
+function archLetraColumna(i){
+  let s = ''; i++;
+  while(i > 0){ s = String.fromCharCode(65 + (i - 1) % 26) + s; i = Math.floor((i - 1) / 26); }
+  return s;
+}
+
+// Encabezados: que es una cantidad de titulos y que es plata (precio, monto, importe, valuacion)
+const ARCH_ENC_NOMINAL = /nominal|\bv\.?\s?n\.?\b/i;
+const ARCH_ENC_SI = /cantidad|\bcant\b|tenencia|posici[oó]n|t[ií]tulos|l[aá]minas|unidades|qty|quantity/i;
+const ARCH_ENC_NO = /precio|price|monto|importe|amount|total|saldo|valor|value|valuaci|valoriz|garant|variaci|costo|ppc|rendim|\btir\b|\btna\b|%|cotiz|paridad|mercado|market|pesos|d[oó]lar|\busd\b|\bars\b|\$/i;
+function archTipoEncabezado(enc){
+  if(!enc) return '';
+  if(ARCH_ENC_NOMINAL.test(enc)) return 'cantidad';      // "Valor nominal", "Monto nominal", "VN"
+  if(ARCH_ENC_NO.test(enc)) return 'plata';
+  return ARCH_ENC_SI.test(enc) ? 'cantidad' : '';
+}
+
+/* Analiza una tabla: columna de tickers, columnas numericas candidatas a
+   nominales (ordenadas de la mas probable a la menos) y filas con ticker. */
+function archAnalizarTabla(tabla, conocidos, votosArchivo){
+  const esConocido = (t)=> conocidos.has(t) || (/[DC]$/.test(t) && conocidos.has(t.slice(0, -1)));
+  // 1) Columna de tickers: la posicion con mas tickers del calendario
+  const aciertos = new Map();
+  tabla.filas.forEach(f => f.forEach((c, i)=>{
+    const t = archTickerDeCelda(c);
+    if(t && esConocido(t)) aciertos.set(i, (aciertos.get(i) || 0) + 1);
+  }));
+  if(!aciertos.size) return null;
+  const colsTicker = [...aciertos.entries()].sort((a, b)=> b[1] - a[1] || a[0] - b[0]);
+  return { colsTicker, analizar: (colT, decUsuario)=>{
+    // 2) Filas con ticker (del calendario o con forma de ticker) y sus celdas numericas
+    const filas = [], sinNumeros = [];
+    tabla.filas.forEach((f, idx)=>{
+      const t = archTickerDeCelda(f[colT]);
+      if(!t) return;
+      const nums = [];
+      if(tabla.modo === 'columna'){
+        f.forEach((c, i)=>{ if(i !== colT){ const n = archNumero(c); if(n) nums.push({ clave: 'c' + i, orden: i, n: n.n, moneda: n.moneda, crudo: c, lec: n }); } });
+      } else {
+        for(let i = f.length - 1, k = 1; i > colT; i--, k++){
+          const n = archNumero(f[i]);
+          if(!n) break;      // se cuentan las columnas numericas del final del renglon
+          nums.push({ clave: 'r' + k, orden: -k, n: n.n, moneda: n.moneda, crudo: f[i], total: f.length, lec: n });
+        }
+      }
+      if(nums.length) filas.push({ idx, ticker: t, conocido: esConocido(t), nums, largo: f.length });
+      else if(esConocido(t)) sinNumeros.push(t);
+    });
+    const base = filas.filter(f => f.conocido);
+    if(!base.length) return { filas: [], candidatos: [], sinNumeros };
+    const valor = (f, clave)=>{ const n = f.nums.find(x => x.clave === clave); return n ? n.n : null; };
+    // Una columna que es el producto de otras dos (cantidad x precio, o /100) es un monto
+    const esProducto = (c, a, b)=>{
+      let filasOk = 0, total = 0;
+      base.forEach(f=>{
+        const vc = valor(f, c.clave), va = valor(f, a.clave), vb = valor(f, b.clave);
+        if(vc == null || va == null || vb == null || !vc || !va || !vb) return;
+        total++;
+        const p = va * vb;
+        if(Math.abs(p - vc) <= Math.abs(vc) * 0.03 || Math.abs(p / 100 - vc) <= Math.abs(vc) * 0.03) filasOk++;
+      });
+      return total >= 2 && filasOk / total >= 0.8;
+    };
+
+    /* PUNTO Y COMA: que separador es el decimal en cada columna. No hay una
+       regla fija; se decide con la evidencia, de la mas cercana a la mas lejana:
+         1. los numeros de la propia columna que no dejan dudas;
+         2. en la columna hay enteros de 4 o mas digitos escritos sin separador:
+            entonces el archivo no usa separador de miles y el ambiguo es decimal;
+         3. lo que demuestran los demas numeros de la tabla;
+         4. lo que demuestran los demas numeros del archivo;
+         5. las cuentas: con que lectura cierra cantidad x precio = monto;
+         6. lo que elija el asesor. Si nada alcanza, la columna queda "dudosa". */
+    const porClave = new Map();
+    filas.forEach(f => f.nums.forEach(n => { if(!porClave.has(n.clave)) porClave.set(n.clave, []); porClave.get(n.clave).push(n); }));
+    const decDe = new Map(), dudosas = new Map();
+    const aplicarDec = (lista, dec)=> lista.forEach(n => { if(n.lec.ambiguo) n.n = (dec && n.lec.sep === dec) ? n.lec.comoDecimal : n.lec.comoMiles; });
+    porClave.forEach((lista, clave)=>{
+      const ambiguos = lista.filter(n => n.lec.ambiguo);
+      if(!ambiguos.length) return;
+      let dec = archGanador(archVotos(lista.map(n => n.lec)));
+      let motivo = dec ? 'columna' : null;
+      if(!dec){
+        const seps = new Set(ambiguos.map(n => n.lec.sep));
+        if(seps.size === 1 && lista.some(n => typeof n.crudo === 'string' && n.lec.sinSeparador && n.lec.digitos >= 4)){ dec = [...seps][0]; motivo = 'sin-miles'; }
+      }
+      if(!dec){ dec = archGanador(archVotosDeTabla(tabla)); if(dec) motivo = 'tabla'; }
+      if(!dec && votosArchivo){ dec = archGanador(votosArchivo); if(dec) motivo = 'archivo'; }
+      if(dec){ decDe.set(clave, { dec, motivo }); aplicarDec(lista, dec); }
+      else dudosas.set(clave, ambiguos[0]);
+    });
+    // 5. Las cuentas: se prueba cada lectura y se queda con la unica que hace cerrar un producto
+    const clavesBase = [...new Set(base.flatMap(f => f.nums.map(n => n.clave)))].map(clave => ({ clave }));
+    const cierra = (clave)=> clavesBase.some(a => clavesBase.some(b=>{
+      if(a.clave >= b.clave) return false;
+      const c = clavesBase.filter(x => x.clave !== a.clave && x.clave !== b.clave);
+      if(a.clave !== clave && b.clave !== clave) return c.some(x => x.clave === clave && esProducto(x, a, b));
+      return c.some(x => esProducto(x, a, b));
+    }));
+    [...dudosas.keys()].forEach(clave=>{
+      const lista = porClave.get(clave), sep = dudosas.get(clave).lec.sep, otro = sep === '.' ? ',' : '.';
+      aplicarDec(lista, otro); const conMiles = cierra(clave);
+      aplicarDec(lista, sep); const conDecimal = cierra(clave);
+      if(conMiles !== conDecimal){ const dec = conMiles ? otro : sep; aplicarDec(lista, dec); decDe.set(clave, { dec, motivo: 'cuentas' }); dudosas.delete(clave); }
+      else if(decUsuario){ aplicarDec(lista, decUsuario); decDe.set(clave, { dec: decUsuario, motivo: 'asesor' }); dudosas.delete(clave); }
+      else aplicarDec(lista, null);
+    });
+    // Encabezado: el renglon de texto mas cercano por encima de la primera fila con ticker
+    const encabezadoDe = (fila, cand)=>{
+      for(let i = fila.idx - 1; i >= Math.max(0, fila.idx - 12); i--){
+        const f = tabla.filas[i] || [];
+        let celda;
+        if(tabla.modo === 'columna') celda = f[cand.orden];
+        else { if(f.length !== fila.largo || f.some(c => archNumero(c))) continue; celda = f[f.length + cand.orden]; }
+        if(celda != null && String(celda).trim() && !archNumero(celda) && !(celda instanceof Date)){ filaEnc = i; return String(celda).trim(); }
+      }
+      return '';
+    };
+    let filaEnc = null;      // renglon donde se encontro el ultimo encabezado
+    // 3) Columnas numericas candidatas, con puntaje
+    const claves = new Map();
+    base.forEach(f => f.nums.forEach(n=>{
+      const c = claves.get(n.clave) || { clave: n.clave, orden: n.orden, vals: [], moneda: 0, ejemplo: n.crudo, fila: f, num: n };
+      c.vals.push(n.n); if(n.moneda) c.moneda++;
+      claves.set(n.clave, c);
+    }));
+    const cols = [...claves.values()].filter(c => c.vals.length >= Math.max(1, base.length * 0.5));
+    const producto = new Map();      // clave del monto -> [factor, factor]
+    cols.forEach(c => cols.forEach(a => cols.forEach(b=>{
+      if(a === c || b === c || a.clave >= b.clave || producto.has(c.clave)) return;
+      if(esProducto(c, a, b)) producto.set(c.clave, [a.clave, b.clave]);
+    })));
+    const factores = new Set([...producto.values()].flat());
+    const candidatos = cols.map(c=>{
+      const total = c.vals.length;
+      const enteros = c.vals.filter(v => Math.abs(v - Math.round(v)) < 1e-6).length / total;
+      const positivos = c.vals.filter(v => v > 0).length / total;
+      const distintos = new Set(c.vals).size;
+      const moneda = c.moneda / total;
+      const enc = encabezadoDe(c.fila, c.num);
+      const tipoEnc = archTipoEncabezado(enc);
+      // Plata: lo dice el encabezado, trae signo de moneda o es cantidad x precio
+      const plata = tipoEnc === 'plata' || (tipoEnc !== 'cantidad' && (moneda > 0.5 || producto.has(c.clave)));
+      const puntaje = enteros * 2 + positivos * 2 - (distintos === 1 && total > 2 ? 1.5 : 0) + (tipoEnc === 'cantidad' ? 6 : 0) - (plata ? 8 : 0);
+      return { clave: c.clave, orden: c.orden, puntaje, encabezado: enc, ejemplo: c.ejemplo, plata, tipoEnc, enteros, moneda, factor: factores.has(c.clave), positivos, dudosa: dudosas.get(c.clave) || null, dec: decDe.get(c.clave) || null };
+    });
+    // A igual puntaje, la columna mas cercana al ticker
+    candidatos.sort((a, b)=> b.puntaje - a.puntaje || a.orden - b.orden);
+    /* Solo se cargan nominales solos cuando hay certeza de que la columna es
+       una cantidad y no un monto: lo dice el encabezado, o el archivo trae
+       cantidad, precio y monto y las cuentas cierran. Si no, elige el asesor. */
+    let seguro = null;
+    const conEnc = candidatos.filter(c => c.tipoEnc === 'cantidad' && c.positivos > 0);
+    if(conEnc.length) seguro = conEnc[0].clave;
+    else {
+      const fs = candidatos.filter(c => c.factor && !c.plata);
+      // De los dos factores, la cantidad es la de numeros enteros y sin signo de moneda
+      if(fs.length === 1) seguro = fs[0].clave;
+      else if(fs.length === 2){
+        const [x, y] = fs;
+        if(x.enteros >= 0.95 && y.enteros < 0.6) seguro = x.clave;
+        else if(y.enteros >= 0.95 && x.enteros < 0.6) seguro = y.clave;
+      }
+    }
+    // El encabezado de los tickers es la celda de esa columna en el renglon de encabezados
+    let encT = '';
+    const conEncabezado = candidatos.find(c => c.encabezado);
+    if(conEncabezado){
+      const col = cols.find(c => c.clave === conEncabezado.clave);
+      filaEnc = null; encabezadoDe(col.fila, col.num);
+      const celda = filaEnc != null ? (tabla.filas[filaEnc] || [])[colT] : null;
+      if(celda != null && String(celda).trim() && !archNumero(celda)) encT = String(celda).trim();
+    }
+    return { filas, candidatos, seguro, encabezadoTicker: encT, sinNumeros, dudosas };
+  } };
+}
+function archTickerDeCeldaConocida(c, esConocido){
+  const t = archTickerDeCelda(c);
+  return !!(t && esConocido(t));
+}
+
+function archNombreColumna(tabla, tipo, col, encabezado, ejemplo){
+  const pos = tabla.modo === 'columna'
+    ? `columna ${archLetraColumna(tipo === 'ticker' ? col : parseInt(String(col).slice(1), 10))}`
+    : (tipo === 'ticker' ? `${col + 1}.ª columna` : (String(col) === 'r1' ? 'última columna' : `${String(col).slice(1)}.ª columna desde la derecha`));
+  const ej = ejemplo != null && ejemplo !== '' ? ` · ej.: ${typeof ejemplo === 'number' ? fmtNumCom(ejemplo, Number.isInteger(ejemplo) ? 0 : 2) : ejemplo}` : '';
+  return encabezado ? `«${encabezado}» (${pos}${ej})` : `${pos.charAt(0).toUpperCase() + pos.slice(1)}${ej}`;
+}
+
+/* Aplica lo elegido (o lo detectado) y carga los nominales en el calendario.
+   CUP.arch.eleccion[i] = { colT, clave } por tabla. */
+function archAplicar(){
+  const a = CUP.arch;
+  const desde = cupSemanas()[0].ini;
+  const futuros = REINV.eventos.filter(e => e.fecha >= desde);
+  const conocidos = new Set(REINV.eventos.map(e => archNormTicker(e.ticker)));
+  ARCH_ESPECIALES = new Set([...conocidos].filter(t => !/^(?=.*[A-Z])[A-Z0-9]{2,8}$/.test(t) || REINV.eventos.some(e => e.ticker !== t && archNormTicker(e.ticker) === t)));
+  const conPagos = new Map(futuros.map(e => [archNormTicker(e.ticker), e.ticker]));      // normalizado -> ticker del calendario
+  const tenencias = new Map(), otros = new Set();
+  a.detalle = []; a.sinNominal = [];
+  // Lo que demuestran sobre punto y coma todos los numeros del archivo
+  const votosArchivo = { ',': 0, '.': 0 };
+  a.tablas.forEach(t => { const v = archVotosDeTabla(t); votosArchivo[','] += v[',']; votosArchivo['.'] += v['.']; });
+  a.tablas.forEach((tabla, i)=>{
+    const an = archAnalizarTabla(tabla, conocidos, votosArchivo);
+    if(!an) return;
+    const el = a.eleccion[i] || (a.eleccion[i] = {});
+    if(el.colT == null || !an.colsTicker.some(c => c[0] === el.colT)) el.colT = an.colsTicker[0][0];
+    const r = an.analizar(el.colT, a.decUsuario || null);
+    (r.sinNumeros || []).forEach(t => a.sinNominal.push(t));
+    if(!r.candidatos.length) return;
+    if(el.clave && !r.candidatos.some(c => c.clave === el.clave)) el.clave = null;
+    if(!el.clave && !el.manual) el.clave = r.seguro;      // sin certeza queda sin elegir
+    // Si en la columna de nominales no se sabe que es el punto o la coma, no se carga hasta que el asesor lo diga
+    const dudosa = el.clave ? (r.dudosas.get(el.clave) || null) : null;
+    a.detalle.push({ i, tabla, colsTicker: an.colsTicker, candidatos: r.candidatos, encabezadoTicker: r.encabezadoTicker, eleccion: el, dudosa });
+    if(!el.clave || dudosa) return;
+    r.filas.forEach(f=>{
+      const n = f.nums.find(x => x.clave === el.clave);
+      if(!n || !(n.n > 0)){ if(f.conocido) a.sinNominal.push(f.ticker); return; }
+      const t = conPagos.has(f.ticker) ? conPagos.get(f.ticker) : ((/[DC]$/.test(f.ticker) && conPagos.has(f.ticker.slice(0, -1))) ? conPagos.get(f.ticker.slice(0, -1)) : null);
+      if(t) tenencias.set(t, (tenencias.get(t) || 0) + n.n);
+      else otros.add(f.ticker);
+    });
+  });
+  if(!a.detalle.length) return;      // archivo no reconocido: no se toca lo que ya estaba cargado
+  CUP.montos = {};      // el archivo reemplaza lo cargado antes
+  a.con = [];
+  tenencias.forEach((cant, t)=>{
+    const pagos = futuros.filter(e => e.ticker === t);
+    pagos.forEach(e => { CUP.montos[cupClave(e)] = Math.round(cant); });
+    a.con.push({ ticker: t, cantidad: cant, pagos: pagos.length, proximo: pagos[0].fecha });
+  });
+  a.con.sort((x, y)=> x.proximo < y.proximo ? -1 : (x.proximo > y.proximo ? 1 : x.ticker.localeCompare(y.ticker)));
+  a.sin = [...otros].filter(t => !tenencias.has(t)).sort();
+  a.sinNominal = [...new Set(a.sinNominal)].filter(t => !tenencias.has(t) && !(/[DC]$/.test(t) && tenencias.has(t.slice(0, -1)))).sort();
+}
+
+async function cupCargarArchivo(archivo){
+  const btn = document.getElementById('cupPdfBtn'), txt = document.getElementById('cupPdfBtnTxt');
+  const rotulo = txt.textContent;
+  btn.disabled = true; txt.textContent = 'Leyendo el archivo…';
+  let previo = { arch: CUP.arch, montos: CUP.montos };
+  try{
+    const ext = (archivo.name.match(/\.([a-z0-9]+)$/i) || ['', ''])[1].toLowerCase();
+    const esPdf = ext === 'pdf' || archivo.type === 'application/pdf';
+    if(!esPdf && !['xlsx', 'xls', 'xlsm', 'xlsb', 'csv', 'txt', 'tsv'].includes(ext)) throw new Error(`No se puede leer un archivo ${ext ? '.' + ext : 'de ese tipo'}. Se aceptan PDF, Excel (.xlsx, .xls) y CSV.`);
+    if(!archivo.size) throw new Error('El archivo está vacío.');
+    const buffer = await archivo.arrayBuffer();
+    let tablas;
+    if(esPdf) tablas = await archTablasDePdf(buffer);
+    else {
+      try{ tablas = archTablasDeExcel(buffer, ['csv', 'txt', 'tsv'].includes(ext)); }
+      catch(e){ throw new Error(/password|encrypt/i.test(String(e && e.message)) ? 'El Excel está protegido con contraseña: no se puede leer. Guardalo sin contraseña y volvé a cargarlo.' : 'El archivo no se pudo abrir: puede estar dañado o no ser un Excel o CSV válido.'); }
+    }
+    if(!tablas.some(t => t.filas.some(f => f && f.some(c => c != null && String(c).trim() !== '')))) throw new Error('El archivo no tiene datos para leer.');
+    previo = { arch: CUP.arch, montos: CUP.montos };
+    CUP.arch = { archivo: archivo.name, tablas, eleccion: {} };
+    archAplicar();
+    if(!CUP.arch.detalle.length) throw new Error('No se reconocieron tenencias en el archivo: no se encontró ninguna columna con tickers del calendario de pagos junto a una columna de números.');
+    // Se va a la primera semana en la que el cliente cobra
+    const primera = cupSemanas().find(s => cupEventosDeSemana(s).some(e => CUP.montos[cupClave(e)]));
+    if(primera) CUP.semana = primera.idx;
+    CUP.busca = ''; document.getElementById('cupBuscar').value = '';
+  } catch(err){
+    console.warn('No se pudo leer el archivo de tenencias.', err);
+    // Lo que ya estaba cargado no se pierde por un archivo que no se pudo leer
+    CUP.montos = previo.montos;
+    CUP.arch = { error: (err && err.message) || 'No se pudo leer el archivo.', archivo: archivo.name, quedaLoAnterior: Object.keys(previo.montos).length > 0 };
+  }
+  btn.disabled = false; txt.textContent = rotulo;
+  renderCupones();
+}
+
+// Semanas (desde la actual) en las que el cliente tiene cobros cargados
+function cupSemanasConCobros(){
+  return cupSemanas().filter(s => REINV.eventos.some(e => e.fecha >= s.ini && e.fecha <= s.fin && CUP.montos[cupClave(e)]));
+}
+
+function cupRenderEstadoArchivo(){
+  const el = document.getElementById('cupPdfEstado');
+  const a = CUP.arch;
+  if(!a){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = '';
+  el.classList.toggle('err', !!a.error);
+  if(a.error){
+    el.innerHTML = `<span class="cup-arch-alerta"><b>⚠ No se pudo cargar ${a.archivo ? '«' + escHtml(a.archivo) + '»' : 'el archivo'}</b>${escHtml(a.error)}${a.quedaLoAnterior ? ' Se mantienen los nominales que ya estaban cargados.' : ''}</span>`;
+    return;
+  }
+  // Que columnas se tomaron, con la opcion de cambiarlas
+  const columnas = a.detalle.map(d=>{
+    const t = d.tabla;
+    const optsT = d.colsTicker.map(([col, n]) => `<option value="${col}"${col === d.eleccion.colT ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'ticker', col, col === d.eleccion.colT ? d.encabezadoTicker : '', ''))} · ${n} ${n === 1 ? 'ticker' : 'tickers'} del calendario</option>`).join('');
+    const optsN = (d.eleccion.clave ? '' : '<option value="" selected disabled>Elegí la columna de nominales…</option>')
+      + d.candidatos.map(c => `<option value="${c.clave}"${c.clave === d.eleccion.clave ? ' selected' : ''}>${escHtml(archNombreColumna(t, 'num', c.clave, c.encabezado, c.ejemplo))}${c.plata ? ' · parece un monto o precio' : ''}</option>`).join('');
+    return `<span class="cup-arch-cols">${t.nombre && a.detalle.length > 1 ? `<b>Hoja ${escHtml(t.nombre)}</b>` : ''}
+      <label>Tickers <select data-arch-t="${d.i}"${d.colsTicker.length < 2 ? ' disabled' : ''}>${optsT}</select></label>
+      <label>Nominales <select data-arch-n="${d.i}"${(d.candidatos.length < 2 && d.eleccion.clave) ? ' disabled' : ''}${d.eleccion.clave ? '' : ' class="falta"'}>${optsN}</select></label></span>`;
+  }).join('');
+  const faltan = a.detalle.filter(d => !d.eleccion.clave).length;
+  const dudosa = (a.detalle.find(d => d.dudosa) || {}).dudosa || null;      // numero de ejemplo que no se sabe leer
+  const elegidaPlata = a.detalle.some(d => d.eleccion.clave && (d.candidatos.find(c => c.clave === d.eleccion.clave) || {}).plata);
+  const semanas = cupSemanasConCobros();
+  const sin = a.sin.length ? `<span class="cup-pdf-det">${a.sin.length} ${a.sin.length === 1 ? 'instrumento del archivo no tiene' : 'instrumentos del archivo no tienen'} pagos en el calendario.</span>` : '';
+  el.innerHTML = `<strong>${escHtml(a.archivo)}:</strong> `
+    + (a.con.length
+      ? `${a.con.length} ${a.con.length === 1 ? 'instrumento del archivo tiene' : 'instrumentos del archivo tienen'} pagos en el calendario y ya ${a.con.length === 1 ? 'tiene' : 'tienen'} los nominales cargados en cada pago. Se pueden corregir a mano.`
+      : ((faltan || dudosa) ? 'se encontraron los tickers, pero no se cargó ningún nominal todavía.' : 'ninguno de los instrumentos del archivo tiene pagos en el calendario con la columna de nominales elegida.'))
+    + (faltan ? `<span class="cup-arch-aviso">⚠ No se pudo identificar con certeza cuál columna tiene los nominales y cuál un monto o importe${a.detalle.length > 1 ? ' en ' + faltan + (faltan === 1 ? ' hoja' : ' hojas') : ''}. Para no confundirlos, elegí la columna de nominales:</span>` : '')
+    + (dudosa ? (()=>{
+        const sep = dudosa.lec.sep, otro = sep === '.' ? ',' : '.', ej = escHtml(String(dudosa.crudo).trim());
+        return `<span class="cup-arch-aviso">⚠ No se pudo determinar si en los nominales ${sep === '.' ? 'el punto' : 'la coma'} separa los miles o los decimales (por ejemplo, «${ej}»). Para no cargar un número equivocado, elegí cómo se lee:
+          <span class="cup-arch-cols"><label>«${ej}» es <select data-arch-dec class="falta">
+            <option value="" selected disabled>Elegí…</option>
+            <option value="${otro}">${fmtNumCom(dudosa.lec.comoMiles, 0)} — ${sep === '.' ? 'el punto' : 'la coma'} separa los miles</option>
+            <option value="${sep}">${fmtNumCom(dudosa.lec.comoDecimal, 3)} — ${sep === '.' ? 'el punto' : 'la coma'} es el decimal</option>
+          </select></label></span></span>`;
+      })() : '')
+    + (elegidaPlata ? `<span class="cup-arch-aviso">⚠ La columna elegida como nominales parece un monto o un precio: revisala.</span>` : '')
+    + ((!faltan && a.sinNominal.length) ? `<span class="cup-arch-aviso">⚠ ${a.sinNominal.length} ${a.sinNominal.length === 1 ? 'instrumento del calendario figura' : 'instrumentos del calendario figuran'} en el archivo sin un nominal que se pueda leer (celda vacía, en cero o con texto) y no ${a.sinNominal.length === 1 ? 'se cargó' : 'se cargaron'}: ${escHtml(a.sinNominal.slice(0, 12).join(', '))}${a.sinNominal.length > 12 ? ` y ${a.sinNominal.length - 12} más` : ''}.</span>` : '')
+    + ((!faltan && !dudosa && !a.con.length) ? `<span class="cup-arch-aviso">⚠ No se cargó ningún nominal: revisá que el archivo sea el de tenencias.</span>` : '')
+    // Los desplegables de columnas solo aparecen cuando hace falta elegir (o si ya se eligio a mano)
+    + ((faltan || a.detalle.some(d => d.eleccion.manual)) ? columnas : '')
+    + (semanas.length ? '<span class="cup-pdf-det cup-pdf-semanas" id="cupPdfSemanas"></span>' : '')
+    + sin;
+  cupAjustarSemanasConCobros(semanas);
+}
+
+/* Enlaces a las semanas con cobros, en un solo renglon: se muestran todas las
+   que entran a lo ancho y el resto se resume en "y N más". */
+function cupAjustarSemanasConCobros(semanas){
+  const el = document.getElementById('cupPdfSemanas');
+  if(!el) return;
+  semanas = semanas || cupSemanasConCobros();
+  const armar = (k)=>{
+    el.innerHTML = 'Semanas con cobros: '
+      + semanas.slice(0, k).map(s => `<button type="button" class="cup-pdf-sem" data-sem="${s.idx}">${cupRangoTexto(s)}</button>`).join(' · ')
+      + (semanas.length > k ? `${k ? ' · y ' : ''}${semanas.length - k} más (marcadas con ● en el selector)` : '');
+  };
+  let k = semanas.length;
+  armar(k);
+  while(k > 1 && el.scrollWidth > el.clientWidth){ k--; armar(k); }
+}
+window.addEventListener('resize', ()=> cupAjustarSemanasConCobros());
+
+document.getElementById('cupPdfBtn').addEventListener('click', ()=> document.getElementById('cupPdfInput').click());
+document.getElementById('cupPdfInput').addEventListener('change', (e)=>{
+  const archivo = e.target.files && e.target.files[0];
+  e.target.value = '';      // permite volver a elegir el mismo archivo
+  if(archivo) cupCargarArchivo(archivo);
+});
+document.getElementById('cupPdfEstado').addEventListener('click', (e)=>{
+  const b = e.target.closest('[data-sem]');
+  if(b) cupElegirSemana(parseInt(b.dataset.sem, 10) || 0);
+});
+document.getElementById('cupPdfEstado').addEventListener('change', (e)=>{
+  const s = e.target.closest('select');
+  if(!s || !CUP.arch || CUP.arch.error) return;
+  if(s.dataset.archDec != null){ CUP.arch.decUsuario = s.value; }
+  else if(s.dataset.archT != null){ CUP.arch.eleccion[s.dataset.archT] = { colT: parseInt(s.value, 10) }; }
+  else if(s.dataset.archN != null){ const e2 = CUP.arch.eleccion[s.dataset.archN]; e2.clave = s.value; e2.manual = true; }
+  archAplicar();
+  renderCupones();
+});
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ if(btn.dataset.tab === 'cupones') renderCupones(); });
 });
@@ -5960,6 +6536,7 @@ async function generarPdf(clientName){
     btn.innerHTML = originalHtml;
   }
 }
+
 
 </script>
 </body>
