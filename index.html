@@ -5220,13 +5220,11 @@ function cupIrADestacado(ticker){
   const inp = [...document.querySelectorAll('#cupGraficos .cup-input')].find(i => i.dataset.k === k);
   if(inp){ inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); inp.focus({ preventScroll: true }); }
 }
-// Aviso al entrar: una vez por sesion, mientras quede algun pago destacado sin pagar
+// Aviso al entrar: cada vez que se abre la solapa, mientras quede algun pago destacado sin pagar
 function cupMostrarAviso(){
   const lista = cupDestacadosVigentes();
   const pendientes = lista.filter(d => !d.pagado);
   if(!pendientes.length) return;
-  const clave = `cupAviso:${pendientes.map(d => `${d.ticker}:${d.e.fecha}`).join('|')}`;
-  try{ if(sessionStorage.getItem(clave)) return; sessionStorage.setItem(clave, '1'); }catch(err){ if(cupMostrarAviso.visto === clave) return; cupMostrarAviso.visto = clave; }
   const modal = document.getElementById('cupAvisoModal');
   document.getElementById('cupAvisoTitulo').textContent = lista.length > 1 ? 'Pagos destacados' : 'Pago destacado';
   const cuerpo = document.getElementById('cupAvisoCuerpo');
