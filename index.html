@@ -466,6 +466,15 @@
     box-shadow:0 0 0 2px rgba(52,87,213,0.16);
   }
   .pct-cell .pct-symbol{ font-size:13px; font-weight:700; color:var(--muted); }
+  .monto-fondo-cell{ display:inline-flex; align-items:center; justify-content:flex-end; gap:5px; }
+  .monto-fondo-pre{ font-size:12px !important; color:var(--muted) !important; }
+  .monto-fondo-pre{ font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--navy); }
+  #carteraTableBody input.monto-fondo-input{
+    width:96px; padding:7px 8px; text-align:right;
+    font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:700; color:var(--navy);
+    border:1.5px solid #C6CEE8; border-radius:7px; background:#fff;
+  }
+  #carteraTableBody input.monto-fondo-input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(52,87,213,0.16); }
   .remove-fondo-btn{
     border:1px solid #EFD5D5;
     background:#FCEAEA;
@@ -2705,6 +2714,9 @@ const selection = { moneda: 'Pesos', tipo: 'Sugerida', perfil: 'Moderado', horiz
 
 // Cartera armada a mano: [{ nombre, pct }]
 let customPortfolio = [];
+// true cuando el asesor carga el monto de cada fondo en la cartera personalizada:
+// el monto total es la suma y el % de cada fondo sale de su monto
+let customPorMonto = false;
 
 function fundByName(nombre){
   return DATA.fondos.find(f => f.fondo === nombre);
@@ -3846,6 +3858,39 @@ function customPctTotal(){
   return customPortfolio.reduce((acc, it) => acc + (Number(it.pct) || 0), 0);
 }
 
+// Los % pueden tener hasta 2 decimales (cuando salen de los montos de cada fondo)
+function redondearPct(v){ return Math.round((Number(v) || 0) * 100) / 100; }
+function fmtPct(v){ return redondearPct(v).toLocaleString('es-AR', { maximumFractionDigits: 2 }); }
+function sumaEs100(total){ return Math.abs(total - 100) < 0.005; }
+
+/* Cartera por montos: el asesor escribe cuanto va a cada fondo. El monto a
+   invertir pasa a ser la suma y cada % sale de su monto, con 2 decimales que
+   suman exactamente 100. */
+function recalcularDesdeMontos(){
+  const montos = customPortfolio.map(it => Math.max(0, Number(it.monto) || 0));
+  const total = montos.reduce((a, v)=> a + v, 0);
+  const partes = total > 0 ? repartirEntero(10000, montos) : montos.map(()=> 0);
+  customPortfolio.forEach((it, i)=>{ it.pct = partes[i] / 100; });
+  const inp = document.getElementById('montoInput');
+  inp.value = total ? total.toLocaleString('es-AR', { maximumFractionDigits: 0 }) : '';
+}
+
+// Pasa la cartera a modo montos tomando como punto de partida lo que muestra hoy cada fondo
+function pasarAMontos(){
+  if(customPorMonto) return;
+  const total = parseMonto(document.getElementById('montoInput').value);
+  const valida = sumaEs100(customPctTotal());
+  customPortfolio.forEach(it=>{ it.monto = valida ? Math.round(total * (Number(it.pct) || 0) / 100) : 0; });
+  customPorMonto = true;
+}
+
+// Vuelve a modo porcentajes: el monto a invertir queda fijo y cada fondo toma su %
+function pasarAPorcentajes(){
+  if(!customPorMonto) return;
+  customPortfolio.forEach(it=>{ delete it.monto; });
+  customPorMonto = false;
+}
+
 /* ---------------------------------------------------------------------
    Reparto de porcentajes: siempre numeros enteros que suman 100.
 
@@ -3885,15 +3930,21 @@ function repartirEnPartesIguales(){
 
 // La cartera personalizada solo es valida si los % suman exactamente 100
 function carteraSuma100(){
-  return !isCustom() || customPctTotal() === 100;
+  return !isCustom() || sumaEs100(customPctTotal());
 }
 
 function addCustomFondo(nombre){
   if(!nombre) return;
   if(customPortfolio.some(it => it.nombre === nombre)) return;
-  customPortfolio.push({ nombre, pct: 0 });
-  // Al sumar un fondo se reparte todo de nuevo en partes iguales
-  repartirEnPartesIguales();
+  if(customPorMonto){
+    // Con montos cargados, el fondo nuevo entra en 0 para que el asesor le ponga su monto
+    customPortfolio.push({ nombre, pct: 0, monto: 0 });
+    recalcularDesdeMontos();
+  } else {
+    customPortfolio.push({ nombre, pct: 0 });
+    // Al sumar un fondo se reparte todo de nuevo en partes iguales
+    repartirEnPartesIguales();
+  }
   renderCartera();
 }
 
@@ -3901,6 +3952,8 @@ function removeCustomFondo(idx){
   if(idx < 0 || idx >= customPortfolio.length) return;
   // Se quita el fondo y los demas conservan el % que tenian
   customPortfolio.splice(idx, 1);
+  if(customPorMonto) recalcularDesdeMontos();
+  if(!customPortfolio.length) customPorMonto = false;
   renderCartera();
 }
 
@@ -3957,9 +4010,11 @@ function buildCarteraRows(){
         ((PORTFOLIOS[selection.moneda] || {})[selection.perfil] || {})[selection.horizonte] || {}
       );
 
-  return entries.map(([nombre, pct])=>{
+  return entries.map(([nombre, pct], i)=>{
     const fund = fundByName(nombre);
-    const costo = monto * pct / 100;
+    const item = isCustom() ? customPortfolio[i] : null;
+    // Con la cartera cargada por montos, cada fondo invierte exactamente su monto
+    const costo = (customPorMonto && item && item.monto != null) ? Number(item.monto) || 0 : monto * pct / 100;
     const vcp = fund ? fund.ultimoVCP : null;
     const nominales = vcp ? Math.floor(costo / vcp) : null;
     // TIR y Duration salen de tir_fondos.xlsx, cruzando por nombre de fondo
@@ -4018,7 +4073,7 @@ function hayQueMostrarBase(rows){
 function carteraRowHtml(r, i, custom, mostrarBase){
   const excede = custom && !carteraSuma100();
   const pctCell = custom
-    ? `<div class="pct-cell"><input type="text" inputmode="numeric" maxlength="3" class="pct-input${excede ? ' pct-exceso' : ''}" data-idx="${i}" value="${r.pct}" aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
+    ? `<div class="pct-cell"><input type="text" inputmode="decimal" maxlength="6" class="pct-input${excede ? ' pct-exceso' : ''}" data-idx="${i}" value="${fmtPct(r.pct)}" aria-label="% de la cartera para ${r.nombre}" /><span class="pct-symbol">%</span></div>`
     : `${r.pct}%`;
 
   const removeBtn = custom
@@ -4036,8 +4091,15 @@ function carteraRowHtml(r, i, custom, mostrarBase){
       <td data-label="Horizonte">${r.horizonte || '—'}</td>
       <td class="num" data-label="TIR">${tirCellHtml(r, mostrarBase)}</td>
       <td class="num" data-label="Duration">${durCellHtml(r)}</td>
-      <td class="num vcp-value" data-label="Inversión">${excede ? '—' : fmtMoney(r.costo, selection.moneda)}</td>
+      <td class="num vcp-value" data-label="Inversión">${custom ? montoFondoInputHtml(r, i, excede) : fmtMoney(r.costo, selection.moneda)}</td>
     </tr>`;
+}
+
+// En la cartera personalizada el monto de cada fondo tambien se puede escribir
+function montoFondoInputHtml(r, i, excede){
+  const pre = esMonedaUSD(selection.moneda) ? 'USD' : '$';
+  const val = (excede && !customPorMonto) ? '' : Math.round(r.costo).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+  return `<div class="monto-fondo-cell"><span class="monto-fondo-pre">${pre}</span><input type="text" inputmode="numeric" class="monto-fondo-input" data-idx="${i}" value="${val}" placeholder="—" aria-label="Monto a invertir en ${nombreFondoVisible(r.nombre)}" /></div>`;
 }
 
 // Celdas de TIR / Duration de cada fondo.
@@ -4100,7 +4162,7 @@ function renderCartera(){
 
   document.getElementById('resultTitle').textContent = custom ? 'Cartera personalizada' : 'Cartera sugerida';
   document.getElementById('resultFootNote').textContent = custom
-    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % de cada uno libremente. La cartera se calcula solo cuando los porcentajes suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
+    ? 'Al agregar un fondo la cartera se reparte en partes iguales, y después podés ajustar el % o el monto de cada uno. Si cargás montos, el monto a invertir pasa a ser la suma. Con porcentajes, la cartera se calcula solo cuando suman exactamente 100%. Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN. La TIR y la Duration de la última fila son el promedio ponderado por el peso de cada fondo, calculado por separado para cada base de tasa (CER, ARS, USD).'
     : 'Los montos son estimados y no consideran mínimos por fondo ni redondeo a múltiplos de VN.';
 
   let body = rows.map((r, i)=> carteraRowHtml(r, i, custom, hayQueMostrarBase(rows))).join('');
@@ -4163,8 +4225,8 @@ function renderCarteraTotals(rows, custom){
   const totalCosto = rows.reduce((acc, r)=> acc + r.costo, 0);
   const totalPct = rows.reduce((acc, r)=> acc + (Number(r.pct) || 0), 0);
 
-  const excede = totalPct > 100;
-  const invalida = custom && totalPct !== 100;
+  const excede = totalPct > 100.005;
+  const invalida = custom && !sumaEs100(totalPct);
 
   // TIR y Duration ponderadas por el peso de cada fondo en la cartera.
   // En la cartera personalizada solo se muestran si los % suman 100%,
@@ -4178,7 +4240,7 @@ function renderCarteraTotals(rows, custom){
 
   document.getElementById('carteraTotalRow').innerHTML = custom
     ? `<td>Total</td>
-       <td class="${invalida ? 'pct-exceso' : ''}" data-label="Total %">${totalPct}%</td>
+       <td class="${invalida ? 'pct-exceso' : ''}" data-label="Total %">${fmtPct(totalPct)}%</td>
        <td colspan="2"></td>
        ${tirCell}
        ${durCell}
@@ -4213,15 +4275,20 @@ function renderCarteraTotals(rows, custom){
   }
 
   warn.style.display = 'block';
-  if(totalPct === 100){
+  if(sumaEs100(totalPct)){
     warn.className = 'pct-warning ok';
-    warn.textContent = '✓ Los porcentajes suman 100% del monto a invertir.';
+    warn.textContent = customPorMonto
+      ? '✓ El monto a invertir es la suma de los montos de cada fondo.'
+      : '✓ Los porcentajes suman 100% del monto a invertir.';
+  } else if(customPorMonto){
+    warn.className = 'pct-warning err';
+    warn.textContent = '⚠ Cargá el monto de al menos un fondo.';
   } else if(excede){
     warn.className = 'pct-warning err';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: hay que bajar ${totalPct - 100}%. La cartera se calcula solo cuando suman exactamente 100%.`;
+    warn.textContent = `⚠ Los porcentajes suman ${fmtPct(totalPct)}%: hay que bajar ${fmtPct(totalPct - 100)}%. La cartera se calcula solo cuando suman exactamente 100%.`;
   } else {
     warn.className = 'pct-warning err';
-    warn.textContent = `⚠ Los porcentajes suman ${totalPct}%: falta asignar ${100 - totalPct}%. La cartera se calcula solo cuando suman exactamente 100%.`;
+    warn.textContent = `⚠ Los porcentajes suman ${fmtPct(totalPct)}%: falta asignar ${fmtPct(100 - totalPct)}%. La cartera se calcula solo cuando suman exactamente 100%.`;
   }
 }
 
@@ -4232,7 +4299,7 @@ function renderCarteraDerived(rows, custom){
   // La cartera personalizada solo se calcula si los % suman exactamente 100.
   // Con cualquier otra suma se ocultan las secciones de abajo, igual que
   // cuando todavia no se eligio ningun fondo.
-  const valida = !custom || totalPct === 100;
+  const valida = !custom || sumaEs100(totalPct);
   const hasRows = valida && rows.some(r => r.found && (Number(r.pct) || 0) > 0);
 
   ['composicionSection', 'histSection', 'carteraFondosSection'].forEach(id=>{
@@ -4271,9 +4338,17 @@ function sincronizarFilasCartera(){
     const tr = trs[i];
     if(!tr) return;
     const inp = tr.querySelector('.pct-input');
-    if(inp) inp.classList.toggle('pct-exceso', excede);
-    const cell = tr.querySelector('td:last-child');
-    if(cell) cell.textContent = excede ? '—' : fmtMoney(r.costo, selection.moneda);
+    if(inp){
+      inp.classList.toggle('pct-exceso', excede);
+      if(inp !== document.activeElement) inp.value = fmtPct(r.pct);
+    }
+    const mInp = tr.querySelector('.monto-fondo-input');
+    if(mInp){
+      if(mInp !== document.activeElement) mInp.value = (excede && !customPorMonto) ? '' : Math.round(r.costo).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+    } else {
+      const cell = tr.querySelector('td:last-child');
+      if(cell) cell.textContent = excede ? '—' : fmtMoney(r.costo, selection.moneda);
+    }
   });
   renderCarteraTotals(rows, true);
 }
@@ -4284,15 +4359,20 @@ function onPctInput(idx, inputEl){
   const item = customPortfolio[idx];
   if(!item) return;
 
-  // Solo se aceptan enteros de 0 a 100
-  let limpio = inputEl.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
-  if(limpio !== '' && parseInt(limpio, 10) > 100) limpio = '100';
+  // Se aceptan numeros de 0 a 100 con hasta 2 decimales (coma o punto)
+  let limpio = inputEl.value.replace(/[^\d,.]/g, '').replace('.', ',');
+  const partes = limpio.split(',');
+  limpio = partes[0].replace(/^0+(?=\d)/, '') + (partes.length > 1 ? ',' + partes.slice(1).join('').slice(0, 2) : '');
+  let valor = limpio === '' || limpio === ',' ? 0 : parseFloat(limpio.replace(',', '.'));
+  if(valor > 100){ valor = 100; limpio = '100'; }
   if(limpio !== inputEl.value){
     inputEl.value = limpio;
     try{ inputEl.setSelectionRange(limpio.length, limpio.length); }catch(e){}
   }
 
-  item.pct = limpio === '' ? 0 : parseInt(limpio, 10);
+  // Escribir un % vuelve a la cartera por porcentajes: el monto a invertir queda fijo
+  if(customPorMonto) pasarAPorcentajes();
+  item.pct = redondearPct(valor);
   sincronizarFilasCartera();
 
   clearTimeout(pctRecalcTimer);
@@ -4312,11 +4392,32 @@ carteraBodyEl.addEventListener('focusout', (e)=>{
   const inp = e.target.closest && e.target.closest('.pct-input');
   if(!inp) return;
   const item = customPortfolio[parseInt(inp.dataset.idx, 10)];
-  if(item) inp.value = item.pct;
+  if(item) inp.value = fmtPct(item.pct);
+});
+
+// Monto de cada fondo: al escribirlo la cartera pasa a armarse por montos
+function onMontoFondoInput(idx, inputEl){
+  const item = customPortfolio[idx];
+  if(!item) return;
+  const valor = formatMontoInput(inputEl);
+  pasarAMontos();
+  item.monto = valor;
+  recalcularDesdeMontos();
+  sincronizarFilasCartera();
+  clearTimeout(pctRecalcTimer);
+  pctRecalcTimer = setTimeout(()=> renderCarteraDerived(buildCarteraRows(), true), 260);
+}
+carteraBodyEl.addEventListener('input', (e)=>{
+  const inp = e.target.closest && e.target.closest('.monto-fondo-input');
+  if(!inp) return;
+  onMontoFondoInput(parseInt(inp.dataset.idx, 10), inp);
+});
+carteraBodyEl.addEventListener('focusout', (e)=>{
+  if(e.target.classList && e.target.classList.contains('monto-fondo-input')) sincronizarFilasCartera();
 });
 
 carteraBodyEl.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' && e.target.classList && e.target.classList.contains('pct-input')){
+  if(e.key === 'Enter' && e.target.classList && (e.target.classList.contains('pct-input') || e.target.classList.contains('monto-fondo-input'))){
     e.preventDefault();
     e.target.blur();
   }
@@ -4339,7 +4440,7 @@ document.querySelectorAll('#monedaOptions .option-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     // Entrar o salir de Dolar Cable arranca la cartera personalizada de cero:
     // cable y MEP son liquidaciones distintas aunque los fondos sean en USD
-    if((selection.moneda === 'Cable') !== (btn.dataset.moneda === 'Cable')) customPortfolio = [];
+    if((selection.moneda === 'Cable') !== (btn.dataset.moneda === 'Cable')){ customPortfolio = []; customPorMonto = false; }
     selectOption('monedaOptions', 'moneda', btn.dataset.moneda);
   });
 });
@@ -4354,6 +4455,8 @@ document.querySelectorAll('#horizonteOptions .option-btn').forEach(btn=>{
 });
 document.getElementById('montoInput').addEventListener('input', (e)=>{
   formatMontoInput(e.target);
+  // Cambiar el total a mano vuelve a la cartera por porcentajes (cada fondo conserva su %)
+  pasarAPorcentajes();
   renderCartera();
 });
 
@@ -5088,6 +5191,7 @@ function cupAbrirEnCalculadora(moneda){
   selection.moneda = moneda;
   selection.tipo = 'Personalizada';
   customPortfolio = c.fondos.filter(f => f.found).map(f => ({ nombre: f.nombre, pct: f.pct }));
+  customPorMonto = false;
   if(c.conMonto){
     document.getElementById('montoInput').value = Math.round(c.total).toLocaleString('es-AR', { maximumFractionDigits: 0 });
   }
@@ -6342,7 +6446,7 @@ function buildPrintReport(clientName){
     return `
       <tr>
         <td>${nombreFondoVisible(r.nombre)}</td>
-        <td>${r.pct}%</td>
+        <td>${fmtPct(r.pct)}%</td>
         <td>${r.riesgo || '—'}</td>
         <td>${r.horizonte || '—'}</td>
         <td style="text-align:right;">${tirTxt ? tirTxt + (mostrarBasePdf && r.base ? ' ' + r.base : '') : 's/d'}</td>
